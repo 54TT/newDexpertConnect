@@ -1,6 +1,5 @@
-import Profile from '../../../public/community/profile.svg';
-import Latest from '../../../public/community/latest.svg';
-import Follow from '../../../public/community/follow.svg';
+
+
 import classnames from 'classnames';
 import './index.less'
 export type UserActionKey = 'Profile' | 'Lastest' | 'Following'
@@ -23,13 +22,13 @@ interface UserInfoPropsType {
 const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
   const userAction: Record<UserActionKey, UserActionType> = {
     [UserActionKeyEnum.PROFILE]: {
-      img: Profile
+      img: "/community/profile.svg"
     },
     [UserActionKeyEnum.LASTEST]: {
-      img: Latest
+      img: "/community/latest.svg"
     },
     [UserActionKeyEnum.FOLLOWING]: {
-      img: Follow
+      img: "/community/follow.svg"
     }
   }
   return <div className='community-user-action'>
