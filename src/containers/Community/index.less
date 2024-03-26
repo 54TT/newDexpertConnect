@@ -1,0 +1,39 @@
+.community-user-action {
+  font-size: 16px;
+  color: #fff;
+  align-items: center;
+  margin-top: 12px;
+  &-item {
+    display: flex;
+    width: 150px;
+    margin: 0 auto;
+    margin-bottom: 12px;
+    padding: 12px 20px;
+    cursor: pointer;
+    &-active {
+      background: linear-gradient(
+        90deg,
+        rgba(10, 21, 17, 0.65) 27%,
+        rgba(55, 123, 101, 0.41) 100%
+      );
+    }
+    &:hover {
+      background: linear-gradient(
+        90deg,
+        rgba(10, 21, 17, 0.65) 27%,
+        rgba(55, 123, 101, 0.41) 100%
+      );
+    }
+    &-label {
+      display: inline-block;
+      line-height: 26px;
+    }
+
+    &-img {
+      margin-right: 24px;
+      img {
+        width: 24px;
+      }
+    }
+  }
+}

@@ -1,19 +1,19 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-import {Input, Segmented, Select, Spin} from 'antd'
-import {useContext, useEffect, useRef, useState} from "react";
-import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
-import {gql} from 'graphql-tag'
-import {setMany} from '../../utils/change.ts'
-import {cloneDeep} from 'lodash';
-import {CountContext} from '../Layout.tsx'
-import {SearchOutlined} from '@ant-design/icons'
+import { Input, Segmented, Select, Spin } from 'antd'
+import { useContext, useEffect, useRef, useState } from "react";
+import { ApolloClient, InMemoryCache, useQuery } from "@apollo/client";
+import { gql } from 'graphql-tag'
+import { setMany } from '../../utils/change.ts'
+import { cloneDeep } from 'lodash';
+import { CountContext } from '../Layout.tsx'
+import { SearchOutlined } from '@ant-design/icons'
 
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });
 
 function Index() {
-    const {headHeight, botHeight}: any = useContext(CountContext)
+    const { headHeight, botHeight }: any = useContext(CountContext)
     const hei = useRef<any>()
     const page = 25
     const [select, setSelect] = useState('newPair')
@@ -138,11 +138,11 @@ function Index() {
         if (hei && hei.current && botHeight && headHeight) {
             const h = hei.current.scrollHeight
             const w = window.innerHeight
-            const o: any = w - h - headHeight - 70 - botHeight
+            const o: any = w - h - headHeight - 90 - botHeight
             setTableHei(o)
         }
     }, [botHeight, headHeight])
-    const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any
+    const { loading, data, refetch } = useQuery(GET_DATA, { client }) as any
     useEffect(() => {
         if (!loading) {
             if (data && data?.pairs.length > 0) {
@@ -286,20 +286,20 @@ function Index() {
                     value={select}
                     className={'indexSelect'}
                     popupClassName={'indexSelectPopup'}
-                    style={{width: '12%'}}
+                    style={{ width: '12%' }}
                     options={[
-                        {value: 'newPair', label: 'New Pairs'},
-                        {value: 'trading', label: 'Trading'},
-                        {value: 'watch', label: 'Watch List'},
+                        { value: 'newPair', label: 'New Pairs' },
+                        { value: 'trading', label: 'Trading' },
+                        { value: 'watch', label: 'Watch List' },
                     ]}
                 />
                 <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'}
-                           defaultValue={'24h'}/>
-                <Input suffix={<SearchOutlined style={{fontSize: '16px', color: 'white'}}/>} onChange={changeInput}
-                       allowClear className={'indexInput'}/>
+                    defaultValue={'24h'} />
+                <Input suffix={<SearchOutlined style={{ fontSize: '16px', color: 'white' }} />} onChange={changeInput}
+                    allowClear className={'indexInput'} />
                 <div className={`indexRight dis`}>
-                    <p><img src="/eth.svg" alt=""/><span>$:121</span></p>
-                    <p><img src="/gas.svg" alt=""/><span>abc</span></p>
+                    <p><img src="/eth.svg" alt="" /><span>$:121</span></p>
+                    <p><img src="/gas.svg" alt="" /><span>abc</span></p>
                 </div>
             </div>
 
@@ -311,7 +311,7 @@ function Index() {
                             return <p className={`${ind === 0 ? 'disCen' : 'textAlign'} homeTableTittle`} key={ind}>
                                 {
                                     ind === 0 &&
-                                    <img src="/collect.svg" alt="" style={{marginRight: '5px'}} width={'15px'}/>
+                                    <img src="/collect.svg" alt="" style={{ marginRight: '5px' }} width={'15px'} />
                                 }
                                 <span>{i}</span>
                             </p>
@@ -321,7 +321,7 @@ function Index() {
                 </div>
                 {/*body*/}
                 <div className={'indexNewPairBody'} id={'scrollableNew'}
-                     style={{height: tableHei + 'px', overflowY: 'auto'}}>
+                    style={{ height: tableHei + 'px', overflowY: 'auto' }}>
                     <InfiniteScroll
                         hasMore={true}
                         scrollableTarget="scrollableNew"
@@ -356,7 +356,7 @@ function Index() {
                                         <img src={record.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""
                                              onClick={() => click(record)}/>
                                         <div>
-                                            <p style={{marginBottom: '4px'}}>{record?.token0?.name ? record?.token0?.name.length > 13 ? record?.token0?.name.slice(0, 5) + '...' + record?.token0.name.slice(-4) : record?.token0.name : ''}</p>
+                                            <p style={{ marginBottom: '4px' }}>{record?.token0?.name ? record?.token0?.name.length > 13 ? record?.token0?.name.slice(0, 5) + '...' + record?.token0.name.slice(-4) : record?.token0.name : ''}</p>
                                             {/*<div style={{display: 'flex', alignItems: 'center'}}>*/}
                                             {/*    <span>{record?.token0?.symbol ? record?.token0?.symbol.length > 7 ? record?.token0?.symbol.slice(0, 5) + '/' : record?.token0?.symbol + '/' : ''}</span>*/}
                                             {/*    <span*/}
@@ -369,26 +369,26 @@ function Index() {
                                         </div>
                                     </div>
                                     <div
-                                        style={{color: "white"}}>{Number(record?.priceUSD) ? setMany(record?.priceUSD) : 0}</div>
+                                        style={{ color: "white" }}>{Number(record?.priceUSD) ? setMany(record?.priceUSD) : 0}</div>
                                     <div
-                                        style={{color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,9,58)',}}>{b !== 0 ? (parseFloat(Number(b).toFixed(2))).toString() + '%' : '0'}</div>
+                                        style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,9,58)', }}>{b !== 0 ? (parseFloat(Number(b).toFixed(2))).toString() + '%' : '0'}</div>
                                     {
-                                        ab === 1 ? <div style={{color: 'white'}}>-</div> : ab === 2 ? <div
-                                                style={{color: 'white'}}>{Number(setMany(record?.reserve0.toString())) ? parseFloat(Number(setMany(record?.reserve0.toString())).toFixed(2)) + '  ' : setMany(record?.reserve0.toString()) + '  '}ETH</div> :
+                                        ab === 1 ? <div style={{ color: 'white' }}>-</div> : ab === 2 ? <div
+                                            style={{ color: 'white' }}>{Number(setMany(record?.reserve0.toString())) ? parseFloat(Number(setMany(record?.reserve0.toString())).toFixed(2)) + '  ' : setMany(record?.reserve0.toString()) + '  '}ETH</div> :
                                             <div
-                                                style={{color: 'white'}}>{Number(setMany(record?.reserve1.toString())) ? parseFloat(Number(setMany(record?.reserve1.toString())).toFixed(2)) + '  ' : setMany(record?.reserve1.toString()) + '  '}ETH</div>
+                                                style={{ color: 'white' }}>{Number(setMany(record?.reserve1.toString())) ? parseFloat(Number(setMany(record?.reserve1.toString())).toFixed(2)) + '  ' : setMany(record?.reserve1.toString()) + '  '}ETH</div>
                                     }
                                     <div
-                                        style={{color: 'white'}}>{dateTime && dateTime.length > 0 ? Number(dateTime[0]?.swapTxns) : 0}</div>
-                                    <div style={{color: 'white'}}>{bb}</div>
+                                        style={{ color: 'white' }}>{dateTime && dateTime.length > 0 ? Number(dateTime[0]?.swapTxns) : 0}</div>
+                                    <div style={{ color: 'white' }}>{bb}</div>
 
                                     <div className={`dis indexTableLogo`}>
-                                        <img src="/ethLogo.svg" alt=""/>
+                                        <img src="/ethLogo.svg" alt="" />
                                         <img
-                                            src="/feima.svg" style={{margin: '0 5px'}}
-                                            alt=""/>
+                                            src="/feima.svg" style={{ margin: '0 5px' }}
+                                            alt="" />
                                         <img
-                                            src="/huo.svg" alt=""/></div>
+                                            src="/huo.svg" alt="" /></div>
                                 </div>
                             }) : <p>no Data</p>
                         }
@@ -396,7 +396,7 @@ function Index() {
                 </div>
                 {
                     moreLoad && <div className={'disCen'}>
-                        <Spin/>
+                        <Spin />
                     </div>
                 }
             </div>

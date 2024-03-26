@@ -1,22 +1,22 @@
 import Header from './components/header'
 import Right from './components/right'
-import {Route, Routes, useLocation, useNavigate,} from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate, } from "react-router-dom";
 import Index from './pages/index.tsx'
 import './style/all.less'
-import {createContext, useCallback, useEffect, useRef, useState} from 'react'
-import {getAppMetadata, getSdkError} from "@walletconnect/utils";
+import { createContext, useCallback, useEffect, useRef, useState } from 'react'
+import { getAppMetadata, getSdkError } from "@walletconnect/utils";
 import 'swiper/css';
-import {notification} from 'antd'
+import { notification } from 'antd'
 import Bot from './components/bottom';
-import {Web3Modal} from "@web3modal/standalone";
+import { Web3Modal } from "@web3modal/standalone";
 import cookie from 'js-cookie'
 import * as encoding from "@walletconnect/encoding";
 import {request} from '../utils/axios.ts';
-
 import Client from "@walletconnect/sign-client";
 // import jwt from "jsonwebtoken";
-import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
+import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces } from "../utils/default";
 import _ from 'lodash'
+import Community from './pages/community.tsx';
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -190,10 +190,10 @@ function Layout() {
                         await setLogin()
                     } else if (data && data?.status === 200) {
                         const user = data?.data?.data
-                        cookie.set('username', JSON.stringify(user), {expires: 1})
-                        cookie.set('token', res.data?.accessToken, {expires: 1})
-                        cookie.set('name', address, {expires: 1})
-                        cookie.set('user', JSON.stringify(decodedToken), {expires: 1})
+                        cookie.set('username', JSON.stringify(user), { expires: 1 })
+                        cookie.set('token', res.data?.accessToken, { expires: 1 })
+                        cookie.set('name', address, { expires: 1 })
+                        cookie.set('user', JSON.stringify(decodedToken), { expires: 1 })
                         web3Modal.closeModal();
                     } else {
                         return null
@@ -229,7 +229,7 @@ function Layout() {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token: any = await request('post', '/api/v1/token', {address: address})
+            const token: any = await request('post', '/api/v1/token', { address: address })
             if (token && token?.data && token?.status === 200) {
                 await login(chainId, address, client, session, token?.data?.nonce);
             } else {
@@ -282,7 +282,7 @@ function Layout() {
             try {
                 const requiredNamespaces = getRequiredNamespaces(['eip155:1']);
                 const optionalNamespaces = getOptionalNamespaces(['eip155:1']);
-                const {uri, approval} = await client.connect({
+                const { uri, approval } = await client.connect({
                     requiredNamespaces,
                     optionalNamespaces,
                 });
@@ -290,7 +290,7 @@ function Layout() {
                     const standaloneChains = Object.values(requiredNamespaces)
                         .map((namespace: any) => namespace.chains)
                         .flat()
-                    await web3Modal.openModal({uri, standaloneChains});
+                    await web3Modal.openModal({ uri, standaloneChains });
                 }
                 const ab = await approval();
                 await onSessionConnected(ab, 'yes', client);
@@ -323,14 +323,15 @@ function Layout() {
     const value: any = {connect, setLogin, onDisconnect, loginSta, getMoneyEnd, headHeight, botHeight,}
     return (
         <CountContext.Provider value={value}>
-            <Header setHeadHeight={setHeadHeight}/>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0 2%'}}>
+            <Header setHeadHeight={setHeadHeight} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0 2%' }}>
                 <Routes>
-                    <Route path="/" element={<Index/>}/>
+                    <Route path="/" element={<Index />} />
+                    <Route path='/community' element={<Community />} />
                 </Routes>
-                <Right/>
+                <Right />
             </div>
-            <Bot setBotHeight={setBotHeight}/>
+            <Bot setBotHeight={setBotHeight} />
         </CountContext.Provider>
     );
 }
