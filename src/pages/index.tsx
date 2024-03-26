@@ -268,6 +268,15 @@ function Index() {
     const changeInput = (e: any) => {
         console.log(e)
     }
+    const click = (i: any) => {
+        tableDta.map((it: any) => {
+            if (it?.id === i?.id) {
+                it.collect = !i.collect
+            }
+            return it
+        })
+        setDta([...tableDta])
+    }
     return (
         <div className={'indexBox'}>
             {/* top*/}
@@ -344,7 +353,8 @@ function Index() {
                                 }
                                 return <div key={ind} className={`indexNewPairBodyData dis`}>
                                     <div className={`indexTableLogo indexNewPairBone`}>
-                                        <img src="/collect.svg" alt="" />
+                                        <img src={record.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""
+                                             onClick={() => click(record)}/>
                                         <div>
                                             <p style={{ marginBottom: '4px' }}>{record?.token0?.name ? record?.token0?.name.length > 13 ? record?.token0?.name.slice(0, 5) + '...' + record?.token0.name.slice(-4) : record?.token0.name : ''}</p>
                                             {/*<div style={{display: 'flex', alignItems: 'center'}}>*/}

@@ -48,7 +48,7 @@ function Index({ setHeadHeight }: any) {
 
     return (
         <div className={'headerBox'} ref={hei}>
-            <img src="/topLogo.svg" alt="" />
+            <img src="/topLogo.svg" alt="" style={{cursor:'pointer'}}/>
             <p className={`headerCenter dis`}>
                 {
                     ['Market', 'DApp & Tools', 'Community'].map((i, ind) => {
@@ -61,8 +61,6 @@ function Index({ setHeadHeight }: any) {
                 }
             </p>
             <p className={'headerConnect'} onClick={() => setIsModalOpen(true)}>Connect Wallet</p>
-
-
             <Modal destroyOnClose={true} centered title={null} footer={null} className={'walletModal'}
                 maskClosable={false}
                 open={isModalOpen}
