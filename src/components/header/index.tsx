@@ -68,20 +68,19 @@ function Index({ setHeadHeight }: any) {
                 open={isModalOpen}
                 onOk={handleOk} onCancel={handleCancel}>
                 <div className={'headerModal'}>
-                    <p>Log in to Dexpert</p>
-                    <p>Log in with wallet</p>
+                    <img src="/logo1.svg" alt="" />
+                    <p>Connect to Dexpert</p>
                     {
                         // window.innerWidth > 768 &&
                         <button onClick={connectWallet} className={'walletButton'} style={{ margin: '10px 0' }}>
                             <img
-                                src="/logo.svg" style={{ width: '30px' }}
+                                src="/metamask.svg" style={{ width: '25px' }}
                                 alt="" /><span>MetaMask</span></button>
                     }
                     <button onClick={onConnect} className={'walletButton'}><img
-                        src="/logo.svg"
+                        src="/webAll.svg"
                         style={{
-                            width: '30px',
-                            height: '30px'
+                            width: '25px',
                         }}
                         alt="" /><span>WlletConnect</span>
                     </button>
