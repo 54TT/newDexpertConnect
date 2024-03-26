@@ -1,0 +1,454 @@
+.dis {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+p {
+  line-height: 1;
+}
+
+body {
+  background-color: rgb(10, 21, 17);
+  overflow: hidden;
+}
+
+//body::-webkit-scrollbar {
+//  width: 10px;
+//}
+//
+//body::-webkit-scrollbar-thumb {
+//  background: rgb(24, 30, 29);
+//  border: 1px solid rgb(104, 124, 105);
+//  border-radius: 25px;
+//}
+
+.indexBox {
+  width: 72%;
+  margin-top: 10px;
+
+  .indexTop {
+    padding: 0.6% 2%;
+    background-color: rgb(24, 30, 28);
+    border-radius: 12px 12px 0 0;
+
+    .ant-select-focused {
+      .ant-select-selector {
+        box-shadow: none !important;
+      }
+    }
+
+    .indexSelect {
+      .ant-select-selector {
+        background: transparent !important;
+        border: none !important;
+
+        .ant-select-selection-item {
+          color: white !important;
+          font-size: 17px;
+          text-align: center;
+        }
+      }
+
+      .ant-select-arrow {
+        font-size: 15px;
+        color: white !important;
+      }
+    }
+
+    .indexRight {
+      width: 13%;
+
+      p {
+        display: flex;
+        align-items: center;
+
+        img {
+          display: block;
+          margin-right: 10%;
+        }
+
+        span {
+          color: rgb(214, 223, 215);
+        }
+      }
+    }
+  }
+
+}
+
+.headerBox {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  background-color: rgb(13, 26, 20);
+  padding: 0.6% 3.5%;
+  border-bottom: 1px solid rgb(104, 124, 105);
+  border-radius: 0 0 10px 10px;
+
+  .headerCenter {
+    width: 40%;
+
+    span {
+      cursor: pointer;
+    }
+  }
+
+  .headerConnect {
+    padding: 0.6% 1.4%;
+    font-size: 15px;
+    cursor: pointer;
+    letter-spacing: -1px;
+    border-radius: 10px;
+    background: linear-gradient(to right, rgb(134, 240, 151), rgb(0, 255, 71));
+  }
+}
+
+.rightBox {
+  width: 26%;
+  overflow: hidden;
+
+  .rightBoxTweet {
+    background-color: rgb(18, 18, 18);
+    border: 1px solid rgba(134, 240, 151, 0.5);
+
+    .rightTweetBox::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .rightTweetBox {
+      .infinite-scroll-component {
+        overflow: initial !important;
+      }
+    }
+
+
+    .rightTweetBox::-webkit-scrollbar-thumb {
+      background: rgb(24, 30, 29);
+      border: 1px solid rgb(104, 124, 105);
+      border-radius: 25px;
+    }
+
+    .rightBoxTweetTop {
+      display: flex;
+      align-items: center;
+
+      div {
+        width: 50%;
+        padding: 2% 0;
+        text-align: center;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+
+.tweetsBox {
+  margin-top: 4%;
+  padding: 0 8%;
+
+  .tweetsText {
+    color: rgb(220, 220, 220);
+    word-wrap: break-word;
+    margin: 4.2% 0;
+  }
+
+  .tweetsMark {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 2.8% 0 1%;
+
+    p {
+      color: rgb(0, 218, 255);
+      font-size: 18px;
+      padding: 1% 2%;
+      margin: 0 3% 1.4% 0;
+      letter-spacing: -1px;
+      //border: 1px solid transparent;
+      //border-radius: 16px;
+      //background-clip: padding-box, border-box;
+      //background-origin: padding-box, border-box;
+      //background-image: linear-gradient(to right, rgb(24, 30, 28), rgb(24, 30, 28)), linear-gradient(to right, rgb(132, 240, 140), rgb(0, 255, 71));
+    }
+  }
+
+  .tweetsOperate {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .tweetsIn {
+      display: flex;
+      cursor: pointer;
+      align-items: center;
+      position: relative;
+
+      span {
+        color: rgb(200, 200, 200);
+        margin-left: 10%;
+      }
+
+      img {
+        width: 30px;
+      }
+
+      .tweetsLick {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    }
+  }
+
+  .tweetsLeft {
+    width: 50%;
+    display: flex;
+    align-items: center;
+
+    p {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+
+      span:first-child {
+        color: white;
+        font-size: 18px;
+        margin-bottom: 6%;
+      }
+
+      span:last-child {
+        color: rgb(214, 223, 215);
+        font-size: 14px;
+      }
+    }
+  }
+
+  .tweetsFollow {
+    p:first-child {
+      color: white;
+      margin-bottom: 4px;
+      font-size: 14px;
+      letter-spacing: -1px;
+    }
+
+    .tweetsRight {
+      border: 1px solid rgb(0, 255, 71);
+      border-radius: 7px;
+      background-color: black;
+      box-shadow: white 0 0 7px;
+      text-align: center;
+      color: white;
+      padding: 4px 12px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+  }
+
+}
+
+.indexTableLogo {
+  img {
+    width: 20px;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+
+  div {
+    color: white;
+  }
+}
+
+.indexTable {
+  /* WebKit 浏览器的滚动条样式 */
+
+  .ant-table-wrapper::-webkit-scrollbar {
+    width: 8px; /* 滚动条宽度 */
+  }
+
+  /* WebKit 浏览器的滚动条轨道样式 */
+
+  .ant-table-wrapper::-webkit-scrollbar-track {
+    background-color: #f1f1f1 !important; /* 滚动条轨道背景色 */
+  }
+
+  /* WebKit 浏览器的滚动条滑块样式 */
+
+  .ant-table-wrapper::-webkit-scrollbar-thumb {
+    background-color: white !important; /* 滚动条滑块颜色 */
+    border-radius: 10px; /* 滑块圆角 */
+  }
+
+  .ant-table {
+    border-radius: 8px !important;
+    background-color: transparent !important;
+
+    table {
+      .ant-table-thead {
+        .ant-table-cell {
+          padding: 7px !important;
+          background-color: rgb(18, 18, 18) !important;
+          border-bottom: 5px solid black;
+          font-size: 16px;
+        }
+
+        .ant-table-cell-scrollbar {
+          box-shadow: none !important;
+        }
+
+        .ant-table-cell::before {
+          width: 0 !important;
+        }
+      }
+
+      .ant-table-tbody {
+        .ant-table-row {
+          td {
+            background-color: rgb(6, 14, 11) !important;
+            padding: 3px !important;
+            border-bottom: 5px solid black;
+          }
+
+          .ant-table-cell-row-hover {
+            cursor: pointer;
+            background-color: rgb(34, 36, 34) !important;
+          }
+        }
+
+        .ant-table-row:last-child {
+          td {
+            border-bottom: none !important;
+          }
+
+          td:first-child {
+            border-radius: 0 0 0 8px;
+          }
+
+          td:last-child {
+            border-radius: 0 0 8px 0;
+          }
+
+        }
+      }
+    }
+  }
+}
+
+.disCen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottomBox {
+  width: 100%;
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
+
+  & > div:last-child {
+    border-top: 1.5px solid rgb(104, 124, 105);
+    padding: 0.5% 2%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: rgb(9, 15, 12);
+
+    & > p:first-child {
+      width: 10px;
+      height: 10px;
+      background-color: rgb(134, 240, 151);
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    & > p:last-child {
+      cursor: pointer;
+      color: white;
+      font-size: 17px;
+    }
+  }
+}
+
+.indexSelectPopup {
+  background-color: rgb(24, 30, 28) !important;
+  padding: 0 !important;
+
+  .ant-select-item {
+    color: rgb(135, 145, 136);
+  }
+
+  .ant-select-item-option-selected {
+    color: white !important;
+    background: linear-gradient(to right, rgb(9, 21, 17), rgb(37, 70, 59)) !important;
+  }
+}
+
+.disNo {
+  display: none;
+}
+
+.newPairTable {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+
+  .newPairTableText {
+    display: flex;
+    align-items: flex-end;
+    line-height: 1;
+    margin-left: 15px;
+  }
+}
+
+
+.headerModal {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  & > p:first-child {
+    font-size: 22px;
+    color: #F3F3F3;
+    text-align: center;
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+
+  & > p:nth-child(2) {
+    color: #F3F3F3;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .walletButton {
+    width: 150px;
+    height: 40px;
+    background-color: rgb(50, 47, 59);
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    border-radius: 10px;
+
+    span {
+      line-height: 1;
+      color: white;
+    }
+
+    img {
+      margin: 0 10px;
+    }
+  }
+}
+.homeTableTittle{
+  color: rgb(214,223,215);font-size:14px;
+}
+span{
+  line-height: 1;
+}
