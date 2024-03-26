@@ -22,7 +22,7 @@ function Index({name}: any) {
                 {/* left*/}
                 <div className={'tweetsLeft'}>
                     <img src={name?.user?.avatar ? name?.user?.avatar : "/logo.svg"} alt=""
-                         style={{width: '40px', marginRight: '7%',borderRadius:'50%'}}/>
+                         style={{width: '42px', marginRight: '5%', borderRadius: '50%'}}/>
                     <p>
                         <span>{name?.user?.username ? name?.user?.username.length > 15 ? name?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
                         <span>{name?.user?.address ? name?.user.address.slice(0, 5) + '...' + name?.user.address.slice(-4) : ''}</span>
@@ -33,10 +33,12 @@ function Index({name}: any) {
                     <p className={'tweetsRight'}>Follow</p>
                 </div>
             </div>
-            {/*    text*/}
-            <p className={'tweetsText'}>{name?.content ? name.content : ''}</p>
+            {
+                name?.content ? <div className={'tweetsText'}
+                                     dangerouslySetInnerHTML={{__html: name.content.replace(/\n/g, '<br>')}}></div> : ''
+            }
             <img src={name?.imageList?.length > 0 ? name?.imageList[0] : "/swiper.svg"} alt=""
-                 style={{width: '100%', borderRadius: '5px', display: 'block'}}/>
+                 style={{maxWidth: '50%', margin: '0 auto',maxHeight:'200px', borderRadius: '5px', display: 'block'}}/>
             {/*   标识*/}
             <div className={'tweetsMark'}>
                 <p>#btc</p>
@@ -61,7 +63,7 @@ function Index({name}: any) {
                     </motion.div>
                 </div>
                 <p className={'tweetsIn'}>
-                    <img src="/share. " alt=""/>
+                    <img src="/share.svg " alt=""/>
                     <span>111</span>
                 </p>
                 <p className={'tweetsIn'}>

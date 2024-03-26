@@ -116,7 +116,7 @@ function Index() {
                                 })}
                             </InfiniteScroll>
                             {
-                                iconLoad && <p style={{textAlign:'center',color:'white',fontSize:'16px'}}><LoadingOutlined/>  </p>
+                                iconLoad && <p style={{textAlign:'center',color:'white',fontSize:'16px'}}><LoadingOutlined/> </p>
                             }
                         </div> :
                         <p style={{textAlign: 'center', color: 'white', marginTop: '20px'}}>No data</p> : <Skeleton

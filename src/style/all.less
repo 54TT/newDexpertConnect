@@ -27,15 +27,26 @@ body {
 //  border: 1px solid rgb(104, 124, 105);
 //  border-radius: 25px;
 //}
-
 .indexBox {
-  width: 72%;
+  width: 74%;
   margin-top: 10px;
 
   .indexTop {
     padding: 0.6% 2%;
     background-color: rgb(24, 30, 28);
     border-radius: 12px 12px 0 0;
+
+    .indexInput {
+      width: 25%;
+      background-color: rgb(35, 51, 40);
+      outline: none;
+      border: none;
+      color: white;
+
+      .ant-input-suffix .ant-input-clear-icon {
+        color: rgb(200, 200, 200) !important;
+      }
+    }
 
     .ant-select-focused {
       .ant-select-selector {
@@ -80,6 +91,90 @@ body {
     }
   }
 
+  .indexNewPair {
+    width: 100%;
+
+    .indexNewPairTitle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 5px solid;
+
+      & > p {
+        flex: 1;
+      }
+      .homeTableTittle {
+        padding: 7px 0;
+        background: rgb(18, 18, 18);
+        color: rgb(214, 223, 215);
+        font-size: 14px;
+      }
+    }
+
+    .indexNewPairBody {
+      .indexNewSkeleton {
+        width: 100%;
+        height: 50vh;
+        position: relative;
+        background-color: rgb(6, 14, 11);
+
+        .indexNewSpin {
+          position: absolute !important;
+          top: 50% !important;
+          left: 50% !important;
+          transform: translate(-50%, -50%) !important;
+        }
+      }
+
+      .indexNewPairBodyData {
+        background-color: rgb(6, 14, 11);
+        cursor: pointer;
+        border-bottom: 5px solid;
+        padding: 4px 0;
+
+        & > div {
+          line-height: 1;
+          display: flex;
+          font-size: 15px;
+          justify-content: center;
+          flex: 1;
+        }
+        .indexNewPairBone{
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          margin-left: 2%;
+        }
+
+        .indexTableLogo {
+          img {
+            width: 20px;
+            margin-right: 5px;
+            cursor: pointer;
+          }
+
+          div {
+            color: white;
+          }
+        }
+
+      }
+
+      .indexNewPairBodyData:hover {
+        background-color: rgb(34, 36, 34) !important;
+      }
+    }
+    .indexNewPairBody::-webkit-scrollbar {
+      width: 8px !important; /* 滚动条宽度 */
+    }
+    /* WebKit 浏览器的滚动条滑块样式 */
+
+    .indexNewPairBody::-webkit-scrollbar-thumb {
+      background: rgb(24, 30, 29) !important;
+      border: 1px solid rgb(104, 124, 105) !important;
+      border-radius: 10px !important;
+    }
+  }
 }
 
 .headerBox {
@@ -110,7 +205,7 @@ body {
 }
 
 .rightBox {
-  width: 26%;
+  width: 24%;
   overflow: hidden;
 
   .rightBoxTweet {
@@ -156,7 +251,8 @@ body {
   .tweetsText {
     color: rgb(220, 220, 220);
     word-wrap: break-word;
-    margin: 4.2% 0;
+    margin: 4% 0;
+    line-height: 1;
   }
 
   .tweetsMark {
@@ -220,7 +316,7 @@ body {
       span:first-child {
         color: white;
         font-size: 18px;
-        margin-bottom: 6%;
+        margin-bottom: 4%;
       }
 
       span:last-child {
@@ -234,7 +330,7 @@ body {
     p:first-child {
       color: white;
       margin-bottom: 4px;
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: -1px;
     }
 
@@ -245,44 +341,27 @@ body {
       box-shadow: white 0 0 7px;
       text-align: center;
       color: white;
-      padding: 4px 12px;
-      font-size: 15px;
+      padding: 3px 10px;
+      font-size: 14px;
       cursor: pointer;
     }
   }
 
 }
 
-.indexTableLogo {
-  img {
-    width: 20px;
-    margin-right: 5px;
-    cursor: pointer;
-  }
-
-  div {
-    color: white;
-  }
-}
 
 .indexTable {
   /* WebKit 浏览器的滚动条样式 */
 
-  .ant-table-wrapper::-webkit-scrollbar {
-    width: 8px; /* 滚动条宽度 */
+  .ant-table-body::-webkit-scrollbar {
+    width: 8px !important; /* 滚动条宽度 */
   }
-
-  /* WebKit 浏览器的滚动条轨道样式 */
-
-  .ant-table-wrapper::-webkit-scrollbar-track {
-    background-color: #f1f1f1 !important; /* 滚动条轨道背景色 */
-  }
-
   /* WebKit 浏览器的滚动条滑块样式 */
 
-  .ant-table-wrapper::-webkit-scrollbar-thumb {
-    background-color: white !important; /* 滚动条滑块颜色 */
-    border-radius: 10px; /* 滑块圆角 */
+  .ant-table-body::-webkit-scrollbar-thumb {
+    background: rgb(24, 30, 29) !important;
+    border: 1px solid rgb(104, 124, 105) !important;
+    border-radius: 10px !important;
   }
 
   .ant-table {
@@ -407,17 +486,27 @@ body {
   }
 }
 
+.walletModal {
+  .ant-modal-content {
+    background: rgb(24, 30, 28) !important;
+  }
+
+  .ant-modal-close-x {
+    color: white;
+    font-size: 16px;
+  }
+
+}
 
 .headerModal {
   display: flex;
   align-items: center;
   flex-direction: column;
 
-  & > p:first-child {
-    font-size: 22px;
+  & > p:nth-child(2) {
     color: #F3F3F3;
     text-align: center;
-    margin-bottom: 10px;
+    margin: 10px 0;
     line-height: 1;
   }
 
@@ -428,17 +517,19 @@ body {
   }
 
   .walletButton {
+    cursor: pointer;
     width: 150px;
-    height: 40px;
-    background-color: rgb(50, 47, 59);
+    background-color: black;
+    border: none;
     display: flex;
-    margin-top: 10px;
+    justify-content: center;
+    padding: 10px 0;
     align-items: center;
     border-radius: 10px;
 
     span {
       line-height: 1;
-      color: white;
+      color: rgb(240, 240, 240);
     }
 
     img {
@@ -446,9 +537,26 @@ body {
     }
   }
 }
-.homeTableTittle{
-  color: rgb(214,223,215);font-size:14px;
-}
-span{
+
+
+span {
   line-height: 1;
+}
+
+.homeSegmented {
+  background: rgb(37, 35, 42) !important;
+  color: white !important;
+
+  .ant-segmented-item-selected {
+    color: rgb(124, 171, 158) !important;
+    background: rgb(59, 55, 71);
+  }
+
+  .ant-segmented-item-label:hover {
+    color: rgb(134, 240, 151) !important;
+  }
+}
+
+.textAlign {
+  text-align: center;
 }
