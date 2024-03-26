@@ -35,7 +35,7 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
   return <div className='community-user-action'>
     {
       Object.keys(userAction).map((key: string) =>
-        <div className={classnames('community-user-action-item', { 'community-user-action-item-active': activeTab === key })}>
+        <div className={classnames('community-user-action-item', { 'community-user-action-item-active': activeTab === key })} onClick={() => onChange(key as UserActionKey)}>
           <div className='community-user-action-item-img'>
             <img src={userAction[key as UserActionKey].img} alt="" />
           </div>
