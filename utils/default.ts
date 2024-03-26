@@ -37,7 +37,7 @@ export const DEFAULT_RELAY_URL = 'wss://relay.walletconnect.com';
 export const DEFAULT_LOGGER = "debug";
 
 
-const kadenaNumberOfChains = {
+const kadenaNumberOfChains:any = {
     mainnet01: 0,
     testnet04: 0,
 };
@@ -114,7 +114,7 @@ export async function apiGetKadenaAccountBalance(
     };
 }
 
-export const rpcProvidersByChainId = {
+export const rpcProvidersByChainId:any = {
     1: {
         name: "Ethereum Mainnet",
         baseURL: WALLETCONNECT_RPC_BASE_URL + "&chainId=eip155:1",
@@ -245,7 +245,7 @@ export async function apiGetAccountBalance(
         return {balance: "", symbol: "", name: ""};
     }
     const ethChainId = chainId.split(":")[1];
-    const rpc = rpcProvidersByChainId[Number(ethChainId)];
+    const rpc = rpcProvidersByChainId[Number(ethChainId)]
     if (!rpc) {
         return {balance: "", symbol: "", name: ""};
     }
@@ -261,9 +261,9 @@ export async function apiGetAccountBalance(
     return {balance, ...token};
 }
 
-export const getNamespacesFromChains = (chains) => {
-    const supportedNamespaces = [];
-    chains.forEach((chainId) => {
+export const getNamespacesFromChains = (chains:any) => {
+    const supportedNamespaces = [] as any
+    chains.forEach((chainId:any) => {
         const [namespace] = chainId.split(":");
         if (!supportedNamespaces.includes(namespace)) {
             supportedNamespaces.push(namespace);
@@ -272,7 +272,7 @@ export const getNamespacesFromChains = (chains) => {
     return supportedNamespaces;
 };
 
-export const getSupportedRequiredMethodsByNamespace = (namespace) => {
+export const getSupportedRequiredMethodsByNamespace = (namespace:any) => {
     switch (namespace) {
         case "eip155":
             return Object.values(DEFAULT_EIP155_METHODS);
@@ -296,7 +296,7 @@ export const getSupportedRequiredMethodsByNamespace = (namespace) => {
           return null
     }
 };
-export const getSupportedOptionalMethodsByNamespace = (namespace) => {
+export const getSupportedOptionalMethodsByNamespace = (namespace:any) => {
     switch (namespace) {
         case "eip155":
             return Object.values(DEFAULT_EIP155_OPTIONAL_METHODS);
@@ -315,21 +315,21 @@ export const getSupportedOptionalMethodsByNamespace = (namespace) => {
 };
 
 export const getOptionalNamespaces = (
-    chains
+    chains:any
 ) => {
     const selectedNamespaces = getNamespacesFromChains(chains);
     return Object.fromEntries(
-        selectedNamespaces.map((namespace) => [
+        selectedNamespaces.map((namespace:any) => [
             namespace,
             {
                 methods: getSupportedOptionalMethodsByNamespace(namespace),
-                chains: chains.filter((chain) => chain.startsWith(namespace)),
+                chains: chains.filter((chain:any) => chain.startsWith(namespace)),
                 events: [],
             },
         ])
     )
 };
-export const getSupportedEventsByNamespace = (namespace) => {
+export const getSupportedEventsByNamespace = (namespace:any) => {
     switch (namespace) {
         case "eip155":
             return Object.values(DEFAULT_EIP_155_EVENTS);
@@ -354,20 +354,19 @@ export const getSupportedEventsByNamespace = (namespace) => {
 };
 
 export const getRequiredNamespaces = (
-    chains
+    chains:any
 ) => {
     const selectedNamespaces = getNamespacesFromChains(chains);
-    const data = Object.fromEntries(
-        selectedNamespaces.map((namespace) => [
+    return Object.fromEntries(
+        selectedNamespaces.map((namespace: any) => [
             namespace,
             {
                 methods: getSupportedRequiredMethodsByNamespace(namespace),
-                chains: chains.filter((chain) => chain.startsWith(namespace)),
+                chains: chains.filter((chain:any) => chain.startsWith(namespace)),
                 events: getSupportedEventsByNamespace(namespace)
             },
         ])
-    );
-    return data
+    )
 };
 
 

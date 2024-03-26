@@ -12,13 +12,11 @@ import {Web3Modal} from "@web3modal/standalone";
 import cookie from 'js-cookie'
 import * as encoding from "@walletconnect/encoding";
 import {request} from '../utils/axios.ts';
-// import all from 'ethers';
 
 import Client from "@walletconnect/sign-client";
 // import jwt from "jsonwebtoken";
 import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
 import _ from 'lodash'
-
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -37,6 +35,7 @@ function Layout() {
     const [botHeight, setBotHeight] = useState('')
     // s 是否登录
     const [loginSta, setLoginSta] = useState(false)
+    // const [user, setUserPar] = useState<any>(null)
     const createClient = async () => {
         try {
             const _client = await Client.init({
@@ -74,11 +73,12 @@ function Layout() {
     }, 800)
     // const handleLogin = async () => {
     //     const ethereum = (window as any).ethereum;
-    //     const  {ethers}:any = all
+    //     const {providers}  = ethers as any
     //     try {
-    //         const provider:any = new ethers.providers?.Web3Provider(ethereum);
+    //         let provider: any;
+    //         provider = new providers.Web3Provider(ethereum)
     //         // provider._isProvider   判断是否还有请求没有结束
-    //         let account = await provider.send("eth_requestAccounts", []);
+    //         let account:any = await provider.send("eth_requestAccounts", []);
     //         // 连接的网络和链信息。
     //         var chain = await provider.getNetwork()
     //         // 获取签名
@@ -104,14 +104,14 @@ function Layout() {
     //                             signature: sign,
     //                             addr: account[0],
     //                             message,
-    //                             inviteCode: pa
+    //                             inviteCode: ''
     //                         })
     //                         if (res === 'please') {
     //                             setLogin()
     //                             // setLoginBol(false)
     //                         } else if (res && res.data && res.data?.accessToken) {
     //                             //   jwt  解析 token获取用户信息
-    //                             const decodedToken = jwt.decode(res.data?.accessToken);
+    //                             const decodedToken:any = jwt.decode(res.data?.accessToken);
     //                             if (decodedToken && decodedToken?.address) {
     //                                 const data = await request('get', "/api/v1/userinfo/" + decodedToken?.uid, '', res.data?.accessToken)
     //                                 if (data === 'please') {
@@ -132,25 +132,25 @@ function Layout() {
     //                             }
     //                         }
     //                     } else {
-    //                         setLoginBol(false)
+    //                         // setLoginBol(false)
     //                     }
     //                 } catch (err) {
-    //                     setLoginBol(false)
+    //                     // setLoginBol(false)
     //                     return null
     //                 }
     //             } else {
-    //                 notification.warning({
-    //                     description: 'Please select eth!',
-    //                     placement: 'topLeft',
-    //                     duration: 2
-    //                 });
+    //                 // notification.warning({
+    //                 //     description: 'Please select eth!',
+    //                 //     placement: 'topLeft',
+    //                 //     duration: 2
+    //                 // });
     //             }
     //         } else {
-    //             notification.warning({
-    //                 description: 'Please log in or connect to your account!',
-    //                 placement: 'topLeft',
-    //                 duration: 2
-    //             });
+    //             // notification.warning({
+    //             //     description: 'Please log in or connect to your account!',
+    //             //     placement: 'topLeft',
+    //             //     duration: 2
+    //             // });
     //         }
     //     } catch (err) {
     //         return null
@@ -314,8 +314,13 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
+    useEffect(()=>{
+        if(loginSta){
+            // handleLogin()
+        }
+    },[loginSta])
 
-    const value: any = {connect, setLogin, onDisconnect, loginSta, getMoneyEnd, headHeight, botHeight}
+    const value: any = {connect, setLogin, onDisconnect, loginSta, getMoneyEnd, headHeight, botHeight,}
     return (
         <CountContext.Provider value={value}>
             <Header setHeadHeight={setHeadHeight}/>
