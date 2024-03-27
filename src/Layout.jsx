@@ -17,7 +17,6 @@ import {ethers} from 'ethers';
 import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
 import _ from 'lodash';
 import Community from './pages/community.tsx';
-
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -226,27 +225,6 @@ function Layout() {
             return null
         }
     };
-    // 获取余额
-    // const getAccountBalances = async (_accounts) => {
-    //     try {
-    //         const arr = await Promise.all(
-    //             _accounts.map(async (account) => {
-    //                 const [namespace, reference, address] = account.split(":");
-    //                 const chainId = `${namespace}:${reference}`;
-    //                 const assets = await apiGetAccountBalance(address, chainId);
-    //                 return {account, assets: [assets]};
-    //             })
-    //         );
-    //         const balances = {};
-    //         arr.forEach(({account, assets}) => {
-    //             balances[account] = assets;
-    //         });
-    //         setBalances(balances);
-    //     } catch (e) {
-    //         return null
-    //     }
-    // };
-
     // 钱包连接
     const onSessionConnected = useCallback(
         async (_session, name, client) => {
