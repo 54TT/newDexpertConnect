@@ -1,5 +1,5 @@
-import Header from './components/header'
-import Right from './components/right'
+import Header from './components/header/index.tsx'
+/* import Right from './components/right' */
 import { Route, Routes, useLocation, useNavigate, } from "react-router-dom";
 import Index from './pages/index.tsx'
 import './style/all.less'
@@ -7,14 +7,14 @@ import { createContext, useCallback, useEffect, useRef, useState } from 'react'
 import { getAppMetadata, getSdkError } from "@walletconnect/utils";
 import 'swiper/css';
 import { notification } from 'antd'
-import Bot from './components/bottom';
+import Bot from './components/bottom/index.tsx';
 import { Web3Modal } from "@web3modal/standalone";
 import cookie from 'js-cookie'
 import * as encoding from "@walletconnect/encoding";
-import {request} from '../utils/axios.ts';
+import { request } from '../utils/axios.ts';
 import Client from "@walletconnect/sign-client";
 // import jwt from "jsonwebtoken";
-import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces } from "../utils/default";
+import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces } from "../utils/default.ts";
 import _ from 'lodash'
 import Community from './pages/community.tsx';
 
@@ -29,9 +29,9 @@ function Layout() {
     const router = useLocation()
     const history = useNavigate()
     const [chains, setChains] = useState([]);
-    const [client, setClient] = useState<any>(null);
-    const [session, setSession] = useState<any>(null);
-    const prevRelayerValue = useRef<any>();
+    const [client, setClient] = useState(null);
+    const [session, setSession] = useState(null);
+    const prevRelayerValue = useRef();
     const [headHeight, setHeadHeight] = useState('')
     const [botHeight, setBotHeight] = useState('')
     // s 是否登录
@@ -60,7 +60,7 @@ function Layout() {
 
     //  登录
     const getMoneyEnd = _.throttle(function () {
-        const ethereum = (window as any).ethereum;
+        const ethereum = (window).ethereum;
         if (ethereum === 'undefined') {
             notification.warning({
                 message: `warning`,
@@ -159,7 +159,7 @@ function Layout() {
     // }
 
     // 登录
-    const login = async (chainId: any, address: any, client: any, session: any, toName: any) => {
+    const login = async (chainId, address, client, session, toName) => {
         try {
             const hexMsg = encoding.utf8ToHex(toName, true);
             const params = [hexMsg, address];
@@ -184,7 +184,7 @@ function Layout() {
             } else if (res && res.data && res.data?.accessToken) {
                 //   jwt  解析 token获取用户信息
                 // const decodedToken: any = jwt.decode(res.data?.accessToken);
-                const decodedToken: any = ''
+                const decodedToken = ''
                 if (decodedToken && decodedToken?.address) {
                     const data = await request('get', "/api/v1/userinfo/" + decodedToken?.uid, '', res.data?.accessToken)
                     if (data === 'please') {
@@ -226,11 +226,11 @@ function Layout() {
         reset();
     }, [client, session]);
 
-    const getBlockchainActions = async (acount: any, client: any, session: any) => {
+    const getBlockchainActions = async (acount, client, session) => {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token: any = await request('post', '/api/v1/token', { address: address })
+            const token = await request('post', '/api/v1/token', { address: address })
             if (token && token?.data && token?.status === 200) {
                 await login(chainId, address, client, session, token?.data?.nonce);
             } else {
@@ -263,9 +263,9 @@ function Layout() {
 
     // 钱包连接
     const onSessionConnected = useCallback(
-        async (_session: any, name: any, client: any) => {
+        async (_session, name, client) => {
             try {
-                const allNamespaceAccounts = Object.values(_session.namespaces).map((namespace: any) => namespace.accounts).flat();
+                const allNamespaceAccounts = Object.values(_session.namespaces).map((namespace) => namespace.accounts).flat();
                 // await getAccountBalances(allNamespaceAccounts);   获取balance
                 setSession(_session)
                 if (name) {
@@ -289,7 +289,7 @@ function Layout() {
                 });
                 if (uri) {
                     const standaloneChains = Object.values(requiredNamespaces)
-                        .map((namespace: any) => namespace.chains)
+                        .map((namespace) => namespace.chains)
                         .flat()
                     await web3Modal.openModal({ uri, standaloneChains });
                 }
@@ -315,22 +315,22 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
-    useEffect(()=>{
-        if(loginSta){
+    useEffect(() => {
+        if (loginSta) {
             // handleLogin()
         }
-    },[loginSta])
+    }, [loginSta])
 
-    const value: any = {connect, setLogin, onDisconnect, loginSta, getMoneyEnd, headHeight, botHeight,}
+    const value = { connect, setLogin, onDisconnect, loginSta, getMoneyEnd, headHeight, botHeight, }
     return (
         <CountContext.Provider value={value}>
             <Header setHeadHeight={setHeadHeight} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0 2%' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
                 <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path='/community' element={<Community />} />
                 </Routes>
-                <Right />
+                {/*                 <Right /> */}
             </div>
             <Bot setBotHeight={setBotHeight} />
         </CountContext.Provider>

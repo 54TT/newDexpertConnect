@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import UserInfo, { UserActionKey } from '../containers/Community/UserInfo'
 import "../style/community.less"
+import CommunityContent from '../containers/Community/Content';
 function Community() {
   // 左侧选中的Tab
   const [activeUserTab, setActiveUserTab] = useState<UserActionKey>("Profile");
@@ -15,7 +16,9 @@ function Community() {
       <div className='community-page-left'>
         <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange} />
       </div>
-      <div className='community-page-content'></div>
+      <div className='community-page-content'>
+        <CommunityContent />
+      </div>
       <div className='community-page-right'></div>
     </div>
   )

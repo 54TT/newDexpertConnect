@@ -1,15 +1,15 @@
-import {Swiper, SwiperSlide} from 'swiper/react';
-import {A11y, Autoplay, EffectFade, Pagination} from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { A11y, Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import Tweets from '../tweets'
-import {useContext, useEffect, useRef, useState} from 'react'
-import {request} from '../../../utils/axios.ts';
+import { useContext, useEffect, useRef, useState } from 'react'
+import { request } from '../../../utils/axios.ts';
 import InfiniteScroll from 'react-infinite-scroll-component'
-import {Skeleton} from 'antd'
-import {CountContext} from "../../Layout.tsx";
-import {LoadingOutlined} from '@ant-design/icons'
+import { Skeleton } from 'antd'
+import { CountContext } from "../../Layout.jsx";
+import { LoadingOutlined } from '@ant-design/icons'
 
 function Index() {
-    const {headHeight, botHeight}: any = useContext(CountContext)
+    const { headHeight, botHeight }: any = useContext(CountContext)
     const swiperRef: any = useRef()
     const topRef: any = useRef()
     const [hei, setHei] = useState('')
@@ -35,9 +35,9 @@ function Index() {
         }
     }
     const getTweet = async (page: number) => {
-        const res: any = await request('post', '/api/v1/post/public', {page: page}, '')
+        const res: any = await request('post', '/api/v1/post/public', { page: page }, '')
         if (res && res?.status === 200) {
-            const {data} = res
+            const { data } = res
             const r = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
                 if (r.length !== 10) {
@@ -74,15 +74,15 @@ function Index() {
                     "clickable": true
                 }}
                 loop
-                autoplay={{delay: 2000, disableOnInteraction: false}}>
+                autoplay={{ delay: 2000, disableOnInteraction: false }}>
                 {
                     ['/swiper.svg', '/swiper.svg', '/swiper.svg', '/swiper.svg',].map((i, ind) => {
                         return <SwiperSlide key={ind}><img src={i} onClick={() => {
                             if (ind === 0) {
                                 window.open('https://info.dexpert.io/pointsDetail')
                             }
-                        }} style={{width: '100%', borderRadius: "20px", cursor: "pointer"}}
-                                                           alt=""/></SwiperSlide>
+                        }} style={{ width: '100%', borderRadius: "20px", cursor: "pointer" }}
+                            alt="" /></SwiperSlide>
                     })
                 }
             </Swiper>
@@ -92,19 +92,19 @@ function Index() {
                         color: select === 'one' ? 'rgb(104,124,105)' : 'rgb(134,240,151)',
                         backgroundColor: select === 'one' ? 'rgb(24,30,28)' : ''
                     }}
-                         onClick={() => selectTweet('one')}>Recommand
+                        onClick={() => selectTweet('one')}>Recommand
                     </div>
                     <div style={{
                         color: select !== 'one' ? 'rgb(104,124,105)' : 'rgb(134,240,151)',
                         backgroundColor: select !== 'one' ? 'rgb(24,30,28)' : ''
                     }}
-                         onClick={() => selectTweet('two')}>Lastest
+                        onClick={() => selectTweet('two')}>Lastest
                     </div>
                 </div>
                 {
                     bol ? tableData.length > 0 ?
-                        <div id={'scrollableDiv'} style={{overflowY: 'auto', height: hei + "px"}}
-                             className={'rightTweetBox'}>
+                        <div id={'scrollableDiv'} style={{ overflowY: 'auto', height: hei + "px" }}
+                            className={'rightTweetBox'}>
                             <InfiniteScroll
                                 hasMore={true}
                                 next={changePage}
@@ -112,16 +112,16 @@ function Index() {
                                 loader={null}
                                 dataLength={tableData.length}>
                                 {tableData.map((post: any, index: number) => {
-                                    return <Tweets key={index} name={post}/>
+                                    return <Tweets key={index} name={post} />
                                 })}
                             </InfiniteScroll>
                             {
-                                iconLoad && <p style={{textAlign:'center',color:'white',fontSize:'16px'}}><LoadingOutlined/> </p>
+                                iconLoad && <p style={{ textAlign: 'center', color: 'white', fontSize: '16px' }}><LoadingOutlined /> </p>
                             }
                         </div> :
-                        <p style={{textAlign: 'center', color: 'white', marginTop: '20px'}}>No data</p> : <Skeleton
+                        <p style={{ textAlign: 'center', color: 'white', marginTop: '20px' }}>No data</p> : <Skeleton
                         avatar active
-                        paragraph={{rows: 4}}
+                        paragraph={{ rows: 4 }}
                     />
                 }
 

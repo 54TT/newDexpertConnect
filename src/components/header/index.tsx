@@ -1,6 +1,6 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { Modal } from 'antd'
-import { CountContext } from '../../Layout.tsx'
+import { CountContext } from '../../Layout.jsx'
 import { useNavigate } from 'react-router-dom';
 
 function Index({ setHeadHeight }: any) {
@@ -48,7 +48,7 @@ function Index({ setHeadHeight }: any) {
 
     return (
         <div className={'headerBox'} ref={hei}>
-            <img src="/topLogo.svg" alt="" style={{cursor:'pointer'}}/>
+            <img src="/topLogo.svg" alt="" style={{ cursor: 'pointer' }} />
             <p className={`headerCenter dis`}>
                 {
                     ['Market', 'DApp & Tools', 'Community'].map((i, ind) => {

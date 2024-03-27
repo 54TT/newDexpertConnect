@@ -5,7 +5,7 @@ import { ApolloClient, InMemoryCache, useQuery } from "@apollo/client";
 import { gql } from 'graphql-tag'
 import { setMany } from '../../utils/change.ts'
 import { cloneDeep } from 'lodash';
-import { CountContext } from '../Layout.tsx'
+import { CountContext } from '../Layout.jsx'
 import { SearchOutlined } from '@ant-design/icons'
 
 const client = new ApolloClient({
@@ -354,7 +354,7 @@ function Index() {
                                 return <div key={ind} className={`indexNewPairBodyData dis`}>
                                     <div className={`indexTableLogo indexNewPairBone`}>
                                         <img src={record.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""
-                                             onClick={() => click(record)}/>
+                                            onClick={() => click(record)} />
                                         <div>
                                             <p style={{ marginBottom: '4px' }}>{record?.token0?.name ? record?.token0?.name.length > 13 ? record?.token0?.name.slice(0, 5) + '...' + record?.token0.name.slice(-4) : record?.token0.name : ''}</p>
                                             {/*<div style={{display: 'flex', alignItems: 'center'}}>*/}
