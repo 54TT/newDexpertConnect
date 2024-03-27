@@ -50,7 +50,7 @@ export async function getKadenaChainAmount(
         const response = await fetch(`https://api.${ENDPOINT}chainweb.com/info`, {
             mode: "cors",
         });
-        const json = await response.json();
+        const json:any = await response.json();
         return json.nodeNumberOfChains;
     } catch (e) {
         return 0;

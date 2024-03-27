@@ -103,6 +103,7 @@ body {
       & > p {
         flex: 1;
       }
+
       .homeTableTittle {
         padding: 7px 0;
         background: rgb(18, 18, 18);
@@ -139,7 +140,8 @@ body {
           justify-content: center;
           flex: 1;
         }
-        .indexNewPairBone{
+
+        .indexNewPairBone {
           display: flex;
           align-items: center;
           justify-content: flex-start;
@@ -164,9 +166,11 @@ body {
         background-color: rgb(34, 36, 34) !important;
       }
     }
+
     .indexNewPairBody::-webkit-scrollbar {
       width: 8px !important; /* 滚动条宽度 */
     }
+
     /* WebKit 浏览器的滚动条滑块样式 */
 
     .indexNewPairBody::-webkit-scrollbar-thumb {
@@ -195,7 +199,7 @@ body {
   }
 
   .headerConnect {
-    padding: 0.6% 1.4%;
+    padding: 0.3% 1.2%;
     font-size: 15px;
     cursor: pointer;
     letter-spacing: -1px;
@@ -267,11 +271,6 @@ body {
       padding: 1% 2%;
       margin: 0 3% 1.4% 0;
       letter-spacing: -1px;
-      //border: 1px solid transparent;
-      //border-radius: 16px;
-      //background-clip: padding-box, border-box;
-      //background-origin: padding-box, border-box;
-      //background-image: linear-gradient(to right, rgb(24, 30, 28), rgb(24, 30, 28)), linear-gradient(to right, rgb(132, 240, 140), rgb(0, 255, 71));
     }
   }
 
@@ -346,77 +345,6 @@ body {
       cursor: pointer;
     }
   }
-
-}
-
-
-.indexTable {
-  /* WebKit 浏览器的滚动条样式 */
-
-  .ant-table-body::-webkit-scrollbar {
-    width: 8px !important; /* 滚动条宽度 */
-  }
-  /* WebKit 浏览器的滚动条滑块样式 */
-
-  .ant-table-body::-webkit-scrollbar-thumb {
-    background: rgb(24, 30, 29) !important;
-    border: 1px solid rgb(104, 124, 105) !important;
-    border-radius: 10px !important;
-  }
-
-  .ant-table {
-    border-radius: 8px !important;
-    background-color: transparent !important;
-
-    table {
-      .ant-table-thead {
-        .ant-table-cell {
-          padding: 7px !important;
-          background-color: rgb(18, 18, 18) !important;
-          border-bottom: 5px solid black;
-          font-size: 16px;
-        }
-
-        .ant-table-cell-scrollbar {
-          box-shadow: none !important;
-        }
-
-        .ant-table-cell::before {
-          width: 0 !important;
-        }
-      }
-
-      .ant-table-tbody {
-        .ant-table-row {
-          td {
-            background-color: rgb(6, 14, 11) !important;
-            padding: 3px !important;
-            border-bottom: 5px solid black;
-          }
-
-          .ant-table-cell-row-hover {
-            cursor: pointer;
-            background-color: rgb(34, 36, 34) !important;
-          }
-        }
-
-        .ant-table-row:last-child {
-          td {
-            border-bottom: none !important;
-          }
-
-          td:first-child {
-            border-radius: 0 0 0 8px;
-          }
-
-          td:last-child {
-            border-radius: 0 0 8px 0;
-          }
-
-        }
-      }
-    }
-  }
 }
 
 .disCen {
@@ -433,7 +361,7 @@ body {
 
   & > div:last-child {
     border-top: 1.5px solid rgb(104, 124, 105);
-    padding: 0.5% 2%;
+    padding: 0.3% 2%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -450,7 +378,7 @@ body {
     & > p:last-child {
       cursor: pointer;
       color: white;
-      font-size: 17px;
+      font-size: 15px;
     }
   }
 }
@@ -559,4 +487,57 @@ span {
 
 .textAlign {
   text-align: center;
+}
+
+.NewpairDetails {
+  display: flex;
+
+  .NewpairDetailsOne {
+    background-color: rgb(6,14,11);
+    box-sizing: border-box;
+    padding: 0 1% 0 2%;
+    width: 18%;
+    border: 1px solid white;
+    height: 100px;
+    .top{
+      &>div{
+        display: flex;
+        align-items: center;
+        img{
+          display:block;
+          width: 35px;
+          margin-right: 5px;
+        }
+        p{
+          display: flex;
+          flex-direction: column;
+          line-height: 1;
+          span:first-child{
+            color: white;
+            font-size: 18px;
+            margin-bottom: 5px;
+          }
+          span:last-child{
+            font-size: 14px;
+            color: rgb(200,200,200);
+          }
+        }
+      }
+      &>p{
+        background-color: rgb(24,30,28);
+        border-radius: 5px;
+        padding: 4.5%;
+        cursor: pointer;
+        img{
+          display: block;
+          width: 15px;
+        }
+      }
+    }
+    .address{
+      &>p{
+
+      }
+    }
+  }
 }

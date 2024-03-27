@@ -5,9 +5,9 @@ import {useContext, useEffect, useRef, useState} from 'react'
 import {request} from '../../../utils/axios.ts';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import {Skeleton} from 'antd'
-import {CountContext} from "../../Layout.tsx";
+// @ts-ignore
+import {CountContext} from "../../Layout.jsx";
 import {LoadingOutlined} from '@ant-design/icons'
-
 function Index() {
     const {headHeight, botHeight}: any = useContext(CountContext)
     const swiperRef: any = useRef()
@@ -24,7 +24,6 @@ function Index() {
             const h = swiperRef.current.scrollHeight
             const t = topRef.current.scrollHeight
             const w = window.innerHeight
-            console.log(w, h, t, headHeight, botHeight)
             const remain = w - h - t - headHeight - 12 - botHeight
             setHei(remain.toString())
         }

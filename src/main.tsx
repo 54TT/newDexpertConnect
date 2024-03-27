@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Layout from "./Layout.tsx";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+import Layout from "./Layout.jsx";
 import {BrowserRouter as Router} from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
