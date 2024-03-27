@@ -1,3 +1,4 @@
+@import url(./all.less);
 .community-page {
   height: 100vh;
   display: flex;
@@ -19,8 +20,34 @@
     flex: 1;
   }
   &-right {
-    height: 100%;
     width: 20%;
     border: 0.2px solid #86f097;
+    height: calc(100vh - 79px);
+    overflow-y: auto;
+    .ant-card {
+      color: #d6dfd7;
+      .ant-card-head-title {
+        color: #d6dfd7;
+        font-family: PingFang SC;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 19.6px;
+        text-align: left;
+      }
+      &-head {
+        background: #181e1c;
+        border: 0.2px solid #687c69;
+      }
+      &-body {
+        background: #202221;
+        border: 0.2px solid #687c69;
+        .card-pair-info {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 12px;
+        }
+      }
+    }
+    .scroll-style-minin();
   }
 }

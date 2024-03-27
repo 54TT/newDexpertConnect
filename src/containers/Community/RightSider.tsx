@@ -1,5 +1,11 @@
-import { Card } from 'antd';
+import RightCard from './RightCard';
 function CommunityRight() {
-  return <Card></Card>
+
+  return <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <RightCard></RightCard>
+    <RightCard></RightCard>
+    <RightCard></RightCard>
+    <RightCard></RightCard>
+  </div>
 }
 export default CommunityRight;

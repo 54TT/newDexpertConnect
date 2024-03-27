@@ -5,7 +5,13 @@ import { Skeleton } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 /* import { PostImteDataType } from './PostItem'; */
 import Tweets from '../../components/tweets'
+import SendPost from "./SendPost";
+import classNames from "classnames";
 
+interface TabType {
+  label: 'For you' | 'Following',
+  key: '1' | '2',
+}
 
 function CommunityContent() {
   const [postData, setPostData] = useState([]);
@@ -13,7 +19,7 @@ function CommunityContent() {
   const [iconLoad, setIconLoad] = useState(false);
   const [status, setStatus] = useState(false);
   const [page, setPage] = useState(1);
-
+  const [activeTab, setActiveTab] = useState<TabType['key']>('1');
   const getTweet = async (page: number) => {
     const res: any = await request('post', '/api/v1/post/public', { page: page }, '')
     if (res && res?.status === 200) {
@@ -49,12 +55,24 @@ function CommunityContent() {
     }
   }
 
+  const postTab: TabType[] = [{
+    label: 'For you',
+    key: '1'
+  },
+  {
+    label: 'Following',
+    key: '2'
+  }];
+
   return (
     <div className="community-content">
-      <div id='scrollableDiv' className="community-content-post" style={{ overflowY: 'auto', height: "92vh" }}>
-        <div className="community-content-post-send">
-
-        </div>
+      <div className="community-content-post-tab">
+        {
+          postTab.map((tab: TabType) => <div className={classNames("community-content-post-tab-item", { "post-tab-item-active": activeTab === tab.key })} onClick={() => setActiveTab(tab.key)}><span>{tab.label}</span></div>)
+        }
+      </div>
+      <div id='scrollableDiv' className="community-content-post" style={{ overflowY: 'auto', height: "calc(100vh - 129px)" }}>
+        <SendPost />
         {
           bol ? postData.length > 0 ?
             <div

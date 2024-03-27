@@ -159,7 +159,6 @@ body {
             color: white;
           }
         }
-
       }
 
       .indexNewPairBodyData:hover {
@@ -226,7 +225,6 @@ body {
       }
     }
 
-
     .rightTweetBox::-webkit-scrollbar-thumb {
       background: rgb(24, 30, 29);
       border: 1px solid rgb(104, 124, 105);
@@ -246,7 +244,6 @@ body {
     }
   }
 }
-
 
 .tweetsBox {
   margin-top: 4%;
@@ -393,7 +390,11 @@ body {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(to right, rgb(9, 21, 17), rgb(37, 70, 59)) !important;
+    background: linear-gradient(
+      to right,
+      rgb(9, 21, 17),
+      rgb(37, 70, 59)
+    ) !important;
   }
 }
 
@@ -423,7 +424,6 @@ body {
     color: white;
     font-size: 16px;
   }
-
 }
 
 .headerModal {
@@ -432,14 +432,14 @@ body {
   flex-direction: column;
 
   & > p:nth-child(2) {
-    color: #F3F3F3;
+    color: #f3f3f3;
     text-align: center;
     margin: 10px 0;
     line-height: 1;
   }
 
   & > p:nth-child(2) {
-    color: #F3F3F3;
+    color: #f3f3f3;
     text-align: center;
     line-height: 1;
   }
@@ -465,7 +465,6 @@ body {
     }
   }
 }
-
 
 span {
   line-height: 1;
@@ -493,51 +492,64 @@ span {
   display: flex;
 
   .NewpairDetailsOne {
-    background-color: rgb(6,14,11);
+    background-color: rgb(6, 14, 11);
     box-sizing: border-box;
     padding: 0 1% 0 2%;
     width: 18%;
     border: 1px solid white;
     height: 100px;
-    .top{
-      &>div{
+    .top {
+      & > div {
         display: flex;
         align-items: center;
-        img{
-          display:block;
+        img {
+          display: block;
           width: 35px;
           margin-right: 5px;
         }
-        p{
+        p {
           display: flex;
           flex-direction: column;
           line-height: 1;
-          span:first-child{
+          span:first-child {
             color: white;
             font-size: 18px;
             margin-bottom: 5px;
           }
-          span:last-child{
+          span:last-child {
             font-size: 14px;
-            color: rgb(200,200,200);
+            color: rgb(200, 200, 200);
           }
         }
       }
-      &>p{
-        background-color: rgb(24,30,28);
+      & > p {
+        background-color: rgb(24, 30, 28);
         border-radius: 5px;
         padding: 4.5%;
         cursor: pointer;
-        img{
+        img {
           display: block;
           width: 15px;
         }
       }
     }
-    .address{
-      &>p{
-
+    .address {
+      & > p {
       }
     }
+  }
+}
+
+.scroll-style-minin() {
+  &::-webkit-scrollbar {
+    width: 8px !important; /* 滚动条宽度 */
+  }
+
+  /* WebKit 浏览器的滚动条滑块样式 */
+
+  &::-webkit-scrollbar-thumb {
+    background: rgb(24, 30, 29) !important;
+    border: 1px solid rgb(104, 124, 105) !important;
+    border-radius: 10px !important;
   }
 }

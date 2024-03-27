@@ -117,7 +117,163 @@
 .community-content {
   &-post {
     .rightTweetBox {
-      margin: 24px 48px;
+      margin: 24px 0px;
+      .tweetsBox {
+        border-bottom: 0.4px solid #687c69;
+        padding-bottom: 24px;
+      }
+    }
+    &-tab {
+      display: flex;
+      width: 100%;
+      height: 50px;
+      align-items: center;
+      color: #86f097;
+      background-color: #000000;
+      cursor: pointer;
+
+      > div {
+        width: 50%;
+      }
+      :first-child {
+        height: 100%;
+        span {
+          float: right;
+          margin-right: 24px;
+          line-height: 48px;
+        }
+        &:hover {
+          background-color: #181e1c;
+        }
+      }
+      :nth-child(2) {
+        height: 100%;
+        span {
+          float: left;
+          margin-left: 24px;
+          line-height: 48px;
+        }
+        &:hover {
+          background-color: #181e1c;
+        }
+      }
+    }
+    &::-webkit-scrollbar {
+      width: 8px !important; /* 滚动条宽度 */
+    }
+
+    /* WebKit 浏览器的滚动条滑块样式 */
+
+    &::-webkit-scrollbar-thumb {
+      background: rgb(24, 30, 29) !important;
+      border: 1px solid rgb(104, 124, 105) !important;
+      border-radius: 10px !important;
+    }
+    &-send {
+      display: flex;
+      &-avatar {
+        display: flex;
+        > img {
+          width: 36px;
+          height: 36px;
+          border-radius: 20px;
+        }
+      }
+      &-input {
+        flex: 1;
+        margin-left: 24px;
+        > textarea {
+          min-height: 48px;
+          background: #060e0b;
+          border: none;
+          resize: vertical;
+          color: #fff;
+          &::placeholder {
+            color: #879188;
+            font-family: PingFang SC;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 19.6px;
+            text-align: left;
+          }
+          &:hover {
+            background: #060e0b;
+          }
+          &:focus {
+            background: #060e0b;
+          }
+        }
+      }
+      padding: 0 8%;
+      padding-bottom: 24px;
+      margin-top: 24px;
+      border-bottom: 0.4px solid #687c69;
     }
   }
+}
+
+.post-send-tools {
+  display: flex;
+  padding: 12px 8%;
+  justify-content: space-between;
+  border-bottom: 0.4px solid #687c69;
+  &-icon {
+    display: flex;
+    align-items: center;
+    img {
+      width: 18px;
+      height: 18px;
+      margin-right: 24px;
+      margin-left: 6px;
+      cursor: pointer;
+    }
+  }
+  &-button {
+    button {
+      background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
+      border: none;
+      width: 70px;
+      &:hover {
+        background: linear-gradient(90deg, #86f097 0%, #00ff47 100%) !important;
+        filter: brightness(1.2);
+        color: #000 !important;
+      }
+      &:active {
+        background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
+      }
+    }
+  }
+}
+
+.community-page-right {
+  /*   height: calc(100vw - 25px);
+  overflow-y: auto;
+  .ant-card {
+    color: #d6dfd7;
+    .ant-card-head-title {
+      color: #d6dfd7;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19.6px;
+      text-align: left;
+    }
+    &-head {
+      background: #181e1c;
+      border: 0.2px solid #687c69;
+    }
+    &-body {
+      background: #202221;
+      border: 0.2px solid #687c69;
+      .card-pair-info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 12px;
+      }
+    }
+  } */
+}
+.post-tab-item-active {
+  background: #181e1c;
+  color: #fff;
 }
