@@ -1,23 +1,22 @@
-import Header from './components/header/index.tsx'
-/* import Right from './components/right' */
-import { Route, Routes, useLocation, useNavigate, } from "react-router-dom";
+import Header from './components/header'
+import {Route, Routes, useLocation, useNavigate,} from "react-router-dom";
 import Index from './pages/index.tsx'
+import NewpairDetails from './pages/newpairDetails/index.tsx'
 import './style/all.less'
-import { createContext, useCallback, useEffect, useRef, useState } from 'react'
-import { getAppMetadata, getSdkError } from "@walletconnect/utils";
+import {createContext, useCallback, useEffect, useRef, useState} from 'react'
+import {getAppMetadata, getSdkError} from "@walletconnect/utils";
 import 'swiper/css';
-import { notification } from 'antd'
-import Bot from './components/bottom/index.tsx';
-import { Web3Modal } from "@web3modal/standalone";
-import cookie from 'js-cookie'
+import {notification} from 'antd'
+import Bot from './components/bottom';
+import {Web3Modal} from "@web3modal/standalone";
+import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
-import { request } from '../utils/axios.ts';
+import {request} from '../utils/axios.ts';
 import Client from "@walletconnect/sign-client";
-// import jwt from "jsonwebtoken";
-import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces } from "../utils/default.ts";
-import _ from 'lodash'
+import { ethers } from 'ethers';
+import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
+import _ from 'lodash';
 import Community from './pages/community.tsx';
-
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -34,9 +33,8 @@ function Layout() {
     const prevRelayerValue = useRef();
     const [headHeight, setHeadHeight] = useState('')
     const [botHeight, setBotHeight] = useState('')
-    // s 是否登录
-    const [loginSta, setLoginSta] = useState(false)
-    // const [user, setUserPar] = useState<any>(null)
+    const [user, setUserPar] = useState(null)
+    const [load, setLoad] = useState(false)
     const createClient = async () => {
         try {
             const _client = await Client.init({
@@ -57,107 +55,95 @@ function Layout() {
             history('/')
         }
     }
-
     //  登录
     const getMoneyEnd = _.throttle(function () {
-        const ethereum = (window).ethereum;
-        if (ethereum === 'undefined') {
+        if (typeof window.ethereum != 'undefined') {
+            handleLogin()
+        } else {
             notification.warning({
                 message: `warning`,
                 description: 'Please install MetaMask! And refresh',
                 placement: 'topLeft',
                 duration: 2
             });
-        } else {
-            setLoginSta(true)
         }
     }, 800)
-    // const handleLogin = async () => {
-    //     const ethereum = (window as any).ethereum;
-    //     const {providers}  = ethers as any
-    //     try {
-    //         let provider: any;
-    //         provider = new providers.Web3Provider(ethereum)
-    //         // provider._isProvider   判断是否还有请求没有结束
-    //         let account:any = await provider.send("eth_requestAccounts", []);
-    //         // 连接的网络和链信息。
-    //         var chain = await provider.getNetwork()
-    //         // 获取签名
-    //         var signer = await provider.getSigner();
-    //         // 判断是否有账号
-    //         if (account.length > 0) {
-    //             // 判断是否是eth
-    //             if (chain && chain.name === 'homestead' && chain.chainId === 1) {
-    //                 try {
-    //                     const token:any = await request('post', '/api/v1/token', {address: account[0]})
-    //                     if (token && token?.data && token?.status === 200) {
-    //                         // 签名消息
-    //                         const message = token?.data?.nonce
-    //                         const sign = await signer.signMessage(message)
-    //                         // const sign = await window.ethereum.request({
-    //                         //     method: "personal_sign",
-    //                         //     params: [message, account[0]]
-    //                         // });
-    //                         // 验证签名
-    //                         // const recoveredAddress = ethers.utils.verifyMessage(message, signature);
-    //                         // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
-    //                         const res = await request('post', '/api/v1/login', {
-    //                             signature: sign,
-    //                             addr: account[0],
-    //                             message,
-    //                             inviteCode: ''
-    //                         })
-    //                         if (res === 'please') {
-    //                             setLogin()
-    //                             // setLoginBol(false)
-    //                         } else if (res && res.data && res.data?.accessToken) {
-    //                             //   jwt  解析 token获取用户信息
-    //                             const decodedToken:any = jwt.decode(res.data?.accessToken);
-    //                             if (decodedToken && decodedToken?.address) {
-    //                                 const data = await request('get', "/api/v1/userinfo/" + decodedToken?.uid, '', res.data?.accessToken)
-    //                                 if (data === 'please') {
-    //                                     setLogin()
-    //                                     // setLoginBol(false)
-    //                                 } else if (data && data?.status === 200) {
-    //                                     const user = data?.data?.data
-    //                                     setUserPar(user)
-    //                                     cookie.set('username', JSON.stringify(data?.data?.data), {expires: 1})
-    //                                     cookie.set('token', res.data?.accessToken, {expires: 1})
-    //                                     cookie.set('name', account[0], {expires: 1})
-    //                                     cookie.set('user', JSON.stringify(decodedToken), {expires: 1})
-    //                                     // changeShowData(true)
-    //                                     // setLoginBol(false)
-    //                                 } else {
-    //                                     // setLoginBol(false)
-    //                                 }
-    //                             }
-    //                         }
-    //                     } else {
-    //                         // setLoginBol(false)
-    //                     }
-    //                 } catch (err) {
-    //                     // setLoginBol(false)
-    //                     return null
-    //                 }
-    //             } else {
-    //                 // notification.warning({
-    //                 //     description: 'Please select eth!',
-    //                 //     placement: 'topLeft',
-    //                 //     duration: 2
-    //                 // });
-    //             }
-    //         } else {
-    //             // notification.warning({
-    //             //     description: 'Please log in or connect to your account!',
-    //             //     placement: 'topLeft',
-    //             //     duration: 2
-    //             // });
-    //         }
-    //     } catch (err) {
-    //         return null
-    //     }
-    // }
-
+    const handleLogin = async () => {
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            // provider._isProvider   判断是否还有请求没有结束
+            // 请求用户授权连接钱包
+            await window.ethereum.request({method: 'eth_requestAccounts'});
+            const account = await provider.send("eth_requestAccounts", []);
+            // 连接的网络和链信息。
+            const chain = await provider.getNetwork();
+            // 获取签名
+            const signer = await provider.getSigner();
+            // 判断是否有账号
+            if (account.length > 0) {
+                // 判断是否是eth
+                if (chain && chain.name === 'homestead' && chain.chainId === 1) {
+                    try {
+                        const token = await request('post', '/api/v1/token', {address: account[0]})
+                        if (token && token?.data && token?.status === 200) {
+                            // 签名消息
+                            const message = token?.data?.nonce
+                            const sign = await signer.signMessage(message)
+                            // const sign = await window.ethereum.request({
+                            //     method: "personal_sign",
+                            //     params: [message, account[0]]
+                            // });
+                            // 验证签名
+                            // const recoveredAddress = ethers.utils.verifyMessage(message, signature);
+                            //  获取地址  参数
+                            // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
+                            const res = await request('post', '/api/v1/login', {
+                                signature: sign,
+                                addr: account[0],
+                                message,
+                                inviteCode: ''
+                            })
+                            if (res === 'please') {
+                                setLogin()
+                            } else if (res && res.data && res.data?.accessToken) {
+                                //   jwt  解析 token获取用户信息
+                               /*  const decodedToken = Jwt.decode(res.data?.accessToken); */
+                                // if (decodedToken && decodedToken?.address) {
+                                const data = await request('get', "/api/v1/userinfo/" + 1, '', res.data?.accessToken)
+                                if (data === 'please') {
+                                    setLogin()
+                                } else if (data && data?.status === 200) {
+                                    const user = data?.data?.data
+                                    setUserPar(user)
+                                    cookie.set('username', JSON.stringify(user), {expires: 1})
+                                    cookie.set('token', res.data?.accessToken, {expires: 1})
+                                }
+                                // }
+                            }
+                        }
+                    } catch (err) {
+                        return null
+                    }
+                } else {
+                    notification.warning({
+                        description: 'Please select ETH!',
+                        placement: 'topLeft',
+                        duration: 2
+                    });
+                }
+            } else {
+                notification.warning({
+                    description: 'Please log in or connect to your account!',
+                    placement: 'topLeft',
+                    duration: 2
+                });
+            }
+            setLoad(false)
+        } catch (err) {
+            setLoad(false)
+            return null
+        }
+    }
     // 登录
     const login = async (chainId, address, client, session, toName) => {
         try {
@@ -183,23 +169,22 @@ function Layout() {
                 await setLogin()
             } else if (res && res.data && res.data?.accessToken) {
                 //   jwt  解析 token获取用户信息
-                // const decodedToken: any = jwt.decode(res.data?.accessToken);
-                const decodedToken = ''
-                if (decodedToken && decodedToken?.address) {
-                    const data = await request('get', "/api/v1/userinfo/" + decodedToken?.uid, '', res.data?.accessToken)
+                /* const decodedToken = Jwt.decode(res.data?.accessToken); */
+/*                 const decodedToken = '' */
+/*                 if (decodedToken && decodedToken?.address) { */
+                    const data = await request('get', "/api/v1/userinfo/" + 1, '', res.data?.accessToken)
                     if (data === 'please') {
                         await setLogin()
                     } else if (data && data?.status === 200) {
                         const user = data?.data?.data
-                        cookie.set('username', JSON.stringify(user), { expires: 1 })
-                        cookie.set('token', res.data?.accessToken, { expires: 1 })
-                        cookie.set('name', address, { expires: 1 })
-                        cookie.set('user', JSON.stringify(decodedToken), { expires: 1 })
+                        setUserPar(user)
+                        cookie.set('username', JSON.stringify(user), {expires: 1})
+                        cookie.set('token', res.data?.accessToken, {expires: 1})
                         web3Modal.closeModal();
                     } else {
                         return null
                     }
-                }
+ /*                } */
             }
         } catch (e) {
             return null
@@ -230,7 +215,7 @@ function Layout() {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token = await request('post', '/api/v1/token', { address: address })
+            const token = await request('post', '/api/v1/token', {address: address})
             if (token && token?.data && token?.status === 200) {
                 await login(chainId, address, client, session, token?.data?.nonce);
             } else {
@@ -240,27 +225,6 @@ function Layout() {
             return null
         }
     };
-    // 获取余额
-    // const getAccountBalances = async (_accounts) => {
-    //     try {
-    //         const arr = await Promise.all(
-    //             _accounts.map(async (account) => {
-    //                 const [namespace, reference, address] = account.split(":");
-    //                 const chainId = `${namespace}:${reference}`;
-    //                 const assets = await apiGetAccountBalance(address, chainId);
-    //                 return {account, assets: [assets]};
-    //             })
-    //         );
-    //         const balances = {};
-    //         arr.forEach(({account, assets}) => {
-    //             balances[account] = assets;
-    //         });
-    //         setBalances(balances);
-    //     } catch (e) {
-    //         return null
-    //     }
-    // };
-
     // 钱包连接
     const onSessionConnected = useCallback(
         async (_session, name, client) => {
@@ -283,7 +247,7 @@ function Layout() {
             try {
                 const requiredNamespaces = getRequiredNamespaces(['eip155:1']);
                 const optionalNamespaces = getOptionalNamespaces(['eip155:1']);
-                const { uri, approval } = await client.connect({
+                const {uri, approval} = await client.connect({
                     requiredNamespaces,
                     optionalNamespaces,
                 });
@@ -291,7 +255,7 @@ function Layout() {
                     const standaloneChains = Object.values(requiredNamespaces)
                         .map((namespace) => namespace.chains)
                         .flat()
-                    await web3Modal.openModal({ uri, standaloneChains });
+                    await web3Modal.openModal({uri, standaloneChains});
                 }
                 const ab = await approval();
                 await onSessionConnected(ab, 'yes', client);
@@ -303,7 +267,13 @@ function Layout() {
         },
         [chains, client, onSessionConnected]
     );
-
+    useEffect(() => {
+        if (cookie.get('username') && cookie.get('username') != undefined) {
+            const abc = JSON.parse(cookie.get('username'))
+            setUserPar(abc)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cookie.get('username')]);
     useEffect(() => {
         if (!client) {
             createClient();
@@ -315,24 +285,16 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
-    useEffect(() => {
-        if (loginSta) {
-            // handleLogin()
-        }
-    }, [loginSta])
-
-    const value = { connect, setLogin, onDisconnect, loginSta, getMoneyEnd, headHeight, botHeight, }
+    const value = {connect, setLogin, onDisconnect, getMoneyEnd, headHeight, botHeight, user, setLoad, load}
     return (
         <CountContext.Provider value={value}>
             <Header setHeadHeight={setHeadHeight} />
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
-                <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path='/community' element={<Community />} />
-                </Routes>
-                {/*                 <Right /> */}
-            </div>
-            <Bot setBotHeight={setBotHeight} />
+            <Routes>
+                <Route path="/" element={<Index/>}/>
+                <Route path="/newpairDetails" element={<NewpairDetails/>}/>
+                <Route path='/community' element={<Community/>}/>
+            </Routes>
+            <Bot setBotHeight={setBotHeight}/>
         </CountContext.Provider>
     );
 }
