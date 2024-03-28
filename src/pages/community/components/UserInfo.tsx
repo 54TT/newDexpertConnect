@@ -3,6 +3,8 @@
 import classnames from 'classnames';
 import './index.less'
 import { Button } from 'antd';
+import { useState } from 'react';
+import PostSendModal from './PostModal';
 export type UserActionKey = 'Profile' | 'Lastest' | 'Following'
 
 enum UserActionKeyEnum {
@@ -21,6 +23,7 @@ interface UserInfoPropsType {
 }
 
 const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
+  const [visible, setVisible] = useState(false);
   const userAction: Record<UserActionKey, UserActionType> = {
     [UserActionKeyEnum.PROFILE]: {
       img: "/community/profile.svg"
@@ -46,8 +49,10 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
       )
     }
     <div style={{ display: 'flex', justifyContent: 'center' }} className='community-user-action-button'>
-      <Button >Post</Button>
+      <Button onClick={() => setVisible(true)} >Post</Button>
     </div>
+    <PostSendModal open={visible} onPublish={() => console.log('123123')} onClose={() => setVisible(false)} />
+
   </div>
 }
 

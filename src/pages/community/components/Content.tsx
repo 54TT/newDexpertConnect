@@ -72,7 +72,7 @@ function CommunityContent() {
         }
       </div>
       <div id='scrollableDiv' className="community-content-post" style={{ overflowY: 'auto', height: "calc(100vh - 129px)" }}>
-        <SendPost />
+        <SendPost onPublish={(data) => console.log(data)} />
         {
           bol ? postData.length > 0 ?
             <div

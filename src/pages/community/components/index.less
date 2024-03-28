@@ -207,7 +207,6 @@
       padding: 0 8%;
       padding-bottom: 24px;
       margin-top: 24px;
-      border-bottom: 0.4px solid #687c69;
     }
   }
 }
@@ -276,4 +275,51 @@
 .post-tab-item-active {
   background: #181e1c;
   color: #fff;
+}
+
+.post-send-modal {
+  .ant-modal {
+    &-content {
+      border: 0.8px solid #687c69;
+      background: #060e0b;
+      border-radius: 20px;
+      box-shadow: 4px 4px 20px 10px #0000004d;
+
+      .community-content-post-send {
+        border: none;
+        padding: 0;
+        margin: 24px 0;
+        &-input {
+          min-height: 200px;
+        }
+      }
+      .post-send-tools {
+        border: none;
+        padding: 0px;
+      }
+    }
+    &-header {
+      background: #060e0b;
+    }
+    &-title {
+      display: flex;
+      justify-content: space-between;
+      color: #00daff;
+      .anticon-close {
+        color: #fff;
+      }
+      span {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.post-send-imgList {
+  border-bottom: 0.4px solid #687c69;
+  padding: 0 8%;
+  padding-bottom: 24px;
+  img {
+    width: 150px;
+  }
 }
