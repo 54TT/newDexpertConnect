@@ -160,7 +160,6 @@ body {
             color: white;
           }
         }
-
       }
 
       .indexNewPairBodyData:hover {
@@ -179,7 +178,7 @@ body {
   align-items: flex-end;
   justify-content: space-between;
   //background-color: #0d1a14;
-  background: linear-gradient(to bottom, rgb(3,5,3), rgb(9,18,13));
+  background: linear-gradient(to bottom, rgb(3, 5, 3), rgb(9, 18, 13));
   border-bottom: 1px solid #687c69;
   border-radius: 0 0 10px 10px;
 
@@ -216,7 +215,6 @@ body {
       }
     }
 
-
     .rightBoxTweetTop {
       display: flex;
       align-items: center;
@@ -230,7 +228,6 @@ body {
     }
   }
 }
-
 
 .tweetsBox {
   margin-top: 4%;
@@ -345,6 +342,7 @@ body {
   height: 25px;
   box-sizing: border-box;
   background-color: rgb(9, 15, 12);
+
   & > div:last-child {
     padding-top: 6px;
     padding-right: 20px;
@@ -352,6 +350,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+
     & > p:first-child {
       width: 10px;
       height: 10px;
@@ -378,7 +377,9 @@ body {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(to right, rgb(9, 21, 17), rgb(37, 70, 59)) !important;
+    background: linear-gradient(to right,
+    rgb(9, 21, 17),
+    rgb(37, 70, 59)) !important;
   }
 }
 
@@ -408,7 +409,6 @@ body {
     color: white;
     font-size: 16px;
   }
-
 }
 
 .headerModal {
@@ -417,14 +417,14 @@ body {
   flex-direction: column;
 
   & > p:nth-child(2) {
-    color: #F3F3F3;
+    color: #f3f3f3;
     text-align: center;
     margin: 10px 0;
     line-height: 1;
   }
 
   & > p:nth-child(2) {
-    color: #F3F3F3;
+    color: #f3f3f3;
     text-align: center;
     line-height: 1;
   }
@@ -451,7 +451,6 @@ body {
   }
 }
 
-
 span {
   line-height: 1;
 }
@@ -476,4 +475,16 @@ span {
 
 .NewpairDetails {
   display: flex;
+}
+
+.scroll-style-minin() {
+  &::-webkit-scrollbar {
+    width: 8px !important; /* 滚动条宽度 */
+  }
+  /* WebKit 浏览器的滚动条滑块样式 */
+  &::-webkit-scrollbar-thumb {
+    background: rgb(24, 30, 29) !important;
+    border: 1px solid rgb(104, 124, 105) !important;
+    border-radius: 10px !important;
+  }
 }

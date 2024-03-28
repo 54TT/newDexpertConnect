@@ -7,7 +7,7 @@ import {useNavigate} from 'react-router-dom';
 import {DownOutlined, LoadingOutlined} from '@ant-design/icons'
 
 function Header() {
-    const {connect, getMoneyEnd, user, setLoad, load, setLogin}: any = useContext(CountContext);
+    const {connect, getMoneyEnd, user, setLoad, load, clear}: any = useContext(CountContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [page, setPage] = useState('Market')
     const history = useNavigate();
@@ -49,7 +49,7 @@ function Header() {
         }
     }
     const logout = () => {
-        setLogin()
+        clear()
     }
     const items: any = [
         {
@@ -64,7 +64,7 @@ function Header() {
         <div className={'headerBox'}>
             <img src="/topLogo.svg" alt="" style={{cursor: 'pointer'}} onClick={() => {
                 history('/')
-            }}/>
+            }} />
             <p className={`headerCenter dis`}>
                 {
                     ['Market', 'DApp & Tools', 'Community'].map((i, ind) => {
@@ -101,25 +101,25 @@ function Header() {
                 </div>
             }
             <Modal destroyOnClose={true} centered title={null} footer={null} className={'walletModal'}
-                   maskClosable={false}
-                   open={isModalOpen}
-                   onOk={handleOk} onCancel={handleCancel}>
+                maskClosable={false}
+                open={isModalOpen}
+                onOk={handleOk} onCancel={handleCancel}>
                 <div className={'headerModal'}>
-                    <img src="/logo1.svg" alt=""/>
+                    <img src="/logo1.svg" alt="" />
                     <p>Connect to Dexpert</p>
                     {
                         // window.innerWidth > 768 &&
-                        <button onClick={connectWallet} className={'walletButton'} style={{margin: '10px 0'}}>
+                        <button onClick={connectWallet} className={'walletButton'} style={{ margin: '10px 0' }}>
                             <img
-                                src="/metamask.svg" style={{width: '25px'}}
-                                alt=""/><span>MetaMask</span></button>
+                                src="/metamask.svg" style={{ width: '25px' }}
+                                alt="" /><span>MetaMask</span></button>
                     }
                     <button onClick={onConnect} className={'walletButton'}><img
                         src="/webAll.svg"
                         style={{
                             width: '25px',
                         }}
-                        alt=""/><span>WlletConnect</span>
+                        alt="" /><span>WlletConnect</span>
                     </button>
                 </div>
             </Modal>

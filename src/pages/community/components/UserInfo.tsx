@@ -2,6 +2,7 @@
 
 import classnames from 'classnames';
 import './index.less'
+import { Button } from 'antd';
 export type UserActionKey = 'Profile' | 'Lastest' | 'Following'
 
 enum UserActionKeyEnum {
@@ -35,13 +36,18 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
     {
       Object.keys(userAction).map((key: string) =>
         <div className={classnames('community-user-action-item', { 'community-user-action-item-active': activeTab === key })} onClick={() => onChange(key as UserActionKey)}>
-          <div className='community-user-action-item-img'>
-            <img src={userAction[key as UserActionKey].img} alt="" />
+          <div >
+            <div className='community-user-action-item-img'>
+              <img src={userAction[key as UserActionKey].img} alt="" />
+            </div>
+            <span className='community-user-action-item-label'>{key}</span>
           </div>
-          <span className='community-user-action-item-label'>{key}</span>
         </div>
       )
     }
+    <div style={{ display: 'flex', justifyContent: 'center' }} className='community-user-action-button'>
+      <Button >Post</Button>
+    </div>
   </div>
 }
 
