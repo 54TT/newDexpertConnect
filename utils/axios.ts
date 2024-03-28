@@ -31,7 +31,7 @@ axios.interceptors.response.use(
     }
 );
 export const request = async (method:string, url:string, data:any, token?:any) => {
-    const username = cookie.get('user')
+    const username = cookie.get('jwt')
     if (username && username != 'undefined') {
         const params = JSON.parse(username)
         if (params && params?.exp && dayjs(dayjs.unix(params?.exp)).isAfter(dayjs())) {

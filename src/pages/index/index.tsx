@@ -1,22 +1,18 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import {Input, Segmented, Select, Spin} from 'antd'
-import {useContext, useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState} from "react";
 import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
 import {gql} from 'graphql-tag'
-import {setMany} from '../../utils/change.ts'
+import {setMany} from '../../../utils/change.ts'
 import {cloneDeep} from 'lodash';
-// @ts-ignore
-import {CountContext} from '../Layout.jsx'
 import {SearchOutlined} from '@ant-design/icons'
-import Right from "../components/right";
+import Right from "./components/right.tsx";
 import {useNavigate} from "react-router-dom";
-
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });
 
 function Index() {
-    const {headHeight, botHeight}: any = useContext(CountContext)
     const hei = useRef<any>()
     const history = useNavigate();
     const page = 25
@@ -139,13 +135,13 @@ function Index() {
         setDtaLoad(false)
     }
     useEffect(() => {
-        if (hei && hei.current && botHeight && headHeight) {
+        if (hei && hei.current) {
             const h = hei.current.scrollHeight
             const w = window.innerHeight
-            const o: any = w - h - headHeight - 90 - botHeight
+            const o: any = w - h - 25-54 - 90
             setTableHei(o)
         }
-    }, [botHeight, headHeight])
+    }, [])
     const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any
     useEffect(() => {
         if (!loading) {
@@ -234,7 +230,7 @@ function Index() {
                         }
                     </div>
                     {/*body*/}
-                    <div className={'indexNewPairBody'} id={'scrollableNew'}
+                    <div className={`indexNewPairBody scrollStyle`} id={'scrollableNew'}
                          style={{height: tableHei + 'px', overflowY: 'auto'}}>
                         <InfiniteScroll
                             hasMore={true}

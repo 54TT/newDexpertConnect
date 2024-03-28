@@ -1,7 +1,7 @@
 import {motion} from 'framer-motion';
 import {useEffect, useState} from 'react'
 
-function Index({name}: any) {
+function Tweets({name}: any) {
     const [clickAnimate, setClickAnimate] = useState(false);
     useEffect(() => {
         if (clickAnimate) {
@@ -24,7 +24,7 @@ function Index({name}: any) {
                     <img src={name?.user?.avatar ? name?.user?.avatar : "/logo.svg"} alt=""
                          style={{width: '42px', marginRight: '5%', borderRadius: '50%'}}/>
                     <p>
-                        <span>{name?.user?.username ? name?.user?.username.length > 15 ? name?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
+                        <span>{name?.user?.username ? name?.user?.username.length > 12 ? name?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
                         <span>{name?.user?.address ? name?.user.address.slice(0, 5) + '...' + name?.user.address.slice(-4) : ''}</span>
                     </p>
                 </div>
@@ -75,4 +75,4 @@ function Index({name}: any) {
     );
 }
 
-export default Index;
+export default Tweets;

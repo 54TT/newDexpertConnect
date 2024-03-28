@@ -1,13 +1,13 @@
-import Header from './components/header'
+import Header from './components/header.tsx'
 import {Route, Routes, useLocation, useNavigate,} from "react-router-dom";
-import Index from './pages/index.tsx'
+import Index from './pages/index/index.tsx'
 import NewpairDetails from './pages/newpairDetails/index.tsx'
 import './style/all.less'
 import {createContext, useCallback, useEffect, useRef, useState} from 'react'
 import {getAppMetadata, getSdkError} from "@walletconnect/utils";
 import 'swiper/css';
 import {notification} from 'antd'
-import Bot from './components/bottom';
+import Bot from './components/bottom.tsx';
 import {Web3Modal} from "@web3modal/standalone";
 import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
@@ -17,6 +17,8 @@ import {ethers} from 'ethers';
 import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
 import _ from 'lodash';
 import Community from './pages/community.tsx';
+import Dapp from './pages/dapp';
+
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -31,8 +33,6 @@ function Layout() {
     const [client, setClient] = useState(null);
     const [session, setSession] = useState(null);
     const prevRelayerValue = useRef();
-    const [headHeight, setHeadHeight] = useState('')
-    const [botHeight, setBotHeight] = useState('')
     const [user, setUserPar] = useState(null)
     const [load, setLoad] = useState(false)
     const createClient = async () => {
@@ -54,6 +54,10 @@ function Layout() {
         if (router.pathname !== '/') {
             history('/')
         }
+        cookie.remove('username')
+        cookie.remove('token')
+        cookie.remove('jwt')
+        setUserPar(null)
     }
     //  登录
     const getMoneyEnd = _.throttle(function () {
@@ -106,19 +110,22 @@ function Layout() {
                             if (res === 'please') {
                                 setLogin()
                             } else if (res && res.data && res.data?.accessToken) {
-                                //   jwt  解析 token获取用户信息
-                                // const decodedToken = jwt.decode(res.data?.accessToken);
-                                // if (decodedToken && decodedToken?.address) {
-                                const data = await request('get', "/api/v1/userinfo/" + 1, '', res.data?.accessToken)
-                                if (data === 'please') {
-                                    setLogin()
-                                } else if (data && data?.status === 200) {
-                                    const user = data?.data?.data
-                                    setUserPar(user)
-                                    cookie.set('username', JSON.stringify(user), {expires: 1})
-                                    cookie.set('token', res.data?.accessToken, {expires: 1})
+                                //    解析 token获取用户信息
+                                const base64Url = res.data?.accessToken.split('.')[1];
+                                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                                const decodedToken = JSON.parse(atob(base64));
+                                if (decodedToken && decodedToken?.uid) {
+                                    const data = await request('get', "/api/v1/userinfo/" + decodedToken.uid, '', res.data?.accessToken)
+                                    if (data === 'please') {
+                                        setLogin()
+                                    } else if (data && data?.status === 200) {
+                                        const user = data?.data?.data
+                                        setUserPar(user)
+                                        cookie.set('username', JSON.stringify(user), {expires: 1})
+                                        cookie.set('token', res.data?.accessToken, {expires: 1})
+                                        cookie.set('jwt', JSON.stringify(decodedToken), {expires: 1})
+                                    }
                                 }
-                                // }
                             }
                         }
                     } catch (err) {
@@ -169,9 +176,10 @@ function Layout() {
                 await setLogin()
             } else if (res && res.data && res.data?.accessToken) {
                 //   jwt  解析 token获取用户信息
-                // const decodedToken: any = jwt.decode(res.data?.accessToken);
-                const decodedToken = ''
-                if (decodedToken && decodedToken?.address) {
+                const base64Url = res.data?.accessToken.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const decodedToken = JSON.parse(atob(base64));
+                if (decodedToken && decodedToken?.uid) {
                     const data = await request('get', "/api/v1/userinfo/" + decodedToken?.uid, '', res.data?.accessToken)
                     if (data === 'please') {
                         await setLogin()
@@ -180,6 +188,7 @@ function Layout() {
                         setUserPar(user)
                         cookie.set('username', JSON.stringify(user), {expires: 1})
                         cookie.set('token', res.data?.accessToken, {expires: 1})
+                        cookie.set('jwt', JSON.stringify(decodedToken), {expires: 1})
                         web3Modal.closeModal();
                     } else {
                         return null
@@ -285,16 +294,17 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
-    const value = {connect, setLogin, onDisconnect, getMoneyEnd, headHeight, botHeight, user, setLoad, load}
+    const value = {connect, setLogin, onDisconnect, getMoneyEnd, user, setLoad, load}
     return (
         <CountContext.Provider value={value}>
-            <Header setHeadHeight={setHeadHeight} />
+            <Header/>
             <Routes>
                 <Route path="/" element={<Index/>}/>
                 <Route path="/newpairDetails" element={<NewpairDetails/>}/>
                 <Route path='/community' element={<Community/>}/>
+                <Route path='/dapp' element={<Dapp/>}/>
             </Routes>
-            <Bot setBotHeight={setBotHeight}/>
+            <Bot/>
         </CountContext.Provider>
     );
 }
