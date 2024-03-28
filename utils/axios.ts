@@ -37,7 +37,7 @@ export const request = async (method:string, url:string, data:any, token?:any) =
         if (params && params?.exp && dayjs(dayjs.unix(params?.exp)).isAfter(dayjs())) {
             if (url.includes('upload/image')) {
                 const formData = new FormData();
-                formData.append('file', data);
+                formData.append('file', data);                
                 return await requestA({
                     method,
                     data: formData,

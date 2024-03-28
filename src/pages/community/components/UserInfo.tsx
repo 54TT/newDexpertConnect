@@ -52,7 +52,6 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
       <Button onClick={() => setVisible(true)} >Post</Button>
     </div>
     <PostSendModal open={visible} onPublish={() => console.log('123123')} onClose={() => setVisible(false)} />
-
   </div>
 }
 

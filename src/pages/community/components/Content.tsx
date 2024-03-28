@@ -43,8 +43,16 @@ function CommunityContent() {
     }
   }
 
+  const reload = () => {
+    getTweet(1)
+  }
+
   useEffect(() => {
     getTweet(1);
+    document.addEventListener('publish-post', reload);
+    return () => {
+      document.removeEventListener('publish-post', reload);
+    }
   }, [])
 
   const changePage = () => {
@@ -72,7 +80,7 @@ function CommunityContent() {
         }
       </div>
       <div id='scrollableDiv' className="community-content-post" style={{ overflowY: 'auto', height: "calc(100vh - 129px)" }}>
-        <SendPost onPublish={(data) => console.log(data)} />
+        <SendPost onPublish={() => { getTweet(1); }} />
         {
           bol ? postData.length > 0 ?
             <div

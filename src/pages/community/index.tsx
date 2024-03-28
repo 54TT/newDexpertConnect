@@ -3,6 +3,7 @@ import UserInfo, { UserActionKey } from './components/UserInfo'
 import "./index.less"
 import CommunityContent from './components/Content';
 import CommunityRight from './components/RightSider';
+
 function Community() {
   // 左侧选中的Tab
   const [activeUserTab, setActiveUserTab] = useState<UserActionKey>("Profile");
@@ -10,7 +11,6 @@ function Community() {
   const onActiveUserTabChange = (tab: UserActionKey) => {
     setActiveUserTab(tab);
   }
-
 
   return (
     <div style={{ width: '100vw', display: 'flex', justifyContent: 'center' }}>

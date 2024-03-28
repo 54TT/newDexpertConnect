@@ -1,6 +1,6 @@
 import { Button, Input, message } from 'antd';
 import { request } from '../../../../utils/axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import { CloseOutlined } from '@ant-design/icons';
 const { TextArea } = Input;
@@ -18,20 +18,32 @@ function SendPost({ onPublish }: SendPostPropsType) {
   const [img, setImg] = useState<any>(null);
   const [imgPreview, setImgPreview] = useState<any>(null);
   const [value, setValue] = useState('');
-  const [uploading, setUploading] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [sendDisable, setSendDisable] = useState(true);
   const [messageApi, contextHolder] = message.useMessage();
+  const inputRef = useRef<HTMLInputElement>(null);
   const clickImage = () => {
-    const uploadInput = document.getElementById('img-load');
-    uploadInput?.click();
+    console.log(inputRef);
+    inputRef?.current?.click?.();
   }
 
   const handleuploadImage = (e) => {
     const file = e.target.files[0];
-    const previewImg = URL.createObjectURL(file);
-    setImg(file);
-    setImgPreview(previewImg)
-    handleChangeValue(value, file);
+    const allowedTypes = ['image/jpeg', 'image/png']; // 允许的图片类型
+    const uploadInput = inputRef?.current
+    const fileType = file.type;
+    if (!allowedTypes.includes(fileType)) {
+      messageApi.warning('Only images in JPEG and PNG formats can be uploaded');
+      if (uploadInput?.value) {
+        // 清空输入框的值，防止上传无效文件
+        uploadInput.value = ""
+      }
+    } else {
+      const previewImg = URL.createObjectURL(file);
+      setImg(file);
+      setImgPreview(previewImg)
+      handleChangeValue(value, file);
+    }
   }
 
 
@@ -56,7 +68,7 @@ function SendPost({ onPublish }: SendPostPropsType) {
   ]
 
   useEffect(() => {
-    const uploadInput = document.getElementById('img-load');
+    const uploadInput = inputRef.current
     uploadInput?.addEventListener('input', handleuploadImage, false);
     return () => {
       uploadInput?.removeEventListener('input', handleuploadImage);
@@ -65,38 +77,53 @@ function SendPost({ onPublish }: SendPostPropsType) {
 
   const handlePostSend = async () => {
     const token = Cookies.get('token');
+    const username = Cookies.get('username');
+
+    let imgUrl = null;
     try {
-      setUploading(true);
-      const imgUrl = await request('post', '/api/v1/upload/image', img, token);
-      if (imgUrl === 'please') {
-        console.log('please loding');
-      } else if (!imgUrl && imgUrl?.status !== 200) {
-        setUploading(false)
-        return messageApi.open({
-          type: 'warning',
-          content: 'Upload failed, please upload again!',
-        });
+      setPublishing(true);
+      if (img !== null) {
+        imgUrl = await request('post', '/api/v1/upload/image', img, token);
       }
+
+      if (imgUrl !== null) {
+        if (imgUrl === 'please') {
+          console.log('please loding');
+        } else if (!imgUrl || imgUrl?.status !== 200) {
+          return messageApi.open({
+            type: 'warning',
+            content: 'Upload failed, please upload again!',
+          });
+        }
+      }
+
       const data = {
         content: value,
-        imgList: imgUrl
+        imageList: imgUrl?.data?.url ? [imgUrl.data.url] : undefined,
       }
-      /*       const result = await request('post', "/api/v1/post/publish", {
-              uid: user?.uid,
-              address: user?.address,
-              post: data
-          }, token) */
-      return;
-      onPublish(data as UploadDataType)
+
+      const result = await request('post', "/api/v1/post/publish", {
+        uid: username?.uid,
+        address: username?.address,
+        post: data
+      }, token)
+      setPublishing(false);
+      clearImg();
+      setValue('')
+      onPublish(result);
+      const event = new CustomEvent("publish-post");
+      document.dispatchEvent(event);
     } catch (e) {
       console.error(e);
+      messageApi.error('Publishing failed')
+      setPublishing(false);
     }
+
   }
 
-  const handleChangeValue = (value: string, img: string) => {
-    console.log(img);
+  const handleChangeValue = (value: string, img: unknown) => {
 
-    if (value === '' && img === '') {
+    if (value === '' && img === null) {
       setSendDisable(true);
     } else {
       setSendDisable(false);
@@ -104,8 +131,16 @@ function SendPost({ onPublish }: SendPostPropsType) {
   }
 
   const clearImg = () => {
+    handleChangeValue(value, null);
     setImg(null)
     setImgPreview(null)
+
+    const uploadInput = inputRef?.current;
+    // 清空value，触发input事件
+
+    if (uploadInput?.value) {
+      uploadInput.value = null
+    }
   }
 
   return <>
@@ -123,9 +158,9 @@ function SendPost({ onPublish }: SendPostPropsType) {
     </div>
     <div className='post-send-imgList'>
       {
-        imgPreview ? <div>
+        imgPreview ? <div className='post-send-imgList-delete' >
           <img src={imgPreview} alt="" />
-          <Button icon={<CloseOutlined />} shape="circle" type="text" onClick={() => clearImg()} />
+          <Button size='small' icon={<CloseOutlined />} shape="circle" onClick={() => clearImg()} />
         </div> : <></>
       }
     </div>
@@ -136,10 +171,10 @@ function SendPost({ onPublish }: SendPostPropsType) {
         }
       </div>
       <div className='post-send-tools-button'>
-        <Button onClick={() => handlePostSend} disabled={sendDisable} >Post</Button>
+        <Button onClick={() => handlePostSend()} disabled={sendDisable} loading={publishing} >Post</Button>
       </div>
     </div>
-    <input type="file" name="file" id='img-load' style={{ display: 'none' }} />
+    <input ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{ display: 'none' }} />
   </>
 }
 

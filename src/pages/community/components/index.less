@@ -240,6 +240,9 @@
       &:active {
         background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
       }
+      &:disabled {
+        background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
+      }
     }
   }
 }
@@ -290,12 +293,12 @@
         padding: 0;
         margin: 24px 0;
         &-input {
-          min-height: 200px;
+          min-height: 100px;
         }
       }
       .post-send-tools {
         border: none;
-        padding: 0px;
+        padding: 12px 0;
       }
     }
     &-header {
@@ -321,5 +324,14 @@
   padding-bottom: 24px;
   img {
     width: 150px;
+  }
+  &-delete {
+    position: relative;
+    display: inline-block;
+    .ant-btn {
+      position: absolute;
+      right: -5px;
+      top: -3px;
+    }
   }
 }

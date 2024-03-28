@@ -1,7 +1,7 @@
-import {motion} from 'framer-motion';
-import {useEffect, useState} from 'react'
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react'
 
-function Tweets({name}: any) {
+function Tweets({ name }: any) {
     const [clickAnimate, setClickAnimate] = useState(false);
     useEffect(() => {
         if (clickAnimate) {
@@ -12,8 +12,8 @@ function Tweets({name}: any) {
         }
     }, [clickAnimate])
     const animationVariants = {
-        hidden: {y: '100%', opacity: 0},
-        visible: {y: '-100%', opacity: 1},
+        hidden: { y: '100%', opacity: 0 },
+        visible: { y: '-100%', opacity: 1 },
     };
     return (
         <div className={'tweetsBox'}>
@@ -22,7 +22,7 @@ function Tweets({name}: any) {
                 {/* left*/}
                 <div className={'tweetsLeft'}>
                     <img src={name?.user?.avatar ? name?.user?.avatar : "/logo.svg"} alt=""
-                         style={{width: '42px', marginRight: '5%', borderRadius: '50%'}}/>
+                        style={{ width: '42px', marginRight: '5%', borderRadius: '50%' }} />
                     <p>
                         <span>{name?.user?.username ? name?.user?.username.length > 12 ? name?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
                         <span>{name?.user?.address ? name?.user.address.slice(0, 5) + '...' + name?.user.address.slice(-4) : ''}</span>
@@ -35,10 +35,10 @@ function Tweets({name}: any) {
             </div>
             {
                 name?.content ? <div className={'tweetsText'}
-                                     dangerouslySetInnerHTML={{__html: name.content.replace(/\n/g, '<br>')}}></div> : ''
+                    dangerouslySetInnerHTML={{ __html: name.content.replace(/\n/g, '<br>') }}></div> : ''
             }
-            <img src={name?.imageList?.length > 0 ? name?.imageList[0] : "/swiper.svg"} alt=""
-                 style={{maxWidth: '50%', margin: '0 auto',maxHeight:'200px', borderRadius: '5px', display: 'block'}}/>
+            <img src={name?.imageList?.length > 0 ? name?.imageList[0] : null} alt=""
+                style={{ maxWidth: '50%', margin: '0 auto', maxHeight: '200px', borderRadius: '5px', display: 'block' }} />
             {/*   标识*/}
             <div className={'tweetsMark'}>
                 <p>#btc</p>
@@ -46,11 +46,11 @@ function Tweets({name}: any) {
             </div>
             <div className={'tweetsOperate'}>
                 <p className={'tweetsIn'}>
-                    <img src="/comment.svg" alt=""/>
+                    <img src="/comment.svg" alt="" />
                     <span>{name?.commentNum ? name.commentNum : 0}</span>
                 </p>
                 <div className={'tweetsIn'} onClick={() => setClickAnimate(true)}>
-                    <img src={name?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt=""/>
+                    <img src={name?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
                     <span>{name?.likeNum ? name.likeNum : 0}</span>
                     <motion.div
                         initial="hidden"
@@ -58,16 +58,16 @@ function Tweets({name}: any) {
                         animate={!clickAnimate ? 'hidden' : 'visible'}
                         variants={animationVariants}
                         exit="hidden"
-                        transition={{duration: 1, ease: 'easeInOut'}}>
-                        <span style={{color: 'rgb(0,170,255)'}}>+1500</span>
+                        transition={{ duration: 1, ease: 'easeInOut' }}>
+                        <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>
                     </motion.div>
                 </div>
                 <p className={'tweetsIn'}>
-                    <img src="/share.svg " alt=""/>
+                    <img src="/share.svg " alt="" />
                     <span>111</span>
                 </p>
                 <p className={'tweetsIn'}>
-                    <img src="/look.svg" alt=""/>
+                    <img src="/look.svg" alt="" />
                     <span>111</span>
                 </p>
             </div>

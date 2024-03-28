@@ -20,8 +20,8 @@ function PostSendModal({ open, modalProps, className = "", onClose, ...props }: 
       <span>Draft</span>
     </>
   }
-  return <Modal width='600px' title={<ModalTitle />} className={classNames(className, 'post-send-modal')} open={open} {...modalProps} footer={null} closeIcon={null}>
-    <SendPost onPublish={(data) => console.log(data)} />
+  return <Modal destroyOnClose width='600px' title={<ModalTitle />} className={classNames(className, 'post-send-modal')} open={open} {...modalProps} footer={null} closeIcon={null}>
+    <SendPost onPublish={(data) => onClose()} />
   </Modal>
 }
 
