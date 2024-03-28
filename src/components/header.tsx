@@ -1,13 +1,13 @@
-import { useContext, useEffect, useRef, useState } from 'react';
-import { Modal } from 'antd'
+import {useContext, useState} from 'react';
+import {Dropdown, Modal} from 'antd'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-import { CountContext } from '../../Layout.jsx'
-import { useNavigate } from 'react-router-dom';
-import { LoadingOutlined } from '@ant-design/icons'
-function Index({ setHeadHeight }: any) {
-    const hei = useRef<any>()
-    const { connect, getMoneyEnd, user, setLoad, load }: any = useContext(CountContext);
+import {CountContext} from '../Layout.jsx'
+import {useNavigate} from 'react-router-dom';
+import {DownOutlined, LoadingOutlined} from '@ant-design/icons'
+
+function Header() {
+    const {connect, getMoneyEnd, user, setLoad, load, clear}: any = useContext(CountContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [page, setPage] = useState('Market')
     const history = useNavigate();
@@ -35,57 +35,71 @@ function Index({ setHeadHeight }: any) {
         }
     }
     // 改变路由方法
-    const historyChange = (i: string) => {
+    const historyChange = (i: number) => {
         switch (i) {
-            case 'Community':
+            case 2:
                 history('/community')
                 break;
-            case 'Market':
+            case 0:
                 history('/')
+                break;
+            case 1:
+                history('/dapp')
                 break;
         }
     }
-
-    useEffect(() => {
-        if (hei && hei.current) {
-            setHeadHeight(hei.current.scrollHeight)
-        }
-    }, [])
+    const logout = () => {
+        clear()
+    }
+    const items: any = [
+        {
+            key: '1',
+            label: (
+                <p onClick={logout}>logout</p>
+            ),
+        },
+    ];
 
     return (
-        <div className={'headerBox'} ref={hei}>
-            <img src="/topLogo.svg" alt="" style={{ cursor: 'pointer' }} onClick={() => {
+        <div className={'headerBox'}>
+            <img src="/topLogo.svg" alt="" style={{cursor: 'pointer'}} onClick={() => {
                 history('/')
             }} />
             <p className={`headerCenter dis`}>
                 {
                     ['Market', 'DApp & Tools', 'Community'].map((i, ind) => {
-                        return <span key={ind} style={{ color: page === i ? 'rgb(134,240,151)' : 'rgb(214,223,215)' }}
-                            onClick={() => {
-                                setPage(i);
-                                historyChange(i);
-                            }}>{i}</span>
+                        return <span key={ind} style={{color: page === i ? 'rgb(134,240,151)' : 'rgb(214,223,215)'}}
+                                     onClick={() => {
+                                         setPage(i);
+                                         historyChange(ind);
+                                     }}>{i}</span>
                     })
                 }
             </p>
-            <div className={'headerConnect'} onClick={() => {
-                if (!load) {
-                    if (!user) {
-                        setIsModalOpen(true)
-                    }
-                }
-            }}>
-                {
-                    user?.uid ? <div className={'disCen'}>
+
+            {
+                user?.uid ? <Dropdown
+                    menu={{
+                        items,
+                    }}>
+                    <div className={'disCen'} style={{cursor: 'pointer'}}>
                         <img src={user?.avatarlrl ? user?.avatarlrl : "/topLogo.svg"}
-                            style={{ width: '25px', display: 'block', marginRight: '4px' }} alt="" />
-                        <p> {user?.username ? user.username.length > 15 ? user.username.slice(0, 5) + '...' + user.username.slice(-4) : user.username : user.address.slice(0, 5) + '...' + user.address.slice(-4)}</p>
-                    </div> :
-                        <div className={'disCen'}><span>Connect Wallet</span> {load ?
-                            <LoadingOutlined style={{ marginLeft: '4px' }} /> : ''}
-                        </div>
-                }
-            </div>
+                             style={{width: '25px', display: 'block', marginRight: '4px'}} alt=""/>
+                        <p style={{color: 'rgb(214,223,215)'}}> {user?.username ? user.username.length > 12 ? user.username.slice(0, 5) + '...' + user.username.slice(-4) : user.username : user.address.slice(0, 5) + '...' + user.address.slice(-4)}</p>
+                        <DownOutlined style={{color: 'rgb(214,223,215)', marginTop: '3px'}}/>
+                    </div>
+                </Dropdown> : <div className={'headerConnect'} onClick={() => {
+                    if (!load) {
+                        if (!user) {
+                            setIsModalOpen(true)
+                        }
+                    }
+                }}>
+                    <div className={'disCen'}><span>Connect Wallet</span> {load ?
+                        <LoadingOutlined style={{marginLeft: '4px'}}/> : ''}
+                    </div>
+                </div>
+            }
             <Modal destroyOnClose={true} centered title={null} footer={null} className={'walletModal'}
                 maskClosable={false}
                 open={isModalOpen}
@@ -113,4 +127,4 @@ function Index({ setHeadHeight }: any) {
     );
 }
 
-export default Index;
+export default Header;

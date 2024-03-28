@@ -1,22 +1,24 @@
-import Header from './components/header'
+import Header from './components/header.tsx'
 import {Route, Routes, useLocation, useNavigate,} from "react-router-dom";
-import Index from './pages/index.tsx'
+import Index from './pages/index/index.tsx'
 import NewpairDetails from './pages/newpairDetails/index.tsx'
 import './style/all.less'
 import {createContext, useCallback, useEffect, useRef, useState} from 'react'
 import {getAppMetadata, getSdkError} from "@walletconnect/utils";
 import 'swiper/css';
 import {notification} from 'antd'
-import Bot from './components/bottom';
+import Bot from './components/bottom.tsx';
 import {Web3Modal} from "@web3modal/standalone";
 import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
 import {request} from '../utils/axios.ts';
 import Client from "@walletconnect/sign-client";
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
 import _ from 'lodash';
+import Dapp from './pages/dapp';
 import Community from './pages/community';
+
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -31,8 +33,6 @@ function Layout() {
     const [client, setClient] = useState(null);
     const [session, setSession] = useState(null);
     const prevRelayerValue = useRef();
-    const [headHeight, setHeadHeight] = useState('')
-    const [botHeight, setBotHeight] = useState('')
     const [user, setUserPar] = useState(null)
     const [load, setLoad] = useState(false)
     const createClient = async () => {
@@ -50,9 +50,49 @@ function Layout() {
             return null
         }
     }
-    const setLogin = async () => {
+    const clear = async () => {
         if (router.pathname !== '/') {
             history('/')
+        }
+        cookie.remove('username')
+        cookie.remove('token')
+        cookie.remove('jwt')
+        setUserPar(null)
+    }
+    const login = async (sign, account, message, name) => {
+        try {
+            // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
+            const res = await request('post', '/api/v1/login', {
+                signature: sign,
+                addr: account,
+                message,
+                inviteCode: ''
+            })
+            if (res === 'please') {
+                clear()
+            } else if (res && res.data && res.data?.accessToken) {
+                //    解析 token获取用户信息
+                const base64Url = res.data?.accessToken.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const decodedToken = JSON.parse(atob(base64));
+                if (decodedToken && decodedToken?.uid) {
+                    const data = await request('get', "/api/v1/userinfo/" + decodedToken.uid, '', res.data?.accessToken)
+                    if (data === 'please') {
+                        clear()
+                    } else if (data && data?.status === 200) {
+                        const user = data?.data?.data
+                        setUserPar(user)
+                        cookie.set('username', JSON.stringify(user), {expires: 1})
+                        cookie.set('token', res.data?.accessToken, {expires: 1})
+                        cookie.set('jwt', JSON.stringify(decodedToken), {expires: 1})
+                        if (name === 'modal') {
+                            web3Modal.closeModal();
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            return null
         }
     }
     //  登录
@@ -89,37 +129,7 @@ function Layout() {
                             // 签名消息
                             const message = token?.data?.nonce
                             const sign = await signer.signMessage(message)
-                            // const sign = await window.ethereum.request({
-                            //     method: "personal_sign",
-                            //     params: [message, account[0]]
-                            // });
-                            // 验证签名
-                            // const recoveredAddress = ethers.utils.verifyMessage(message, signature);
-                            //  获取地址  参数
-                            // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
-                            const res = await request('post', '/api/v1/login', {
-                                signature: sign,
-                                addr: account[0],
-                                message,
-                                inviteCode: ''
-                            })
-                            if (res === 'please') {
-                                setLogin()
-                            } else if (res && res.data && res.data?.accessToken) {
-                                //   jwt  解析 token获取用户信息
-                               /*  const decodedToken = Jwt.decode(res.data?.accessToken); */
-                                // if (decodedToken && decodedToken?.address) {
-                                const data = await request('get', "/api/v1/userinfo/" + 1, '', res.data?.accessToken)
-                                if (data === 'please') {
-                                    setLogin()
-                                } else if (data && data?.status === 200) {
-                                    const user = data?.data?.data
-                                    setUserPar(user)
-                                    cookie.set('username', JSON.stringify(user), {expires: 1})
-                                    cookie.set('token', res.data?.accessToken, {expires: 1})
-                                }
-                                // }
-                            }
+                            login(sign, account[0], message, 'more')
                         }
                     } catch (err) {
                         return null
@@ -145,7 +155,7 @@ function Layout() {
         }
     }
     // 登录
-    const login = async (chainId, address, client, session, toName) => {
+    const loginMore = async (chainId, address, client, session, toName) => {
         try {
             const hexMsg = encoding.utf8ToHex(toName, true);
             const params = [hexMsg, address];
@@ -157,35 +167,7 @@ function Layout() {
                     params,
                 },
             })
-            // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
-            const pa = ''
-            const res = await request('post', '/api/v1/login', {
-                signature: signature,
-                addr: address,
-                message: toName,
-                inviteCode: pa
-            })
-            if (res === 'please') {
-                await setLogin()
-            } else if (res && res.data && res.data?.accessToken) {
-                //   jwt  解析 token获取用户信息
-                /* const decodedToken = Jwt.decode(res.data?.accessToken); */
-/*                 const decodedToken = '' */
-/*                 if (decodedToken && decodedToken?.address) { */
-                    const data = await request('get', "/api/v1/userinfo/" + 1, '', res.data?.accessToken)
-                    if (data === 'please') {
-                        await setLogin()
-                    } else if (data && data?.status === 200) {
-                        const user = data?.data?.data
-                        setUserPar(user)
-                        cookie.set('username', JSON.stringify(user), {expires: 1})
-                        cookie.set('token', res.data?.accessToken, {expires: 1})
-                        web3Modal.closeModal();
-                    } else {
-                        return null
-                    }
- /*                } */
-            }
+            login(signature, address, toName, 'modal')
         } catch (e) {
             return null
         }
@@ -202,7 +184,6 @@ function Layout() {
         setSession(undefined);
         setChains([]);
     };
-
     const disconnect = useCallback(async () => {
         await client.disconnect({
             topic: session.topic,
@@ -210,14 +191,13 @@ function Layout() {
         });
         reset();
     }, [client, session]);
-
     const getBlockchainActions = async (acount, client, session) => {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
             const token = await request('post', '/api/v1/token', {address: address})
             if (token && token?.data && token?.status === 200) {
-                await login(chainId, address, client, session, token?.data?.nonce);
+                await loginMore(chainId, address, client, session, token?.data?.nonce);
             } else {
                 return null
             }
@@ -241,7 +221,6 @@ function Layout() {
         },
         []
     )
-
     const connect = useCallback(
         async () => {
             try {
@@ -285,16 +264,17 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
-    const value = {connect, setLogin, onDisconnect, getMoneyEnd, headHeight, botHeight, user, setLoad, load}
+    const value = {connect, clear, onDisconnect, getMoneyEnd, user, setLoad, load}
     return (
         <CountContext.Provider value={value}>
-            <Header setHeadHeight={setHeadHeight} />
+            <Header/>
             <Routes>
                 <Route path="/" element={<Index/>}/>
                 <Route path="/newpairDetails" element={<NewpairDetails/>}/>
                 <Route path='/community' element={<Community/>}/>
+                <Route path='/dapp' element={<Dapp/>}/>
             </Routes>
-            <Bot setBotHeight={setBotHeight}/>
+            <Bot/>
         </CountContext.Provider>
     );
 }

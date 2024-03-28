@@ -18,15 +18,16 @@ body {
   overflow: hidden;
 }
 
-//body::-webkit-scrollbar {
-//  width: 10px;
-//}
-//
-//body::-webkit-scrollbar-thumb {
-//  background: rgb(24, 30, 29);
-//  border: 1px solid rgb(104, 124, 105);
-//  border-radius: 25px;
-//}
+.scrollStyle::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.scrollStyle::-webkit-scrollbar-thumb {
+  background: rgb(24, 30, 29) !important;
+  border: 1px solid rgb(104, 124, 105) !important;
+  border-radius: 25px !important;
+}
+
 .indexBox {
   width: 74%;
   margin-top: 10px;
@@ -166,39 +167,32 @@ body {
       }
     }
 
-    .indexNewPairBody::-webkit-scrollbar {
-      width: 8px !important; /* 滚动条宽度 */
-    }
-
-    /* WebKit 浏览器的滚动条滑块样式 */
-
-    .indexNewPairBody::-webkit-scrollbar-thumb {
-      background: rgb(24, 30, 29) !important;
-      border: 1px solid rgb(104, 124, 105) !important;
-      border-radius: 10px !important;
-    }
   }
 }
 
 .headerBox {
+  height: 54px;
+  box-sizing: border-box;
+  padding: 0 4% 8px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  background-color: rgb(13, 26, 20);
-  padding: 0.6% 3.5%;
-  border-bottom: 1px solid rgb(104, 124, 105);
+  //background-color: #0d1a14;
+  background: linear-gradient(to bottom, rgb(3, 5, 3), rgb(9, 18, 13));
+  border-bottom: 1px solid #687c69;
   border-radius: 0 0 10px 10px;
 
   .headerCenter {
     width: 40%;
 
     span {
+      font-size: 18px;
       cursor: pointer;
     }
   }
 
   .headerConnect {
-    padding: 0.3% 1.2%;
+    padding: 0.5% 1.5%;
     font-size: 15px;
     cursor: pointer;
     letter-spacing: -1px;
@@ -215,20 +209,10 @@ body {
     background-color: rgb(18, 18, 18);
     border: 1px solid rgba(134, 240, 151, 0.5);
 
-    .rightTweetBox::-webkit-scrollbar {
-      width: 10px;
-    }
-
     .rightTweetBox {
       .infinite-scroll-component {
-        overflow: initial !important;
+        overflow: hidden !important;
       }
-    }
-
-    .rightTweetBox::-webkit-scrollbar-thumb {
-      background: rgb(24, 30, 29);
-      border: 1px solid rgb(104, 124, 105);
-      border-radius: 25px;
     }
 
     .rightBoxTweetTop {
@@ -355,14 +339,17 @@ body {
   position: fixed;
   z-index: 100;
   bottom: 0;
+  height: 25px;
+  box-sizing: border-box;
+  background-color: rgb(9, 15, 12);
 
   & > div:last-child {
+    padding-top: 6px;
+    padding-right: 20px;
     border-top: 1.5px solid rgb(104, 124, 105);
-    padding: 0.3% 2%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    background-color: rgb(9, 15, 12);
 
     & > p:first-child {
       width: 10px;
@@ -390,11 +377,9 @@ body {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(
-      to right,
-      rgb(9, 21, 17),
-      rgb(37, 70, 59)
-    ) !important;
+    background: linear-gradient(to right,
+    rgb(9, 21, 17),
+    rgb(37, 70, 59)) !important;
   }
 }
 
@@ -490,63 +475,13 @@ span {
 
 .NewpairDetails {
   display: flex;
-
-  .NewpairDetailsOne {
-    background-color: rgb(6, 14, 11);
-    box-sizing: border-box;
-    padding: 0 1% 0 2%;
-    width: 18%;
-    border: 1px solid white;
-    height: 100px;
-    .top {
-      & > div {
-        display: flex;
-        align-items: center;
-        img {
-          display: block;
-          width: 35px;
-          margin-right: 5px;
-        }
-        p {
-          display: flex;
-          flex-direction: column;
-          line-height: 1;
-          span:first-child {
-            color: white;
-            font-size: 18px;
-            margin-bottom: 5px;
-          }
-          span:last-child {
-            font-size: 14px;
-            color: rgb(200, 200, 200);
-          }
-        }
-      }
-      & > p {
-        background-color: rgb(24, 30, 28);
-        border-radius: 5px;
-        padding: 4.5%;
-        cursor: pointer;
-        img {
-          display: block;
-          width: 15px;
-        }
-      }
-    }
-    .address {
-      & > p {
-      }
-    }
-  }
 }
 
 .scroll-style-minin() {
   &::-webkit-scrollbar {
     width: 8px !important; /* 滚动条宽度 */
   }
-
   /* WebKit 浏览器的滚动条滑块样式 */
-
   &::-webkit-scrollbar-thumb {
     background: rgb(24, 30, 29) !important;
     border: 1px solid rgb(104, 124, 105) !important;

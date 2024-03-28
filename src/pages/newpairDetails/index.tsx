@@ -1,11 +1,13 @@
 import Left from './compontent/left.tsx'
-
+import Center from './compontent/center.tsx'
+import Right from './compontent/right.tsx'
+import './compontent/all.less'
 function Index() {
     return (
         <div className={'NewpairDetails'}>
             <Left />
-            <div style={{flex: 1, border: '1px solid green', height: '100px'}}></div>
-            <div style={{width: '20%', border: '1px solid gray', height: '100px'}}></div>
+            <Center/>
+            <Right/>
         </div>
     );
 }
