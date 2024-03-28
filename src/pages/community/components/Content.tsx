@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { request } from "../../../utils/axios";
+import { request } from "../../../../utils/axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Skeleton } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 /* import { PostImteDataType } from './PostItem'; */
-import Tweets from '../../components/tweets'
+import Tweets from '../../../components/tweets'
 import SendPost from "./SendPost";
 import classNames from "classnames";
 

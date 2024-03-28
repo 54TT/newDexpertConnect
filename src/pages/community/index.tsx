@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import UserInfo, { UserActionKey } from '../containers/Community/UserInfo'
-import "../style/community.less"
-import CommunityContent from '../containers/Community/Content';
-import CommunityRight from '../containers/Community/RightSider';
+import UserInfo, { UserActionKey } from './components/UserInfo'
+import "./index.less"
+import CommunityContent from './components/Content';
+import CommunityRight from './components/RightSider';
 function Community() {
   // 左侧选中的Tab
   const [activeUserTab, setActiveUserTab] = useState<UserActionKey>("Profile");

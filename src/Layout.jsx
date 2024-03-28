@@ -16,7 +16,7 @@ import Client from "@walletconnect/sign-client";
 import { ethers } from 'ethers';
 import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
 import _ from 'lodash';
-import Community from './pages/community.tsx';
+import Community from './pages/community';
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
