@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react'
 import { request } from '../../utils/axios';
 import Cookies from 'js-cookie';
+import PostSendModal from '../pages/community/components/PostModal';
 interface TweetsPropsType {
     user?: any;
     name: any;
@@ -11,6 +12,7 @@ interface TweetsPropsType {
 function Tweets({ user, name, onClick = () => { } }: TweetsPropsType) {
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
+    const [openComment, setOpenComment] = useState(false);
     useEffect(() => {
         if (clickAnimate) {
             setTimeout(() => {
@@ -39,6 +41,11 @@ function Tweets({ user, name, onClick = () => { } }: TweetsPropsType) {
         } catch (e) {
             console.error(e);
         }
+    }
+
+    const handleAddComment = (data) => {
+        console.log(data);
+        console.log(name);
     }
 
     return (
@@ -74,7 +81,7 @@ function Tweets({ user, name, onClick = () => { } }: TweetsPropsType) {
             </div>
             <div className={'tweetsOperate'}>
                 <p className={'tweetsIn'}>
-                    <img src="/comment.svg" alt="" />
+                    <img src="/comment.svg" alt="" onClick={() => setOpenComment(true)} />
                     <span>{localData?.commentNum ? localData.commentNum : 0}</span>
                 </p>
                 <div className={'tweetsIn'} onClick={clickLike}>
@@ -99,7 +106,9 @@ function Tweets({ user, name, onClick = () => { } }: TweetsPropsType) {
                     <span>111</span>
                 </p>
             </div>
+            <PostSendModal className='comment-send-model' open={openComment} onClose={() => setOpenComment(false)} onPublish={(data) => handleAddComment(data)} />
         </div>
+
     );
 }
 

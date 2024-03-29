@@ -1,76 +1,34 @@
-import { useContext, useEffect, useState } from "react";
-import { request } from "../../../../utils/axios";
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { useEffect, useState } from "react";
+import { handlePublish } from "../../../../utils/axios";
+/* import InfiniteScroll from 'react-infinite-scroll-component';
 import { Skeleton } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons'; */
 /* import { PostImteDataType } from './PostItem'; */
 /* import Tweets from '../../../components/tweets' */
 import TWeetHome from '../../../components/tweetHome.js'
 import SendPost from "./SendPost";
 import classNames from "classnames";
-import { useNavigate, useParams } from "react-router-dom";
-import { CountContext } from '../../../Layout.jsx'
-import Cookies from "js-cookie";
 interface TabType {
   label: 'For you' | 'Following',
   key: '1' | '2',
 }
 
 function CommunityContent() {
-  const [postData, setPostData] = useState([]);
-  const [bol, setBol] = useState(false);
-  const [iconLoad, setIconLoad] = useState(false);
-  const [status, setStatus] = useState(false);
-  const [page, setPage] = useState(1);
   const [activeTab, setActiveTab] = useState<TabType['key']>('1');
-  const history = useNavigate();
-  const path = useParams();
-  const { user } = useContext(CountContext);
-
-  const getTweet = async (page: number) => {
-    const token = Cookies.get('token');
-    const res: any = await request('post', '/api/v1/post/public', { page: page }, token)
-    if (res && res?.status === 200) {
-      const { data } = res
-      const r = data && data?.posts?.length > 0 ? data.posts : []
-      if (page !== 1) {
-        if (r.length !== 10) {
-          setStatus(true)
-        }
-        const a = postData.concat(r)
-        setPostData(a)
-
-        setIconLoad(false)
-      } else {
-        console.log(r);
-
-        setPostData(r)
-      }
-      setBol(true)
-    }
-  }
+  const [refreshKey, setRefreshKey] = useState('1');
 
   const reload = () => {
-    getTweet(1)
+    // 通过更改key触发diff, hack行为。
+    setRefreshKey(new Date().toTimeString())
   }
 
   useEffect(() => {
-    getTweet(1);
-    console.log(path);
-
     document.addEventListener('publish-post', reload);
     return () => {
       document.removeEventListener('publish-post', reload);
     }
   }, [])
 
-  const changePage = () => {
-    if (!status) {
-      getTweet(page + 1)
-      setPage(page + 1)
-      setIconLoad(true)
-    }
-  }
 
   const postTab: TabType[] = [{
     label: 'For you',
@@ -81,6 +39,21 @@ function CommunityContent() {
     key: '2'
   }];
 
+  const onPublish = async (data) => {
+    try {
+      const result = await handlePublish(data);
+      if (result === 200) {
+        const event = new CustomEvent("publish-post");
+        document.dispatchEvent(event);
+        return result
+      }
+    } catch (e) {
+      console.error(e);
+      return Promise.reject('e');
+
+    }
+  }
+
   return (
     <div className="community-content">
       <div className="community-content-post-tab">
@@ -89,7 +62,7 @@ function CommunityContent() {
         }
       </div>
       <div id='scrollableDiv' className="community-content-post" style={{ overflowY: 'auto', height: "calc(100vh - 129px)" }}>
-        <SendPost onPublish={() => { getTweet(1); }} />
+        <SendPost onPublish={(data) => onPublish(data)} />
         {/* {
           bol ? postData.length > 0 ?
             <div
@@ -121,7 +94,7 @@ function CommunityContent() {
             paragraph={{ rows: 4 }}
           />
         } */}
-        <TWeetHome />
+        <TWeetHome key={refreshKey} />
       </div>
     </div>
   )

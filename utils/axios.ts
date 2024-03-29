@@ -2,6 +2,7 @@ import axios from "axios";
 import cookie from "js-cookie";
 import dayjs from 'dayjs'
 import {notification,} from "antd";
+import Cookies from "js-cookie";
 
 const requestA = axios.create({
     baseURL: 'http://165.22.51.161:8081',
@@ -75,3 +76,19 @@ export const request = async (method:string, url:string, data:any, token?:any) =
         })
     }
 }
+
+
+export  const handlePublish = async (data) => {
+    const token = Cookies.get('token');
+    const username = JSON.parse(Cookies.get('username'));
+    const result = await request('post', "/api/v1/post/publish", {
+      uid: username?.uid,
+      address: username?.address,
+      post: data
+    }, token)
+    if (result.status === 200) {
+      return result.status;
+    } else {
+      return Promise.reject('faild')
+    }
+  }

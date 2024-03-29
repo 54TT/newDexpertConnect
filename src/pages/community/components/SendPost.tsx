@@ -77,7 +77,6 @@ function SendPost({ onPublish }: SendPostPropsType) {
 
   const handlePostSend = async () => {
     const token = Cookies.get('token');
-    const username = Cookies.get('username');
 
     let imgUrl = null;
     try {
@@ -101,18 +100,10 @@ function SendPost({ onPublish }: SendPostPropsType) {
         content: value,
         imageList: imgUrl?.data?.url ? [imgUrl.data.url] : undefined,
       }
-
-      const result = await request('post', "/api/v1/post/publish", {
-        uid: username?.uid,
-        address: username?.address,
-        post: data
-      }, token)
+      await onPublish(data);
       setPublishing(false);
       clearImg();
       setValue('')
-      onPublish(result);
-      const event = new CustomEvent("publish-post");
-      document.dispatchEvent(event);
     } catch (e) {
       console.error(e);
       messageApi.error('Publishing failed')
