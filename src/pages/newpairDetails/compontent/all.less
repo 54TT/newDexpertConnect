@@ -57,6 +57,7 @@
 
       img {
         cursor: pointer;
+        width: 14px;
         margin-left: 5px;
       }
     }
@@ -89,7 +90,7 @@
     }
 
     & > p:last-child {
-      color: rgb(0, 255, 71);
+      text-align: center;
     }
   }
 
@@ -116,6 +117,18 @@
 
     & > .swapTop {
       color: rgb(200, 200, 200);
+
+      span {
+        flex: 1;
+      }
+
+      span:nth-child(2) {
+        text-align: center;
+      }
+
+      span:last-child {
+        text-align: right;
+      }
     }
   }
 }
@@ -173,7 +186,7 @@
       position: absolute;
       top: 20%;
       left: 50%;
-      transform: translate(-50%,0);
+      transform: translate(-50%, 0);
 
       p {
         color: white;
@@ -182,7 +195,8 @@
         width: 100%;
         margin-bottom: 6%;
       }
-      img{
+
+      img {
         display: block;
         margin: 0 auto;
       }

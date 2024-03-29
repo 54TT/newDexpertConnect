@@ -5,11 +5,10 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { request } from '../../../utils/axios.ts';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Skeleton } from 'antd'
-// @ts-ignore
 import { CountContext } from "../../Layout.tsx";
 import { LoadingOutlined } from '@ant-design/icons'
 function Index() {
-    const { headHeight, botHeight }: any = useContext(CountContext)
+    const { headHeight, botHeight ,clear}: any = useContext(CountContext)
     const swiperRef: any = useRef()
     const topRef: any = useRef()
     const [hei, setHei] = useState('')
@@ -35,7 +34,9 @@ function Index() {
     }
     const getTweet = async (page: number) => {
         const res: any = await request('post', '/api/v1/post/public', { page: page }, '')
-        if (res && res?.status === 200) {
+        if(res==='please'){
+            clear()
+        }else if (res && res?.status === 200) {
             const { data } = res
             const r = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {

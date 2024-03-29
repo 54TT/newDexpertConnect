@@ -1,12 +1,12 @@
-import { Button, Input, message } from 'antd';
-import { request } from '../../../../utils/axios';
-import { useEffect, useRef, useState } from 'react';
+import {Button, Input, message} from 'antd';
+import {request} from '../../../../utils/axios';
+import {useContext, useEffect, useRef, useState} from 'react';
+import {CloseOutlined} from '@ant-design/icons';
+import {CountContext} from '../../../Layout.tsx'
 import Cookies from 'js-cookie';
-import { CloseOutlined } from '@ant-design/icons';
-
 const { TextArea } = Input;
-
 function SendPost({ type = '', changeRefresh, onPublish, postData }: any) {
+    const {clear}:any = useContext(CountContext)
     const [img, setImg] = useState<any>(null);
     const [imgPreview, setImgPreview] = useState<any>(null);
     const [value, setValue] = useState('');
@@ -76,11 +76,9 @@ function SendPost({ type = '', changeRefresh, onPublish, postData }: any) {
             if (img !== null) {
                 imgUrl = await request('post', '/api/v1/upload/image', img, token);
             }
-
             if (imgUrl !== null) {
                 if (imgUrl === 'please') {
-                    console.log(imgUrl, 'please');
-
+                    clear()
                 } else if (!imgUrl || imgUrl?.status !== 200) {
                     return messageApi.open({
                         type: 'warning',
@@ -115,6 +113,11 @@ function SendPost({ type = '', changeRefresh, onPublish, postData }: any) {
             setPublishing(false);
             clearImg();
             setValue('')
+            if (result === 'please') {
+                clear()
+            } else if (result && result.status === 200) {
+                changeRefresh(true)
+            }
         } catch (e) {
             console.log(e);
 

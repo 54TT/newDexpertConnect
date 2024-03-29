@@ -197,7 +197,9 @@ function Layout() {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
             const token:any = await request('post', '/api/v1/token', {address: address})
-            if (token && token?.data && token?.status === 200) {
+           if(token==='please'){
+               clear()
+           }else if (token && token?.data && token?.status === 200) {
                 await loginMore(chainId, address, client, session, token?.data?.nonce);
             } else {
                 return null

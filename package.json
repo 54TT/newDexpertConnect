@@ -27,7 +27,6 @@
     "axios": "^1.6.7",
     "classnames": "^2.5.1",
     "copy-to-clipboard": "^3.3.3",
-    "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
     "ethers": "^5.7.2",
@@ -39,7 +38,6 @@
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-fast-marquee": "^1.6.4",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.22.3",
     "swiper": "^11.0.7"

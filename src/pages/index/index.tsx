@@ -1,15 +1,14 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Input, Segmented, Select } from 'antd'
-import { useEffect, useRef, useState } from "react";
-import { ApolloClient, InMemoryCache, useQuery } from "@apollo/client";
-import { gql } from 'graphql-tag'
+import {Input, Segmented, Select} from 'antd'
+import {useEffect, useRef, useState} from "react";
+import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
+import {gql} from 'graphql-tag'
+import {SearchOutlined} from '@ant-design/icons'
 import { cloneDeep, differenceBy } from 'lodash';
-import { SearchOutlined } from '@ant-design/icons'
 import Right from "./components/right.tsx";
 import NewPair from './components/newPairDate.tsx'
 import { ethers } from 'ethers';
 import Loading from '../../components/loading.tsx'
-
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });
@@ -191,6 +190,7 @@ function Index() {
             refetch()
         }
     }
+
     useEffect(() => {
         let interval: any = null
         if (!tableDtaLoad) {
@@ -259,12 +259,8 @@ function Index() {
                             loader={null}
                             dataLength={tableDta.length}>
                             {
-                                // tableDtaLoad ? <div className={'indexNewSkeleton'}>
-                                //     <Spin size={'large'} className={'indexNewSpin'}>
-                                //     </Spin>
-                                // </div>
-                                tableDtaLoad ? <Loading /> : tableDta.length > 0 ?
-                                    <NewPair tableDta={tableDta} time={time} setDta={setDta} /> : <p>no Data</p>
+                                    tableDtaLoad? <Loading status={'20'} />: tableDta.length > 0 ?
+                                    <NewPair tableDta={tableDta} time={time} setDta={setDta}/> : <p>no Data</p>
                             }
                         </InfiniteScroll>
                     </div>

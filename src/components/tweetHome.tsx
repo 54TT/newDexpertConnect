@@ -1,16 +1,20 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import Tweets from "./tweets.tsx";
-import { LoadingOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import { request } from "../../utils/axios.ts";
+import {LoadingOutlined} from "@ant-design/icons";
+import {useContext, useEffect, useState} from "react";
+import {request} from "../../utils/axios.ts";
 import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
-function TweetHome({ hei, changeHei, refresh, changeRefresh }: any) {
+import {CountContext} from "../Layout.tsx";
+function TweetHome({hei, changeHei, refresh, changeRefresh}: any) {
+    const {clear}:any = useContext(CountContext)
+
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
     const [status, setStatus] = useState(false)
     const [iconLoad, setIconLoad] = useState(false)
     const [page, setPage] = useState(1)
+    const [isLogin, setIsLogin] = useState(false)
     const changePage = () => {
         if (!status) {
             getTweet(page + 1)
@@ -25,9 +29,11 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh }: any) {
     }, [page])
     const getTweet = async (page: number) => {
         const token = cookie.get('token')
-        const res: any = await request('post', '/api/v1/post/public', { page: page }, token ? token : '')
-        if (res && res?.status === 200) {
-            const { data } = res
+        const res: any = await request('post', '/api/v1/post/public', {page: page}, token ? token : '')
+      if(res=='please'){
+          clear()
+      }else if (res && res?.status === 200) {
+            const {data} = res
             const r: any = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
                 if (r.length !== 10) {
@@ -51,6 +57,10 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh }: any) {
     }
 
     useEffect(() => {
+        const abc = cookie.get('token')
+        if(abc){
+            setIsLogin(true)
+        }
         getTweet(1)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cookie.get('token')]);
@@ -63,27 +73,28 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh }: any) {
     return (
         <>
             {
-                refresh ? <Loading /> : bol ? tableData.length > 0 ?
-                    <div id={'scrollableDiv'} style={{ overflowY: 'auto', height: hei + "px" }}
-                        className={`rightTweetBox scrollStyle`}>
-                        <InfiniteScroll
-                            hasMore={true}
-                            next={changePage}
-                            scrollableTarget="scrollableDiv"
-                            loader={null}
-                            dataLength={tableData.length}>
-                            {tableData.map((post: any, index: number) => {
-                                return <Tweets key={index} name={post} />
-                            })}
-                        </InfiniteScroll>
-                        {
-                            iconLoad &&
-                            <p style={{ textAlign: 'center', color: 'white', fontSize: '16px' }}><LoadingOutlined />
-                            </p>
-                        }
-                    </div> :
-                    <p style={{ textAlign: 'center', color: 'white', marginTop: '20px' }}>No data</p> :
-                    <Loading />
+                refresh ? <Loading/> : bol ? tableData.length > 0 ?
+                        <div id={'scrollableDiv'} style={{overflowY: 'auto', height: hei + "px"}}
+                             className={`rightTweetBox scrollStyle`}>
+                            <InfiniteScroll
+                                hasMore={true}
+                                next={changePage}
+                                scrollableTarget="scrollableDiv"
+                                loader={null}
+                                dataLength={tableData.length}>
+                                {tableData.map((post: any, index: number) => {
+                                    return <Tweets key={index} isLogin={isLogin} name={post}/>
+                                })}
+                            </InfiniteScroll>
+                            {
+                                iconLoad &&
+                                <p style={{textAlign: 'center', color: 'white', fontSize: '16px'}}><LoadingOutlined/>
+                                </p>
+                            }
+                        </div> :
+                        <p style={{textAlign: 'center', color: 'white', marginTop: '20px'}}>No data</p> :
+                    <Loading/>
+
             }
         </>
     );

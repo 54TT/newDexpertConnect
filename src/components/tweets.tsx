@@ -1,5 +1,7 @@
+import { useContext, useEffect, useState } from 'react'
+import { CountContext } from "../Layout.tsx";
+import { simplify } from '../../utils/change.ts'
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react'
 import { request } from '../../utils/axios';
 import Cookies from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
@@ -7,9 +9,11 @@ import { useNavigate } from 'react-router-dom';
 interface TweetsPropsType {
     user?: any;
     name: any;
+    isLogin?: boolean
 }
 
-function Tweets({ name }: TweetsPropsType) {
+function Tweets({ name, isLogin }: TweetsPropsType) {
+    const { clear }: any = useContext(CountContext)
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
     const [openComment, setOpenComment] = useState(false);
@@ -43,9 +47,9 @@ function Tweets({ name }: TweetsPropsType) {
                 if (result && result?.status === 200) {
                     setLocalData({ ...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1 })
                 }
+            } catch (e) {
+                return null
             }
-        } catch (e) {
-            console.log(e);
         }
     }
 
