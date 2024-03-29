@@ -74,7 +74,7 @@ body {
     }
 
     .indexRight {
-      width: 13%;
+      width: 18%;
 
       p {
         display: flex;
@@ -82,10 +82,13 @@ body {
 
         img {
           display: block;
-          margin-right: 10%;
+          width: 22px;
+          margin-right: 5px;
         }
 
         span {
+          font-size: 15px;
+          letter-spacing: -1px;
           color: rgb(214, 223, 215);
         }
       }
@@ -133,29 +136,30 @@ body {
         cursor: pointer;
         border-bottom: 5px solid;
         padding: 4px 0;
-
         & > div {
           line-height: 1;
           display: flex;
-          font-size: 15px;
+          font-size: 14px;
           justify-content: center;
           flex: 1;
+          overflow: hidden;
+          letter-spacing: -1px;
+          white-space: nowrap;
         }
 
         .indexNewPairBone {
           display: flex;
           align-items: center;
           justify-content: flex-start;
-          margin-left: 2%;
+          padding-left: 0.5%;
         }
 
         .indexTableLogo {
           img {
-            width: 20px;
+            width: 16px;
             margin-right: 5px;
             cursor: pointer;
           }
-
           div {
             color: white;
           }
@@ -196,7 +200,7 @@ body {
     font-size: 15px;
     cursor: pointer;
     letter-spacing: -1px;
-    border-radius: 10px;
+    border-radius: 7px;
     background: linear-gradient(to right, rgb(134, 240, 151), rgb(0, 255, 71));
   }
 }
@@ -344,7 +348,7 @@ body {
   background-color: rgb(9, 15, 12);
 
   & > div:last-child {
-    padding-top: 6px;
+    padding-top: 5px;
     padding-right: 20px;
     border-top: 1.5px solid rgb(104, 124, 105);
     display: flex;

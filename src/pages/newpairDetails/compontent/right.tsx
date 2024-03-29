@@ -12,6 +12,7 @@ function Right() {
     const handleChange = (e: string) => {
         setValue(e)
     }
+
     useEffect(() => {
         if (topRef && topRef.current) {
             const a = topRef.current.scrollHeight
@@ -20,6 +21,7 @@ function Right() {
             setHei(n)
         }
     }, []);
+
     const changStatus = (name: boolean) => {
         setSta(name)
     }

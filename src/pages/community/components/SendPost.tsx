@@ -34,7 +34,7 @@ function SendPost() {
     <div className='post-send-tools'>
       <div className='post-send-tools-icon'>
         {
-          toolsIcon.map((data) => <img src={data.img} />)
+          toolsIcon.map((data) => <img src={data.img} alt={''}/>)
         }
       </div>
       <div className='post-send-tools-button'>

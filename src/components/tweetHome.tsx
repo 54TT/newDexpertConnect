@@ -4,6 +4,7 @@ import {LoadingOutlined} from "@ant-design/icons";
 import {Spin} from "antd";
 import {useEffect, useState} from "react";
 import {request} from "../../utils/axios.ts";
+import cookie from "js-cookie";
 
 function TweetHome({hei, changeHei}: any) {
     const [tableData, setData] = useState([])
@@ -24,7 +25,8 @@ function TweetHome({hei, changeHei}: any) {
         }
     }, [page])
     const getTweet = async (page: number) => {
-        const res: any = await request('post', '/api/v1/post/public', {page: page}, '')
+        const token = cookie.get('token')
+        const res: any = await request('post', '/api/v1/post/public', {page: page}, token ? token : '')
         if (res && res?.status === 200) {
             const {data} = res
             const r = data && data?.posts?.length > 0 ? data.posts : []
@@ -44,7 +46,8 @@ function TweetHome({hei, changeHei}: any) {
 
     useEffect(() => {
         getTweet(1)
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cookie.get('token')]);
     return (
         <>
             {

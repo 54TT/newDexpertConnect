@@ -3,8 +3,10 @@
   color: #fff;
   align-items: center;
   margin-top: 12px;
+
   &-item {
     cursor: pointer;
+
     > div {
       display: flex;
       width: 150px;
@@ -12,20 +14,19 @@
       margin-bottom: 24px;
       padding: 12px 20px;
     }
+
     &-active {
-      background: linear-gradient(
-        90deg,
-        rgba(10, 21, 17, 0.65) 27%,
-        rgba(55, 123, 101, 0.41) 100%
-      );
+      background: linear-gradient(90deg,
+      rgba(10, 21, 17, 0.65) 27%,
+      rgba(55, 123, 101, 0.41) 100%);
     }
+
     &:hover {
-      background: linear-gradient(
-        90deg,
-        rgba(10, 21, 17, 0.65) 27%,
-        rgba(55, 123, 101, 0.41) 100%
-      );
+      background: linear-gradient(90deg,
+      rgba(10, 21, 17, 0.65) 27%,
+      rgba(55, 123, 101, 0.41) 100%);
     }
+
     &-label {
       display: inline-block;
       line-height: 22px;
@@ -33,11 +34,13 @@
 
     &-img {
       margin-right: 24px;
+
       img {
         width: 20px;
       }
     }
   }
+
   &-button {
     .ant-btn {
       width: 169px;
@@ -45,6 +48,7 @@
       background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
       border: none;
       color: #000;
+
       &.ant-btn-default {
         &:hover {
           background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
@@ -58,9 +62,11 @@
 
 .post-item {
   display: flex;
+
   &-info {
     margin-left: 12px;
     flex: 1;
+
     &-user {
       &-nickName {
         margin-right: 12px;
@@ -71,6 +77,7 @@
         line-height: 19.6px;
         text-align: left;
       }
+
       &-date {
         color: #879188;
         font-family: PingFang SC;
@@ -80,6 +87,7 @@
         text-align: left;
       }
     }
+
     &-content {
       color: #d6dfd7;
       font-family: PingFang SC;
@@ -88,14 +96,17 @@
       line-height: 19.6px;
       text-align: left;
     }
+
     &-tag {
       color: #00daff;
       margin: 12px 0;
+
       span {
         margin-right: 12px;
         cursor: pointer;
       }
     }
+
     &-action {
       display: flex;
       justify-content: space-between;
@@ -104,8 +115,10 @@
       align-items: center;
     }
   }
+
   &-avatar {
     width: 40px;
+
     > img {
       width: 36px;
       height: 36px;
@@ -118,11 +131,13 @@
   &-post {
     .rightTweetBox {
       margin: 24px 0px;
+
       .tweetsBox {
         border-bottom: 0.4px solid #687c69;
         padding-bottom: 24px;
       }
     }
+
     &-tab {
       display: flex;
       width: 100%;
@@ -135,78 +150,90 @@
       > div {
         width: 50%;
       }
+
       :first-child {
         height: 100%;
+
         span {
           float: right;
           margin-right: 24px;
           line-height: 48px;
         }
+
         &:hover {
           background-color: #181e1c;
         }
       }
+
       :nth-child(2) {
         height: 100%;
+
         span {
           float: left;
           margin-left: 24px;
           line-height: 48px;
         }
+
         &:hover {
           background-color: #181e1c;
         }
       }
     }
+
     &::-webkit-scrollbar {
       width: 8px !important; /* 滚动条宽度 */
     }
-
     /* WebKit 浏览器的滚动条滑块样式 */
-
     &::-webkit-scrollbar-thumb {
       background: rgb(24, 30, 29) !important;
       border: 1px solid rgb(104, 124, 105) !important;
       border-radius: 10px !important;
     }
+
     &-send {
       display: flex;
+
       &-avatar {
         display: flex;
+
         > img {
           width: 36px;
           height: 36px;
           border-radius: 20px;
         }
       }
+
       &-input {
         flex: 1;
         margin-left: 24px;
+
         > textarea {
           min-height: 48px;
           background: #060e0b;
           border: none;
           resize: vertical;
           color: #fff;
+
           &::placeholder {
             color: #879188;
-            font-family: PingFang SC;
             font-size: 14px;
             font-weight: 400;
             line-height: 19.6px;
             text-align: left;
           }
+
           &:hover {
             background: #060e0b;
           }
+
           &:focus {
             background: #060e0b;
           }
         }
       }
-      padding: 0 8%;
-      padding-bottom: 24px;
-      margin-top: 24px;
+
+      padding: 0 8% 2%;
+      margin-top: 2%;
       border-bottom: 0.4px solid #687c69;
     }
   }
@@ -217,9 +244,11 @@
   padding: 12px 8%;
   justify-content: space-between;
   border-bottom: 0.4px solid #687c69;
+
   &-icon {
     display: flex;
     align-items: center;
+
     img {
       width: 18px;
       height: 18px;
@@ -228,16 +257,22 @@
       cursor: pointer;
     }
   }
+
   &-button {
     button {
       background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
       border: none;
-      width: 70px;
+      width: 75px;
+      padding:0!important;
+      font-size: 18px;
+      height: auto;
+
       &:hover {
         background: linear-gradient(90deg, #86f097 0%, #00ff47 100%) !important;
         filter: brightness(1.2);
         color: #000 !important;
       }
+
       &:active {
         background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
       }
@@ -273,6 +308,7 @@
     }
   } */
 }
+
 .post-tab-item-active {
   background: #181e1c;
   color: #fff;
