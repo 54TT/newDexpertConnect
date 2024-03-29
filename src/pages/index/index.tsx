@@ -9,7 +9,6 @@ import Right from "./components/right.tsx";
 import NewPair from './components/newPairDate.tsx'
 import { ethers } from 'ethers';
 import Loading from '../../components/loading.tsx'
-
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });

@@ -1,14 +1,14 @@
 import axios from "axios";
 import cookie from "js-cookie";
+import Cookies from "js-cookie";
 import dayjs from 'dayjs'
 import {notification,} from "antd";
-import Cookies from "js-cookie";
 
 const requestA = axios.create({
-    baseURL: 'http://165.22.51.161:8081',
+    baseURL: process.env.NODE_ENV === 'development' ? 'http://165.22.51.161:8081' : '',
 })
 requestA.interceptors.request.use(
-    (config) => { 
+    (config) => {
         return config;
     },
     () => {
@@ -31,14 +31,14 @@ requestA.interceptors.response.use(
         return null
     }
 );
-export const request = async (method:string, url:string, data:any, token?:any) => {
+export const request = async (method: string, url: string, data: any, token?: any) => {
     const username = cookie.get('jwt')
     if (username && username != 'undefined') {
         const params = JSON.parse(username)
         if (params && params?.exp && dayjs(dayjs.unix(params?.exp)).isAfter(dayjs())) {
             if (url.includes('upload/image')) {
                 const formData = new FormData();
-                formData.append('file', data);                
+                formData.append('file', data);
                 return await requestA({
                     method,
                     data: formData,
@@ -78,17 +78,17 @@ export const request = async (method:string, url:string, data:any, token?:any) =
 }
 
 
-export  const handlePublish = async (data: any) => {
+export const handlePublish = async (data: any) => {
     const token = Cookies.get('token');
     const username = JSON.parse(Cookies.get('username') || '{}');
     const result: any = await request('post', "/api/v1/post/publish", {
-      uid: username?.uid,
-      address: username?.address,
-      post: data
+        uid: username?.uid,
+        address: username?.address,
+        post: data
     }, token)
     if (result?.status === 200) {
-      return result.status;
+        return result.status;
     } else {
-      return Promise.reject('faild')
+        return Promise.reject('faild')
     }
-  }
+}
