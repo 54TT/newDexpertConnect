@@ -5,8 +5,10 @@ import dayjs from 'dayjs'
 import {notification,} from "antd";
 
 const requestA = axios.create({
-    baseURL: process.env.NODE_ENV === 'development' ? 'http://165.22.51.161:8081' : '',
+    baseURL:  'https://dexpert.io/',
+    // process.env.NODE_ENV === 'development' ? 'http://165.22.51.161:8081' :
 })
+
 requestA.interceptors.request.use(
     (config) => {
         return config;
