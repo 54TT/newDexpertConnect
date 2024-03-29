@@ -53,9 +53,11 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                         setLocalData({...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1})
                     }
                 }
-            } catch (e) {
-                return null
             }
+
+        }
+        catch (e) {
+            return null
         }
     }
 
