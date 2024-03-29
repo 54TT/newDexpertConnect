@@ -27,7 +27,8 @@ function Tweets({ name }: TweetsPropsType) {
         visible: { y: '-100%', opacity: 1 },
     };
 
-    const clickLike = async () => {
+    const clickLike = async (e: any) => {
+        e.stopPropagation();
         const token = Cookies.get('token');
         try {
             if (localData?.likeStatus === false) {
@@ -60,67 +61,73 @@ function Tweets({ name }: TweetsPropsType) {
     }
 
     return (
-        <div className={'tweetsBox'} onClick={() => { handleToDetail() }}>
-            {/*  top*/}
-            <div className={`dis`}>
-                {/* left*/}
-                <div className={'tweetsLeft'}>
-                    <img src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
-                        style={{ width: '42px', marginRight: '5%', borderRadius: '50%' }} />
-                    <p>
-                        <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
-                        <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
-                    </p>
+        <>
+            <div className={'tweetsBox'} onClick={() => { handleToDetail() }}>
+                {/*  top*/}
+                <div className={`dis`}>
+                    {/* left*/}
+                    <div className={'tweetsLeft'}>
+                        <img src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
+                            style={{ width: '42px', marginRight: '5%', borderRadius: '50%' }} />
+                        <p>
+                            <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
+                            <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
+                        </p>
+                    </div>
+                    <div className={'tweetsFollow'}>
+                        <p className={'tweetsRight'}>Follow</p>
+                    </div>
                 </div>
-                <div className={'tweetsFollow'}>
-                    <p className={'tweetsRight'}>Follow</p>
-                </div>
-            </div>
-            {
-                localData?.content ? <div className={'tweetsText'}
-                    dangerouslySetInnerHTML={{ __html: localData.content.replace(/\n/g, '<br>') }}></div> : ''
-            }
-            <>
                 {
-                    localData?.imageList?.length > 0 && localData?.imageList[0] ?
-                        <img className='post-item-img' src={localData?.imageList[0]} alt=""
-                            style={{ maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block' }} /> : <></>
+                    localData?.content ? <div className={'tweetsText'}
+                        dangerouslySetInnerHTML={{ __html: localData.content.replace(/\n/g, '<br>') }}></div> : ''
                 }
-            </>
-            {/*   标识*/}
-            {/*             <div className={'tweetsMark'}>
+                <>
+                    {
+                        localData?.imageList?.length > 0 && localData?.imageList[0] ?
+                            <img className='post-item-img' src={localData?.imageList[0]} alt=""
+                                style={{ maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block' }} /> : <></>
+                    }
+                </>
+                {/*   标识*/}
+                {/*             <div className={'tweetsMark'}>
                 <p>#btc</p>
                 <p>#eth</p>
             </div> */}
-            <div className={'tweetsOperate'}>
-                <p className={'tweetsIn'}>
-                    <img src="/comment.svg" alt="" onClick={() => setOpenComment(true)} />
-                    <span>{localData?.commentNum ? localData.commentNum : 0}</span>
-                </p>
-                <div className={'tweetsIn'} onClick={clickLike}>
-                    <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
-                    <span>{localData?.likeNum ? localData.likeNum : 0}</span>
-                    <motion.div
-                        initial="hidden"
-                        className={`tweetsLick`}
-                        animate={!clickAnimate ? 'hidden' : 'visible'}
-                        variants={animationVariants}
-                        exit="hidden"
-                        transition={{ duration: 1, ease: 'easeInOut' }}>
-                        <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>
-                    </motion.div>
+                <div className={'tweetsOperate'}>
+                    <p className={'tweetsIn'}>
+                        <img src="/comment.svg" alt="" onClick={(e) => {
+                            setOpenComment(true);
+                            e.stopPropagation();
+                        }} />
+                        <span>{localData?.commentNum ? localData.commentNum : 0}</span>
+                    </p>
+                    <div className={'tweetsIn'} onClick={clickLike}>
+                        <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
+                        <span>{localData?.likeNum ? localData.likeNum : 0}</span>
+                        <motion.div
+                            initial="hidden"
+                            className={`tweetsLick`}
+                            animate={!clickAnimate ? 'hidden' : 'visible'}
+                            variants={animationVariants}
+                            exit="hidden"
+                            transition={{ duration: 1, ease: 'easeInOut' }}>
+                            <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>
+                        </motion.div>
+                    </div>
+                    <p className={'tweetsIn'}>
+                        <img src="/share.svg " alt="" />
+                        <span>111</span>
+                    </p>
+                    <p className={'tweetsIn'}>
+                        <img src="/look.svg" alt="" />
+                        <span>111</span>
+                    </p>
                 </div>
-                <p className={'tweetsIn'}>
-                    <img src="/share.svg " alt="" />
-                    <span>111</span>
-                </p>
-                <p className={'tweetsIn'}>
-                    <img src="/look.svg" alt="" />
-                    <span>111</span>
-                </p>
+
             </div>
             <PostSendModal type="comment" postData={localData} className='comment-send-model' open={openComment} onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()} />
-        </div>
+        </>
 
     );
 }
