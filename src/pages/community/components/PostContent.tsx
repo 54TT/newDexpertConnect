@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { request } from "../../../../utils/axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Skeleton } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 /* import { PostImteDataType } from './PostItem'; */
-import Tweets from '../../../components/tweets'
+/* import Tweets from '../../../components/tweets' */
+import TWeetHome from '../../../components/tweetHome.js'
 import SendPost from "./SendPost";
 import classNames from "classnames";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { CountContext } from '../../../Layout.jsx'
+import Cookies from "js-cookie";
 interface TabType {
   label: 'For you' | 'Following',
   key: '1' | '2',
@@ -20,8 +23,13 @@ function CommunityContent() {
   const [status, setStatus] = useState(false);
   const [page, setPage] = useState(1);
   const [activeTab, setActiveTab] = useState<TabType['key']>('1');
+  const history = useNavigate();
+  const path = useParams();
+  const { user } = useContext(CountContext);
+
   const getTweet = async (page: number) => {
-    const res: any = await request('post', '/api/v1/post/public', { page: page }, '')
+    const token = Cookies.get('token');
+    const res: any = await request('post', '/api/v1/post/public', { page: page }, token)
     if (res && res?.status === 200) {
       const { data } = res
       const r = data && data?.posts?.length > 0 ? data.posts : []
@@ -31,7 +39,6 @@ function CommunityContent() {
         }
         const a = postData.concat(r)
         setPostData(a)
-        console.log(a);
 
         setIconLoad(false)
       } else {
@@ -49,6 +56,8 @@ function CommunityContent() {
 
   useEffect(() => {
     getTweet(1);
+    console.log(path);
+
     document.addEventListener('publish-post', reload);
     return () => {
       document.removeEventListener('publish-post', reload);
@@ -81,7 +90,7 @@ function CommunityContent() {
       </div>
       <div id='scrollableDiv' className="community-content-post" style={{ overflowY: 'auto', height: "calc(100vh - 129px)" }}>
         <SendPost onPublish={() => { getTweet(1); }} />
-        {
+        {/* {
           bol ? postData.length > 0 ?
             <div
               className={'rightTweetBox'}>
@@ -96,7 +105,11 @@ function CommunityContent() {
                 loader={null}
                 dataLength={postData.length}>
                 {postData.map((data: any, index: number) => {
-                  return <Tweets type={'community'} key={index} name={data} />
+                  return <Tweets user={user} type={'community'} key={index} name={data} onClick={() => {
+                    localStorage.setItem('twetts', JSON.stringify(data));
+
+                    history('/community/detail')
+                  }} />
                 })}
               </InfiniteScroll>
               {
@@ -107,7 +120,8 @@ function CommunityContent() {
             avatar active
             paragraph={{ rows: 4 }}
           />
-        }
+        } */}
+        <TWeetHome />
       </div>
     </div>
   )

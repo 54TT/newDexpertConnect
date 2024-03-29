@@ -6,8 +6,8 @@ import {notification,} from "antd";
 const requestA = axios.create({
     baseURL: 'http://165.22.51.161:8081',
 })
-axios.interceptors.request.use(
-    (config) => {
+requestA.interceptors.request.use(
+    (config) => { 
         return config;
     },
     () => {
@@ -18,7 +18,7 @@ axios.interceptors.request.use(
         return null
     }
 );
-axios.interceptors.response.use(
+requestA.interceptors.response.use(
     (response) => {
         return response;
     },

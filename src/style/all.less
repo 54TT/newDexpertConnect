@@ -166,7 +166,6 @@ body {
         background-color: rgb(34, 36, 34) !important;
       }
     }
-
   }
 }
 
@@ -232,7 +231,10 @@ body {
 .tweetsBox {
   margin-top: 4%;
   padding: 0 8%;
-
+  cursor: pointer;
+  &:hover {
+    background-color: #0c1815;
+  }
   .tweetsText {
     color: rgb(220, 220, 220);
     word-wrap: break-word;
@@ -377,9 +379,11 @@ body {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(to right,
-    rgb(9, 21, 17),
-    rgb(37, 70, 59)) !important;
+    background: linear-gradient(
+      to right,
+      rgb(9, 21, 17),
+      rgb(37, 70, 59)
+    ) !important;
   }
 }
 

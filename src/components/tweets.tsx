@@ -1,8 +1,16 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react'
+import { request } from '../../utils/axios';
+import Cookies from 'js-cookie';
+interface TweetsPropsType {
+    user?: any;
+    name: any;
+    onClick?: () => void;
+}
 
-function Tweets({ name }: any) {
+function Tweets({ user, name, onClick = () => { } }: TweetsPropsType) {
     const [clickAnimate, setClickAnimate] = useState(false);
+    const [localData, setLocalData] = useState(name);
     useEffect(() => {
         if (clickAnimate) {
             setTimeout(() => {
@@ -15,17 +23,37 @@ function Tweets({ name }: any) {
         hidden: { y: '100%', opacity: 0 },
         visible: { y: '-100%', opacity: 1 },
     };
+
+    const clickLike = async () => {
+        const token = Cookies.get('token');
+        try {
+            if (localData?.likeStatus === false) {
+                setClickAnimate(true)
+                const result = await request('post', '/api/v1/post/like', { postId: localData.postId }, token);
+                result?.status === 200 ? setLocalData({ ...localData, likeStatus: true }) : null;
+
+            } else {
+                const result = await request('post', '/api/v1/post/like/cancel', { postId: localData.postId }, token);
+                result?.status === 200 ? setLocalData({ ...localData, likeStatus: false }) : null;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return (
-        <div className={'tweetsBox'}>
+        <div className={'tweetsBox'} onClick={() => {
+            onClick()
+        }}>
             {/*  top*/}
             <div className={`dis`}>
                 {/* left*/}
                 <div className={'tweetsLeft'}>
-                    <img src={name?.user?.avatar ? name?.user?.avatar : "/logo.svg"} alt=""
+                    <img src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
                         style={{ width: '42px', marginRight: '5%', borderRadius: '50%' }} />
                     <p>
-                        <span>{name?.user?.username ? name?.user?.username.length > 12 ? name?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
-                        <span>{name?.user?.address ? name?.user.address.slice(0, 5) + '...' + name?.user.address.slice(-4) : ''}</span>
+                        <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
+                        <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
                     </p>
                 </div>
                 <div className={'tweetsFollow'}>
@@ -34,10 +62,10 @@ function Tweets({ name }: any) {
                 </div>
             </div>
             {
-                name?.content ? <div className={'tweetsText'}
-                    dangerouslySetInnerHTML={{ __html: name.content.replace(/\n/g, '<br>') }}></div> : ''
+                localData?.content ? <div className={'tweetsText'}
+                    dangerouslySetInnerHTML={{ __html: localData.content.replace(/\n/g, '<br>') }}></div> : ''
             }
-            <img src={name?.imageList?.length > 0 ? name?.imageList[0] : null} alt=""
+            <img src={localData?.imageList?.length > 0 ? localData?.imageList[0] : null} alt=""
                 style={{ maxWidth: '50%', margin: '0 auto', maxHeight: '200px', borderRadius: '5px', display: 'block' }} />
             {/*   标识*/}
             <div className={'tweetsMark'}>
@@ -47,11 +75,11 @@ function Tweets({ name }: any) {
             <div className={'tweetsOperate'}>
                 <p className={'tweetsIn'}>
                     <img src="/comment.svg" alt="" />
-                    <span>{name?.commentNum ? name.commentNum : 0}</span>
+                    <span>{localData?.commentNum ? localData.commentNum : 0}</span>
                 </p>
-                <div className={'tweetsIn'} onClick={() => setClickAnimate(true)}>
-                    <img src={name?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
-                    <span>{name?.likeNum ? name.likeNum : 0}</span>
+                <div className={'tweetsIn'} onClick={clickLike}>
+                    <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
+                    <span>{localData?.likeNum ? localData.likeNum : 0}</span>
                     <motion.div
                         initial="hidden"
                         className={`tweetsLick`}

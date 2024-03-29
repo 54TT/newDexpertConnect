@@ -1,16 +1,22 @@
-import { useState } from 'react';
-import UserInfo, { UserActionKey } from './components/UserInfo'
+import { useEffect, useState } from 'react';
+import UserInfo from './components/UserInfo'
 import "./index.less"
-import CommunityContent from './components/Content';
+import PostContent from './components/PostContent';
 import CommunityRight from './components/RightSider';
-
+import { useNavigate, useParams } from 'react-router-dom';
 function Community() {
   // 左侧选中的Tab
-  const [activeUserTab, setActiveUserTab] = useState<UserActionKey>("Profile");
-
-  const onActiveUserTabChange = (tab: UserActionKey) => {
+  const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
+  const history = useNavigate();
+  const onActiveUserTabChange = (tab: string) => {
     setActiveUserTab(tab);
+    history(`/community/${tab}`);
   }
+  const { tab } = useParams()
+  useEffect(() => {
+    setActiveUserTab(tab || 'lastest')
+  }, [tab])
+
 
   return (
     <div style={{ width: '100vw', display: 'flex', justifyContent: 'center' }}>
@@ -19,7 +25,7 @@ function Community() {
           <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange} />
         </div>
         <div className='community-page-content'>
-          <CommunityContent />
+          <PostContent />
         </div>
         <div className='community-page-right'>
           <CommunityRight />

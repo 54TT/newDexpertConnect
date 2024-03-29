@@ -271,7 +271,7 @@ function Layout() {
             <Routes>
                 <Route path="/" element={<Index/>}/>
                 <Route path="/newpairDetails" element={<NewpairDetails/>}/>
-                <Route path='/community' element={<Community/>}/>
+                <Route path='/community/:tab' element={<Community/>} />
                 <Route path='/dapp' element={<Dapp/>}/>
             </Routes>
             <Bot/>
