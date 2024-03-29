@@ -7,7 +7,8 @@ import {cloneDeep, differenceBy} from 'lodash';
 import {SearchOutlined} from '@ant-design/icons'
 import Right from "./components/right.tsx";
 import NewPair from './components/newPairDate.tsx'
-import {ethers} from 'ethers'
+import {ethers} from 'ethers';
+import Loading from '../../components/loading.tsx'
 
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
@@ -258,18 +259,17 @@ function Index() {
                             loader={null}
                             dataLength={tableDta.length}>
                             {
-                                tableDtaLoad ? <div className={'indexNewSkeleton'}>
-                                    <Spin size={'large'} className={'indexNewSpin'}>
-                                    </Spin>
-                                </div> : tableDta.length > 0 ?
+                                // tableDtaLoad ? <div className={'indexNewSkeleton'}>
+                                //     <Spin size={'large'} className={'indexNewSpin'}>
+                                //     </Spin>
+                                // </div>
+                                    tableDtaLoad? <Loading />: tableDta.length > 0 ?
                                     <NewPair tableDta={tableDta} time={time} setDta={setDta}/> : <p>no Data</p>
                             }
                         </InfiniteScroll>
                     </div>
                     {
-                        moreLoad && <div className={'disCen'}>
-                            <Spin/>
-                        </div>
+                        moreLoad &&  <Loading  status={'none'}/>
                     }
                 </div>
             </div>

@@ -122,7 +122,7 @@
     > img {
       width: 36px;
       height: 36px;
-      border-radius: 20px;
+      border-radius: 100%;
     }
   }
 }
@@ -130,11 +130,10 @@
 .community-content {
   &-post {
     .rightTweetBox {
-      margin: 24px 0px;
-
       .tweetsBox {
         border-bottom: 0.4px solid #687c69;
-        padding-bottom: 24px;
+        padding: 24px 8%;
+        margin-top: 0;
       }
     }
 
@@ -197,8 +196,8 @@
         display: flex;
 
         > img {
-          width: 36px;
-          height: 36px;
+          width: 48px;
+          height: 48px;
           border-radius: 20px;
         }
       }
@@ -231,10 +230,8 @@
           }
         }
       }
-
       padding: 0 8% 2%;
       margin-top: 2%;
-      border-bottom: 0.4px solid #687c69;
     }
   }
 }
@@ -276,6 +273,9 @@
       &:active {
         background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
       }
+      &:disabled {
+        background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
+      }
     }
   }
 }
@@ -312,4 +312,59 @@
 .post-tab-item-active {
   background: #181e1c;
   color: #fff;
+}
+
+.post-send-modal {
+  .ant-modal {
+    &-content {
+      border: 0.8px solid #687c69;
+      background: #060e0b;
+      border-radius: 20px;
+      box-shadow: 4px 4px 20px 10px #0000004d;
+
+      .community-content-post-send {
+        border: none;
+        padding: 0;
+        margin: 24px 0;
+        &-input {
+          min-height: 100px;
+        }
+      }
+      .post-send-tools {
+        border: none;
+        padding: 12px 0;
+      }
+    }
+    &-header {
+      background: #060e0b;
+    }
+    &-title {
+      display: flex;
+      justify-content: space-between;
+      color: #00daff;
+      .anticon-close {
+        color: #fff;
+      }
+      span {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.post-send-imgList {
+  border-bottom: 0.4px solid #687c69;
+  padding: 12px 8%;
+  img {
+    width: 150px;
+  }
+  &-delete {
+    position: relative;
+    display: inline-block;
+    .ant-btn {
+      position: absolute;
+      right: -5px;
+      top: -3px;
+    }
+  }
 }

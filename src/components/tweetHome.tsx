@@ -1,12 +1,11 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import Tweets from "./tweets.tsx";
 import {LoadingOutlined} from "@ant-design/icons";
-import {Spin} from "antd";
 import {useEffect, useState} from "react";
 import {request} from "../../utils/axios.ts";
 import cookie from "js-cookie";
-
-function TweetHome({hei, changeHei}: any) {
+import Loading from '../components/loading.tsx'
+function TweetHome({hei, changeHei, refresh, changeRefresh}: any) {
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
     const [status, setStatus] = useState(false)
@@ -29,7 +28,7 @@ function TweetHome({hei, changeHei}: any) {
         const res: any = await request('post', '/api/v1/post/public', {page: page}, token ? token : '')
         if (res && res?.status === 200) {
             const {data} = res
-            const r = data && data?.posts?.length > 0 ? data.posts : []
+            const r: any = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
                 if (r.length !== 10) {
                     setStatus(true)
@@ -38,7 +37,14 @@ function TweetHome({hei, changeHei}: any) {
                 setData(a)
                 setIconLoad(false)
             } else {
-                setData(r)
+                if (r.length !== 10) {
+                    setStatus(true)
+                }
+                if (refresh) {
+                    changeRefresh(false)
+                }
+                // @ts-ignore
+                setData([...r])
             }
             setBol(true)
         }
@@ -48,10 +54,16 @@ function TweetHome({hei, changeHei}: any) {
         getTweet(1)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cookie.get('token')]);
+    useEffect(() => {
+        if (refresh) {
+            getTweet(1)
+        }
+    }, [refresh]);
+
     return (
         <>
             {
-                bol ? tableData.length > 0 ?
+                refresh ? <Loading/> : bol ? tableData.length > 0 ?
                         <div id={'scrollableDiv'} style={{overflowY: 'auto', height: hei + "px"}}
                              className={`rightTweetBox scrollStyle`}>
                             <InfiniteScroll
@@ -71,9 +83,7 @@ function TweetHome({hei, changeHei}: any) {
                             }
                         </div> :
                         <p style={{textAlign: 'center', color: 'white', marginTop: '20px'}}>No data</p> :
-                    <div className={'disCen'} style={{marginTop: '50%'}}>
-                        <Spin size="large"/>
-                    </div>
+                    <Loading/>
             }
         </>
     );

@@ -3,6 +3,8 @@
 import classnames from 'classnames';
 import './index.less'
 import { Button } from 'antd';
+import { useState } from 'react';
+import PostSendModal from './PostModal';
 export type UserActionKey = 'Profile' | 'Lastest' | 'Following'
 
 enum UserActionKeyEnum {
@@ -13,29 +15,34 @@ enum UserActionKeyEnum {
 
 interface UserActionType {
   img: string;
+  key: string;
 }
 
 interface UserInfoPropsType {
-  activeTab: UserActionKey,
-  onChange: (tab: UserActionKey) => void;
+  activeTab: string,
+  onChange: (tab: string) => void;
 }
 
 const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
+  const [visible, setVisible] = useState(false);
   const userAction: Record<UserActionKey, UserActionType> = {
-    [UserActionKeyEnum.PROFILE]: {
-      img: "/community/profile.svg"
-    },
     [UserActionKeyEnum.LASTEST]: {
-      img: "/community/latest.svg"
+      img: "/community/latest.svg",
+      key: 'lastest'
+    },
+    [UserActionKeyEnum.PROFILE]: {
+      img: "/community/profile.svg",
+      key: 'profile'
     },
     [UserActionKeyEnum.FOLLOWING]: {
-      img: "/community/follow.svg"
+      img: "/community/follow.svg",
+      key: 'following'
     }
   }
   return <div className='community-user-action'>
     {
       Object.keys(userAction).map((key: string) =>
-        <div className={classnames('community-user-action-item', { 'community-user-action-item-active': activeTab === key })} onClick={() => onChange(key as UserActionKey)}>
+        <div className={classnames('community-user-action-item', { 'community-user-action-item-active': activeTab === userAction[key as UserActionKey].key })} onClick={() => onChange(userAction[key as UserActionKey].key)}>
           <div >
             <div className='community-user-action-item-img'>
               <img src={userAction[key as UserActionKey].img} alt="" />
@@ -46,8 +53,9 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
       )
     }
     <div style={{ display: 'flex', justifyContent: 'center' }} className='community-user-action-button'>
-      <Button >Post</Button>
+      <Button onClick={() => setVisible(true)} >Post</Button>
     </div>
+    <PostSendModal open={visible} onPublish={() => console.log('123123')} onClose={() => setVisible(false)} />
   </div>
 }
 

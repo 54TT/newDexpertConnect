@@ -10,7 +10,6 @@ function BuyCoin({changStatus}: any) {
         setValue(e)
     }
     const change = (e: any, name: string) => {
-        console.log(e)
         if (name === 'one') {
             setOne(e.target.value)
         } else {

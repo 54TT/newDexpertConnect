@@ -1,5 +1,4 @@
-import Conyent from '../../community/components/Content.tsx'
-
+import Conyent from '../../community/components/PostContent.tsx'
 function Center() {
     return (
         <div className={'center'}>

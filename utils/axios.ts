@@ -6,8 +6,8 @@ import {notification,} from "antd";
 const requestA = axios.create({
     baseURL: 'http://165.22.51.161:8081',
 })
-axios.interceptors.request.use(
-    (config) => {
+requestA.interceptors.request.use(
+    (config) => { 
         return config;
     },
     () => {
@@ -18,7 +18,7 @@ axios.interceptors.request.use(
         return null
     }
 );
-axios.interceptors.response.use(
+requestA.interceptors.response.use(
     (response) => {
         return response;
     },
@@ -37,7 +37,7 @@ export const request = async (method:string, url:string, data:any, token?:any) =
         if (params && params?.exp && dayjs(dayjs.unix(params?.exp)).isAfter(dayjs())) {
             if (url.includes('upload/image')) {
                 const formData = new FormData();
-                formData.append('file', data);
+                formData.append('file', data);                
                 return await requestA({
                     method,
                     data: formData,
