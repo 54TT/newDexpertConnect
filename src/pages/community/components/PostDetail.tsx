@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Tweets from '../../../components/tweets';
 import SendPost from './SendPost';
-import { request } from '../../../../utils/axios';
+/* import { request } from '../../../../utils/axios'; */
 
 const PostDetail = () => {
   const postDetail = JSON.parse(localStorage.getItem('post-detail') || '{}');
