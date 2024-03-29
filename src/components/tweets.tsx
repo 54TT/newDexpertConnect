@@ -47,9 +47,11 @@ function Tweets({ name, isLogin }: TweetsPropsType) {
                 if (result && result?.status === 200) {
                     setLocalData({ ...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1 })
                 }
-            } catch (e) {
-                return null
             }
+
+        }
+        catch (e) {
+            return null
         }
     }
 
