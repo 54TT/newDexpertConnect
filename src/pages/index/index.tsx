@@ -1,5 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-import {Input, Segmented, Select, Spin} from 'antd'
+import {Input, Segmented, Select} from 'antd'
 import {useEffect, useRef, useState} from "react";
 import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
 import {gql} from 'graphql-tag'
@@ -191,6 +191,7 @@ function Index() {
             refetch()
         }
     }
+
     useEffect(() => {
         let interval: any = null
         if (!tableDtaLoad) {
@@ -263,7 +264,7 @@ function Index() {
                                 //     <Spin size={'large'} className={'indexNewSpin'}>
                                 //     </Spin>
                                 // </div>
-                                    tableDtaLoad? <Loading />: tableDta.length > 0 ?
+                                    tableDtaLoad? <Loading status={'20'} />: tableDta.length > 0 ?
                                     <NewPair tableDta={tableDta} time={time} setDta={setDta}/> : <p>no Data</p>
                             }
                         </InfiniteScroll>

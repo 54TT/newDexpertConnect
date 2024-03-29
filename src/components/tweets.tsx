@@ -1,14 +1,17 @@
 import {motion} from 'framer-motion';
-import {useEffect, useState} from 'react'
+import {useContext, useEffect, useState} from 'react'
 import {request} from '../../utils/axios';
 import Cookies from 'js-cookie';
-
+import {CountContext} from "../Layout.tsx";
+import {simplify} from '../../utils/change.ts'
 interface TweetsPropsType {
     user?: any;
     name: any;
+    isLogin?: boolean
 }
 
-function Tweets({name}: TweetsPropsType) {
+function Tweets({name, isLogin}: TweetsPropsType) {
+    const {clear}: any = useContext(CountContext)
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
     useEffect(() => {
@@ -23,24 +26,30 @@ function Tweets({name}: TweetsPropsType) {
         hidden: {y: '100%', opacity: 0},
         visible: {y: '-100%', opacity: 1},
     };
-
     const clickLike = async () => {
-        const token = Cookies.get('token');
-        try {
-            if (localData?.likeStatus === false) {
-                setClickAnimate(true)
-                const result: any = await request('post', '/api/v1/post/like', {postId: localData.postId}, token);
-                result?.status === 200 ? setLocalData({...localData, likeStatus: true}) : null;
-                if (result && result?.status === 200) {
-                    setLocalData({...localData, likeStatus: true, likeNum: Number(localData.likeNum) + 1})
+        if (isLogin) {
+            const token = Cookies.get('token');
+            try {
+                if (localData?.likeStatus === false) {
+                    setClickAnimate(true)
+                    const result: any = await request('post', '/api/v1/post/like', {postId: localData.postId}, token);
+                    result?.status === 200 ? setLocalData({...localData, likeStatus: true}) : null;
+                    if (result === 'please') {
+                        clear()
+                    } else if (result && result?.status === 200) {
+                        setLocalData({...localData, likeStatus: true, likeNum: Number(localData.likeNum) + 1})
+                    }
+                } else {
+                    const result: any = await request('post', '/api/v1/post/like/cancel', {postId: localData.postId}, token);
+                    if (result === 'please') {
+                        clear()
+                    } else if (result && result?.status === 200) {
+                        setLocalData({...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1})
+                    }
                 }
-            } else {
-                const result: any = await request('post', '/api/v1/post/like/cancel', {postId: localData.postId}, token);
-                if (result && result?.status === 200) {
-                    setLocalData({...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1})
-                }
+            } catch (e) {
+                return null
             }
-        } catch (e) {
         }
     }
 
@@ -53,8 +62,8 @@ function Tweets({name}: TweetsPropsType) {
                     <img src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
                          style={{width: '42px', marginRight: '5%', borderRadius: '50%'}}/>
                     <p>
-                        <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
-                        <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
+                        <span>{ simplify(localData?.user?.username)}</span>
+                        <span>{simplify(localData?.user?.address)}</span>
                     </p>
                 </div>
                 <div className={'tweetsFollow'}>

@@ -1,12 +1,14 @@
 import {Button, Input, message} from 'antd';
 import {request} from '../../../../utils/axios';
-import {useEffect, useRef, useState} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import Cookies from 'js-cookie';
 import {CloseOutlined} from '@ant-design/icons';
+import {CountContext} from '../../../Layout.tsx'
 
 const {TextArea} = Input;
 
 function SendPost({changeRefresh}: any) {
+    const {clear}:any = useContext(CountContext)
     const [img, setImg] = useState<any>(null);
     const [imgPreview, setImgPreview] = useState<any>(null);
     const [value, setValue] = useState('');
@@ -76,9 +78,9 @@ function SendPost({changeRefresh}: any) {
             if (img !== null) {
                 imgUrl = await request('post', '/api/v1/upload/image', img, token);
             }
-
             if (imgUrl !== null) {
                 if (imgUrl === 'please') {
+                    clear()
                 } else if (!imgUrl || imgUrl?.status !== 200) {
                     return messageApi.open({
                         type: 'warning',
@@ -98,7 +100,9 @@ function SendPost({changeRefresh}: any) {
             setPublishing(false);
             clearImg();
             setValue('')
-            if (result && result.status === 200) {
+            if (result === 'please') {
+                clear()
+            } else if (result && result.status === 200) {
                 changeRefresh(true)
             }
         } catch (e) {

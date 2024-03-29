@@ -83,6 +83,10 @@ export const setMany = (text: any) => {
     return data
 }
 
+export const simplify = (name: any) => {
+    return name ? name.length > 13 ? name.slice(0, 5) + '...' + name.slice(-4) : name : ''
+}
+
 
 
 

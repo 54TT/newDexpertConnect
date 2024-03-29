@@ -1,13 +1,13 @@
-import { useContext, useState } from 'react';
-import { Dropdown, Modal } from 'antd'
+import {useContext, useState} from 'react';
+import {Dropdown, Modal} from 'antd'
 import {CountContext} from '../Layout.tsx'
 import {useLocation, useNavigate} from 'react-router-dom';
-import {DownOutlined, LoadingOutlined} from '@ant-design/icons'
+import {DownOutlined, LoadingOutlined} from '@ant-design/icons';
+import {simplify} from '../../utils/change.ts'
 function Header() {
     const router = useLocation()
     const {connect, getMoneyEnd, user, setLoad, load, clear}: any = useContext(CountContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [page, setPage] = useState(router.pathname)
     const history = useNavigate();
     const handleOk = () => {
         setIsModalOpen(false);
@@ -36,16 +36,13 @@ function Header() {
     const historyChange = (i: number) => {
         switch (i) {
             case 2:
-                setPage('/community/lastest');
                 history('/community/lastest')
                 break;
             case 0:
                 history('/')
-                setPage('/');
                 break;
             case 1:
                 history('/dapp')
-                setPage('/dapp');
                 break;
         }
     }
@@ -63,14 +60,14 @@ function Header() {
 
     return (
         <div className={'headerBox'}>
-            <img src="/topLogo.svg" alt="" style={{ cursor: 'pointer' }} onClick={() => {
+            <img src="/topLogo.svg" alt="" style={{cursor: 'pointer'}} onClick={() => {
                 history('/')
             }}/>
             <p className={`headerCenter dis`}>
                 {
                     ['Market', 'DApp & Tools', 'Community'].map((i, ind) => {
                         return <span key={ind}
-                                     style={{color: page === '/' || page === '/newpairDetails' ? ind === 0 ? 'rgb(134,240,151)' : 'rgb(214,223,215)' : page === '/community/lastest' ? ind === 2 ? 'rgb(134,240,151)' : 'rgb(214,223,215)' : page === '/dapp' ? ind === 1 ? 'rgb(134,240,151)' : 'rgb(214,223,215)' : 'rgb(214,223,215)'}}
+                                     style={{color: router.pathname === '/' || router.pathname === '/newpairDetails' ? ind === 0 ? 'rgb(134,240,151)' : 'rgb(214,223,215)' : router.pathname === '/community/lastest' ? ind === 2 ? 'rgb(134,240,151)' : 'rgb(214,223,215)' : router.pathname === '/dapp' ? ind === 1 ? 'rgb(134,240,151)' : 'rgb(214,223,215)' : 'rgb(214,223,215)'}}
                                      onClick={() => {
                                          historyChange(ind);
                                      }}>{i}</span>
@@ -83,11 +80,11 @@ function Header() {
                     menu={{
                         items,
                     }}>
-                    <div className={'disCen'} style={{ cursor: 'pointer' }}>
+                    <div className={'disCen'} style={{cursor: 'pointer'}}>
                         <img src={user?.avatarlrl ? user?.avatarlrl : "/topLogo.svg"}
-                            style={{ width: '25px', display: 'block', marginRight: '4px' }} alt="" />
-                        <p style={{ color: 'rgb(214,223,215)' }}> {user?.username ? user.username.length > 12 ? user.username.slice(0, 5) + '...' + user.username.slice(-4) : user.username : user.address.slice(0, 5) + '...' + user.address.slice(-4)}</p>
-                        <DownOutlined style={{ color: 'rgb(214,223,215)', marginTop: '3px' }} />
+                             style={{width: '25px', display: 'block', marginRight: '4px'}} alt=""/>
+                        <p style={{color: 'rgb(214,223,215)'}}> {simplify(user?.username)}</p>
+                        <DownOutlined style={{color: 'rgb(214,223,215)', marginTop: '3px'}}/>
                     </div>
                 </Dropdown> : <div className={'headerConnect'} onClick={() => {
                     if (!load) {
@@ -97,7 +94,7 @@ function Header() {
                     }
                 }}>
                     <div className={'disCen'}><span>Connect Wallet</span> {load ?
-                        <LoadingOutlined style={{ marginLeft: '4px' }} /> : ''}
+                        <LoadingOutlined style={{marginLeft: '4px'}}/> : ''}
                     </div>
                 </div>
             }
