@@ -5,6 +5,7 @@ import './index.less'
 import { Button } from 'antd';
 import { useState } from 'react';
 import PostSendModal from './PostModal';
+import { handlePublish } from '../../../../utils/axios';
 export type UserActionKey = 'Profile' | 'Lastest' | 'Following'
 
 enum UserActionKeyEnum {
@@ -39,6 +40,21 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
       key: 'following'
     }
   }
+
+  const onPublish = async (data: any) => {
+
+    try {
+      const result = await handlePublish(data);
+      if (result === 200) {
+        const event = new CustomEvent("publish-post");
+        document.dispatchEvent(event);
+        return result
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    setVisible(false)
+  }
   return <div className='community-user-action'>
     {
       Object.keys(userAction).map((key: string) =>
@@ -55,7 +71,7 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
     <div style={{ display: 'flex', justifyContent: 'center' }} className='community-user-action-button'>
       <Button onClick={() => setVisible(true)} >Post</Button>
     </div>
-    <PostSendModal open={visible} onPublish={() => console.log('123123')} onClose={() => setVisible(false)} />
+    <PostSendModal open={visible} onPublish={onPublish} onClose={() => setVisible(false)} />
   </div>
 }
 

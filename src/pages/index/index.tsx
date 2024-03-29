@@ -3,11 +3,11 @@ import {Input, Segmented, Select} from 'antd'
 import {useEffect, useRef, useState} from "react";
 import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
 import {gql} from 'graphql-tag'
-import {cloneDeep, differenceBy} from 'lodash';
 import {SearchOutlined} from '@ant-design/icons'
+import { cloneDeep, differenceBy } from 'lodash';
 import Right from "./components/right.tsx";
 import NewPair from './components/newPairDate.tsx'
-import {ethers} from 'ethers';
+import { ethers } from 'ethers';
 import Loading from '../../components/loading.tsx'
 
 const client = new ApolloClient({
@@ -156,7 +156,7 @@ function Index() {
         }
         getGas()
     }, [])
-    const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any
+    const { loading, data, refetch } = useQuery(GET_DATA, { client }) as any
     const getGas = async () => {
         const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.g.alchemy.com/v2/BhTc3g2lt1Qj3IagsyOJsH5065ueK1Aw')
         const gasAVGPrice = await provider.send('eth_gasPrice', [])
@@ -210,7 +210,7 @@ function Index() {
         console.log(e)
     }
     return (
-        <div style={{display: 'flex', justifyContent: 'space-between', padding: '0 2%'}}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 2%' }}>
             <div className={'indexBox'}>
                 {/* top*/}
                 <div ref={hei} className={`indexTop dis`}>
@@ -219,20 +219,20 @@ function Index() {
                         value={select}
                         className={'indexSelect'}
                         popupClassName={'indexSelectPopup'}
-                        style={{width: '12%'}}
+                        style={{ width: '12%' }}
                         options={[
-                            {value: 'newPair', label: 'New Pairs'},
-                            {value: 'trading', label: 'Trading'},
-                            {value: 'watch', label: 'Watch List'},
+                            { value: 'newPair', label: 'New Pairs' },
+                            { value: 'trading', label: 'Trading' },
+                            { value: 'watch', label: 'Watch List' },
                         ]}
                     />
                     <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'}
-                               defaultValue={'24h'}/>
-                    <Input suffix={<SearchOutlined style={{fontSize: '16px', color: 'white'}}/>} onChange={changeInput}
-                           allowClear className={'indexInput'}/>
+                        defaultValue={'24h'} />
+                    <Input suffix={<SearchOutlined style={{ fontSize: '16px', color: 'white' }} />} onChange={changeInput}
+                        allowClear className={'indexInput'} />
                     <div className={`indexRight dis`}>
-                        <p><img src="/eth.svg" alt=""/><span>$:{ethPrice}</span></p>
-                        <p><img src="/gas.svg" alt=""/><span>{gas}</span></p>
+                        <p><img src="/eth.svg" alt="" /><span>$:{ethPrice}</span></p>
+                        <p><img src="/gas.svg" alt="" /><span>{gas}</span></p>
                     </div>
                 </div>
                 <div className={'indexNewPair'}>
@@ -243,7 +243,7 @@ function Index() {
                                 return <p className={`${ind === 0 ? 'disCen' : 'textAlign'} homeTableTittle`} key={ind}>
                                     {
                                         ind === 0 &&
-                                        <img src="/collect.svg" alt="" style={{marginRight: '5px'}} width={'15px'}/>
+                                        <img src="/collect.svg" alt="" style={{ marginRight: '5px' }} width={'15px'} />
                                     }
                                     <span>{i}</span>
                                 </p>
@@ -252,7 +252,7 @@ function Index() {
                         }
                     </div>
                     <div className={`indexNewPairBody scrollStyle`} id={'scrollableNew'}
-                         style={{height: tableHei + 'px', overflowY: 'auto'}}>
+                        style={{ height: tableHei + 'px', overflowY: 'auto' }}>
                         <InfiniteScroll
                             hasMore={true}
                             scrollableTarget="scrollableNew"
@@ -260,21 +260,17 @@ function Index() {
                             loader={null}
                             dataLength={tableDta.length}>
                             {
-                                // tableDtaLoad ? <div className={'indexNewSkeleton'}>
-                                //     <Spin size={'large'} className={'indexNewSpin'}>
-                                //     </Spin>
-                                // </div>
                                     tableDtaLoad? <Loading status={'20'} />: tableDta.length > 0 ?
                                     <NewPair tableDta={tableDta} time={time} setDta={setDta}/> : <p>no Data</p>
                             }
                         </InfiniteScroll>
                     </div>
                     {
-                        moreLoad &&  <Loading  status={'none'}/>
+                        moreLoad && <Loading status={'none'} />
                     }
                 </div>
             </div>
-            <Right/>
+            <Right />
         </div>
     );
 }

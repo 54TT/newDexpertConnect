@@ -1,13 +1,11 @@
 import {Button, Input, message} from 'antd';
 import {request} from '../../../../utils/axios';
 import {useContext, useEffect, useRef, useState} from 'react';
-import Cookies from 'js-cookie';
 import {CloseOutlined} from '@ant-design/icons';
 import {CountContext} from '../../../Layout.tsx'
-
-const {TextArea} = Input;
-
-function SendPost({changeRefresh}: any) {
+import Cookies from 'js-cookie';
+const { TextArea } = Input;
+function SendPost({ type = '', changeRefresh, onPublish, postData }: any) {
     const {clear}:any = useContext(CountContext)
     const [img, setImg] = useState<any>(null);
     const [imgPreview, setImgPreview] = useState<any>(null);
@@ -92,11 +90,26 @@ function SendPost({changeRefresh}: any) {
                 content: value,
                 imageList: imgUrl?.data?.url ? [imgUrl.data.url] : undefined,
             }
-            const result: any = await request('post', "/api/v1/post/publish", {
-                uid: username?.uid,
-                address: username?.address,
-                post: data
-            }, token)
+            let result: any;
+            if (type === 'comment') {
+                result = await request('post', "/api/v1/post/comment", {
+                    postId: postData.postId,
+                    content: value
+                }, token)
+                if (result?.status === 200) {
+                    onPublish?.();
+                }
+            } else {
+                result = await request('post', "/api/v1/post/publish", {
+                    uid: username?.uid,
+                    address: username?.address,
+                    post: data
+                }, token)
+                if (result?.status === 200) {
+                    onPublish?.();
+                    changeRefresh?.(true)
+                }
+            }
             setPublishing(false);
             clearImg();
             setValue('')
@@ -106,7 +119,9 @@ function SendPost({changeRefresh}: any) {
                 changeRefresh(true)
             }
         } catch (e) {
-            messageApi.error('Publishing failed')
+            console.log(e);
+
+            messageApi.error('Publish failed')
             setPublishing(false);
         }
 
@@ -145,35 +160,35 @@ function SendPost({changeRefresh}: any) {
         {contextHolder}
         <div className="community-content-post-send">
             <div className="community-content-post-send-avatar">
-                <img src={user?.avatarUrl || '/logo.svg'} alt=""/>
+                <img src={user?.avatarUrl || '/logo.svg'} alt="" />
             </div>
             <div className="community-content-post-send-input">
                 <TextArea value={value} autoSize variant="borderless" placeholder='Share your insights...'
-                          onChange={(e) => {
-                              setValue(e.target.value)
-                              handleChangeValue(e.target.value, img)
-                          }}/>
+                    onChange={(e) => {
+                        setValue(e.target.value)
+                        handleChangeValue(e.target.value, img)
+                    }} />
             </div>
         </div>
         <div className='post-send-imgList'>
             {
                 imgPreview ? <div className='post-send-imgList-delete'>
-                    <img src={imgPreview} alt=""/>
-                    <Button size='small' icon={<CloseOutlined/>} shape="circle" onClick={() => clearImg()}/>
+                    <img src={imgPreview} alt="" />
+                    <Button size='small' icon={<CloseOutlined />} shape="circle" onClick={() => clearImg()} />
                 </div> : <></>
             }
         </div>
         <div className='post-send-tools'>
             <div className='post-send-tools-icon'>
                 {
-                    toolsIcon.map((data) => <img key={data.name} alt={''} src={data.img} onClick={data.onClick}/>)
+                    toolsIcon.map((data) => <img key={data.name} alt={''} src={data.img} onClick={data.onClick} />)
                 }
             </div>
             <div className='post-send-tools-button'>
                 <Button onClick={() => handlePostSend()} disabled={sendDisable} loading={publishing}>Post</Button>
             </div>
         </div>
-        <input ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{display: 'none'}}/>
+        <input ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{ display: 'none' }} />
     </>
 }
 

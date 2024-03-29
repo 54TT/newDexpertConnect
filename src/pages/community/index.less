@@ -20,11 +20,16 @@
   &-content {
     height: 100%;
     flex: 1;
+    .tweetsBox {
+      .post-item-img {
+        margin: 0;
+      }
+    }
   }
 
   &-right {
     width: 20%;
-    border: 0.2px solid #86f097;
+    border-left: 0.2px solid #687c69;
     height: calc(100vh - 79px);
     overflow-y: auto;
 
@@ -32,8 +37,8 @@
       color: #d6dfd7;
 
       .ant-card-head-title {
-        color: #d6dfd7!important;
-        font-size: 17px!important;
+        color: #d6dfd7 !important;
+        font-size: 17px !important;
       }
 
       &-head {
@@ -57,5 +62,47 @@
     }
 
     .scroll-style-minin();
+  }
+}
+
+.comment-send-model {
+  .community-content-post-send {
+    &-input {
+      min-height: 50px !important;
+      margin-left: 8px;
+    }
+
+    &-avatar {
+      img {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  }
+  .post-send-tools {
+    padding-bottom: 0 !important;
+    &-icon {
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+  .post-send-imgList {
+    padding: 0;
+  }
+}
+
+.community-post-detail {
+  .tweetsBox {
+    &:hover {
+      background-color: unset !important;
+    }
+  }
+  .community-content-post-send {
+    padding-bottom: 0;
+  }
+  .post-send-tools {
+    &-icon {
+      visibility: hidden;
+    }
   }
 }

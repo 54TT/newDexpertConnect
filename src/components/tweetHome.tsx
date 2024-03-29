@@ -8,6 +8,7 @@ import Loading from '../components/loading.tsx'
 import {CountContext} from "../Layout.tsx";
 function TweetHome({hei, changeHei, refresh, changeRefresh}: any) {
     const {clear}:any = useContext(CountContext)
+
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
     const [status, setStatus] = useState(false)
@@ -93,6 +94,7 @@ function TweetHome({hei, changeHei, refresh, changeRefresh}: any) {
                         </div> :
                         <p style={{textAlign: 'center', color: 'white', marginTop: '20px'}}>No data</p> :
                     <Loading/>
+
             }
         </>
     );

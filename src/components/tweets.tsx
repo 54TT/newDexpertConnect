@@ -1,9 +1,11 @@
-import {motion} from 'framer-motion';
 import {useContext, useEffect, useState} from 'react'
-import {request} from '../../utils/axios';
-import Cookies from 'js-cookie';
 import {CountContext} from "../Layout.tsx";
 import {simplify} from '../../utils/change.ts'
+import { motion } from 'framer-motion';
+import { request } from '../../utils/axios';
+import Cookies from 'js-cookie';
+import PostSendModal from '../pages/community/components/PostModal';
+import { useNavigate } from 'react-router-dom';
 interface TweetsPropsType {
     user?: any;
     name: any;
@@ -14,6 +16,8 @@ function Tweets({name, isLogin}: TweetsPropsType) {
     const {clear}: any = useContext(CountContext)
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
+    const [openComment, setOpenComment] = useState(false);
+    const history = useNavigate();
     useEffect(() => {
         if (clickAnimate) {
             setTimeout(() => {
@@ -23,8 +27,8 @@ function Tweets({name, isLogin}: TweetsPropsType) {
         }
     }, [clickAnimate])
     const animationVariants = {
-        hidden: {y: '100%', opacity: 0},
-        visible: {y: '-100%', opacity: 1},
+        hidden: { y: '100%', opacity: 0 },
+        visible: { y: '-100%', opacity: 1 },
     };
     const clickLike = async () => {
         if (isLogin) {
@@ -53,42 +57,57 @@ function Tweets({name, isLogin}: TweetsPropsType) {
         }
     }
 
+    const handleAddComment = () => {
+        // 设置评论数量
+        setLocalData({ ...localData, commentNum: localData?.commentNum ? Number(localData?.commentNum) + 1 : 1 });
+        setOpenComment(false);
+    }
+
+    const handleToDetail = () => {
+        localStorage.setItem('post-detail', JSON.stringify(localData))
+        history('/community/detail')
+    }
+
     return (
-        <div className={'tweetsBox'}>
+        <div className={'tweetsBox'} onClick={() => { handleToDetail() }}>
             {/*  top*/}
             <div className={`dis`}>
                 {/* left*/}
                 <div className={'tweetsLeft'}>
                     <img src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
-                         style={{width: '42px', marginRight: '5%', borderRadius: '50%'}}/>
+                        style={{ width: '42px', marginRight: '5%', borderRadius: '50%' }} />
                     <p>
                         <span>{ simplify(localData?.user?.username)}</span>
                         <span>{simplify(localData?.user?.address)}</span>
                     </p>
                 </div>
                 <div className={'tweetsFollow'}>
-                    <p>1112 Follow</p>
                     <p className={'tweetsRight'}>Follow</p>
                 </div>
             </div>
             {
                 localData?.content ? <div className={'tweetsText'}
-                                          dangerouslySetInnerHTML={{__html: localData.content.replace(/\n/g, '<br>')}}></div> : ''
+                    dangerouslySetInnerHTML={{ __html: localData.content.replace(/\n/g, '<br>') }}></div> : ''
             }
-            <img src={localData?.imageList?.length > 0 ? localData?.imageList[0] : null} alt=""
-                 style={{maxWidth: '50%', margin: '0 auto', maxHeight: '200px', borderRadius: '5px', display: 'block'}}/>
+            <>
+                {
+                    localData?.imageList?.length > 0 && localData?.imageList[0] ?
+                        <img className='post-item-img' src={localData?.imageList[0]} alt=""
+                            style={{ maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block' }} /> : <></>
+                }
+            </>
             {/*   标识*/}
-            <div className={'tweetsMark'}>
+            {/*             <div className={'tweetsMark'}>
                 <p>#btc</p>
                 <p>#eth</p>
-            </div>
+            </div> */}
             <div className={'tweetsOperate'}>
                 <p className={'tweetsIn'}>
-                    <img src="/comment.svg" alt=""/>
+                    <img src="/comment.svg" alt="" onClick={() => setOpenComment(true)} />
                     <span>{localData?.commentNum ? localData.commentNum : 0}</span>
                 </p>
                 <div className={'tweetsIn'} onClick={clickLike}>
-                    <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt=""/>
+                    <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
                     <span>{localData?.likeNum ? localData.likeNum : 0}</span>
                     <motion.div
                         initial="hidden"
@@ -96,20 +115,22 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                         animate={!clickAnimate ? 'hidden' : 'visible'}
                         variants={animationVariants}
                         exit="hidden"
-                        transition={{duration: 1, ease: 'easeInOut'}}>
-                        <span style={{color: 'rgb(0,170,255)'}}>+1500</span>
+                        transition={{ duration: 1, ease: 'easeInOut' }}>
+                        <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>
                     </motion.div>
                 </div>
                 <p className={'tweetsIn'}>
-                    <img src="/share.svg " alt=""/>
+                    <img src="/share.svg " alt="" />
                     <span>111</span>
                 </p>
                 <p className={'tweetsIn'}>
-                    <img src="/look.svg" alt=""/>
+                    <img src="/look.svg" alt="" />
                     <span>111</span>
                 </p>
             </div>
+            <PostSendModal type="comment" postData={localData} className='comment-send-model' open={openComment} onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()} />
         </div>
+
     );
 }
 
