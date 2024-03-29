@@ -246,25 +246,31 @@ body {
   &:hover {
     background-color: #0c1815;
   }
+  .post-item-img {
+    max-width: 50%;
+    max-height: 200px;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto;
+  }
 
   .tweetsText {
     color: rgb(220, 220, 220);
     word-wrap: break-word;
-    margin: 4% 0;
+    margin: 12px 0;
     line-height: 1;
   }
 
   .tweetsMark {
     display: flex;
     align-items: center;
+    margin-top: 12px;
     flex-wrap: wrap;
-    margin: 2.8% 0 1%;
 
     p {
       color: rgb(0, 218, 255);
       font-size: 18px;
-      padding: 1% 2%;
-      margin: 0 3% 1.4% 0;
+      margin: 0 12px 12px 0;
       letter-spacing: -1px;
     }
   }
@@ -273,6 +279,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 24px;
 
     .tweetsIn {
       display: flex;
@@ -391,9 +398,11 @@ body {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(to right,
-    rgb(9, 21, 17),
-    rgb(37, 70, 59)) !important;
+    background: linear-gradient(
+      to right,
+      rgb(9, 21, 17),
+      rgb(37, 70, 59)
+    ) !important;
   }
 }
 

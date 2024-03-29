@@ -4,12 +4,16 @@ import "./index.less"
 import PostContent from './components/PostContent';
 import CommunityRight from './components/RightSider';
 import { useNavigate, useParams } from 'react-router-dom';
+import PostDetail from './components/PostDetail';
+
+type ActiveTabType = 'lastest' | 'profile' | 'following'
+
 function Community() {
   // 左侧选中的Tab
   const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
   const history = useNavigate();
   const onActiveUserTabChange = (tab: string) => {
-    setActiveUserTab(tab);
+    setActiveUserTab(tab as ActiveTabType);
     history(`/community/${tab}`);
   }
   const { tab } = useParams()
@@ -18,6 +22,15 @@ function Community() {
   }, [tab])
 
 
+
+
+  const ComponentMap = {
+    'lastest': <PostContent />,
+    'profile': <></>,
+    'following': <></>,
+    'detail': <PostDetail />
+  }
+
   return (
     <div style={{ width: '100vw', display: 'flex', justifyContent: 'center' }}>
       <div className='community-page' >
@@ -25,7 +38,7 @@ function Community() {
           <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange} />
         </div>
         <div className='community-page-content'>
-          <PostContent />
+          {ComponentMap[activeUserTab as ActiveTabType]}
         </div>
         <div className='community-page-right'>
           <CommunityRight />

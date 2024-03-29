@@ -39,7 +39,6 @@ function CommunityContent({ name }: any) {
       <div id='scrollableDiv' className="community-content-post"
         style={{ overflowY: 'auto', height: "calc(100vh - 129px)" }}>
         <SendPost changeRefresh={changeRefresh} />
-
         <TWeetHome refresh={status} changeRefresh={changeRefresh} />
       </div>
     </div>

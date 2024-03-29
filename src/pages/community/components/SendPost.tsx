@@ -6,7 +6,7 @@ import { CloseOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 
-function SendPost({ changeRefresh }: any) {
+function SendPost({ type = '', changeRefresh, onPublish, postData }: any) {
     const [img, setImg] = useState<any>(null);
     const [imgPreview, setImgPreview] = useState<any>(null);
     const [value, setValue] = useState('');
@@ -92,19 +92,33 @@ function SendPost({ changeRefresh }: any) {
                 content: value,
                 imageList: imgUrl?.data?.url ? [imgUrl.data.url] : undefined,
             }
-            const result: any = await request('post', "/api/v1/post/publish", {
-                uid: username?.uid,
-                address: username?.address,
-                post: data
-            }, token)
+            let result: any;
+            if (type === 'comment') {
+                result = await request('post', "/api/v1/post/comment", {
+                    postId: postData.postId,
+                    content: value
+                }, token)
+                if (result?.status === 200) {
+                    onPublish?.();
+                }
+            } else {
+                result = await request('post', "/api/v1/post/publish", {
+                    uid: username?.uid,
+                    address: username?.address,
+                    post: data
+                }, token)
+                if (result?.status === 200) {
+                    onPublish?.();
+                    changeRefresh?.(true)
+                }
+            }
             setPublishing(false);
             clearImg();
             setValue('')
-            if (result && result.status === 200) {
-                changeRefresh(true)
-            }
         } catch (e) {
-            messageApi.error('Publishing failed')
+            console.log(e);
+
+            messageApi.error('Publish failed')
             setPublishing(false);
         }
 

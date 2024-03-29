@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { request } from '../../utils/axios';
 import Cookies from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
+import { useNavigate } from 'react-router-dom';
 interface TweetsPropsType {
     user?: any;
     name: any;
@@ -12,6 +13,7 @@ function Tweets({ name }: TweetsPropsType) {
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
     const [openComment, setOpenComment] = useState(false);
+    const history = useNavigate();
     useEffect(() => {
         if (clickAnimate) {
             setTimeout(() => {
@@ -46,13 +48,19 @@ function Tweets({ name }: TweetsPropsType) {
         }
     }
 
-    const handleAddComment = (data: any) => {
-        console.log(data);
-        console.log(name);
+    const handleAddComment = () => {
+        // 设置评论数量
+        setLocalData({ ...localData, commentNum: localData?.commentNum ? Number(localData?.commentNum) + 1 : 1 });
+        setOpenComment(false);
+    }
+
+    const handleToDetail = () => {
+        localStorage.setItem('post-detail', JSON.stringify(localData))
+        history('/community/detail')
     }
 
     return (
-        <div className={'tweetsBox'}>
+        <div className={'tweetsBox'} onClick={() => { handleToDetail() }}>
             {/*  top*/}
             <div className={`dis`}>
                 {/* left*/}
@@ -65,7 +73,6 @@ function Tweets({ name }: TweetsPropsType) {
                     </p>
                 </div>
                 <div className={'tweetsFollow'}>
-                    <p>1112 Follow</p>
                     <p className={'tweetsRight'}>Follow</p>
                 </div>
             </div>
@@ -73,13 +80,18 @@ function Tweets({ name }: TweetsPropsType) {
                 localData?.content ? <div className={'tweetsText'}
                     dangerouslySetInnerHTML={{ __html: localData.content.replace(/\n/g, '<br>') }}></div> : ''
             }
-            <img src={localData?.imageList?.length > 0 ? localData?.imageList[0] : null} alt=""
-                style={{ maxWidth: '50%', margin: '0 auto', maxHeight: '200px', borderRadius: '5px', display: 'block' }} />
+            <>
+                {
+                    localData?.imageList?.length > 0 && localData?.imageList[0] ?
+                        <img className='post-item-img' src={localData?.imageList[0]} alt=""
+                            style={{ maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block' }} /> : <></>
+                }
+            </>
             {/*   标识*/}
-            <div className={'tweetsMark'}>
+            {/*             <div className={'tweetsMark'}>
                 <p>#btc</p>
                 <p>#eth</p>
-            </div>
+            </div> */}
             <div className={'tweetsOperate'}>
                 <p className={'tweetsIn'}>
                     <img src="/comment.svg" alt="" onClick={() => setOpenComment(true)} />
@@ -107,7 +119,7 @@ function Tweets({ name }: TweetsPropsType) {
                     <span>111</span>
                 </p>
             </div>
-            <PostSendModal className='comment-send-model' open={openComment} onClose={() => setOpenComment(false)} onPublish={(data) => handleAddComment(data)} />
+            <PostSendModal type="comment" postData={localData} className='comment-send-model' open={openComment} onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()} />
         </div>
 
     );

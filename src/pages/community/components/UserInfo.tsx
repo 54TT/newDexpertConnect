@@ -42,6 +42,7 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
   }
 
   const onPublish = async (data: any) => {
+
     try {
       const result = await handlePublish(data);
       if (result === 200) {
@@ -51,9 +52,8 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
       }
     } catch (e) {
       console.error(e);
-      return Promise.reject('e');
-
     }
+    setVisible(false)
   }
   return <div className='community-user-action'>
     {

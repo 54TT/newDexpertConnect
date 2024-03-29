@@ -86,7 +86,7 @@ export  const handlePublish = async (data: any) => {
       address: username?.address,
       post: data
     }, token)
-    if (result.status === 200) {
+    if (result?.status === 200) {
       return result.status;
     } else {
       return Promise.reject('faild')
