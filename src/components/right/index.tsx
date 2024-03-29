@@ -6,7 +6,7 @@ import { request } from '../../../utils/axios.ts';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Skeleton } from 'antd'
 // @ts-ignore
-import { CountContext } from "../../Layout.jsx";
+import { CountContext } from "../../Layout.tsx";
 import { LoadingOutlined } from '@ant-design/icons'
 function Index() {
     const { headHeight, botHeight }: any = useContext(CountContext)

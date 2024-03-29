@@ -1,8 +1,9 @@
 import {CaretUpOutlined} from '@ant-design/icons'
 import {Progress} from 'antd'
 
-function Left() {
+function Left({par}: any) {
     const h = window.innerHeight - 25 - 54
+    console.log(par)
     return (
         <div className={`NewpairDetailsOne scrollStyle`} style={{height: h + 'px'}}>
             {/*top*/}
@@ -44,8 +45,8 @@ function Left() {
             </div>
             <div className={'valume'}>
                 {
-                    [{name:'Valume', price:'$ 1000'},{name:'Liquidity', price:'$ 2378'},{name:'Market Cap', price:'$ 4384'},{name:'FDV', price:'$ 2323'},].map((i: any, ind: number) => {
-                        return <div className={`dis butt`} key={ind} style={{marginBottom:'10px'}}>
+                    [{name: 'Valume', price: '$ 1000'}, {name: 'Liquidity', price: '$ 2378'}, {name: 'Market Cap', price: '$ 4384'}, {name: 'FDV', price: '$ 2323'},].map((i: any, ind: number) => {
+                        return <div className={`dis butt`} key={ind} style={{marginBottom: '10px'}}>
                             <span>{i.name}</span>
                             <span>{i.price}</span>
                         </div>
@@ -73,8 +74,8 @@ function Left() {
             </div>
             <div className={'valume'}>
                 {
-                    [{name:'Created Time', price:'2022-11-10 10:10:10'},{name:'Total Supply', price:'100023'},{name:'Initial Pool Amount', price:'1 ETH'},{name:'Pooled WETH', price:'1.3'},{name:'Pooled bTC', price:'13'},].map((i: any, ind: number) => {
-                        return <div className={`dis butt`} key={ind} style={{marginBottom:'10px'}}>
+                    [{name: 'Created Time', price: '2022-11-10 10:10:10'}, {name: 'Total Supply', price: '100023'}, {name: 'Initial Pool Amount', price: '1 ETH'}, {name: 'Pooled WETH', price: '1.3'}, {name: 'Pooled bTC', price: '13'},].map((i: any, ind: number) => {
+                        return <div className={`dis butt`} key={ind} style={{marginBottom: '10px'}}>
                             <span>{i.name}</span>
                             <span>{i.price}</span>
                         </div>

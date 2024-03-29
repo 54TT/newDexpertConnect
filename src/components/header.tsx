@@ -1,15 +1,13 @@
 import { useContext, useState } from 'react';
 import { Dropdown, Modal } from 'antd'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-import { CountContext } from '../Layout.jsx'
-import { useNavigate } from 'react-router-dom';
-import { DownOutlined, LoadingOutlined } from '@ant-design/icons'
-
+import {CountContext} from '../Layout.tsx'
+import {useLocation, useNavigate} from 'react-router-dom';
+import {DownOutlined, LoadingOutlined} from '@ant-design/icons'
 function Header() {
-    const { connect, getMoneyEnd, user, setLoad, load, clear }: any = useContext(CountContext);
+    const router = useLocation()
+    const {connect, getMoneyEnd, user, setLoad, load, clear}: any = useContext(CountContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [page, setPage] = useState('Market')
+    const [page, setPage] = useState(router.pathname)
     const history = useNavigate();
     const handleOk = () => {
         setIsModalOpen(false);
@@ -38,13 +36,16 @@ function Header() {
     const historyChange = (i: number) => {
         switch (i) {
             case 2:
+                setPage('/community/lastest');
                 history('/community/lastest')
                 break;
             case 0:
                 history('/')
+                setPage('/');
                 break;
             case 1:
                 history('/dapp')
+                setPage('/dapp');
                 break;
         }
     }
@@ -64,15 +65,15 @@ function Header() {
         <div className={'headerBox'}>
             <img src="/topLogo.svg" alt="" style={{ cursor: 'pointer' }} onClick={() => {
                 history('/')
-            }} />
+            }}/>
             <p className={`headerCenter dis`}>
                 {
                     ['Market', 'DApp & Tools', 'Community'].map((i, ind) => {
-                        return <span key={ind} style={{ color: page === i ? 'rgb(134,240,151)' : 'rgb(214,223,215)' }}
-                            onClick={() => {
-                                setPage(i);
-                                historyChange(ind);
-                            }}>{i}</span>
+                        return <span key={ind}
+                                     style={{color: page === '/' || page === '/newpairDetails' ? ind === 0 ? 'rgb(134,240,151)' : 'rgb(214,223,215)' : page === '/community/lastest' ? ind === 2 ? 'rgb(134,240,151)' : 'rgb(214,223,215)' : page === '/dapp' ? ind === 1 ? 'rgb(134,240,151)' : 'rgb(214,223,215)' : 'rgb(214,223,215)'}}
+                                     onClick={() => {
+                                         historyChange(ind);
+                                     }}>{i}</span>
                     })
                 }
             </p>
@@ -101,25 +102,25 @@ function Header() {
                 </div>
             }
             <Modal destroyOnClose={true} centered title={null} footer={null} className={'walletModal'}
-                maskClosable={false}
-                open={isModalOpen}
-                onOk={handleOk} onCancel={handleCancel}>
+                   maskClosable={false}
+                   open={isModalOpen}
+                   onOk={handleOk} onCancel={handleCancel}>
                 <div className={'headerModal'}>
-                    <img src="/logo1.svg" alt="" />
+                    <img src="/logo1.svg" alt=""/>
                     <p>Connect to Dexpert</p>
                     {
                         // window.innerWidth > 768 &&
-                        <button onClick={connectWallet} className={'walletButton'} style={{ margin: '10px 0' }}>
+                        <button onClick={connectWallet} className={'walletButton'} style={{margin: '10px 0'}}>
                             <img
-                                src="/metamask.svg" style={{ width: '25px' }}
-                                alt="" /><span>MetaMask</span></button>
+                                src="/metamask.svg" style={{width: '25px'}}
+                                alt=""/><span>MetaMask</span></button>
                     }
                     <button onClick={onConnect} className={'walletButton'}><img
                         src="/webAll.svg"
                         style={{
                             width: '25px',
                         }}
-                        alt="" /><span>WlletConnect</span>
+                        alt=""/><span>WlletConnect</span>
                     </button>
                 </div>
             </Modal>

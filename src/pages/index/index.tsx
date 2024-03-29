@@ -1,20 +1,21 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import {Input, Segmented, Select, Spin} from 'antd'
-import { useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
 import {gql} from 'graphql-tag'
-import {setMany} from '../../../utils/change.ts'
-import {cloneDeep} from 'lodash';
+import {cloneDeep, differenceBy} from 'lodash';
 import {SearchOutlined} from '@ant-design/icons'
 import Right from "./components/right.tsx";
-import {useNavigate} from "react-router-dom";
+import NewPair from './components/newPairDate.tsx'
+import {ethers} from 'ethers';
+import Loading from '../../components/loading.tsx'
+
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });
 
 function Index() {
     const hei = useRef<any>()
-    const history = useNavigate();
     const page = 25
     const [select, setSelect] = useState('newPair')
     // const [page, setPage] = useState(30);
@@ -25,6 +26,9 @@ function Index() {
     const [tableHei, setTableHei] = useState('')
     const [moreLoad, setMoreLoad] = useState(false)
     const [nextLoad, setNextLoad] = useState(false)
+    const [gas, setGas] = useState<string>('')
+    const [ethPrice, setEthprice] = useState<string>('')
+    const [polling, setPolling] = useState<boolean>(false)
     const GET_DATA = gql`query LiveNewPair {
   _meta {
     block {
@@ -35,7 +39,7 @@ function Index() {
   bundles {
     ethPrice
   }
-  pairs(first: ${page}, orderBy: createdAtTimestamp,skip: ${(current - 1) * 15}) {
+  pairs(first: ${page}, orderBy: createdAtTimestamp,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
     createdAtTimestamp
     id
     liquidityPositionSnapshots(orderBy: timestamp, orderDirection: desc, first: 1) {
@@ -125,41 +129,57 @@ function Index() {
         if (p.length !== 25) {
             setNextLoad(true)
         }
-        if (current !== 1) {
-            const ab = tableDta.concat(p)
-            setDta(ab)
+        if (polling) {
+            const abcd: any = differenceBy(p, tableDta, 'id')
+            if (abcd.length > 0) {
+                const at: any = abcd.concat(tableDta)
+                setDta(at)
+            }
         } else {
-            setDta(p)
+            if (current !== 1) {
+                const ab = tableDta.concat(p)
+                setDta(ab)
+            } else {
+                setDta(p)
+            }
         }
         setMoreLoad(false)
         setDtaLoad(false)
+        setPolling(false)
     }
     useEffect(() => {
         if (hei && hei.current) {
             const h = hei.current.scrollHeight
             const w = window.innerHeight
-            const o: any = w - h - 25-54 - 90
+            const o: any = w - h - 25 - 54 - 90
             setTableHei(o)
         }
+        getGas()
     }, [])
     const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any
+    const getGas = async () => {
+        const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.g.alchemy.com/v2/BhTc3g2lt1Qj3IagsyOJsH5065ueK1Aw')
+        const gasAVGPrice = await provider.send('eth_gasPrice', [])
+        const gasAVGPriceInWei = parseInt(gasAVGPrice, 16)
+        if (gasAVGPriceInWei) {
+            const abc = Number(gasAVGPriceInWei) / (10 ** 9)
+            setGas(abc.toFixed(3))
+        }
+    }
     useEffect(() => {
         if (!loading) {
             if (data && data?.pairs.length > 0) {
                 getParams(data.pairs)
+                const abc = data.bundles
+                const price = abc[0].ethPrice
+                setEthprice(Number(price).toFixed(3))
             }
         }
-    }, [loading]);
+    }, [data]);
+
     const handleChange = (value: string) => {
         setSelect(value)
     };
-
-    function extractDecimalFromString(inputString: any) {
-        // 使用正则表达式匹配小数点后两位的数字
-        const match = inputString.match(/(\d+\.\d{1,2})/);
-        // 如果有匹配，返回匹配的结果；否则返回 null
-        return match ? match[1] : null;
-    }
 
     const changSeg = (e: string) => {
         setTime(e)
@@ -171,24 +191,25 @@ function Index() {
             refetch()
         }
     }
+    useEffect(() => {
+        let interval: any = null
+        if (!tableDtaLoad) {
+            interval = setInterval(async () => {
+                setPolling(true)
+                refetch();
+            }, 8000);
+        }
+        return () => {
+            clearInterval(interval);
+        }
+    }, [tableDtaLoad])
+
+
     const changeInput = (e: any) => {
         console.log(e)
     }
-    const click = (i: any) => {
-        tableDta.map((it: any) => {
-            if (it?.id === i?.id) {
-                it.collect = !i.collect
-            }
-            return it
-        })
-        setDta([...tableDta])
-    }
-    const push = (i: any) => {
-        history('/newpairDetails')
-        console.log('i============', i)
-    }
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 2%' }}>
+        <div style={{display: 'flex', justifyContent: 'space-between', padding: '0 2%'}}>
             <div className={'indexBox'}>
                 {/* top*/}
                 <div ref={hei} className={`indexTop dis`}>
@@ -197,31 +218,31 @@ function Index() {
                         value={select}
                         className={'indexSelect'}
                         popupClassName={'indexSelectPopup'}
-                        style={{ width: '12%' }}
+                        style={{width: '12%'}}
                         options={[
-                            { value: 'newPair', label: 'New Pairs' },
-                            { value: 'trading', label: 'Trading' },
-                            { value: 'watch', label: 'Watch List' },
+                            {value: 'newPair', label: 'New Pairs'},
+                            {value: 'trading', label: 'Trading'},
+                            {value: 'watch', label: 'Watch List'},
                         ]}
                     />
                     <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'}
-                        defaultValue={'24h'} />
-                    <Input suffix={<SearchOutlined style={{ fontSize: '16px', color: 'white' }} />} onChange={changeInput}
-                        allowClear className={'indexInput'} />
+                               defaultValue={'24h'}/>
+                    <Input suffix={<SearchOutlined style={{fontSize: '16px', color: 'white'}}/>} onChange={changeInput}
+                           allowClear className={'indexInput'}/>
                     <div className={`indexRight dis`}>
-                        <p><img src="/eth.svg" alt="" /><span>$:121</span></p>
-                        <p><img src="/gas.svg" alt="" /><span>abc</span></p>
+                        <p><img src="/eth.svg" alt=""/><span>$:{ethPrice}</span></p>
+                        <p><img src="/gas.svg" alt=""/><span>{gas}</span></p>
                     </div>
                 </div>
                 <div className={'indexNewPair'}>
                     {/*tittle*/}
                     <div className={'indexNewPairTitle'}>
                         {
-                            ['Name', 'Price', time + 'Change', 'Pooled Amt', 'Swap Count', 'Liquidity', 'Links'].map((i: string, ind: number) => {
+                            ['Name', 'Price($)', time + ' Change(%)', 'Create Time', 'Pooled Amt', 'Swap Count', 'Liquidity', 'Links'].map((i: string, ind: number) => {
                                 return <p className={`${ind === 0 ? 'disCen' : 'textAlign'} homeTableTittle`} key={ind}>
                                     {
                                         ind === 0 &&
-                                        <img src="/collect.svg" alt="" style={{ marginRight: '5px' }} width={'15px'} />
+                                        <img src="/collect.svg" alt="" style={{marginRight: '5px'}} width={'15px'}/>
                                     }
                                     <span>{i}</span>
                                 </p>
@@ -238,80 +259,21 @@ function Index() {
                             loader={null}
                             dataLength={tableDta.length}>
                             {
-                                tableDtaLoad ? <div className={'indexNewSkeleton'}>
-                                    <Spin size={'large'} className={'indexNewSpin'}>
-                                    </Spin>
-                                </div> : tableDta.length > 0 ? tableDta.map((record: any, ind: number) => {
-                                    const data = time === '24h' ? record?.pairDayData : time === '6h' ? record?.PairSixHourData : time === '1h' ? record?.pairHourData : record?.PairFiveMinutesData
-                                    const a: any = data && data.length > 0 ? Number(data[0]?.priceChange) ? data[0]?.priceChange.includes('.000') ? 0 : Number(data[0]?.priceChange).toFixed(3) : 0 : 0
-                                    const b = a ? a.includes('e+') || a.includes('e-') ? setMany(a) : a : 0
-                                    const ab = record?.token0?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' && record?.token1?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 1 : record.sure ? 2 : 3
-                                    const dateTime = time === '24h' ? record?.pairDayData : time === '6h' ? record?.PairSixHourData : time === '1h' ? record?.pairHourData : record?.PairFiveMinutesData
-                                    const li: any = record?.liquidity && Number(record.liquidity) ? setMany(record.liquidity) : 0
-                                    let bb: any
-                                    if (li && li.includes('K')) {
-                                        bb = li.includes('.00') ? parseInt(li) + 'K' : extractDecimalFromString(li) + 'K'
-                                    } else if (li && li.includes('M')) {
-                                        bb = li.includes('.00') ? parseInt(li) + 'M' : extractDecimalFromString(li) + 'M'
-                                    } else {
-                                        if (Number(li)) {
-                                            bb = parseFloat(Number(li).toFixed(3))
-                                        } else {
-                                            bb = li
-                                        }
-                                    }
-                                    return <div key={ind} className={`indexNewPairBodyData dis`}
-                                        onClick={() => push(record)}>
-                                        <div className={`indexTableLogo indexNewPairBone`}>
-                                            <img src={record.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""
-                                                onClick={() => click(record)} />
-                                            <div>
-                                                <p style={{ marginBottom: '4px' }}>{record?.token0?.name ? record?.token0?.name.length > 13 ? record?.token0?.name.slice(0, 5) + '...' + record?.token0.name.slice(-4) : record?.token0.name : ''}</p>
-                                                {/*<div style={{display: 'flex', alignItems: 'center'}}>*/}
-                                                {/*    <span>{record?.token0?.symbol ? record?.token0?.symbol.length > 7 ? record?.token0?.symbol.slice(0, 5) + '/' : record?.token0?.symbol + '/' : ''}</span>*/}
-                                                {/*    <span*/}
-                                                {/*        style={{color: 'rgb(98,98,98)'}}>{record?.token1?.symbol ? record?.token1?.symbol.length > 7 ? record?.token1?.symbol.slice(0, 5) : record?.token1?.symbol : ''}</span>*/}
-                                                {/*</div>*/}
-                                                <div style={{
-                                                    fontSize: '14px',
-                                                    color: 'rgb(104,124,105)'
-                                                }}>{record?.token1?.symbol ? record?.token1?.symbol.length > 13 ? record?.token1?.symbol.slice(0, 5) + '...' + record?.token1?.symbol.slice(-4) : record?.token1?.symbol : ''}</div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            style={{ color: "white" }}>{Number(record?.priceUSD) ? setMany(record?.priceUSD) : 0}</div>
-                                        <div
-                                            style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,9,58)', }}>{b !== 0 ? (parseFloat(Number(b).toFixed(2))).toString() + '%' : '0'}</div>
-                                        {
-                                            ab === 1 ? <div style={{ color: 'white' }}>-</div> : ab === 2 ? <div
-                                                style={{ color: 'white' }}>{Number(setMany(record?.reserve0.toString())) ? parseFloat(Number(setMany(record?.reserve0.toString())).toFixed(2)) + '  ' : setMany(record?.reserve0.toString()) + '  '}ETH</div> :
-                                                <div
-                                                    style={{ color: 'white' }}>{Number(setMany(record?.reserve1.toString())) ? parseFloat(Number(setMany(record?.reserve1.toString())).toFixed(2)) + '  ' : setMany(record?.reserve1.toString()) + '  '}ETH</div>
-                                        }
-                                        <div
-                                            style={{ color: 'white' }}>{dateTime && dateTime.length > 0 ? Number(dateTime[0]?.swapTxns) : 0}</div>
-                                        <div style={{ color: 'white' }}>{bb}</div>
-
-                                        <div className={`dis indexTableLogo`}>
-                                            <img src="/ethLogo.svg" alt="" />
-                                            <img
-                                                src="/feima.svg" style={{ margin: '0 5px' }}
-                                                alt="" />
-                                            <img
-                                                src="/huo.svg" alt="" /></div>
-                                    </div>
-                                }) : <p>no Data</p>
+                                // tableDtaLoad ? <div className={'indexNewSkeleton'}>
+                                //     <Spin size={'large'} className={'indexNewSpin'}>
+                                //     </Spin>
+                                // </div>
+                                    tableDtaLoad? <Loading />: tableDta.length > 0 ?
+                                    <NewPair tableDta={tableDta} time={time} setDta={setDta}/> : <p>no Data</p>
                             }
                         </InfiniteScroll>
                     </div>
                     {
-                        moreLoad && <div className={'disCen'}>
-                            <Spin />
-                        </div>
+                        moreLoad &&  <Loading  status={'none'}/>
                     }
                 </div>
             </div>
-            <Right />
+            <Right/>
         </div>
     );
 }

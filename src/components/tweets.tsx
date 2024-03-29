@@ -6,10 +6,9 @@ import PostSendModal from '../pages/community/components/PostModal';
 interface TweetsPropsType {
     user?: any;
     name: any;
-    onClick?: () => void;
 }
 
-function Tweets({ user, name, onClick = () => { } }: TweetsPropsType) {
+function Tweets({ name }: TweetsPropsType) {
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
     const [openComment, setOpenComment] = useState(false);
@@ -31,15 +30,18 @@ function Tweets({ user, name, onClick = () => { } }: TweetsPropsType) {
         try {
             if (localData?.likeStatus === false) {
                 setClickAnimate(true)
-                const result = await request('post', '/api/v1/post/like', { postId: localData.postId }, token);
+                const result: any = await request('post', '/api/v1/post/like', { postId: localData.postId }, token);
                 result?.status === 200 ? setLocalData({ ...localData, likeStatus: true }) : null;
-
+                if (result && result?.status === 200) {
+                    setLocalData({ ...localData, likeStatus: true, likeNum: Number(localData.likeNum) + 1 })
+                }
             } else {
-                const result = await request('post', '/api/v1/post/like/cancel', { postId: localData.postId }, token);
-                result?.status === 200 ? setLocalData({ ...localData, likeStatus: false }) : null;
+                const result: any = await request('post', '/api/v1/post/like/cancel', { postId: localData.postId }, token);
+                if (result && result?.status === 200) {
+                    setLocalData({ ...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1 })
+                }
             }
         } catch (e) {
-            console.error(e);
         }
     }
 
@@ -49,9 +51,7 @@ function Tweets({ user, name, onClick = () => { } }: TweetsPropsType) {
     }
 
     return (
-        <div className={'tweetsBox'} onClick={() => {
-            onClick()
-        }}>
+        <div className={'tweetsBox'}>
             {/*  top*/}
             <div className={`dis`}>
                 {/* left*/}
