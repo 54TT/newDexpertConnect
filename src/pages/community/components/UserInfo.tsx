@@ -6,7 +6,6 @@ import { Button } from 'antd';
 import { useState } from 'react';
 import PostSendModal from './PostModal';
 import { handlePublish } from '../../../../utils/axios';
-import Tweets from '../../../components/tweets';
 export type UserActionKey = 'Profile' | 'Lastest' | 'Following'
 
 enum UserActionKeyEnum {
@@ -42,7 +41,7 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
     }
   }
 
-  const onPublish = async (data) => {
+  const onPublish = async (data: any) => {
     try {
       const result = await handlePublish(data);
       if (result === 200) {

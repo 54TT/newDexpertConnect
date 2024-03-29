@@ -42,10 +42,11 @@ function Tweets({ name }: TweetsPropsType) {
                 }
             }
         } catch (e) {
+            console.log(e);
         }
     }
 
-    const handleAddComment = (data) => {
+    const handleAddComment = (data: any) => {
         console.log(data);
         console.log(name);
     }

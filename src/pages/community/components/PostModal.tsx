@@ -5,7 +5,7 @@ import React from 'react';
 import SendPost from './SendPost';
 interface PostSendModaltypeProps extends React.PropsWithChildren {
   open: boolean;
-  onPublish: () => void;
+  onPublish: (data: any) => void;
   onClose: () => void;
   className?: string;
   modalProps?: ModalProps
@@ -14,7 +14,7 @@ interface PostSendModaltypeProps extends React.PropsWithChildren {
 
 
 
-function PostSendModal({ open, modalProps, className = "", onClose, content, onPublish, ...props }: PostSendModaltypeProps) {
+function PostSendModal({ open, modalProps, className = "", onClose, content, onPublish }: PostSendModaltypeProps) {
   const ModalTitle = () => {
     return <>
       <Button icon={<CloseOutlined />} shape="circle" type="text" onClick={() => onClose()} />
