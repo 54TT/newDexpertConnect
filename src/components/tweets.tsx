@@ -23,7 +23,6 @@ function Tweets({name, isLogin}: TweetsPropsType) {
             setTimeout(() => {
                 setClickAnimate(false)
             }, 1000);
-
         }
     }, [clickAnimate])
     const animationVariants = {
@@ -53,11 +52,9 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                         setLocalData({...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1})
                     }
                 }
+            } catch (e) {
+                return null
             }
-
-        }
-        catch (e) {
-            return null
         }
     }
 
