@@ -19,6 +19,10 @@ function Community() {
   const { tab } = useParams()
   useEffect(() => {
     setActiveUserTab(tab || 'lastest')
+    if (tab !== 'comment') {
+      localStorage.removeItem('reply-detail')
+    }
+
   }, [tab])
 
 
@@ -28,7 +32,8 @@ function Community() {
     'lastest': <PostContent />,
     'profile': <></>,
     'following': <></>,
-    'detail': <PostDetail />
+    'detail': <PostDetail />,
+    'comment': <PostDetail />
   }
 
   return (

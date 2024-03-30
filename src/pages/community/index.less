@@ -62,7 +62,7 @@
       }
     }
 
-    .scroll-style-minin();
+    .scroll-style-mixin();
   }
 }
 
@@ -97,6 +97,13 @@
     &:hover {
       background-color: unset !important;
     }
+    &.tweets-comment {
+      border-bottom: 0.4px solid #687c69;
+      cursor: unset;
+      .tweetsOperate {
+        padding-bottom: 24px;
+      }
+    }
   }
   .community-content-post-send {
     padding-bottom: 0;
@@ -106,4 +113,8 @@
       visibility: hidden;
     }
   }
+}
+
+#scrollabelDetail {
+  .scroll-style-mixin();
 }

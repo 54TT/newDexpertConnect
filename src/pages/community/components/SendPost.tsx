@@ -1,12 +1,20 @@
-import {Button, Input, message} from 'antd';
-import {request} from '../../../../utils/axios';
-import {useContext, useEffect, useRef, useState} from 'react';
-import {CloseOutlined} from '@ant-design/icons';
-import {CountContext} from '../../../Layout.tsx'
+import { Button, Input, message } from 'antd';
+import { request } from '../../../../utils/axios';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { CloseOutlined } from '@ant-design/icons';
+import { CountContext } from '../../../Layout.tsx'
 import Cookies from 'js-cookie';
 const { TextArea } = Input;
-function SendPost({ type = '', changeRefresh, onPublish, postData }: any) {
-    const {clear}:any = useContext(CountContext)
+
+interface SendPostTypeProps {
+    type?: 'comment' | 'post' | 'reply',
+    changeRefresh?: (name: any) => void,
+    onPublish?: (data: any) => void,
+    postData?: any,
+}
+
+function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPostTypeProps) {
+    const { clear }: any = useContext(CountContext)
     const [img, setImg] = useState<any>(null);
     const [imgPreview, setImgPreview] = useState<any>(null);
     const [value, setValue] = useState('');
@@ -90,25 +98,35 @@ function SendPost({ type = '', changeRefresh, onPublish, postData }: any) {
                 content: value,
                 imageList: imgUrl?.data?.url ? [imgUrl.data.url] : undefined,
             }
-            let result: any;
+            let params;
+            let url = ""
             if (type === 'comment') {
-                result = await request('post', "/api/v1/post/comment", {
+                params = {
                     postId: postData.postId,
                     content: value
-                }, token)
-                if (result?.status === 200) {
-                    onPublish?.();
                 }
-            } else {
-                result = await request('post', "/api/v1/post/publish", {
+                url = "/api/v1/post/comment"
+            }
+            if (type === 'post') {
+                params = {
                     uid: username?.uid,
                     address: username?.address,
                     post: data
-                }, token)
-                if (result?.status === 200) {
-                    onPublish?.();
-                    changeRefresh?.(true)
                 }
+                url = "/api/v1/post/publish"
+            }
+            if (type === 'reply') {
+                params = {
+                    targetId: postData.id,
+                    content: value
+                }
+                url = '/api/v1/reply'
+            }
+            const result: any = await request('post', url, params, token)
+
+            if (result?.status === 200) {
+                onPublish?.(data);
+                changeRefresh?.(true)
             }
             setPublishing(false);
             clearImg();
@@ -116,7 +134,7 @@ function SendPost({ type = '', changeRefresh, onPublish, postData }: any) {
             if (result === 'please') {
                 clear()
             } else if (result && result.status === 200) {
-                changeRefresh(true)
+                changeRefresh?.(true)
             }
         } catch (e) {
             console.log(e);

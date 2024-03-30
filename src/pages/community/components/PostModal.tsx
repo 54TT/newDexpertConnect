@@ -10,7 +10,7 @@ interface PostSendModaltypeProps extends React.PropsWithChildren {
   className?: string;
   modalProps?: ModalProps
   content?: React.ReactNode;
-  type?: string
+  type?: 'comment' | 'reply' | 'post'
   postData?: any;
 }
 function PostSendModal({ open, modalProps, className = "", onClose, content, onPublish, ...props }: PostSendModaltypeProps) {

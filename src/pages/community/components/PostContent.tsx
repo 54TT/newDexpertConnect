@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SendPost from '../components/SendPost.tsx'
 import TWeetHome from '../../../components/tweetHome.js'
 import classNames from "classnames";
@@ -21,6 +21,14 @@ function CommunityContent({ name }: any) {
   const changeRefresh = (name: boolean) => {
     setStatus(name)
   }
+
+
+  useEffect(() => {
+    document.addEventListener('publish-post', () => changeRefresh(true))
+    return () => {
+      document.removeEventListener('publish-post', () => changeRefresh(true))
+    }
+  }, [])
   return (
     <div className="community-content">
       {

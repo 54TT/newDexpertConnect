@@ -42,13 +42,11 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
   }
 
   const onPublish = async (data: any) => {
-
     try {
       const result = await handlePublish(data);
       if (result === 200) {
         const event = new CustomEvent("publish-post");
         document.dispatchEvent(event);
-        return result
       }
     } catch (e) {
       console.error(e);
