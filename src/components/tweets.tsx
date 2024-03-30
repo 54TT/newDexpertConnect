@@ -115,7 +115,7 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                     {/* left*/}
                     <div className={'tweetsLeft'}>
                         <img src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
-                            style={{ width: '42px', marginRight: '5%', borderRadius: '50%' }} />
+                            style={{ width: '36px', marginRight: '5%', borderRadius: '50%' }} />
                         <p>
                             <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
                             <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
@@ -149,7 +149,7 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                         }} />
                         <span>{localData?.commentNum ? localData.commentNum : 0}</span>
                     </p>
-                    <div className={'tweetsIn'} onClick={clickLike}>
+                    <div className={'tweetsIn like-icon'} onClick={clickLike}>
                         <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
                         <span>{localData?.likeNum ? localData.likeNum : 0}</span>
                         <motion.div

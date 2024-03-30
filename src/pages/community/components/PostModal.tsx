@@ -17,7 +17,7 @@ function PostSendModal({ open, modalProps, className = "", onClose, content, onP
   const ModalTitle = () => {
     return <>
       <Button icon={<CloseOutlined />} shape="circle" type="text" onClick={() => onClose()} />
-      <span>Draft</span>
+      {/*       <span>Draft</span> */}
     </>
   }
   return <Modal destroyOnClose width='600px' title={<ModalTitle />} className={classNames(className, 'post-send-modal')} open={open} {...modalProps} footer={null} closeIcon={null}>
