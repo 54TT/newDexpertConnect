@@ -30,7 +30,8 @@ function Community() {
     'profile': <Profie />,
     'following': <></>,
     'detail': <PostDetail />,
-    'comment': <PostDetail />
+    'comment': <PostDetail />,
+    'user': <Profie />,
   }
 
   return (

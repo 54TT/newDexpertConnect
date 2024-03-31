@@ -123,6 +123,15 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
         history('/community/detail')
     }
 
+    const handleClickAvatar = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+        e.stopPropagation()
+        if (!isLogin) {
+            message.warning('please login')
+        }
+
+        history(`/community/user?uid=${localData.user.uid}`)
+    }
+
     return (
         <>
             <div className={classNames('tweetsBox', { 'tweets-comment': type === 'comment' })} onClick={() => {
@@ -131,8 +140,8 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                 {/*  top*/}
                 <div className={`dis`}>
                     {/* left*/}
-                    <div className={'tweetsLeft'}>
-                        <img src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
+                    <div className={'tweetsLeft'} >
+                        <img onClick={(e) => handleClickAvatar(e)} src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
                             style={{ width: '36px', marginRight: '5%', borderRadius: '50%' }} />
                         <p>
                             <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
@@ -151,12 +160,7 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                     {
                         localData?.imageList?.length > 0 && localData?.imageList[0] ?
                             <img className='post-item-img' src={localData?.imageList[0]} alt=""
-                                 style={{
-                                     maxWidth: '50%',
-                                     maxHeight: '200px',
-                                     borderRadius: '5px',
-                                     display: 'block'
-                                 }}/> : <></>
+                                style={{ maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block' }} /> : <></>
                     }
                 </>
                 {/*   标识*/}
@@ -194,6 +198,7 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                         <span>111</span>
                     </p>
                 </div>
+
             </div>
             <PostSendModal type={type === "post" ? "comment" : "reply"} postData={localData} className='comment-send-model' open={openComment}
                 onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()} />

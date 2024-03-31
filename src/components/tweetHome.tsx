@@ -6,7 +6,11 @@ import { request } from "../../utils/axios.ts";
 import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
 import { CountContext } from "../Layout.tsx";
-function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrollableDiv', style = {} }: any) {
+interface TweetHomePropsType {
+    uid?: string
+    [key: string]: any
+}
+function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrollableDiv', style = {}, uid = '' }: TweetHomePropsType) {
     const { clear }: any = useContext(CountContext)
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
@@ -30,11 +34,20 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrolla
     }, [page])
     const getTweet = async (page: number) => {
         const token = cookie.get('token')
-        const res: any = await request('post', '/api/v1/post/public', {page: page}, token ? token : '')
+        let url = '/api/v1/post/public'
+        let data: any = { page: page }
+        if (uid) {
+            url = '/api/v1/post/list',
+                data = {
+                    uid,
+                    page
+                }
+        }
+        const res: any = await request('post', url, data, token ? token : '')
         if (res == 'please') {
             clear()
         } else if (res && res?.status === 200) {
-            const {data} = res
+            const { data } = res
             const r: any = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
                 if (r.length !== 10) {

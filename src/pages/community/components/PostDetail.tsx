@@ -59,7 +59,6 @@ const PostDetail = () => {
   const { reply } = getQueryParams() as any;
 
 
-
   const getCommentOrReplyData = async (page = 1) => {
     setPage(page);
     let params = {};
