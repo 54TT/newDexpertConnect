@@ -151,16 +151,12 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                     {
                         localData?.imageList?.length > 0 && localData?.imageList[0] ?
                             <img className='post-item-img' src={localData?.imageList[0]} alt=""
-<<<<<<< HEAD
                                  style={{
                                      maxWidth: '50%',
                                      maxHeight: '200px',
                                      borderRadius: '5px',
                                      display: 'block'
                                  }}/> : <></>
-=======
-                                style={{ maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block' }} /> : <></>
->>>>>>> 09a36a4314aa584a012ffb848705cdb6bd3e77b8
                     }
                 </>
                 {/*   标识*/}
@@ -176,14 +172,8 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                         }} />
                         <span>{localData?.commentNum ? localData.commentNum : 0}</span>
                     </p>
-<<<<<<< HEAD
-                    <div className={'tweetsIn'} onClick={clickLike}>
-                        <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"}
-                             style={{width: localData?.likeStatus ? '26px' : '30px'}} alt=""/>
-=======
                     <div className={'tweetsIn like-icon'} onClick={clickLike}>
                         <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
->>>>>>> 09a36a4314aa584a012ffb848705cdb6bd3e77b8
                         <span>{localData?.likeNum ? localData.likeNum : 0}</span>
                         <motion.div
                             initial="hidden"
@@ -195,15 +185,6 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                             <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>
                         </motion.div>
                     </div>
-<<<<<<< HEAD
-                    <p className={'tweetsIn'}>
-                        <img src="/share.svg " alt=""/>
-                        <span>{Math.ceil(Math.random() * 500)}</span>
-                    </p>
-                    <p className={'tweetsIn'}>
-                        <img src="/look.svg" alt=""/>
-                        <span>{Math.ceil(Math.random() * 1000)}</span>
-=======
                     <p className={'tweetsIn share-icon'}>
                         <img src="/share.svg " alt="" />
                         <span>111</span>
@@ -211,10 +192,8 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                     <p className={'tweetsIn look-icon'}>
                         <img src="/look.svg" alt="" />
                         <span>111</span>
->>>>>>> 09a36a4314aa584a012ffb848705cdb6bd3e77b8
                     </p>
                 </div>
-
             </div>
             <PostSendModal type={type === "post" ? "comment" : "reply"} postData={localData} className='comment-send-model' open={openComment}
                 onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()} />
