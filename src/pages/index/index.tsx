@@ -1,14 +1,16 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import {Input, Segmented, Select} from 'antd'
-import {useEffect, useRef, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
 import {gql} from 'graphql-tag'
 import {SearchOutlined} from '@ant-design/icons'
-import { cloneDeep, differenceBy } from 'lodash';
+import {cloneDeep, differenceBy} from 'lodash';
 import Right from "./components/right.tsx";
 import NewPair from './components/newPairDate.tsx'
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 import Loading from '../../components/loading.tsx'
+import {CountContext} from "../../Layout.tsx";
+
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });
@@ -16,6 +18,7 @@ const client = new ApolloClient({
 function Index() {
     const hei = useRef<any>()
     const page = 25
+    const {browser, setNewPairPar}: any = useContext(CountContext);
     const [select, setSelect] = useState('newPair')
     // const [page, setPage] = useState(30);
     const [current, setCurrent] = useState(1);
@@ -136,10 +139,12 @@ function Index() {
             }
         } else {
             if (current !== 1) {
-                const ab = tableDta.concat(p)
+                const abcd: any = differenceBy(p, tableDta, 'id')
+                const ab = tableDta.concat(abcd)
                 setDta(ab)
             } else {
                 setDta(p)
+                setNewPairPar(p)
             }
         }
         setMoreLoad(false)
@@ -155,7 +160,7 @@ function Index() {
         }
         getGas()
     }, [])
-    const { loading, data, refetch } = useQuery(GET_DATA, { client }) as any
+    const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any
     const getGas = async () => {
         const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.g.alchemy.com/v2/BhTc3g2lt1Qj3IagsyOJsH5065ueK1Aw')
         const gasAVGPrice = await provider.send('eth_gasPrice', [])
@@ -165,6 +170,7 @@ function Index() {
             setGas(abc.toFixed(3))
         }
     }
+
     useEffect(() => {
         if (!loading) {
             if (data && data?.pairs.length > 0) {
@@ -175,11 +181,9 @@ function Index() {
             }
         }
     }, [data]);
-
     const handleChange = (value: string) => {
         setSelect(value)
     };
-
     const changSeg = (e: string) => {
         setTime(e)
     }
@@ -190,27 +194,26 @@ function Index() {
             refetch()
         }
     }
-
     useEffect(() => {
-        let interval: any = null
-        if (!tableDtaLoad) {
-            interval = setInterval(async () => {
-                setPolling(true)
-                refetch();
-            }, 8000);
-        }
+        const interval = setInterval(async () => {
+            setPolling(true)
+            refetch();
+        }, 8000);
         return () => {
             clearInterval(interval);
         }
-    }, [tableDtaLoad])
-
-
+    }, [])
     const changeInput = (e: any) => {
         console.log(e)
     }
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 2%' }}>
-            <div className={'indexBox'}>
+        <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '0 2%',
+            flexDirection: browser ? 'row' : 'column'
+        }}>
+            <div className={'indexBox'} style={{width: browser ? '74%' : 'auto'}}>
                 {/* top*/}
                 <div ref={hei} className={`indexTop dis`}>
                     <Select
@@ -218,60 +221,66 @@ function Index() {
                         value={select}
                         className={'indexSelect'}
                         popupClassName={'indexSelectPopup'}
-                        style={{ width: '12%' }}
+                        style={{width: '12%', display: browser?'block':'none'}}
                         options={[
-                            { value: 'newPair', label: 'New Pairs' },
-                            { value: 'trading', label: 'Trading' },
-                            { value: 'watch', label: 'Watch List' },
+                            {value: 'newPair', label: 'New Pairs'},
+                            {value: 'trading', label: 'Trading'},
+                            {value: 'watch', label: 'Watch List'},
                         ]}
                     />
                     <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'}
-                        defaultValue={'24h'} />
-                    <Input suffix={<SearchOutlined style={{ fontSize: '16px', color: 'white' }} />} onChange={changeInput}
-                        allowClear className={'indexInput'} />
+                               defaultValue={'24h'}/>
+                    {
+                        browser &&
+                        <Input suffix={<SearchOutlined style={{fontSize: '16px', color: 'white', display: 'none'}}/>}
+                               onChange={changeInput}
+                               allowClear className={'indexInput'}/>
+                    }
                     <div className={`indexRight dis`}>
-                        <p><img src="/eth.svg" alt="" /><span>$:{ethPrice}</span></p>
-                        <p><img src="/gas.svg" alt="" /><span>{gas}</span></p>
+                        <p><img src="/eth.svg" alt=""/><span>$:{ethPrice}</span></p>
+                        <p><img src="/gas.svg" alt=""/><span>{gas}</span></p>
                     </div>
                 </div>
-                {/*<div style={{width:'100%'}}>*/}
-                <div className={'indexNewPair'}>
-                    {/*tittle*/}
-                    <div className={'indexNewPairTitle'}>
-                        {
-                            ['Name', 'Price($)', time + ' Change(%)', 'Create Time', 'Pooled Amt', 'Swap Count', 'Liquidity', 'Links'].map((i: string, ind: number) => {
-                                return <p className={`${ind === 0 ? 'disCen' : 'textAlign'} homeTableTittle`} key={ind}>
-                                    {
-                                        ind === 0 &&
-                                        <img src="/collect.svg" alt="" style={{ marginRight: '5px' }} width={'15px'} />
-                                    }
-                                    <span>{i}</span>
-                                </p>
+                <div style={{width: '100%', overflow: browser ? 'hidden' : 'auto'}}>
+                    <div className={`indexNewPair`}
+                         style={{width: browser ? '100%' : '96vh'}}>
+                        {/*tittle*/}
+                        <div className={'indexNewPairTitle'}>
+                            {
+                                ['Name', 'Price($)', time + ' Change(%)', 'Create Time', 'Pooled Amt', 'Swap Count', 'Liquidity', 'Links'].map((i: string, ind: number) => {
+                                    return <p className={`${ind === 0 ? 'disCen' : 'textAlign'} homeTableTittle`}
+                                              key={ind}>
+                                        {
+                                            ind === 0 &&
+                                            <img src="/collect.svg" alt="" style={{marginRight: '5px'}} width={'15px'}/>
+                                        }
+                                        <span>{i}</span>
+                                    </p>
 
-                            })
+                                })
+                            }
+                        </div>
+                        <div className={`indexNewPairBody scrollStyle`} id={'scrollableNew'}
+                             style={{height: browser ? tableHei + 'px' : '60vh', overflowY: 'auto'}}>
+                            <InfiniteScroll
+                                hasMore={true}
+                                scrollableTarget="scrollableNew"
+                                next={changePage}
+                                loader={null}
+                                dataLength={tableDta.length}>
+                                {
+                                    tableDtaLoad ? <Loading status={'20'}/> : tableDta.length > 0 ?
+                                        <NewPair tableDta={tableDta} time={time} setDta={setDta}/> : <p>no Data</p>
+                                }
+                            </InfiniteScroll>
+                        </div>
+                        {
+                            moreLoad && <Loading status={'none'}/>
                         }
                     </div>
-                    <div className={`indexNewPairBody scrollStyle`} id={'scrollableNew'}
-                        style={{ height: tableHei + 'px', overflowY: 'auto' }}>
-                        <InfiniteScroll
-                            hasMore={true}
-                            scrollableTarget="scrollableNew"
-                            next={changePage}
-                            loader={null}
-                            dataLength={tableDta.length}>
-                            {
-                                    tableDtaLoad? <Loading status={'20'} />: tableDta.length > 0 ?
-                                    <NewPair tableDta={tableDta} time={time} setDta={setDta}/> : <p>no Data</p>
-                            }
-                        </InfiniteScroll>
-                    </div>
-                    {
-                        moreLoad && <Loading status={'none'} />
-                    }
                 </div>
-                {/*</div>*/}
             </div>
-            <Right />
+            <Right/>
         </div>
     );
 }

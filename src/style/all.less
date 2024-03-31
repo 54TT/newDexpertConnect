@@ -15,7 +15,6 @@ p {
 
 body {
   background-color: rgb(10, 21, 17);
-  overflow: hidden;
 }
 
 .scrollStyle::-webkit-scrollbar {
@@ -29,7 +28,7 @@ body {
 }
 
 .indexBox {
-  width: 74%;
+  overflow: hidden;
   margin-top: 10px;
 
   .indexTop {
@@ -74,8 +73,6 @@ body {
     }
 
     .indexRight {
-      width: 18%;
-
       p {
         display: flex;
         align-items: center;
@@ -201,7 +198,7 @@ body {
   }
 
   .headerConnect {
-    padding: 0.5% 1.5%;
+    padding: 5px 14px;
     font-size: 15px;
     cursor: pointer;
     letter-spacing: -1px;
@@ -211,14 +208,18 @@ body {
 }
 
 .rightTweetBox {
-  overflow: visible !important;
+  .infinite-scroll-component {
+    overflow: visible !important;
+  }
+}
+
+.mobile {
   .infinite-scroll-component {
     overflow: visible !important;
   }
 }
 
 .rightBox {
-  width: 24%;
   overflow: hidden;
 
   .rightBoxTweet {
@@ -283,6 +284,7 @@ body {
     justify-content: space-between;
     margin-top: 24px;
     position: relative;
+
     .tweetsIn {
       display: flex;
       cursor: pointer;
@@ -295,9 +297,9 @@ body {
       }
 
       img {
-        width: 30px !important;
-        height: 30px !important;
+        width: 25px ;
       }
+
       .tweetsLick {
         position: absolute;
         top: 0;
@@ -511,6 +513,7 @@ span {
     border-radius: 10px !important;
   }
 }
+
 .newPairLeftPopover {
   .ant-popover-inner {
     padding: 2px 8px;
@@ -520,12 +523,96 @@ span {
 .tweets-comment {
   .tweetsOperate {
     justify-content: right;
+
     .share-icon,
     .look-icon {
       display: none;
     }
+
     .tweetsIn {
       margin-left: 48px;
     }
+  }
+}
+
+.headerDrawerOpen {
+  .headerCollapse {
+    .ant-collapse-item {
+      .ant-collapse-header {
+        background: transparent !important;
+        display: flex;
+        align-items: center;
+        flex-direction: row-reverse;
+
+        .ant-collapse-header-text {
+          font-size: 20px;
+          color: white !important;
+        }
+
+        .ant-collapse-expand-icon {
+          padding-right: 0 !important;
+
+          .ant-collapse-arrow {
+            font-size: 20px;
+            color: white !important;
+          }
+        }
+      }
+
+      .ant-collapse-content {
+        .ant-collapse-content-box {
+          padding: 0 !important;
+
+          .collapseChildeen {
+            padding: 0 18px;
+
+            p:last-child {
+              margin-bottom: 10px;
+            }
+
+            p {
+              display: flex;
+              align-items: center;
+              font-size: 18px;
+              margin-top: 13px;
+
+              span {
+                margin-left: 6px;
+                color: rgb(200, 200, 200);
+              }
+
+              img {
+                display: block;
+                width: 17px;
+              }
+            }
+          }
+        }
+
+      }
+
+    }
+
+    .ant-collapse-item:first-child {
+      .ant-collapse-header {
+        .ant-collapse-expand-icon .ant-collapse-arrow {
+          visibility: hidden;
+        }
+      }
+    }
+  }
+
+  .ant-drawer-header {
+    padding: 18px 24px !important;
+    background-color: #2b3531 !important;
+
+    .ant-drawer-close {
+      color: rgb(220, 220, 220) !important;
+    }
+  }
+
+  .ant-drawer-body {
+    padding: 12px !important;
+    background-color: #2b3531 !important;
   }
 }

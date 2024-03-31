@@ -57,6 +57,15 @@
 
         .card-pair-info {
           display: flex;
+
+          p {
+            flex: 1;
+            text-align: center;
+          }
+          p:first-child{
+            text-align: left;
+          }
+
           justify-content: space-between;
           margin-top: 12px;
         }
@@ -101,9 +110,11 @@
     &:hover {
       background-color: unset !important;
     }
+
     &.tweets-comment {
       border-bottom: 0.4px solid #687c69;
       cursor: unset;
+
       .tweetsOperate {
         padding-bottom: 24px;
       }
@@ -132,7 +143,8 @@
         color: white;
         font-size: 18px;
         margin-bottom: 4px;
-        span{
+
+        span {
           margin-right: 5px;
         }
       }
@@ -192,9 +204,11 @@
       .p {
         font-size: 14px;
         color: rgb(135, 145, 136);
-        span{
+
+        span {
           margin-right: 6px;
         }
+
         img {
           cursor: pointer;
           width: 15px;
@@ -250,6 +264,7 @@
     }
   }
 }
+
 #scrollabelDetail {
   .scroll-style-mixin();
 }

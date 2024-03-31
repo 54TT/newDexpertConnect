@@ -1,10 +1,12 @@
-import { Select } from 'antd'
-import { ArrowLeftOutlined, CaretDownOutlined } from '@ant-design/icons'
-import { useEffect, useRef, useState } from "react";
+import {Select} from 'antd'
+import {ArrowLeftOutlined, CaretDownOutlined} from '@ant-design/icons'
+import {useContext, useEffect, useRef, useState} from "react";
 import TweetHome from "../../../components/tweetHome.tsx";
 import BuyCoin from './buyCoin.tsx'
+import {CountContext} from "../../../Layout.tsx";
 
 function Right() {
+    const {browser}: any = useContext(CountContext);
     const [value, setValue] = useState('com')
     const [hei, setHei] = useState<any>('')
     const [sta, setSta] = useState<any>(false)
@@ -27,7 +29,7 @@ function Right() {
     }
 
     return (
-        <div className={'right'}>
+        <div className={'right'} style={{width: browser ? '21%' : '100%'}}>
             <div ref={topRef}>
                 <Select
                     className={'rightSelect'}
@@ -40,23 +42,23 @@ function Right() {
                     options={[
                         {
                             value: 'com',
-                            label: <p className={'rightSelectRow'}><span>Community</span> <CaretDownOutlined /></p>,
+                            label: <p className={'rightSelectRow'}><span>Community</span> <CaretDownOutlined/></p>,
                         },
                         {
                             value: 'fast',
-                            label: <p className={'rightSelectRow'}><span>Fast Trade</span> <CaretDownOutlined /></p>,
+                            label: <p className={'rightSelectRow'}><span>Fast Trade</span> <CaretDownOutlined/></p>,
                         },
                     ]}
                 />
             </div>
             {
-                value === 'com' ? <TweetHome hei={`${hei}px`} /> : sta ? <div className={`buyCoinBorder success`}>
+                value === 'com' ? <TweetHome hei={`${hei}px`}/> : sta ? <div className={`buyCoinBorder success`}>
                     <div>
                         <p>Transaction successful</p>
-                        <img src="/right.svg" alt="" />
+                        <img src="/right.svg" alt=""/>
                     </div>
-                    <p onClick={() => setSta(false)}><ArrowLeftOutlined />Return to the previous step</p>
-                </div> : <BuyCoin changStatus={changStatus} />
+                    <p onClick={() => setSta(false)}><ArrowLeftOutlined/>Return to the previous step</p>
+                </div> : <BuyCoin changStatus={changStatus}/>
             }
         </div>
     );

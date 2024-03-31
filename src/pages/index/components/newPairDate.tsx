@@ -41,7 +41,7 @@ function Date({tableDta, time, setDta}: any) {
                             <img src={record.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""
                                  onClick={(e: any) => click(record, e)}/>
                             <div>
-                                <p style={{marginBottom: '4px'}}>{simplify(record?.token0?.name)}</p>
+                                <p style={{marginBottom: '4px'}}>{simplify(record?.token0?.symbol)}</p>
                                 <div style={{
                                     fontSize: '14px',
                                     color: 'rgb(104,124,105)'

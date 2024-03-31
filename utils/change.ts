@@ -43,15 +43,15 @@ export const formatDecimal = (number: any, count: any) => {
 
 export const autoConvert = (number: any) => {
     if (Number(number) >= 1000000000000) {
-        return `${(number / 1000000000000).toFixed(3).replace(/\.?0*$/, '')}T`;
+        return `${(number / 1000000000000).toFixed(2).replace(/\.?0*$/, '')}T`;
     } else if (Number(number) >= 1000000000) {
-        return `${(number / 1000000000).toFixed(3).replace(/\.?0*$/, '')}B`;
+        return `${(number / 1000000000).toFixed(2).replace(/\.?0*$/, '')}B`;
     } else if (Number(number) >= 1000000) {
-        return `${(Number(number) / 1000000).toFixed(3).replace(/\.?0*$/, '')}M`;
+        return `${(Number(number) / 1000000).toFixed(2).replace(/\.?0*$/, '')}M`;
     } else if (Number(number) >= 1000) {
-        return `${(Number(number) / 1000).toFixed(3).replace(/\.?0*$/, '')}K`;
+        return `${(Number(number) / 1000).toFixed(2).replace(/\.?0*$/, '')}K`;
     } else {
-        return Number(number).toFixed(4).replace(/\.?0*$/, '');
+        return Number(number).toFixed(2).replace(/\.?0*$/, '');
     }
 };
 
