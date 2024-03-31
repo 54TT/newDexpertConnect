@@ -5,9 +5,9 @@ import PostContent from './components/PostContent';
 import CommunityRight from './components/RightSider';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostDetail from './components/PostDetail';
+import Profie from "./components/Profie.tsx";
 
 type ActiveTabType = 'lastest' | 'profile' | 'following'
-
 function Community() {
   // 左侧选中的Tab
   const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
@@ -25,12 +25,9 @@ function Community() {
 
   }, [tab])
 
-
-
-
   const ComponentMap = {
     'lastest': <PostContent />,
-    'profile': <></>,
+    'profile': <Profie />,
     'following': <></>,
     'detail': <PostDetail />,
     'comment': <PostDetail />

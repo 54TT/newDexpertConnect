@@ -8,7 +8,6 @@ import Loading from '../components/loading.tsx'
 import { CountContext } from "../Layout.tsx";
 function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrollableDiv', style = {} }: any) {
     const { clear }: any = useContext(CountContext)
-
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
     const [status, setStatus] = useState(false)
@@ -24,16 +23,18 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrolla
     }
     useEffect(() => {
         if (page === 3) {
-            changeHei(true)
+            if (changeHei) {
+                changeHei(true)
+            }
         }
     }, [page])
     const getTweet = async (page: number) => {
         const token = cookie.get('token')
-        const res: any = await request('post', '/api/v1/post/public', { page: page }, token ? token : '')
+        const res: any = await request('post', '/api/v1/post/public', {page: page}, token ? token : '')
         if (res == 'please') {
             clear()
         } else if (res && res?.status === 200) {
-            const { data } = res
+            const {data} = res
             const r: any = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
                 if (r.length !== 10) {
@@ -94,7 +95,6 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrolla
                     </div> :
                     <p style={{ textAlign: 'center', color: 'white', marginTop: '20px' }}>No data</p> :
                     <Loading />
-
             }
         </>
     );

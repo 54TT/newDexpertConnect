@@ -151,7 +151,12 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                     {
                         localData?.imageList?.length > 0 && localData?.imageList[0] ?
                             <img className='post-item-img' src={localData?.imageList[0]} alt=""
-                                style={{ maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block' }} /> : <></>
+                                 style={{
+                                     maxWidth: '50%',
+                                     maxHeight: '200px',
+                                     borderRadius: '5px',
+                                     display: 'block'
+                                 }}/> : <></>
                     }
                 </>
                 {/*   标识*/}
@@ -189,7 +194,6 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                         <span>111</span>
                     </p>
                 </div>
-
             </div>
             <PostSendModal type={type === "post" ? "comment" : "reply"} postData={localData} className='comment-send-model' open={openComment}
                 onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()} />

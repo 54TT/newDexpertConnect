@@ -139,8 +139,6 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
                 changeRefresh?.(true)
             }
         } catch (e) {
-            console.log(e);
-
             messageApi.error('Publish failed')
             setPublishing(false);
         }
@@ -201,7 +199,7 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
         <div className='post-send-tools'>
             <div className='post-send-tools-icon'>
                 {
-                    toolsIcon.map((data) => <img key={data.name} alt={''} src={data.img} onClick={data.onClick} />)
+                    toolsIcon.map((data:any,ind:number) => <img key={ind} alt={''} src={data.img} onClick={data.onClick} />)
                 }
             </div>
             <div className='post-send-tools-button'>

@@ -1,15 +1,14 @@
-import {CaretDownOutlined, CaretUpOutlined, CheckCircleOutlined} from '@ant-design/icons'
-import {Popover, Progress} from 'antd'
+import {CaretDownOutlined, CaretUpOutlined,} from '@ant-design/icons'
+import {Progress} from 'antd'
 import {useEffect, useState} from "react";
 import {setMany, simplify} from '../../../../utils/change.ts'
-import copy from 'copy-to-clipboard'
+import Copy from '../../../components/copy.tsx'
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.extend(relativeTime); // 使用相对时间插件
 
 function Left({par}: any) {
-    console.log(par)
     const h = window.innerHeight - 25 - 54
     const [data, setData] = useState(par)
     const [status, setStatus] = useState(false)
@@ -29,7 +28,7 @@ function Left({par}: any) {
     const float = data?.pairDayData[0]?.priceChange && Number(data?.pairDayData[0]?.priceChange) > 0 ? 1 : Number(data?.pairDayData[0]?.priceChange) < 0 ? -1 : 0
     const market = Number(data?.token0?.totalSupply) && Number(data?.priceUSD) ? setMany(Number(data?.token0?.totalSupply) * Number(data?.priceUSD)) : 0
     const create = data?.createdAtTimestamp.toString().length > 10 ? Number(data.createdAtTimestamp.toString().slice(0, 10)) : Number(data.createdAtTimestamp)
-    const pooled = data?.token0?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' && data?.token1?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 1 : data.sure ? (Number(setMany(data?.reserve0.toString())) ? parseFloat(Number(setMany(data?.reserve0.toString())).toFixed(2)) + '  ' : setMany(data?.reserve0.toString()) + '  ') + 'ETH' : (Number(setMany(data?.reserve1.toString())) ? parseFloat(Number(setMany(data?.reserve1.toString())).toFixed(2)) + '  ' : setMany(data?.reserve1.toString()) + '  ')+'ETH'
+    const pooled = data?.token0?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' && data?.token1?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 1 : data.sure ? (Number(setMany(data?.reserve0.toString())) ? parseFloat(Number(setMany(data?.reserve0.toString())).toFixed(2)) + '  ' : setMany(data?.reserve0.toString()) + '  ') + 'ETH' : (Number(setMany(data?.reserve1.toString())) ? parseFloat(Number(setMany(data?.reserve1.toString())).toFixed(2)) + '  ' : setMany(data?.reserve1.toString()) + '  ') + 'ETH'
     return (
         <div className={`NewpairDetailsOne scrollStyle`} style={{height: h + 'px'}}>
             {/*top*/}
@@ -52,43 +51,20 @@ function Left({par}: any) {
             {/*address*/}
             <div className={`address dis`}>
                 <p><span>CA:</span><span>{simplify(data?.token0?.id)}</span>
-                    <Popover placement="top" title={''} overlayClassName={'newPairLeftPopover'}
-                             content={status ? 'CA Copied successfully' : 'copy to clipboard'}>
-                        {
-                            status ? <CheckCircleOutlined style={{marginLeft: '5px'}}/> :
-                                <img src="/copy.svg" alt="" onClick={() => {
-                                    copy(data?.token0?.id)
-                                    setStatus(true)
-                                }}/>
-                        }
-                    </Popover>
+                    <Copy status={status} setStatus={setStatus} name={data?.token0?.id}/>
                 </p>
                 <p><span>Pair:</span><span>{simplify(data?.id)}</span>
-                    <Popover placement="top" title={''} overlayClassName={'newPairLeftPopover'}
-                             content={pairStatus ? 'Pair Copied successfully' : 'copy to clipboard'}>
-                        {
-                            pairStatus ? <CheckCircleOutlined style={{marginLeft: '5px'}}/> :
-                                <img src="/copy.svg" alt="" onClick={() => {
-                                    copy(data?.id)
-                                    setPairStatus(true)
-                                }}/>
-                        }
-                    </Popover>
+                    <Copy status={pairStatus} setStatus={setPairStatus} name={data?.id}/>
                 </p>
             </div>
             <div className={`dis img`}>
-                <div>
-                    <img src="/website.svg" alt=""/>
-                </div>
-                <div>
-                    <img src="/titter.svg" alt=""/>
-                </div>
-                <div>
-                    <img src="/telegram.svg" alt=""/>
-                </div>
-                <div>
-                    <img src="/information.svg" alt=""/>
-                </div>
+                {
+                    ["/website.svg", "/titter.svg", "/telegram.svg", "/information.svg"].map((i: string, ind: number) => {
+                        return <div key={ind}>
+                            <img src={i} alt=""/>
+                        </div>
+                    })
+                }
             </div>
             <div className={`price dis`}>
                 <p>$
@@ -103,7 +79,13 @@ function Left({par}: any) {
             </div>
             <div className={'valume'}>
                 {
-                    [{name: 'Volume', price: data?.pairDayData[0]?.volumeUSD || 0}, {name: 'Liquidity', price: setMany(data?.liquidity) || 0}, {name: 'Market Cap', price: market}, {name: 'FDV', price: market},].map((i: any, ind: number) => {
+                    [{name: 'Volume', price: data?.pairDayData[0]?.volumeUSD || 0}, {
+                        name: 'Liquidity',
+                        price: setMany(data?.liquidity) || 0
+                    }, {name: 'Market Cap', price: market}, {
+                        name: 'FDV',
+                        price: market
+                    },].map((i: any, ind: number) => {
                         return <div className={`dis butt`} key={ind} style={{marginBottom: '10px'}}>
                             <span>{i.name}</span>
                             <span>{i.price}</span>
@@ -132,7 +114,13 @@ function Left({par}: any) {
             </div>
             <div className={'valume'}>
                 {
-                    [{name: 'Created Time', price: dayjs.unix(create).fromNow()}, {name: 'Total Supply', price: setMany(data?.token0?.totalSupply) || 0}, {name: 'Initial Pool Amount', price: pooled}, {name: 'Pooled WETH', price: '——'}, {name: 'Pooled bTC', price: '——'},].map((i: any, ind: number) => {
+                    [{name: 'Created Time', price: dayjs.unix(create).fromNow()}, {
+                        name: 'Total Supply',
+                        price: setMany(data?.token0?.totalSupply) || 0
+                    }, {name: 'Initial Pool Amount', price: pooled}, {
+                        name: 'Pooled WETH',
+                        price: '——'
+                    }, {name: 'Pooled bTC', price: '——'},].map((i: any, ind: number) => {
                         return <div className={`dis butt`} key={ind} style={{marginBottom: '10px'}}>
                             <span>{i.name}</span>
                             <span>{i.price}</span>

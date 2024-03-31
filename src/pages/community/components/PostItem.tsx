@@ -46,10 +46,10 @@ function PostItem({
       <div className="post-item-info-content">
         <span>{content}</span>
         <div>
-          {imageList.map((src: string) => <img style={{ height: '100%' }} src={src} />)}
+          {imageList.map((src: string,ind:number) => <img key={ind} alt={''} style={{ height: '100%' }} src={src} />)}
         </div>
       </div>
-      <div className="post-item-info-tag">{['#ETH', '#BTC'].map((tag: string) => <span>{tag}</span>)}</div>
+      <div className="post-item-info-tag">{['#ETH', '#BTC'].map((tag: string,ind:number) => <span key={ind}>{tag}</span>)}</div>
       <div className="post-item-info-action">
         <div className="post-item-info-action-comment">
           <img src="/community/comment.svg" alt="" />
