@@ -21,7 +21,7 @@ function Center() {
                     </div>
                 </div>
             </div>
-            <Conyent name={'dappCenter'}/>
+            <Conyent /* name={'dappCenter'} */ />
         </div>
     );
 }
