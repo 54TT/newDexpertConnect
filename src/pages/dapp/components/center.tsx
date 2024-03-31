@@ -3,7 +3,7 @@ function Center() {
     return (
         <div className={'center'}>
             <div className={'centerTop'}>
-                <img src="/bot.svg" alt=""/>
+                <img src="/bot.svg" alt="" />
                 <div className={'centerTopRight'}>
                     <p>Token Creation Bot</p>
                     <p>In the Uniswap protocol design, the development team does not extract fees from transactions, and
@@ -15,7 +15,7 @@ function Center() {
                     </div>
                 </div>
             </div>
-            <Conyent name={'dappCenter'}/>
+            <Conyent /* name={'dappCenter'} */ />
         </div>
     );
 }

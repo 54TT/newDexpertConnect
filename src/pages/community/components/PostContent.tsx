@@ -6,7 +6,12 @@ import TWeetHome from '../../../components/tweetHome.js'
   label: 'For you' | 'Following',
   key: '1' | '2',
 } */
-function CommunityContent({ name }: any) {
+
+/* interface CommunityContentTypeProps {
+  name?: string
+} */
+
+function CommunityContent() {
   /*   const [activeTab, setActiveTab] = useState<TabType['key']>('1'); */
   const [status, setStatus] = useState<any>(false);
 

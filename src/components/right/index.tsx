@@ -8,7 +8,7 @@ import { Skeleton } from 'antd'
 import { CountContext } from "../../Layout.tsx";
 import { LoadingOutlined } from '@ant-design/icons'
 function Index() {
-    const { headHeight, botHeight ,clear}: any = useContext(CountContext)
+    const { headHeight, botHeight, clear }: any = useContext(CountContext)
     const swiperRef: any = useRef()
     const topRef: any = useRef()
     const [hei, setHei] = useState('')
@@ -34,9 +34,9 @@ function Index() {
     }
     const getTweet = async (page: number) => {
         const res: any = await request('post', '/api/v1/post/public', { page: page }, '')
-        if(res==='please'){
+        if (res === 'please') {
             clear()
-        }else if (res && res?.status === 200) {
+        } else if (res && res?.status === 200) {
             const { data } = res
             const r = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
