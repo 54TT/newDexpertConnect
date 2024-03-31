@@ -234,6 +234,7 @@ function Index() {
                         <p><img src="/gas.svg" alt="" /><span>{gas}</span></p>
                     </div>
                 </div>
+                {/*<div style={{width:'100%'}}>*/}
                 <div className={'indexNewPair'}>
                     {/*tittle*/}
                     <div className={'indexNewPairTitle'}>
@@ -268,6 +269,7 @@ function Index() {
                         moreLoad && <Loading status={'none'} />
                     }
                 </div>
+                {/*</div>*/}
             </div>
             <Right />
         </div>

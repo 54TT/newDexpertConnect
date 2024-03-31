@@ -97,7 +97,12 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                     {
                         localData?.imageList?.length > 0 && localData?.imageList[0] ?
                             <img className='post-item-img' src={localData?.imageList[0]} alt=""
-                                 style={{maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block'}}/> : <></>
+                                 style={{
+                                     maxWidth: '50%',
+                                     maxHeight: '200px',
+                                     borderRadius: '5px',
+                                     display: 'block'
+                                 }}/> : <></>
                     }
                 </>
                 {/*   标识*/}
@@ -114,7 +119,8 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                         <span>{localData?.commentNum ? localData.commentNum : 0}</span>
                     </p>
                     <div className={'tweetsIn'} onClick={clickLike}>
-                        <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt=""/>
+                        <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"}
+                             style={{width: localData?.likeStatus ? '26px' : '30px'}} alt=""/>
                         <span>{localData?.likeNum ? localData.likeNum : 0}</span>
                         <motion.div
                             initial="hidden"
@@ -128,11 +134,11 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                     </div>
                     <p className={'tweetsIn'}>
                         <img src="/share.svg " alt=""/>
-                        <span>111</span>
+                        <span>{Math.ceil(Math.random() * 500)}</span>
                     </p>
                     <p className={'tweetsIn'}>
                         <img src="/look.svg" alt=""/>
-                        <span>111</span>
+                        <span>{Math.ceil(Math.random() * 1000)}</span>
                     </p>
                 </div>
 

@@ -9,7 +9,6 @@ interface TabType {
 function CommunityContent({ name }: any) {
   const [activeTab, setActiveTab] = useState<TabType['key']>('1');
   const [status, setStatus] = useState<any>(false);
-
   const postTab: TabType[] = [{
     label: 'For you',
     key: '1'
@@ -26,7 +25,7 @@ function CommunityContent({ name }: any) {
       {
         name === 'dappCenter' ? '' : <div className="community-content-post-tab">
           {
-            postTab.map((tab: TabType) => <div
+            postTab.map((tab: TabType,ind:number) => <div key={ind}
               className={classNames("community-content-post-tab-item", { "post-tab-item-active": activeTab === tab.key })}
               onClick={() => setActiveTab(tab.key)}><span>{tab.label}</span></div>)
           }

@@ -6,9 +6,9 @@ import {request} from "../../utils/axios.ts";
 import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
 import {CountContext} from "../Layout.tsx";
-function TweetHome({hei, changeHei, refresh, changeRefresh}: any) {
-    const {clear}:any = useContext(CountContext)
 
+function TweetHome({hei, changeHei, refresh, changeRefresh}: any) {
+    const {clear}: any = useContext(CountContext)
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
     const [status, setStatus] = useState(false)
@@ -24,15 +24,17 @@ function TweetHome({hei, changeHei, refresh, changeRefresh}: any) {
     }
     useEffect(() => {
         if (page === 3) {
-            changeHei(true)
+            if (changeHei) {
+                changeHei(true)
+            }
         }
     }, [page])
     const getTweet = async (page: number) => {
         const token = cookie.get('token')
         const res: any = await request('post', '/api/v1/post/public', {page: page}, token ? token : '')
-      if(res=='please'){
-          clear()
-      }else if (res && res?.status === 200) {
+        if (res == 'please') {
+            clear()
+        } else if (res && res?.status === 200) {
             const {data} = res
             const r: any = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
@@ -58,7 +60,7 @@ function TweetHome({hei, changeHei, refresh, changeRefresh}: any) {
 
     useEffect(() => {
         const abc = cookie.get('token')
-        if(abc){
+        if (abc) {
             setIsLogin(true)
         }
         getTweet(1)
@@ -94,7 +96,6 @@ function TweetHome({hei, changeHei, refresh, changeRefresh}: any) {
                         </div> :
                         <p style={{textAlign: 'center', color: 'white', marginTop: '20px'}}>No data</p> :
                     <Loading/>
-
             }
         </>
     );

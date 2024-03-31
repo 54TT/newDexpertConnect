@@ -4,6 +4,7 @@ import {CountContext} from '../Layout.tsx'
 import {useLocation, useNavigate} from 'react-router-dom';
 import {DownOutlined, LoadingOutlined} from '@ant-design/icons';
 import {simplify} from '../../utils/change.ts'
+
 function Header() {
     const router = useLocation()
     const {connect, getMoneyEnd, user, setLoad, load, clear}: any = useContext(CountContext);
@@ -57,7 +58,6 @@ function Header() {
             ),
         },
     ];
-
     return (
         <div className={'headerBox'}>
             <img src="/topLogo.svg" alt="" style={{cursor: 'pointer'}} onClick={() => {
@@ -74,7 +74,6 @@ function Header() {
                     })
                 }
             </p>
-
             {
                 user?.uid ? <Dropdown
                     menu={{
@@ -98,6 +97,7 @@ function Header() {
                     </div>
                 </div>
             }
+
             <Modal destroyOnClose={true} centered title={null} footer={null} className={'walletModal'}
                    maskClosable={false}
                    open={isModalOpen}

@@ -210,6 +210,13 @@ body {
   }
 }
 
+.rightTweetBox {
+  overflow: visible !important;
+  .infinite-scroll-component {
+    overflow: visible !important;
+  }
+}
+
 .rightBox {
   width: 24%;
   overflow: hidden;
@@ -217,12 +224,6 @@ body {
   .rightBoxTweet {
     background-color: rgb(18, 18, 18);
     border: 1px solid rgba(134, 240, 151, 0.5);
-
-    .rightTweetBox {
-      .infinite-scroll-component {
-        overflow: hidden !important;
-      }
-    }
 
     .rightBoxTweetTop {
       display: flex;
@@ -246,6 +247,7 @@ body {
   &:hover {
     background-color: #0c1815;
   }
+
   .post-item-img {
     max-width: 50%;
     max-height: 200px;
@@ -281,8 +283,6 @@ body {
     justify-content: space-between;
     margin-top: 24px;
     position: relative;
-    z-index: 999;
-
     .tweetsIn {
       display: flex;
       cursor: pointer;
@@ -292,10 +292,6 @@ body {
       span {
         color: rgb(200, 200, 200);
         margin-left: 10%;
-      }
-
-      img {
-        width: 30px;
       }
 
       .tweetsLick {
@@ -400,11 +396,9 @@ body {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(
-      to right,
-      rgb(9, 21, 17),
-      rgb(37, 70, 59)
-    ) !important;
+    background: linear-gradient(to right,
+    rgb(9, 21, 17),
+    rgb(37, 70, 59)) !important;
   }
 }
 
@@ -513,8 +507,9 @@ span {
     border-radius: 10px !important;
   }
 }
-.newPairLeftPopover{
-    .ant-popover-inner{
-      padding: 2px 8px;
+
+.newPairLeftPopover {
+  .ant-popover-inner {
+    padding: 2px 8px;
   }
 }
