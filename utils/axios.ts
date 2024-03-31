@@ -80,7 +80,7 @@ export const request = async (method: string, url: string, data: any, token?: an
 }
 
 
-export const handlePublish = async (data: any) => {
+export const handlePublish = async (data: any) => {    
     const token = Cookies.get('token');
     const username = JSON.parse(Cookies.get('username') || '{}');
     const result: any = await request('post', "/api/v1/post/publish", {

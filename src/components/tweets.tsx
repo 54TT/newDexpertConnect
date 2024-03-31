@@ -1,19 +1,23 @@
-import {useContext, useEffect, useState} from 'react'
-import {CountContext} from "../Layout.tsx";
-import {motion} from 'framer-motion';
-import {request} from '../../utils/axios';
+import { useContext, useEffect, useState } from 'react'
+import { CountContext } from "../Layout.tsx";
+import { motion } from 'framer-motion';
+import { request } from '../../utils/axios';
 import Cookies from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
+import { message } from 'antd';
 
 interface TweetsPropsType {
     user?: any;
     name: any;
-    isLogin?: boolean
+    isLogin?: boolean;
+    type?: 'comment' | 'post' | 'reply';
+    onPublish?: () => void;
 }
 
-function Tweets({name, isLogin}: TweetsPropsType) {
-    const {clear}: any = useContext(CountContext)
+function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsPropsType) {
+    const { clear }: any = useContext(CountContext)
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
     const [openComment, setOpenComment] = useState(false);
@@ -25,31 +29,63 @@ function Tweets({name, isLogin}: TweetsPropsType) {
             }, 1000);
         }
     }, [clickAnimate])
+    // 是否是comment 而非reply，用于调用不同的like接口, parentId为0则为comment
+    const isComment = localData.parentId === "0"
+
     const animationVariants = {
-        hidden: {y: '100%', opacity: 0},
-        visible: {y: '-100%', opacity: 1},
+        hidden: { y: '100%', opacity: 0 },
+        visible: { y: '-100%', opacity: 1 },
     };
 
     const clickLike = async (e: any) => {
         e.stopPropagation();
         if (isLogin) {
             const token = Cookies.get('token');
+            let url = '';
+            let data;
+            if (type === 'post') {
+                url = '/api/v1/post/like';
+                data = { postId: localData.postId }
+            }
+            if (type === 'comment' || isComment) {
+                url = '/api/v1/post/comment/like';
+                data = { commentId: localData.id }
+            }
+            if (type === 'reply' && !isComment) {
+
+                url = '/api/v1//reply/like';
+                data = { replyId: localData.id }
+            }
             try {
                 if (localData?.likeStatus === false) {
                     setClickAnimate(true)
-                    const result: any = await request('post', '/api/v1/post/like', {postId: localData.postId}, token);
-                    result?.status === 200 ? setLocalData({...localData, likeStatus: true}) : null;
+
+
+                    const result: any = await request('post', url, data, token);
+                    result?.status === 200 ? setLocalData({ ...localData, likeStatus: true }) : null;
                     if (result === 'please') {
                         clear()
                     } else if (result && result?.status === 200) {
-                        setLocalData({...localData, likeStatus: true, likeNum: Number(localData.likeNum) + 1})
+                        setLocalData({ ...localData, likeStatus: true, likeNum: Number(localData.likeNum) + 1 })
                     }
                 } else {
-                    const result: any = await request('post', '/api/v1/post/like/cancel', {postId: localData.postId}, token);
+                    if (type === 'post') {
+                        url = '/api/v1/post/like/cancel';
+                        data = { postId: localData.postId }
+                    }
+                    if (type === 'comment' || isComment) {
+                        url = '/api/v1/post/comment/like/cancel';
+                        data = { commentId: localData.id }
+                    }
+                    if (type === 'reply' && !isComment) {
+                        url = '/api/v1//reply/like/cancel';
+                        data = { replyId: localData.id }
+                    }
+                    const result: any = await request('post', url, data, token);
                     if (result === 'please') {
                         clear()
                     } else if (result && result?.status === 200) {
-                        setLocalData({...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1})
+                        setLocalData({ ...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1 })
                     }
                 }
             } catch (e) {
@@ -60,18 +96,36 @@ function Tweets({name, isLogin}: TweetsPropsType) {
 
     const handleAddComment = () => {
         // 设置评论数量
-        setLocalData({...localData, commentNum: localData?.commentNum ? Number(localData?.commentNum) + 1 : 1});
+        console.log('call');
+
+        setLocalData({ ...localData, commentNum: localData?.commentNum ? Number(localData?.commentNum) + 1 : 1 });
+        onPublish?.()
         setOpenComment(false);
     }
 
     const handleToDetail = () => {
+        if (!isLogin) {
+            message.warning('pleast connect your wallet');
+            return;
+        }
+
+
+        if (type === 'reply' || type === 'comment') {
+            const user = JSON.parse(Cookies.get('username') || '{}');
+
+            if (type === 'reply' && user.uid === localData.user.uid) return;
+
+            localStorage.setItem('reply-detail', JSON.stringify(localData))
+            history(`/community/comment?reply=${localData.id}`, { replace: true })
+            return;
+        }
         localStorage.setItem('post-detail', JSON.stringify(localData))
         history('/community/detail')
     }
 
     return (
         <>
-            <div className={'tweetsBox'} onClick={() => {
+            <div className={classNames('tweetsBox', { 'tweets-comment': type === 'comment' })} onClick={() => {
                 handleToDetail()
             }}>
                 {/*  top*/}
@@ -79,7 +133,7 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                     {/* left*/}
                     <div className={'tweetsLeft'}>
                         <img src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
-                             style={{width: '42px', marginRight: '5%', borderRadius: '50%'}}/>
+                            style={{ width: '36px', marginRight: '5%', borderRadius: '50%' }} />
                         <p>
                             <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
                             <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
@@ -91,18 +145,22 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                 </div>
                 {
                     localData?.content ? <div className={'tweetsText'}
-                                              dangerouslySetInnerHTML={{__html: localData.content.replace(/\n/g, '<br>')}}></div> : ''
+                        dangerouslySetInnerHTML={{ __html: localData.content.replace(/\n/g, '<br>') }}></div> : ''
                 }
                 <>
                     {
                         localData?.imageList?.length > 0 && localData?.imageList[0] ?
                             <img className='post-item-img' src={localData?.imageList[0]} alt=""
+<<<<<<< HEAD
                                  style={{
                                      maxWidth: '50%',
                                      maxHeight: '200px',
                                      borderRadius: '5px',
                                      display: 'block'
                                  }}/> : <></>
+=======
+                                style={{ maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block' }} /> : <></>
+>>>>>>> 09a36a4314aa584a012ffb848705cdb6bd3e77b8
                     }
                 </>
                 {/*   标识*/}
@@ -115,12 +173,17 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                         <img src="/comment.svg" alt="" onClick={(e) => {
                             setOpenComment(true);
                             e.stopPropagation();
-                        }}/>
+                        }} />
                         <span>{localData?.commentNum ? localData.commentNum : 0}</span>
                     </p>
+<<<<<<< HEAD
                     <div className={'tweetsIn'} onClick={clickLike}>
                         <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"}
                              style={{width: localData?.likeStatus ? '26px' : '30px'}} alt=""/>
+=======
+                    <div className={'tweetsIn like-icon'} onClick={clickLike}>
+                        <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
+>>>>>>> 09a36a4314aa584a012ffb848705cdb6bd3e77b8
                         <span>{localData?.likeNum ? localData.likeNum : 0}</span>
                         <motion.div
                             initial="hidden"
@@ -128,10 +191,11 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                             animate={!clickAnimate ? 'hidden' : 'visible'}
                             variants={animationVariants}
                             exit="hidden"
-                            transition={{duration: 1, ease: 'easeInOut'}}>
-                            <span style={{color: 'rgb(0,170,255)'}}>+1500</span>
+                            transition={{ duration: 1, ease: 'easeInOut' }}>
+                            <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>
                         </motion.div>
                     </div>
+<<<<<<< HEAD
                     <p className={'tweetsIn'}>
                         <img src="/share.svg " alt=""/>
                         <span>{Math.ceil(Math.random() * 500)}</span>
@@ -139,12 +203,21 @@ function Tweets({name, isLogin}: TweetsPropsType) {
                     <p className={'tweetsIn'}>
                         <img src="/look.svg" alt=""/>
                         <span>{Math.ceil(Math.random() * 1000)}</span>
+=======
+                    <p className={'tweetsIn share-icon'}>
+                        <img src="/share.svg " alt="" />
+                        <span>111</span>
+                    </p>
+                    <p className={'tweetsIn look-icon'}>
+                        <img src="/look.svg" alt="" />
+                        <span>111</span>
+>>>>>>> 09a36a4314aa584a012ffb848705cdb6bd3e77b8
                     </p>
                 </div>
 
             </div>
-            <PostSendModal type="comment" postData={localData} className='comment-send-model' open={openComment}
-                           onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()}/>
+            <PostSendModal type={type === "post" ? "comment" : "reply"} postData={localData} className='comment-send-model' open={openComment}
+                onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()} />
         </>
 
     );

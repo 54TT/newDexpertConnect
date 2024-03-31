@@ -294,6 +294,10 @@ body {
         margin-left: 10%;
       }
 
+      img {
+        width: 30px !important;
+        height: 30px !important;
+      }
       .tweetsLick {
         position: absolute;
         top: 0;
@@ -496,7 +500,7 @@ span {
   display: flex;
 }
 
-.scroll-style-minin() {
+.scroll-style-mixin() {
   &::-webkit-scrollbar {
     width: 8px !important; /* 滚动条宽度 */
   }
@@ -507,9 +511,21 @@ span {
     border-radius: 10px !important;
   }
 }
-
 .newPairLeftPopover {
   .ant-popover-inner {
     padding: 2px 8px;
+  }
+}
+
+.tweets-comment {
+  .tweetsOperate {
+    justify-content: right;
+    .share-icon,
+    .look-icon {
+      display: none;
+    }
+    .tweetsIn {
+      margin-left: 48px;
+    }
   }
 }

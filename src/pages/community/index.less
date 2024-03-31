@@ -63,7 +63,7 @@
       }
     }
 
-    .scroll-style-minin();
+    .scroll-style-mixin();
   }
 }
 
@@ -100,6 +100,13 @@
   .tweetsBox {
     &:hover {
       background-color: unset !important;
+    }
+    &.tweets-comment {
+      border-bottom: 0.4px solid #687c69;
+      cursor: unset;
+      .tweetsOperate {
+        padding-bottom: 24px;
+      }
     }
   }
 
@@ -243,3 +250,7 @@
     }
   }
 }
+#scrollabelDetail {
+  .scroll-style-mixin();
+}
+
