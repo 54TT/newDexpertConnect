@@ -25,6 +25,7 @@ const web3Modal = new Web3Modal({
     walletConnectVersion: 1,
 });
 export const CountContext = createContext(null);
+
 function Layout() {
     const router = useLocation()
     const history = useNavigate()
@@ -34,9 +35,10 @@ function Layout() {
     const prevRelayerValue = useRef<any>();
     const [user, setUserPar] = useState<any>(null)
     const [load, setLoad] = useState<boolean>(false)
+    const [newPairPar, setNewPairPar] = useState<any>([])
     const createClient = async () => {
         try {
-            const _client:any = await Client.init({
+            const _client: any = await Client.init({
                 relayUrl: 'wss://relay.walletconnect.com',
                 projectId: DEFAULT_PROJECT_ID,
                 metadata: {
@@ -58,10 +60,10 @@ function Layout() {
         cookie.remove('jwt')
         setUserPar(null)
     }
-    const login = async (sign:string, account:string, message:string, name:string) => {
+    const login = async (sign: string, account: string, message: string, name: string) => {
         try {
             // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
-            const res:any = await request('post', '/api/v1/login', {
+            const res: any = await request('post', '/api/v1/login', {
                 signature: sign,
                 addr: account,
                 message,
@@ -75,7 +77,7 @@ function Layout() {
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 const decodedToken = JSON.parse(atob(base64));
                 if (decodedToken && decodedToken?.uid) {
-                    const data:any = await request('get', "/api/v1/userinfo/" + decodedToken.uid, '', res.data?.accessToken)
+                    const data: any = await request('get', "/api/v1/userinfo/" + decodedToken.uid, '', res.data?.accessToken)
                     if (data === 'please') {
                         clear()
                     } else if (data && data?.status === 200) {
@@ -109,7 +111,7 @@ function Layout() {
     }, 800)
     const handleLogin = async () => {
         try {
-            const provider:any = new ethers.providers.Web3Provider((window as any).ethereum)
+            const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
             // provider._isProvider   判断是否还有请求没有结束
             // 请求用户授权连接钱包
             await (window as any).ethereum.request({method: 'eth_requestAccounts'});
@@ -123,7 +125,7 @@ function Layout() {
                 // 判断是否是eth
                 if (chain && chain.name === 'homestead' && chain.chainId === 1) {
                     try {
-                        const token:any = await request('post', '/api/v1/token', {address: account[0]})
+                        const token: any = await request('post', '/api/v1/token', {address: account[0]})
                         if (token && token?.data && token?.status === 200) {
                             // 签名消息
                             const message = token?.data?.nonce
@@ -138,7 +140,7 @@ function Layout() {
                         description: 'Please select ETH!',
                         placement: 'topLeft',
                         duration: 2,
-                        message:''
+                        message: ''
                     });
                 }
             } else {
@@ -146,7 +148,7 @@ function Layout() {
                     description: 'Please log in or connect to your account!',
                     placement: 'topLeft',
                     duration: 2,
-                    message:''
+                    message: ''
                 });
             }
             setLoad(false)
@@ -156,7 +158,7 @@ function Layout() {
         }
     }
     // 登录
-    const loginMore = async (chainId:any, address:string, client:any, session:any, toName:string) => {
+    const loginMore = async (chainId: any, address: string, client: any, session: any, toName: string) => {
         try {
             const hexMsg = encoding.utf8ToHex(toName, true);
             const params = [hexMsg, address];
@@ -192,14 +194,14 @@ function Layout() {
         });
         reset();
     }, [client, session]);
-    const getBlockchainActions = async (acount:any, client:any, session:any) => {
+    const getBlockchainActions = async (acount: any, client: any, session: any) => {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token:any = await request('post', '/api/v1/token', {address: address})
-           if(token==='please'){
-               clear()
-           }else if (token && token?.data && token?.status === 200) {
+            const token: any = await request('post', '/api/v1/token', {address: address})
+            if (token === 'please') {
+                clear()
+            } else if (token && token?.data && token?.status === 200) {
                 await loginMore(chainId, address, client, session, token?.data?.nonce);
             } else {
                 return null
@@ -210,9 +212,9 @@ function Layout() {
     };
     // 钱包连接
     const onSessionConnected = useCallback(
-        async (_session:any, name:any, client:any) => {
+        async (_session: any, name: any, client: any) => {
             try {
-                const allNamespaceAccounts = Object.values(_session.namespaces).map((namespace:any) => namespace.accounts).flat();
+                const allNamespaceAccounts = Object.values(_session.namespaces).map((namespace: any) => namespace.accounts).flat();
                 // await getAccountBalances(allNamespaceAccounts);   获取balance
                 setSession(_session)
                 if (name) {
@@ -249,6 +251,7 @@ function Layout() {
         },
         [chains, client, onSessionConnected]
     );
+    const [browser, setBrowser] = useState<any>(false)
     useEffect(() => {
         if (cookie.get('username') && cookie.get('username') != undefined) {
             const abc = JSON.parse(cookie.get('username') as any)
@@ -267,14 +270,24 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
-    const value:any = {connect, clear, onDisconnect, getMoneyEnd, user, setLoad, load}
+    useEffect(() => {
+        if (window && window.innerWidth) {
+            const wid = window.innerWidth
+            const body = document.getElementsByTagName('body')[0]
+            if (wid > 800) {
+                body.style.overflow = 'hidden'
+                setBrowser(true)
+            }
+        }
+    }, []);
+    const value: any = {connect, clear, onDisconnect, getMoneyEnd, user, setLoad, load, browser,newPairPar, setNewPairPar}
     return (
         <CountContext.Provider value={value}>
             <Header/>
             <Routes>
                 <Route path="/" element={<Index/>}/>
                 <Route path="/newpairDetails" element={<NewpairDetails/>}/>
-                <Route path='/community/:tab' element={<Community/>} />
+                <Route path='/community/:tab' element={<Community/>}/>
                 <Route path='/dapp' element={<Dapp/>}/>
             </Routes>
             <Bot/>

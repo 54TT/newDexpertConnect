@@ -11,7 +11,7 @@ interface TweetHomePropsType {
     [key: string]: any
 }
 function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrollableDiv', style = {}, uid = '' }: TweetHomePropsType) {
-    const { clear }: any = useContext(CountContext)
+    const { clear, browser }: any = useContext(CountContext)
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
     const [status, setStatus] = useState(false)
@@ -89,7 +89,7 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrolla
             {
                 refresh ? <Loading /> : bol ? tableData.length > 0 ?
                     <div id={'scrollableDiv'} style={{ overflowY: 'auto', height: hei, ...style }}
-                        className={`rightTweetBox scrollStyle`}>
+                        className={`${browser ? 'rightTweetBox' : 'mobile'} scrollStyle`}>
                         <InfiniteScroll
                             hasMore={true}
                             next={changePage}

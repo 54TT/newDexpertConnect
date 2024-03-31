@@ -5,9 +5,7 @@ import './index.less'
 import { Button } from 'antd';
 import { useState } from 'react';
 import PostSendModal from './PostModal';
-/* import { handlePublish } from '../../../../utils/axios'; */
 export type UserActionKey = 'Profile' | 'Lastest' | 'Following'
-
 enum UserActionKeyEnum {
   PROFILE = 'Profile',  // 个人资料
   LASTEST = 'Lastest',  // 最新

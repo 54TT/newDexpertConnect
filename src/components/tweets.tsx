@@ -190,7 +190,7 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                         </motion.div>
                     </div>
                     <p className={'tweetsIn share-icon'}>
-                        <img src="/share.svg " alt="" />
+                        <img src="/share.svg" style={{width:'22px'}} alt="" />
                         <span>111</span>
                     </p>
                     <p className={'tweetsIn look-icon'}>
