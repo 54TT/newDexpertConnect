@@ -76,6 +76,8 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
     }, [])
 
     const handlePostSend = async () => {
+        console.log('call');
+
         const token = Cookies.get('token');
         const username: any = Cookies.get('username');
         let imgUrl: any = null

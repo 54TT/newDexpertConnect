@@ -61,6 +61,7 @@ const PostDetail = () => {
 
 
   const getCommentOrReplyData = async (page = 1) => {
+    setPage(page);
     let params = {};
     let url = '';
     if (reply) {
@@ -86,7 +87,6 @@ const PostDetail = () => {
       } else {
         setData([...data, ...comments || []])
       }
-
     }
     setPageStatus(false)
   }
@@ -104,7 +104,6 @@ const PostDetail = () => {
 
   return <div id='scrollabelDetail' style={{ height: 'calc(100vh - 54px )', overflow: 'auto' }}>
     <InfiniteScroll style={{ overflow: 'unset' }} dataLength={data?.length || 0} hasMore={true} scrollableTarget='scrollabelDetail' next={() => {
-      setPage(page + 1);
       getCommentOrReplyData(page + 1);
     }} loader={<></>}>
       <div className='community-post-detail'>

@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
+import { message } from 'antd';
 
 interface TweetsPropsType {
     user?: any;
@@ -28,6 +29,9 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
             }, 1000);
         }
     }, [clickAnimate])
+    // 是否是comment 而非reply，用于调用不同的like接口, parentId为0则为comment
+    const isComment = localData.parentId === "0"
+
     const animationVariants = {
         hidden: { y: '100%', opacity: 0 },
         visible: { y: '-100%', opacity: 1 },
@@ -43,9 +47,14 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                 url = '/api/v1/post/like';
                 data = { postId: localData.postId }
             }
-            if (type === 'comment') {
+            if (type === 'comment' || isComment) {
                 url = '/api/v1/post/comment/like';
                 data = { commentId: localData.id }
+            }
+            if (type === 'reply' && !isComment) {
+
+                url = '/api/v1//reply/like';
+                data = { replyId: localData.id }
             }
             try {
                 if (localData?.likeStatus === false) {
@@ -64,9 +73,13 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                         url = '/api/v1/post/like/cancel';
                         data = { postId: localData.postId }
                     }
-                    if (type === 'comment') {
+                    if (type === 'comment' || isComment) {
                         url = '/api/v1/post/comment/like/cancel';
                         data = { commentId: localData.id }
+                    }
+                    if (type === 'reply' && !isComment) {
+                        url = '/api/v1//reply/like/cancel';
+                        data = { replyId: localData.id }
                     }
                     const result: any = await request('post', url, data, token);
                     if (result === 'please') {
@@ -83,13 +96,18 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
 
     const handleAddComment = () => {
         // 设置评论数量
+        console.log('call');
+
         setLocalData({ ...localData, commentNum: localData?.commentNum ? Number(localData?.commentNum) + 1 : 1 });
         onPublish?.()
         setOpenComment(false);
     }
 
     const handleToDetail = () => {
-        if (!isLogin) return
+        if (!isLogin) {
+            message.warning('pleast connect your wallet');
+            return;
+        }
 
 
         if (type === 'reply' || type === 'comment') {

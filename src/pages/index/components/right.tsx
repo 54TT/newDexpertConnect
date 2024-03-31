@@ -1,6 +1,6 @@
-import {Swiper, SwiperSlide} from 'swiper/react';
-import {A11y, Autoplay, EffectFade, Pagination} from 'swiper/modules';
-import {useEffect, useRef, useState} from 'react'
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { A11y, Autoplay, EffectFade, Pagination } from 'swiper/modules';
+import { useEffect, useRef, useState } from 'react'
 import TweetHome from "../../../components/tweetHome.tsx";
 
 function Right() {
@@ -36,34 +36,34 @@ function Right() {
                     "clickable": true
                 }}
                 loop
-                autoplay={{delay: 2000, disableOnInteraction: false}}>
+                autoplay={{ delay: 2000, disableOnInteraction: false }}>
                 {
                     ['/swiper.svg', '/swiper.svg', '/swiper.svg', '/swiper.svg',].map((i, ind) => {
                         return <SwiperSlide key={ind}><img src={i} onClick={() => {
                             if (ind === 0) {
                                 window.open('https://info.dexpert.io/pointsDetail')
                             }
-                        }} style={{width: '100%', borderRadius: "20px", cursor: "pointer"}}
-                                                           alt=""/></SwiperSlide>
+                        }} style={{ width: '100%', borderRadius: "20px", cursor: "pointer" }}
+                            alt="" /></SwiperSlide>
                     })
                 }
             </Swiper>
-            <div className={'rightBoxTweet'} style={heiol ? {} : {height: '100vh'}}>
+            <div className={'rightBoxTweet'} style={heiol ? {} : { height: '100vh' }}>
                 <div ref={topRef} className={'rightBoxTweetTop'}>
                     <div style={{
                         color: select === 'one' ? 'rgb(104,124,105)' : 'rgb(134,240,151)',
                         backgroundColor: select === 'one' ? 'rgb(24,30,28)' : ''
                     }}
-                         onClick={() => selectTweet('one')}>Recommand
+                        onClick={() => selectTweet('one')}>Recommand
                     </div>
                     <div style={{
                         color: select !== 'one' ? 'rgb(104,124,105)' : 'rgb(134,240,151)',
                         backgroundColor: select !== 'one' ? 'rgb(24,30,28)' : ''
                     }}
-                         onClick={() => selectTweet('two')}>Lastest
+                        onClick={() => selectTweet('two')}>Lastest
                     </div>
                 </div>
-                <TweetHome hei={hei} changeHei={changeHei}/>
+                <TweetHome hei={`${hei}px`} changeHei={changeHei} />
             </div>
         </div>
     );

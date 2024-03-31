@@ -6,7 +6,7 @@ import { request } from "../../utils/axios.ts";
 import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
 import { CountContext } from "../Layout.tsx";
-function TweetHome({ hei, changeHei, refresh, changeRefresh }: any) {
+function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrollableDiv', style = {} }: any) {
     const { clear }: any = useContext(CountContext)
 
     const [tableData, setData] = useState([])
@@ -74,12 +74,12 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh }: any) {
         <>
             {
                 refresh ? <Loading /> : bol ? tableData.length > 0 ?
-                    <div id={'scrollableDiv'} style={{ overflowY: 'auto', height: hei + "px" }}
+                    <div id={'scrollableDiv'} style={{ overflowY: 'auto', height: hei, ...style }}
                         className={`rightTweetBox scrollStyle`}>
                         <InfiniteScroll
                             hasMore={true}
                             next={changePage}
-                            scrollableTarget="scrollableDiv"
+                            scrollableTarget={scrollId}
                             loader={null}
                             dataLength={tableData.length}>
                             {tableData.map((post: any, index: number) => {
