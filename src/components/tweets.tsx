@@ -10,6 +10,7 @@ import { message } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { DashOutlined } from '@ant-design/icons';
+import { setMany } from "../../utils/change.ts";
 dayjs.extend(relativeTime)
 
 interface TweetsPropsType {
@@ -20,7 +21,10 @@ interface TweetsPropsType {
     onPublish?: () => void;
 }
 
-function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsPropsType) {
+function Tweets({
+    name, isLogin, type = 'post', onPublish = () => {
+    }
+}: TweetsPropsType) {
     const { clear }: any = useContext(CountContext)
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
@@ -112,8 +116,6 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
             message.warning('pleast connect your wallet');
             return;
         }
-
-
         if (type === 'reply' || type === 'comment') {
             const user = JSON.parse(Cookies.get('username') || '{}');
 
@@ -144,8 +146,9 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                 {/*  top*/}
                 <div className={`dis`}>
                     {/* left*/}
-                    <div className={'tweetsLeft'} >
-                        <img onClick={(e) => handleClickAvatar(e)} src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
+                    <div className={'tweetsLeft'}>
+                        <img onClick={(e) => handleClickAvatar(e)}
+                            src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
                             style={{ width: '36px', marginRight: '5%', borderRadius: '50%' }} />
                         <p>
                             <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
@@ -167,7 +170,12 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                     {
                         localData?.imageList?.length > 0 && localData?.imageList[0] ?
                             <img className='post-item-img' src={localData?.imageList[0]} alt=""
-                                style={{ maxWidth: '50%', maxHeight: '200px', borderRadius: '5px', display: 'block' }} /> : <></>
+                                style={{
+                                    maxWidth: '50%',
+                                    maxHeight: '200px',
+                                    borderRadius: '5px',
+                                    display: 'block'
+                                }} /> : <></>
                     }
                 </>
                 {/*   标识*/}
@@ -198,16 +206,17 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                     </div>
                     <p className={'tweetsIn share-icon'}>
                         <img src="/share.svg" style={{ width: '22px' }} alt="" />
-                        <span>111</span>
+                        <span>{setMany(Math.ceil(Math.random() * 10 + Math.random() * 100))}</span>
                     </p>
                     <p className={'tweetsIn look-icon'}>
                         <img src="/look.svg" alt="" />
-                        <span>111</span>
+                        <span>{setMany(Math.ceil(Math.random() * 1000 + Math.random() * 1000))}</span>
                     </p>
                 </div>
 
             </div>
-            <PostSendModal type={type === "post" ? "comment" : "reply"} postData={localData} className='comment-send-model' open={openComment}
+            <PostSendModal type={type === "post" ? "comment" : "reply"} postData={localData}
+                className='comment-send-model' open={openComment}
                 onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()} />
         </>
 

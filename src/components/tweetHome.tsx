@@ -1,17 +1,27 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import Tweets from "./tweets.tsx";
-import { LoadingOutlined } from "@ant-design/icons";
-import { useContext, useEffect, useState } from "react";
-import { request } from "../../utils/axios.ts";
+import {LoadingOutlined} from "@ant-design/icons";
+import {useContext, useEffect, useState} from "react";
+import {request} from "../../utils/axios.ts";
 import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
-import { CountContext } from "../Layout.tsx";
+import {CountContext} from "../Layout.tsx";
+
 interface TweetHomePropsType {
     uid?: string
     [key: string]: any
 }
-function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrollableDiv', style = {}, uid = '' }: TweetHomePropsType) {
-    const { clear, browser }: any = useContext(CountContext)
+
+function TweetHome({
+                       hei,
+                       changeHei,
+                       refresh,
+                       changeRefresh,
+                       scrollId = 'scrollableDiv',
+                       style = {},
+                       uid = ''
+                   }: TweetHomePropsType) {
+    const {clear, browser}: any = useContext(CountContext)
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
     const [status, setStatus] = useState(false)
@@ -35,19 +45,19 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrolla
     const getTweet = async (page: number) => {
         const token = cookie.get('token')
         let url = '/api/v1/post/public'
-        let data: any = { page: page }
+        let data: any = {page: page}
         if (uid) {
-            url = '/api/v1/post/list',
-                data = {
-                    uid,
-                    page
-                }
+            url = '/api/v1/post/list'
+            data = {
+                uid,
+                page
+            }
         }
         const res: any = await request('post', url, data, token ? token : '')
         if (res == 'please') {
             clear()
         } else if (res && res?.status === 200) {
-            const { data } = res
+            const {data} = res
             const r: any = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
                 if (r.length !== 10) {
@@ -76,8 +86,11 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrolla
             setIsLogin(true)
         }
         getTweet(1)
+        setBol(false)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cookie.get('token')]);
+
+
     useEffect(() => {
         if (refresh) {
             getTweet(1)
@@ -87,27 +100,27 @@ function TweetHome({ hei, changeHei, refresh, changeRefresh, scrollId = 'scrolla
     return (
         <>
             {
-                refresh ? <Loading /> : bol ? tableData.length > 0 ?
-                    <div id={'scrollableDiv'} style={{ overflowY: 'auto', height: hei, ...style }}
-                        className={`${browser ? 'rightTweetBox' : 'mobile'} scrollStyle`}>
-                        <InfiniteScroll
-                            hasMore={true}
-                            next={changePage}
-                            scrollableTarget={scrollId}
-                            loader={null}
-                            dataLength={tableData.length}>
-                            {tableData.map((post: any, index: number) => {
-                                return <Tweets key={index} isLogin={isLogin} name={post} />
-                            })}
-                        </InfiniteScroll>
-                        {
-                            iconLoad &&
-                            <p style={{ textAlign: 'center', color: 'white', fontSize: '16px' }}><LoadingOutlined />
-                            </p>
-                        }
-                    </div> :
-                    <p style={{ textAlign: 'center', color: 'white', marginTop: '20px' }}>No data</p> :
-                    <Loading />
+                refresh ? <Loading/> : bol ? tableData.length > 0 ?
+                        <div id={'scrollableDiv'} style={{overflowY: 'auto', height: hei, ...style}}
+                             className={`${browser ? 'rightTweetBox' : 'mobile'} scrollStyle`}>
+                            <InfiniteScroll
+                                hasMore={true}
+                                next={changePage}
+                                scrollableTarget={scrollId}
+                                loader={null}
+                                dataLength={tableData.length}>
+                                {tableData.map((post: any, index: number) => {
+                                    return <Tweets key={index} isLogin={isLogin} name={post}/>
+                                })}
+                            </InfiniteScroll>
+                            {
+                                iconLoad &&
+                                <p style={{textAlign: 'center', color: 'white', fontSize: '16px'}}><LoadingOutlined/>
+                                </p>
+                            }
+                        </div> :
+                        <p style={{textAlign: 'center', color: 'white', marginTop: '20px'}}>No data</p> :
+                    <Loading/>
             }
         </>
     );

@@ -4,17 +4,13 @@ import { CountContext } from '../Layout.tsx'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DownOutlined, LoadingOutlined } from '@ant-design/icons';
 import { simplify } from '../../utils/change.ts'
-import Cookies from 'js-cookie';
 function Header() {
     const router = useLocation()
     const { connect, getMoneyEnd, user, setLoad, load, clear, browser }: any = useContext(CountContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const history = useNavigate();
     const [open, setOpen] = useState(false);
-    const [select, setSelect] = useState('');
-
-    const username: any = JSON.parse(Cookies.get('username') || '{}')
-    console.log('123123', username.avatarUrl);
+    const [select, setSelect] = useState('')
     useEffect(() => {
         if (router.pathname) {
             setSelect(router.pathname)
@@ -54,15 +50,12 @@ function Header() {
         switch (i) {
             case 2:
                 history('/community/lastest')
-                setSelect('/community/lastest')
                 break;
             case 0:
                 history('/')
-                setSelect('/')
                 break;
             case 1:
                 history('/dapp')
-                setSelect('/dapp')
                 break;
         }
     }
@@ -144,19 +137,19 @@ function Header() {
         }
     };
     const change = (ind: number) => {
-        if (select === '/' || select === '/newpairDetails') {
+        if (router.pathname === '/' || router.pathname === '/newpairDetails') {
             if (ind === 0) {
                 return 'rgb(134,240,151)'
             } else {
                 return 'rgb(214,223,215)'
             }
-        } else if (select === '/community/lastest' || select === '/community/profile' || select === '/community/following') {
+        } else if (router.pathname === '/community/lastest' || router.pathname === '/community/profile' || router.pathname === '/community/following') {
             if (ind === 2) {
                 return 'rgb(134,240,151)'
             } else {
                 return 'rgb(214,223,215)'
             }
-        } else if (select === '/dapp') {
+        } else if (router.pathname === '/dapp') {
             if (ind === 1) {
                 return 'rgb(134,240,151)'
             } else {
