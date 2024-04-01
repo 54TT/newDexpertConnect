@@ -9,6 +9,9 @@ import { formatAddress, getQueryParams } from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
 import { message } from 'antd';
 import { useLocation } from "react-router-dom";
+
+
+
 function Profie() {
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
@@ -233,7 +236,7 @@ function Profie() {
     const handleFollow = async () => {
         await followUser(id);
         message.success('success follow')
-        setIsFollowed(false);
+        setIsFollowed(true);
     }
 
     const handleUnfollow = async () => {
@@ -267,7 +270,7 @@ function Profie() {
 
                             }
                             {
-                                pathname.includes('/community/user') && isFollowed ? <span className="unfollow-icon" onClick={() => handleUnfollow()}>Unfollow</span> : <span className="follow-icon" onClick={() => handleFollow()}>Follow</span>
+                                pathname.includes('/community/user') && (isFollowed ? <span className="unfollow-icon" onClick={() => handleUnfollow()}>Unfollow</span> : <span className="follow-icon" onClick={() => handleFollow()}>Follow</span>)
                             }
                         </div>
                     </div>
@@ -325,7 +328,7 @@ function Profie() {
                         {/*</div>*/}
                     </div>
                 </div>
-                <p className={'hello'}>Hello players, DEXpert is a special exchange! I hope we can have fun here!</p>
+                <p className={'hello'}>{data.bio || 'Nothing here'}</p>
                 <div className={'tokenTop'}>
                     {
                         ['Community', 'Token'].map((i: string, ind: number) => {

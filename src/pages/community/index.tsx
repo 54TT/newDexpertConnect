@@ -6,6 +6,7 @@ import CommunityRight from './components/RightSider';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostDetail from './components/PostDetail';
 import Profie from "./components/Profie.tsx";
+import ContactList from './components/ContactList.tsx';
 
 type ActiveTabType = 'lastest' | 'profile' | 'following'
 function Community() {
@@ -28,7 +29,7 @@ function Community() {
   const ComponentMap = {
     'lastest': <PostContent />,
     'profile': <Profie />,
-    'following': <></>,
+    'following': <ContactList />,
     'detail': <PostDetail />,
     'comment': <PostDetail />,
     'user': <Profie />,

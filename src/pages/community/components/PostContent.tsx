@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import SendPost from '../components/SendPost.tsx'
 import TWeetHome from '../../../components/tweetHome.js'
 /* import classNames from "classnames"; */
-/*  interface TabType {
+export interface TabType {
   label: 'For you' | 'Following',
   key: '1' | '2',
-}  */
+}
 
 /* interface CommunityContentTypeProps {
   name?: string
