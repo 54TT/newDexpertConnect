@@ -2,7 +2,7 @@ import axios from "axios";
 import cookie from "js-cookie";
 import Cookies from "js-cookie";
 import dayjs from 'dayjs'
-import {notification,} from "antd";
+import {message, notification,} from "antd";
 
 const requestA = axios.create({
     // baseURL: process.env.NODE_ENV === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io/',
@@ -79,6 +79,12 @@ export const request = async (method: string, url: string, data: any, token?: an
     }
 }
 
+const getTkAndUserName= () => {
+    const token = Cookies.get('token');
+    const username = JSON.parse(Cookies.get('username') || '{}');
+    return [token, username];
+}
+
 
 export const handlePublish = async (data: any) => {    
     const token = Cookies.get('token');
@@ -92,5 +98,34 @@ export const handlePublish = async (data: any) => {
         return result.status;
     } else {
         return Promise.reject('faild')
+    }
+}
+
+
+export const followUser = async (userId: string ) => {
+    try {
+        const [token] = getTkAndUserName();
+        const result = await request('post','/api/v1/follow', {userId}, token);
+        if (result.status === 200) {
+            return result.data
+        } else {
+            return message.error('faild to follow');
+        }
+    } catch(e) {
+        return Promise.reject(e)
+    }
+}
+
+export const unfollowUser = async (userId: string) => {
+    try {
+        const [token] = getTkAndUserName();
+        const result = await request('post','/api/v1/unfollow', {userId}, token);
+        if (result.status === 200) {
+            return result.data
+        } else {
+            return message.error('faild to unfollow');
+        }
+    } catch(e) {
+        return Promise.reject(e)
     }
 }

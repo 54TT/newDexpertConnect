@@ -4,7 +4,7 @@ import Tweets from '../../../components/tweets';
 import SendPost from './SendPost';
 import { request } from '../../../../utils/axios';
 import Cookies from 'js-cookie';
-import { Spin, Empty } from 'antd';
+import { Spin } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getQueryParams } from '../../../../utils/utils'
 
@@ -114,9 +114,9 @@ const PostDetail = () => {
             <Spin size='large' />
           </div> : data.length > 0 ? data?.map?.((data) =>
             <RenderCommentTweet data={data} token={token} type={reply ? 'reply' : "comment"} />
-          ) : <div style={{ marginTop: '48px' }}>
-            <Empty description={false} />
-          </div>
+          ) : <p style={{ marginTop: '48px', color: '#d6dfd7', textAlign: 'center' }}>
+            No Data
+          </p>
         }
       </div>
     </InfiniteScroll>

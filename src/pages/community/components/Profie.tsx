@@ -3,7 +3,7 @@ import Copy from '../../../components/copy.tsx'
 import TWeetHome from "../../../components/tweetHome.tsx";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd'
-import { request } from "../../../../utils/axios.ts";
+import { followUser, request, unfollowUser } from "../../../../utils/axios.ts";
 import Cookies from "js-cookie";
 import { formatAddress, getQueryParams } from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
@@ -25,8 +25,9 @@ function Profie() {
     const [newBG, setNewBG] = useState();
     const [form] = Form.useForm();
     const { uid } = getQueryParams();
-    const loginId = JSON.parse(Cookies.get('uid') || '{}').uid
+    const loginId = JSON.parse(Cookies.get('username') || '{}').uid
     const { pathname } = useLocation();
+    const [isFollowed, setIsFollowed] = useState(false);
 
     useEffect(() => {
         if (status) {
@@ -55,12 +56,16 @@ function Profie() {
 
     const id = useMemo(() => {
         if (pathname.includes('/community/user')) {
+            console.log(uid);
+
             return uid;
         }
         return loginId
     }, [pathname])
 
-    const getUserProfile = async () => {
+
+
+    const getUserProfile = async (setCookise?: boolean) => {
 
         if (!id) {
             return messageApi.warning('please connect your wallet')
@@ -69,10 +74,16 @@ function Profie() {
         if (!token) return;
         const result: any = await request('get', `/api/v1/userinfo/${id}`, {}, token);
         if (result.status === 200) {
-            const { data } = result.data;
-            setData(data);
+            const data = result.data;
+            setData(data.data);
+            setIsFollowed(data.isFollowed)
             setPreviewAvatar(data.avatarUrl);
             setPreviewBG(data.coverUrl);
+            console.log(data);
+
+            if (setCookise) {
+                Cookies.set('username', JSON.stringify(data.data));
+            }
         }
 
     }
@@ -90,7 +101,14 @@ function Profie() {
         {
             key: 'edit',
             onClick: () => setIsModalOpen(true),
-            show: (loginId: string, profileId: string) => loginId === profileId
+            show: (loginId: string, profileId: string) => {
+                const fromUserpath = pathname.includes('/community/user');
+                const isCurrentUser = loginId === profileId;
+                if (fromUserpath) {
+                    return isCurrentUser
+                }
+                return true
+            },
         }
     ]
 
@@ -154,7 +172,7 @@ function Profie() {
         const result: any = await request('post', '/api/v1/userinfo', params, token);
         if (result.status === 200) {
             messageApi.success('update success');
-            getUserProfile()
+            getUserProfile(true)
         }
     }
 
@@ -167,6 +185,7 @@ function Profie() {
                 uploadInput?.removeEventListener('input', handleuploadImage, false);
             }
         }, [])
+
 
         return <>
             <div className="profile-background">
@@ -211,6 +230,18 @@ function Profie() {
         </>
     }
 
+    const handleFollow = async () => {
+        await followUser(id);
+        message.success('success follow')
+        setIsFollowed(false);
+    }
+
+    const handleUnfollow = async () => {
+        await unfollowUser(id);
+        message.success('success unfollow')
+        setIsFollowed(false);
+    }
+
     return (
         <div className={'username-page'}>
             <div ref={topRef}>
@@ -230,12 +261,13 @@ function Profie() {
                         <div className="profile-background-button">
                             {
 
-                                IMAGE_MAP.map((v) => {
-                                    if (pathname.includes('/community/user')) {
-                                        return v.show(loginId, uid) ? <img onClick={v.onClick} style={{ width: '24px', height: '24px', padding: '5px', backgroundColor: 'grey', borderRadius: '10px', marginRight: '12px', background: '#181e1c' }} src={`/community/${v.key}.svg`} /> : <></>
-                                    }
-                                    return <img onClick={v.onClick} style={{ width: '24px', height: '24px', padding: '5px', backgroundColor: 'grey', borderRadius: '10px', marginRight: '12px', background: '#181e1c' }} src={`/community/${v.key}.svg`} />
-                                })
+                                IMAGE_MAP.map((v) =>
+                                    v.show(loginId, uid) ? <img onClick={v.onClick} style={{ width: '24px', height: '24px', padding: '5px', backgroundColor: 'grey', borderRadius: '10px', marginRight: '12px', background: '#181e1c', cursor: 'pointer' }} src={`/community/${v.key}.svg`} /> : <></>
+                                )
+
+                            }
+                            {
+                                pathname.includes('/community/user') && isFollowed ? <span className="unfollow-icon" onClick={() => handleUnfollow()}>Unfollow</span> : <span className="follow-icon" onClick={() => handleFollow()}>Follow</span>
                             }
                         </div>
                     </div>
@@ -244,7 +276,10 @@ function Profie() {
                     <div className={'informationLeft'}>
                         <p className={'p'}><span>{data?.username ? formatAddress(data.username) : ''}</span><img src="/certification.svg" alt="" /></p>
                         <p>{data?.address ? formatAddress(data.address) : ''} <Copy status={status} setStatus={setStatus} name={'0x3758...5478'} /></p>
-                        <p className={'p'}><img src="/titter.svg" alt="" /><img src="/facebook.svg" alt="" /></p>
+                        <p className={'p'}>
+                            {data.twitter && <img src="/twitter.svg" alt="" />}
+                            <img src="/facebook.svg" alt="" />
+                        </p>
                     </div>
                     <div className={`informationRight `}>
                         {
@@ -304,9 +339,8 @@ function Profie() {
                     }
                 </div>
             </div>
-            <div style={{ height: hei + 'px', overflowY: 'auto' }} className={`scrollStyle community-content-post`}
-                id='scrollableDiv'>
-                <TWeetHome uid={id} />
+            <div id='profileScroll' style={{ height: hei + 'px', overflowY: 'auto' }} className={`scrollStyle community-content-post`}>
+                <TWeetHome uid={id} scrollId='profileScroll' style={{ overflowY: 'unset' }} />
             </div>
             <CommonModal width='800px' className="modify-user-modal" footer={null} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 <ModifyUserInfoForm />

@@ -7,6 +7,10 @@ import PostSendModal from '../pages/community/components/PostModal';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { message } from 'antd';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { DashOutlined } from '@ant-design/icons';
+dayjs.extend(relativeTime)
 
 interface TweetsPropsType {
     user?: any;
@@ -128,9 +132,9 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
         if (!isLogin) {
             message.warning('please login')
         }
-
         history(`/community/user?uid=${localData.user.uid}`)
     }
+
 
     return (
         <>
@@ -147,9 +151,12 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                             <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
                             <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
                         </p>
+                        <p style={{ margin: '3px 0 0 8px', color: 'rgb(83, 100, 113)', fontSize: '12px' }}>
+                            <span>{dayjs().to(dayjs(localData.CreatedAt))}</span>
+                        </p>
                     </div>
-                    <div className={'tweetsFollow'}>
-                        <p className={'tweetsRight'}>Follow</p>
+                    <div className={'tweetsFollow'} >
+                        <DashOutlined />
                     </div>
                 </div>
                 {
@@ -190,7 +197,7 @@ function Tweets({ name, isLogin, type = 'post', onPublish = () => { } }: TweetsP
                         </motion.div>
                     </div>
                     <p className={'tweetsIn share-icon'}>
-                        <img src="/share.svg" style={{width:'22px'}} alt="" />
+                        <img src="/share.svg" style={{ width: '22px' }} alt="" />
                         <span>111</span>
                     </p>
                     <p className={'tweetsIn look-icon'}>

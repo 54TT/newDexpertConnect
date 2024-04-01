@@ -297,7 +297,7 @@ body {
       }
 
       img {
-        width: 25px ;
+        width: 25px;
       }
 
       .tweetsLick {
@@ -311,7 +311,7 @@ body {
   .tweetsLeft {
     width: 50%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 
     p {
       display: flex;
@@ -332,6 +332,7 @@ body {
   }
 
   .tweetsFollow {
+    color: #879188;
     p:first-child {
       color: white;
       margin-bottom: 4px;
@@ -402,9 +403,11 @@ body {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(to right,
-    rgb(9, 21, 17),
-    rgb(37, 70, 59)) !important;
+    background: linear-gradient(
+      to right,
+      rgb(9, 21, 17),
+      rgb(37, 70, 59)
+    ) !important;
   }
 }
 
@@ -588,9 +591,7 @@ span {
             }
           }
         }
-
       }
-
     }
 
     .ant-collapse-item:first-child {
