@@ -119,7 +119,7 @@ export const followUser = async (userId: string ) => {
 export const unfollowUser = async (userId: string) => {
     try {
         const [token] = getTkAndUserName();
-        const result = await request('post','/api/v1/unfollow', {userId}, token);
+        const result = await request('post','/api/v1/unfollow', {uid:userId}, token);
         if (result.status === 200) {
             return result.data
         } else {
