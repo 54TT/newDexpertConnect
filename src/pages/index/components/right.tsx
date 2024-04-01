@@ -3,7 +3,6 @@ import {A11y, Autoplay, EffectFade, Pagination} from 'swiper/modules';
 import {useContext, useEffect, useRef, useState} from 'react'
 import TweetHome from "../../../components/tweetHome.tsx";
 import {CountContext} from "../../../Layout.tsx";
-
 function Right() {
     const swiperRef: any = useRef()
     const topRef: any = useRef()

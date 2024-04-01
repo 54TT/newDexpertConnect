@@ -1,156 +1,21 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import {Input, Segmented, Select} from 'antd'
 import {useContext, useEffect, useRef, useState} from "react";
-import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
-import {gql} from 'graphql-tag'
 import {SearchOutlined} from '@ant-design/icons'
-import {cloneDeep, differenceBy} from 'lodash';
 import Right from "./components/right.tsx";
 import NewPair from './components/newPairDate.tsx'
 import {ethers} from 'ethers';
 import Loading from '../../components/loading.tsx'
 import {CountContext} from "../../Layout.tsx";
-
-const client = new ApolloClient({
-    uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
-});
-
+import newPair from '../../components/getNewPair.tsx'
 function Index() {
+    const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad} = newPair() as any
     const hei = useRef<any>()
-    const page = 25
-    const {browser, setNewPairPar}: any = useContext(CountContext);
+    const {browser, setPage}: any = useContext(CountContext);
     const [select, setSelect] = useState('newPair')
-    // const [page, setPage] = useState(30);
-    const [current, setCurrent] = useState(1);
     const [time, setTime] = useState('24h')
-    const [tableDta, setDta] = useState([])
-    const [tableDtaLoad, setDtaLoad] = useState(true)
     const [tableHei, setTableHei] = useState('')
-    const [moreLoad, setMoreLoad] = useState(false)
-    const [nextLoad, setNextLoad] = useState(false)
     const [gas, setGas] = useState<string>('')
-    const [ethPrice, setEthprice] = useState<string>('')
-    const [polling, setPolling] = useState<boolean>(false)
-    const GET_DATA = gql`query LiveNewPair {
-  _meta {
-    block {
-      number
-      timestamp
-    }
-  }
-  bundles {
-    ethPrice
-  }
-  pairs(first: ${page}, orderBy: createdAtTimestamp,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
-    createdAtTimestamp
-    id
-    liquidityPositionSnapshots(orderBy: timestamp, orderDirection: desc, first: 1) {
-      token0PriceUSD
-      token1PriceUSD
-    }
-    token0 {
-      id
-      name
-      symbol
-      totalLiquidity
-      totalSupply
-    }
-    token1 {
-      id
-      name
-      symbol
-      totalLiquidity
-      totalSupply
-    }
-    reserve0
-    reserve1
-    PairFiveMinutesData(first: 1, orderBy: startUnix, orderDirection: desc) {
-      priceChange
-      startUnix
-      swapTxns
-      volumeUSD
-      buyTxs
-      sellTxs
-    }
-    PairSixHourData(first: 1, orderBy: startUnix, orderDirection: desc) {
-      startUnix
-      priceChange
-      volumeUSD
-      swapTxns
-      buyTxs
-      sellTxs
-    }
-    liquidity
-    pairDayData(first: 1, orderBy: startUnix, orderDirection: desc) {
-      priceChange
-      volumeUSD
-      startUnix
-      swapTxns
-      sellTxs
-      buyTxs
-    }
-    pairHourData(orderBy: startUnix, first: 1, orderDirection: desc) {
-      startUnix
-      priceChange
-      swapTxns
-      volumeUSD
-      sellTxs
-      buyTxs
-    }
-    buyTxs
-    priceUSD
-  }
-  uniswapFactories {
-    pairCount
-    id
-  }
-}`
-    const getParams = (par: any) => {
-        const dataLi = []
-        const a = cloneDeep(par)
-        const STABLECOINS = [
-            '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', 'WETH',
-            '0x6b175474e89094c44da98b954eedeac495271d0f', 'DAI',
-            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', 'USDC',
-            '0xdac17f958d2ee523a2206206994597c13d831ec7', 'USDT',
-        ]
-        const p = a.map((i: any) => {
-            if (STABLECOINS.includes(i?.token0?.id.toLowerCase()) && !STABLECOINS.includes(i?.token1?.id.toLowerCase())) {
-                const token0 = i.token0
-                i.token0 = i.token1
-                i.token1 = token0
-                i.sure = true
-            }
-            return i
-        })
-        p.map((i: any) => {
-            if (!STABLECOINS.includes(i?.token0?.id.toLowerCase())) {
-                dataLi.push(i?.token0?.id)
-            }
-        })
-        if (p.length !== 25) {
-            setNextLoad(true)
-        }
-        if (polling) {
-            const abcd: any = differenceBy(p, tableDta, 'id')
-            if (abcd.length > 0) {
-                const at: any = abcd.concat(tableDta)
-                setDta(at)
-            }
-        } else {
-            if (current !== 1) {
-                const abcd: any = differenceBy(p, tableDta, 'id')
-                const ab = tableDta.concat(abcd)
-                setDta(ab)
-            } else {
-                setDta(p)
-                setNewPairPar(p)
-            }
-        }
-        setMoreLoad(false)
-        setDtaLoad(false)
-        setPolling(false)
-    }
     useEffect(() => {
         if (hei && hei.current) {
             const h = hei.current.scrollHeight
@@ -159,8 +24,8 @@ function Index() {
             setTableHei(o)
         }
         getGas()
+        setPage(25)
     }, [])
-    const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any
     const getGas = async () => {
         const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.g.alchemy.com/v2/BhTc3g2lt1Qj3IagsyOJsH5065ueK1Aw')
         const gasAVGPrice = await provider.send('eth_gasPrice', [])
@@ -170,39 +35,12 @@ function Index() {
             setGas(abc.toFixed(3))
         }
     }
-
-    useEffect(() => {
-        if (!loading) {
-            if (data && data?.pairs.length > 0) {
-                getParams(data.pairs)
-                const abc = data.bundles
-                const price = abc[0].ethPrice
-                setEthprice(Number(price).toFixed(3))
-            }
-        }
-    }, [data]);
     const handleChange = (value: string) => {
         setSelect(value)
     };
     const changSeg = (e: string) => {
         setTime(e)
     }
-    const changePage = () => {
-        if (!nextLoad) {
-            setCurrent(current + 1)
-            setMoreLoad(true)
-            refetch()
-        }
-    }
-    useEffect(() => {
-        const interval = setInterval(async () => {
-            setPolling(true)
-            refetch();
-        }, 8000);
-        return () => {
-            clearInterval(interval);
-        }
-    }, [])
     const changeInput = (e: any) => {
         console.log(e)
     }
@@ -221,7 +59,7 @@ function Index() {
                         value={select}
                         className={'indexSelect'}
                         popupClassName={'indexSelectPopup'}
-                        style={{width: '12%', display: browser?'block':'none'}}
+                        style={{width: '12%', display: browser ? 'block' : 'none'}}
                         options={[
                             {value: 'newPair', label: 'New Pairs'},
                             {value: 'trading', label: 'Trading'},

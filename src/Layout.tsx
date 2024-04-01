@@ -36,6 +36,9 @@ function Layout() {
     const [user, setUserPar] = useState<any>(null)
     const [load, setLoad] = useState<boolean>(false)
     const [newPairPar, setNewPairPar] = useState<any>([])
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [page, setPage] = useState<number>(25);
+
     const createClient = async () => {
         try {
             const _client: any = await Client.init({
@@ -270,6 +273,7 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
+
     useEffect(() => {
         if (window && window.innerWidth) {
             const wid = window.innerWidth
@@ -280,7 +284,7 @@ function Layout() {
             }
         }
     }, []);
-    const value: any = {connect, clear, onDisconnect, getMoneyEnd, user, setLoad, load, browser,newPairPar, setNewPairPar}
+    const value: any = {connect, clear, onDisconnect, getMoneyEnd, user, setLoad, load, browser,newPairPar, setNewPairPar,isModalOpen,page, setPage, setIsModalOpen}
     return (
         <CountContext.Provider value={value}>
             <Header/>
