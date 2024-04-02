@@ -1,8 +1,8 @@
-import { Button, Input, message, Popover } from 'antd';
-import { request } from '../../../../utils/axios';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { CloseOutlined } from '@ant-design/icons';
-import { CountContext } from '../../../Layout.tsx'
+import {Button, Input, message, Popover} from 'antd';
+import {request} from '../../../../utils/axios.ts';
+import {useContext, useEffect, useRef, useState} from 'react';
+import {CloseOutlined} from '@ant-design/icons';
+import {CountContext} from '../../../Layout.tsx'
 import Cookies from 'js-cookie';
 import Picker from "@emoji-mart/react";
 import emojiData from "@emoji-mart/data";
@@ -79,8 +79,6 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
     }, [])
 
     const handlePostSend = async () => {
-        console.log('call');
-
         const token = Cookies.get('token');
         const username: any = Cookies.get('username');
         let imgUrl: any = null
@@ -149,14 +147,12 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
     }
 
     const handleChangeValue = (value: string, img: unknown) => {
-
         if (value === '' && img === null) {
             setSendDisable(true);
         } else {
             setSendDisable(false);
         }
     }
-
     const clearImg = () => {
         handleChangeValue(value, null);
         setImg(null)
@@ -192,7 +188,6 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
             <div className="community-content-post-send-input">
                 <TextArea value={value} autoSize variant="borderless" placeholder='Share your insights...'
                     onChange={(e) => {
-                        console.log('0000000000000', e.target.value)
                         setValue(e.target.value)
                         handleChangeValue(e.target.value, img)
                     }} />

@@ -32,7 +32,7 @@ function Index() {
         const gasAVGPriceInWei = parseInt(gasAVGPrice, 16)
         if (gasAVGPriceInWei) {
             const abc = Number(gasAVGPriceInWei) / (10 ** 9)
-            setGas(abc.toFixed(3))
+            setGas(abc.toFixed(1))
         }
     }
     const handleChange = (value: string) => {
@@ -59,7 +59,7 @@ function Index() {
                         value={select}
                         className={'indexSelect'}
                         popupClassName={'indexSelectPopup'}
-                        style={{width: '12%', display: browser ? 'block' : 'none'}}
+                        style={{width: '12%', display: 'none'}}
                         options={[
                             {value: 'newPair', label: 'New Pairs'},
                             {value: 'trading', label: 'Trading'},
@@ -75,7 +75,7 @@ function Index() {
                                allowClear className={'indexInput'}/>
                     }
                     <div className={`indexRight dis`}>
-                        <p><img src="/eth.svg" alt=""/><span>$:{ethPrice}</span></p>
+                        <p style={{marginRight:'5px'}}><img src="/eth.svg" alt=""/><span>$:{ethPrice}</span></p>
                         <p><img src="/gas.svg" alt=""/><span>{gas}</span></p>
                     </div>
                 </div>
@@ -88,10 +88,10 @@ function Index() {
                                 ['Name', 'Price($)', time + ' Change(%)', 'Create Time', 'Pooled Amt', 'Swap Count', 'Liquidity', 'Links'].map((i: string, ind: number) => {
                                     return <p className={`${ind === 0 ? 'disCen' : 'textAlign'} homeTableTittle`}
                                               key={ind}>
-                                        {
-                                            ind === 0 &&
-                                            <img src="/collect.svg" alt="" style={{marginRight: '5px'}} width={'15px'}/>
-                                        }
+                                        {/*{*/}
+                                        {/*    ind === 0 &&*/}
+                                        {/*    <img src="/collect.svg" alt="" style={{marginRight: '5px'}} width={'15px'}/>*/}
+                                        {/*}*/}
                                         <span>{i}</span>
                                     </p>
 

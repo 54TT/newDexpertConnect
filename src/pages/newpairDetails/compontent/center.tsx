@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 
 function Center({par}: any) {
-    const [more, setMore] = useState('Chart')
+    // const [more, setMore] = useState('Chart')
     const topRef = useRef<any>()
     const [hei, setHei] = useState<any>('')
     useEffect(() => {
@@ -15,15 +15,15 @@ function Center({par}: any) {
     return (
         <div className={'center'}>
             <div className={'top'} ref={topRef}>
-                {
-                    ['Chart', 'Markets', 'News', 'About', 'Analytics'].map((i: string, ind: number) => {
-                        return <p key={ind} onClick={() => {
-                            if (more !== i) {
-                                setMore(i)
-                            }
-                        }} className={more === i ? 'selectMore' : ''}>{i}</p>
-                    })
-                }
+                {/*{*/}
+                {/*    ['Chart', 'Markets', 'News', 'About', 'Analytics'].map((i: string, ind: number) => {*/}
+                {/*        return <p key={ind} onClick={() => {*/}
+                {/*            if (more !== i) {*/}
+                {/*                setMore(i)*/}
+                {/*            }*/}
+                {/*        }} className={more === i ? 'selectMore' : ''}>{i}</p>*/}
+                {/*    })*/}
+                {/*}*/}
             </div>
             <div style={{height: hei + 'px', overflowY: 'auto'}} className={'scrollStyle'}>
                 <iframe

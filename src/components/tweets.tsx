@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { CountContext } from "../Layout.tsx";
 import { motion } from 'framer-motion';
-import { request } from '../../utils/axios';
+import {request} from '../../utils/axios.ts';
 import Cookies from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
 import { useNavigate } from 'react-router-dom';
@@ -67,8 +67,6 @@ function Tweets({
             try {
                 if (localData?.likeStatus === false) {
                     setClickAnimate(true)
-
-
                     const result: any = await request('post', url, data, token);
                     result?.status === 200 ? setLocalData({ ...localData, likeStatus: true }) : null;
                     if (result === 'please') {
@@ -104,8 +102,6 @@ function Tweets({
 
     const handleAddComment = () => {
         // 设置评论数量
-        console.log('call');
-
         setLocalData({ ...localData, commentNum: localData?.commentNum ? Number(localData?.commentNum) + 1 : 1 });
         onPublish?.()
         setOpenComment(false);

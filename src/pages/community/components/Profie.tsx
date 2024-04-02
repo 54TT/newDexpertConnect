@@ -3,7 +3,7 @@ import Copy from '../../../components/copy.tsx'
 import TWeetHome from "../../../components/tweetHome.tsx";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd'
-import { followUser, request, unfollowUser } from "../../../../utils/axios.ts";
+import { followUser,request, unfollowUser } from "../../../../utils/axios.ts";
 import Cookies from "js-cookie";
 import { formatAddress, getQueryParams } from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
@@ -59,8 +59,6 @@ function Profie() {
 
     const id = useMemo(() => {
         if (pathname.includes('/community/user')) {
-            console.log(uid);
-
             return uid;
         }
         return loginId
@@ -82,8 +80,6 @@ function Profie() {
             setIsFollowed(data.isFollowed)
             setPreviewAvatar(data.avatarUrl);
             setPreviewBG(data.coverUrl);
-            console.log(data);
-
             if (setCookise) {
                 Cookies.set('username', JSON.stringify(data.data));
             }

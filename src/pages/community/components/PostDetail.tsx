@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Tweets from '../../../components/tweets';
 import SendPost from './SendPost';
-import { request } from '../../../../utils/axios';
+import {request} from '../../../../utils/axios.ts';
 import Cookies from 'js-cookie';
 import { Spin } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -77,7 +77,6 @@ const PostDetail = () => {
       url = '/api/v1/post/comment/list'
     }
     setPageStatus(true)
-
     const result: any = await request('post', url, params, token);
     if (result.status === 200) {
       const comments: never[] = reply ? result.data.replyList : result.data.comments
