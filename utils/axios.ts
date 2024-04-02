@@ -6,7 +6,7 @@ import {message, notification,} from "antd";
 
 const requestA = axios.create({
     // baseURL: process.env.NODE_ENV === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io/',
-    baseURL: 'http://165.22.51.161:8081'
+    baseURL: 'https://dexpert.io/'
 })
 requestA.interceptors.request.use(
     (config) => {
