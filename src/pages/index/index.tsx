@@ -12,7 +12,7 @@ import newPair from '../../components/getNewPair.tsx'
 function Index() {
     const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad} = newPair() as any
     const hei = useRef<any>()
-    const {browser, }: any = useContext(CountContext);
+    const {browser,}: any = useContext(CountContext);
     const [select, setSelect] = useState('newPair')
     const [time, setTime] = useState('24h')
     const [tableHei, setTableHei] = useState('')
@@ -32,7 +32,7 @@ function Index() {
         const gasAVGPriceInWei = parseInt(gasAVGPrice, 16)
         if (gasAVGPriceInWei) {
             const abc = Number(gasAVGPriceInWei) / (10 ** 9)
-            setGas(abc.toFixed(1))
+            setGas(parseFloat(abc.toFixed(1)).toString())
         }
     }
     const handleChange = (value: string) => {

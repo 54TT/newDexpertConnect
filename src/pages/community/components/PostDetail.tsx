@@ -109,8 +109,8 @@ const PostDetail = () => {
         {
           getPageStatus && page === 1 ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: '48px' }}>
             <Spin size='large' />
-          </div> : data.length > 0 ? data?.map?.((data) =>
-            <RenderCommentTweet data={data} token={token} type={reply ? 'reply' : "comment"} />
+          </div> : data.length > 0 ? data?.map?.((data,ind) =>
+            <RenderCommentTweet data={data} key={ind} token={token} type={reply ? 'reply' : "comment"} />
           ) : <p style={{ marginTop: '48px', color: '#d6dfd7', textAlign: 'center' }}>
             No Data
           </p>
