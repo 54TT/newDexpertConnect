@@ -6,7 +6,6 @@ import {CountContext} from "../Layout.tsx";
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });
-
 function GetNewPair() {
     const {page}: any = useContext(CountContext);
     const [current, setCurrent] = useState(1);
@@ -158,5 +157,4 @@ function GetNewPair() {
     }
     return {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad}
 }
-
 export default GetNewPair;

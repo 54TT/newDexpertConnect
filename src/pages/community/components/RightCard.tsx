@@ -14,7 +14,6 @@ function RightCard({title}: any) {
         }
     }, [title]);
     const {moreLoad, tableDta, changePage, tableDtaLoad} = newPair() as any
-    console.log(tableDta)
     return <Card className="" title={title} bordered={false}
                  style={{width: '90%', maxWidth: '400px', marginTop: '24px'}}>
         <div className="card-pair-info">
@@ -30,7 +29,7 @@ function RightCard({title}: any) {
                             const change = setMany(i?.pairDayData[0]?.priceChange || 0)
                             const float = i?.pairDayData[0]?.priceChange && Number(i?.pairDayData[0]?.priceChange) > 0 ? 1 : Number(i?.pairDayData[0]?.priceChange) < 0 ? -1 : 0
                             return <div className="card-pair-info" key={ind}>
-                                <p>{simplify(i?.token0?.symbol)}-{simplify(i?.token1?.symbol)}</p>
+                                <p>{simplify(i?.token0?.symbol)}</p>
                                 <p>{setMany(i?.priceUSD)}</p>
                                 <p style={{color: float > 0 ? 'rgb(0,255,71)' : float < 0 ? 'rgb(213,9,58)' : '#d6dfd7'}}>{change || 0}</p>
                             </div>

@@ -3,7 +3,7 @@ import Copy from '../../../components/copy.tsx'
 import TWeetHome from "../../../components/tweetHome.tsx";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd'
-import { followUser, request, unfollowUser } from "../../../../utils/axios.ts";
+import { followUser,Request, unfollowUser } from "../../../../utils/axios.ts";
 import Cookies from "js-cookie";
 import { formatAddress, getQueryParams } from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
@@ -56,8 +56,6 @@ function Profie() {
 
     const id = useMemo(() => {
         if (pathname.includes('/community/user')) {
-            console.log(uid);
-
             return uid;
         }
         return loginId
@@ -72,15 +70,13 @@ function Profie() {
         }
         const token = Cookies.get('token');
         if (!token) return;
-        const result: any = await request('get', `/api/v1/userinfo/${id}`, {}, token);
+        const result: any = await Request('get', `/api/v1/userinfo/${id}`, {}, token);
         if (result.status === 200) {
             const data = result.data;
             setData(data.data);
             setIsFollowed(data.isFollowed)
             setPreviewAvatar(data.avatarUrl);
             setPreviewBG(data.coverUrl);
-            console.log(data);
-
             if (setCookise) {
                 Cookies.set('username', JSON.stringify(data.data));
             }
@@ -149,13 +145,13 @@ function Profie() {
         let coverUrl = previewBG;
 
         if (newAvatar) {
-            const result: any = await request('post', '/api/v1/upload/image', newAvatar, token);
+            const result: any = await Request('post', '/api/v1/upload/image', newAvatar, token);
             if (result.status === 200) {
                 avatarUrl = result?.data?.url;
             }
         }
         if (newBG) {
-            const result: any = await request('post', '/api/v1/upload/image', newBG, token);
+            const result: any = await Request('post', '/api/v1/upload/image', newBG, token);
             if (result.status === 200) {
                 coverUrl = result?.data?.url;
             }
@@ -169,7 +165,7 @@ function Profie() {
                 ...(coverUrl ? { coverUrl } : {})
             }
         }
-        const result: any = await request('post', '/api/v1/userinfo', params, token);
+        const result: any = await Request('post', '/api/v1/userinfo', params, token);
         if (result.status === 200) {
             messageApi.success('update success');
             getUserProfile(true)

@@ -5,9 +5,7 @@ import {setMany, simplify} from '../../../../utils/change.ts'
 import Copy from '../../../components/copy.tsx'
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
-
 dayjs.extend(relativeTime); // 使用相对时间插件
-
 function Left({par}: any) {
     const h = window.innerHeight - 25 - 54
     const [data, setData] = useState(par)
@@ -46,7 +44,9 @@ function Left({par}: any) {
                     } else {
                         setData({...data, collect: true})
                     }
-                }}><img src={data?.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""/></p>
+                }}>
+                    {/*<img src={data?.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""/>*/}
+                </p>
             </div>
             {/*address*/}
             <div className={`address dis`}>
@@ -102,7 +102,7 @@ function Left({par}: any) {
                 </div>
                 <div className={`dis swapTop`} style={{marginTop: '10px', marginBottom: '-5px'}}>
                     <span>{data?.buyTxs || 0}</span>
-                    <span>{setMany(data?.token0?.totalSupply) || 0}</span>
+                    <span>{data?.buyTxs || 0}</span>
                     <span>——</span>
                 </div>
                 <Progress percent={50} showInfo={false} strokeColor={'rgb(0,255,71)'}/>

@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import Tweets from '../tweets.tsx'
 import { useContext, useEffect, useRef, useState } from 'react'
-import { request } from '../../../utils/axios.ts';
+import {Request} from '../../../utils/axios.ts';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Skeleton } from 'antd'
 import { CountContext } from "../../Layout.tsx";
@@ -33,7 +33,7 @@ function Index() {
         }
     }
     const getTweet = async (page: number) => {
-        const res: any = await request('post', '/api/v1/post/public', { page: page }, '')
+        const res: any = await Request('post', '/api/v1/post/public', { page: page }, '')
         if (res === 'please') {
             clear()
         } else if (res && res?.status === 200) {

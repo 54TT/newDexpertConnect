@@ -1,5 +1,5 @@
 import {Button, Input, message, Popover} from 'antd';
-import {request} from '../../../../utils/axios';
+import {Request} from '../../../../utils/axios.ts';
 import {useContext, useEffect, useRef, useState} from 'react';
 import {CloseOutlined} from '@ant-design/icons';
 import {CountContext} from '../../../Layout.tsx'
@@ -79,15 +79,13 @@ function SendPost({type = 'post', changeRefresh, onPublish, postData}: SendPostT
     }, [])
 
     const handlePostSend = async () => {
-        console.log('call');
-
         const token = Cookies.get('token');
         const username: any = Cookies.get('username');
         let imgUrl: any = null
         try {
             setPublishing(true);
             if (img !== null) {
-                imgUrl = await request('post', '/api/v1/upload/image', img, token);
+                imgUrl = await Request('post', '/api/v1/upload/image', img, token);
             }
             if (imgUrl !== null) {
                 if (imgUrl === 'please') {
@@ -127,7 +125,7 @@ function SendPost({type = 'post', changeRefresh, onPublish, postData}: SendPostT
                 }
                 url = '/api/v1/reply'
             }
-            const result: any = await request('post', url, params, token)
+            const result: any = await Request('post', url, params, token)
 
             if (result?.status === 200) {
                 onPublish?.(data);
@@ -190,7 +188,6 @@ function SendPost({type = 'post', changeRefresh, onPublish, postData}: SendPostT
             <div className="community-content-post-send-input">
                 <TextArea value={value} autoSize variant="borderless" placeholder='Share your insights...'
                           onChange={(e) => {
-                              console.log('0000000000000', e.target.value)
                               setValue(e.target.value)
                               handleChangeValue(e.target.value, img)
                           }}/>
