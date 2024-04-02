@@ -3,9 +3,12 @@
 import classnames from 'classnames';
 import './index.less'
 import { Button } from 'antd';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import PostSendModal from './PostModal';
-export type UserActionKey = 'Profile' | 'Lastest' | 'Following'
+import { CountContext } from '../../../Layout';
+import { FloatButton } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+export type UserActionKey = 'Profile' | 'Lastest' | 'Following';
 enum UserActionKeyEnum {
   PROFILE = 'Profile',  // 个人资料
   LASTEST = 'Lastest',  // 最新
@@ -23,6 +26,7 @@ interface UserInfoPropsType {
 }
 
 const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
+  const { browser } = useContext(CountContext) as any;
   const [visible, setVisible] = useState(false);
   const userAction: Record<UserActionKey, UserActionType> = {
     [UserActionKeyEnum.LASTEST]: {
@@ -50,7 +54,7 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
   }
   return <div className='community-user-action'>
     {
-      Object.keys(userAction).map((key: string,ind:number) =>
+      browser && Object.keys(userAction).map((key: string, ind: number) =>
         <div key={ind} className={classnames('community-user-action-item', { 'community-user-action-item-active': activeTab === userAction[key as UserActionKey].key })} onClick={() => onChange(userAction[key as UserActionKey].key)}>
           <div >
             <div className='community-user-action-item-img'>
@@ -61,11 +65,12 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
         </div>
       )
     }
-    <div style={{ display: 'flex', justifyContent: 'center' }} className='community-user-action-button'>
+    {browser ? <div style={{ display: 'flex', justifyContent: 'center' }} className='community-user-action-button'>
       <Button onClick={() => setVisible(true)} >Post</Button>
-    </div>
+    </div> : <FloatButton className='community-user-action-floatButton' icon={<PlusOutlined />} onClick={() => setVisible(true)}></FloatButton>
+    }
     <PostSendModal open={visible} onPublish={onPublish} onClose={() => setVisible(false)} />
-  </div>
+  </div >
 }
 
 export default UserInfo;

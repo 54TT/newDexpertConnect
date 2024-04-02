@@ -5,7 +5,7 @@ import PostContent from './components/PostContent';
 import CommunityRight from './components/RightSider';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostDetail from './components/PostDetail';
-import Profie from "./components/Profie.tsx";
+import Profile from "./components/Profile.tsx";
 import ContactList from './components/ContactList.tsx';
 import { CountContext } from '../../Layout.tsx';
 type ActiveTabType = 'lastest' | 'profile' | 'following'
@@ -29,17 +29,17 @@ function Community() {
 
   const ComponentMap = {
     'lastest': <PostContent />,
-    'profile': <Profie />,
+    'profile': <Profile />,
     'following': <ContactList />,
     'detail': <PostDetail />,
     'comment': <PostDetail />,
-    'user': <Profie />,
+    'user': <Profile />,
   }
 
   return (
     <div className='community-page' >
       {
-        browser && <div className='community-page-left'>
+        <div className='community-page-left' style={{ width: !browser ? '0px' : '18%' }}>
           <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange} />
         </div>
       }
@@ -51,7 +51,7 @@ function Community() {
           <CommunityRight />
         </div>
       }
-    </div>
+    </div >
 
   )
 }

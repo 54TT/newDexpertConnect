@@ -9,12 +9,11 @@ import { formatAddress, getQueryParams } from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
 import { message } from 'antd';
 import { useLocation } from "react-router-dom";
-import { CountContext } from '../../../Layout.tsx'
 
 
 
 function Profie() {
-    const { browser } = useContext(CountContext)
+
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
     const [options, setOptions] = useState('Community')
@@ -79,6 +78,8 @@ function Profie() {
         if (result.status === 200) {
             const data = result.data;
             setData(data.data);
+            console.log(data);
+
             setIsFollowed(data.isFollowed)
             setPreviewAvatar(data.avatarUrl);
             setPreviewBG(data.coverUrl);
@@ -287,11 +288,11 @@ function Profie() {
                             [{
                                 img: ["/btc.svg", "/eth1.svg", "/sol.svg"],
                                 holding: 123,
-                                following: 2324
+                                following: data.followeeCnt,
                             }, {
                                 img: ["/pepe.svg", "/uni.svg", "/blur.svg"],
                                 holding: 33,
-                                following: 66
+                                following: data.followerCnt
                             },].map((i: any, ind: number) => {
                                 return <div className={`following dis`} key={ind}>
                                     <div>
