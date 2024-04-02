@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { CountContext } from "../Layout.tsx";
 import { motion } from 'framer-motion';
-import {Request} from '../../utils/axios.ts';
+import {request} from '../../utils/axios.ts';
 import Cookies from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
 import { useNavigate } from 'react-router-dom';
@@ -67,9 +67,7 @@ function Tweets({
             try {
                 if (localData?.likeStatus === false) {
                     setClickAnimate(true)
-
-
-                    const result: any = await Request('post', url, data, token);
+                    const result: any = await request('post', url, data, token);
                     result?.status === 200 ? setLocalData({ ...localData, likeStatus: true }) : null;
                     if (result === 'please') {
                         clear()
@@ -89,7 +87,7 @@ function Tweets({
                         url = '/api/v1//reply/like/cancel';
                         data = { replyId: localData.id }
                     }
-                    const result: any = await Request('post', url, data, token);
+                    const result: any = await request('post', url, data, token);
                     if (result === 'please') {
                         clear()
                     } else if (result && result?.status === 200) {

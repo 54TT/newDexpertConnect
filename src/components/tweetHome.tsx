@@ -2,7 +2,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Tweets from "./tweets.tsx";
 import {LoadingOutlined} from "@ant-design/icons";
 import {useContext, useEffect, useState} from "react";
-import {Request} from "../../utils/axios.ts";
+import {request} from "../../utils/axios.ts";
 import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
 import {CountContext} from "../Layout.tsx";
@@ -53,7 +53,7 @@ function TweetHome({
                 page
             }
         }
-        const res: any = await Request('post', url, data, token ? token : '')
+        const res: any = await request('post', url, data, token ? token : '')
         if (res == 'please') {
             clear()
         } else if (res && res?.status === 200) {

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Tweets from '../../../components/tweets';
 import SendPost from './SendPost';
-import {Request} from '../../../../utils/axios.ts';
+import {request} from '../../../../utils/axios.ts';
 import Cookies from 'js-cookie';
 import { Spin } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -30,7 +30,7 @@ const RenderCommentTweet = ({ data = {}, token, type }: any) => {
       commentId: data.id,
       page
     }
-    const result: any = await Request('post', '/api/v1/reply/list', params, token);
+    const result: any = await request('post', '/api/v1/reply/list', params, token);
     if (result.status === 200) {
       const { data } = result;
       console.log(data);
@@ -77,7 +77,7 @@ const PostDetail = () => {
       url = '/api/v1/post/comment/list'
     }
     setPageStatus(true)
-    const result: any = await Request('post', url, params, token);
+    const result: any = await request('post', url, params, token);
     if (result.status === 200) {
       const comments: never[] = reply ? result.data.replyList : result.data.comments
       if (page === 1) {

@@ -10,7 +10,7 @@ function Header() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const history = useNavigate();
     const [open, setOpen] = useState(false);
-    const [select, setSelect] = useState('')
+    const [, setSelect] = useState('')
     useEffect(() => {
         if (router.pathname) {
             setSelect(router.pathname)
@@ -190,7 +190,7 @@ function Header() {
                                 <p style={{ color: 'rgb(214,223,215)' }}> {simplify(user?.username)}</p>
                                 <DownOutlined style={{ color: 'rgb(214,223,215)', marginTop: '3px' }} />
                             </div> : <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
-                                style={{ width: '13%', display: 'block' }} alt="" />
+                                style={{ width: '28px', display: 'block', cursor: 'pointer', borderRadius: '100%' }} alt="" />
                         }
                     </Dropdown> : browser ? <div className={'headerConnect'} onClick={loginModal}>
                         <div className={'disCen'}><span>Connect Wallet</span> {load ?
@@ -199,7 +199,7 @@ function Header() {
                     </div> : <img src="/wallet.svg" onClick={loginModal} style={{ width: '13%' }} alt="" />
                 }
                 {
-                    !browser && <img src="/side.svg" alt="" style={{ cursor: 'pointer', width: '13%', marginLeft: '8px' }}
+                    !browser && <img src="/side.svg" alt="" style={{ cursor: 'pointer', width: '28px', marginLeft: '8px' }}
                         onClick={() => {
                             showDrawer()
                         }} />

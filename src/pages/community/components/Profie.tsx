@@ -3,12 +3,15 @@ import Copy from '../../../components/copy.tsx'
 import TWeetHome from "../../../components/tweetHome.tsx";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd'
-import { followUser,Request, unfollowUser } from "../../../../utils/axios.ts";
+import { followUser,request, unfollowUser } from "../../../../utils/axios.ts";
 import Cookies from "js-cookie";
 import { formatAddress, getQueryParams } from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
 import { message } from 'antd';
 import { useLocation } from "react-router-dom";
+
+
+
 function Profie() {
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
@@ -70,7 +73,7 @@ function Profie() {
         }
         const token = Cookies.get('token');
         if (!token) return;
-        const result: any = await Request('get', `/api/v1/userinfo/${id}`, {}, token);
+        const result: any = await request('get', `/api/v1/userinfo/${id}`, {}, token);
         if (result.status === 200) {
             const data = result.data;
             setData(data.data);
@@ -145,13 +148,13 @@ function Profie() {
         let coverUrl = previewBG;
 
         if (newAvatar) {
-            const result: any = await Request('post', '/api/v1/upload/image', newAvatar, token);
+            const result: any = await request('post', '/api/v1/upload/image', newAvatar, token);
             if (result.status === 200) {
                 avatarUrl = result?.data?.url;
             }
         }
         if (newBG) {
-            const result: any = await Request('post', '/api/v1/upload/image', newBG, token);
+            const result: any = await request('post', '/api/v1/upload/image', newBG, token);
             if (result.status === 200) {
                 coverUrl = result?.data?.url;
             }
@@ -165,7 +168,7 @@ function Profie() {
                 ...(coverUrl ? { coverUrl } : {})
             }
         }
-        const result: any = await Request('post', '/api/v1/userinfo', params, token);
+        const result: any = await request('post', '/api/v1/userinfo', params, token);
         if (result.status === 200) {
             messageApi.success('update success');
             getUserProfile(true)
@@ -229,7 +232,7 @@ function Profie() {
     const handleFollow = async () => {
         await followUser(id);
         message.success('success follow')
-        setIsFollowed(false);
+        setIsFollowed(true);
     }
 
     const handleUnfollow = async () => {
@@ -263,7 +266,7 @@ function Profie() {
 
                             }
                             {
-                                pathname.includes('/community/user') && isFollowed ? <span className="unfollow-icon" onClick={() => handleUnfollow()}>Unfollow</span> : <span className="follow-icon" onClick={() => handleFollow()}>Follow</span>
+                                pathname.includes('/community/user') && (isFollowed ? <span className="unfollow-icon" onClick={() => handleUnfollow()}>Unfollow</span> : <span className="follow-icon" onClick={() => handleFollow()}>Follow</span>)
                             }
                         </div>
                     </div>
@@ -321,7 +324,7 @@ function Profie() {
                         {/*</div>*/}
                     </div>
                 </div>
-                <p className={'hello'}>Hello players, DEXpert is a special exchange! I hope we can have fun here!</p>
+                <p className={'hello'}>{data.bio || 'Nothing here'}</p>
                 <div className={'tokenTop'}>
                     {
                         ['Community', 'Token'].map((i: string, ind: number) => {

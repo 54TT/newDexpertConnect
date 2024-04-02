@@ -11,7 +11,7 @@ import Bot from './components/bottom.tsx';
 import {Web3Modal} from "@web3modal/standalone";
 import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
-import {Request} from '../utils/axios.ts';
+import {request} from '../utils/axios.ts';
 import Client from "@walletconnect/sign-client";
 import {ethers} from 'ethers';
 import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
@@ -65,7 +65,7 @@ function Layout() {
     const login = async (sign: string, account: string, message: string, name: string) => {
         try {
             // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
-            const res: any = await Request('post', '/api/v1/login', {
+            const res: any = await request('post', '/api/v1/login', {
                 signature: sign,
                 addr: account,
                 message,
@@ -79,7 +79,7 @@ function Layout() {
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 const decodedToken = JSON.parse(atob(base64));
                 if (decodedToken && decodedToken?.uid) {
-                    const data: any = await Request('get', "/api/v1/userinfo/" + decodedToken.uid, '', res.data?.accessToken)
+                    const data: any = await request('get', "/api/v1/userinfo/" + decodedToken.uid, '', res.data?.accessToken)
                     if (data === 'please') {
                         clear()
                     } else if (data && data?.status === 200) {
@@ -127,7 +127,7 @@ function Layout() {
                 // 判断是否是eth
                 if (chain && chain.name === 'homestead' && chain.chainId === 1) {
                     try {
-                        const token: any = await Request('post', '/api/v1/token', {address: account[0]})
+                        const token: any = await request('post', '/api/v1/token', {address: account[0]})
                         if (token && token?.data && token?.status === 200) {
                             // 签名消息
                             const message = token?.data?.nonce
@@ -200,7 +200,7 @@ function Layout() {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token: any = await Request('post', '/api/v1/token', {address: address})
+            const token: any = await request('post', '/api/v1/token', {address: address})
             if (token === 'please') {
                 clear()
             } else if (token && token?.data && token?.status === 200) {

@@ -34,7 +34,7 @@ const getTkAndUserName = () => {
     const username = JSON.parse(Cookies.get('username') || '{}');
     return [token, username];
 }
-export const Request = async (method: string, url: string, data: any, token?: any) => {
+export const request = async (method: string, url: string, data: any, token?: any) => {
     const username = cookie.get('jwt')
     if (username && username != 'undefined') {
         const params = JSON.parse(username)
@@ -68,7 +68,7 @@ export const Request = async (method: string, url: string, data: any, token?: an
             return 'please'
         }
     } else {
-        const abc = await requestA({
+        return await requestA({
             method,
             params: method === 'get' ? data : method === 'delete' ? undefined : '',
             data: method === 'get' ? '' : method === 'delete' ? undefined : data,
@@ -77,15 +77,13 @@ export const Request = async (method: string, url: string, data: any, token?: an
                 'Authorization': token,
             }
         })
-        console.log(abc)
-        return abc
     }
 }
 
 export const handlePublish = async (data: any) => {
     const token = Cookies.get('token');
     const username = JSON.parse(Cookies.get('username') || '{}');
-    const result: any = await Request('post', "/api/v1/post/publish", {
+    const result: any = await request('post', "/api/v1/post/publish", {
         uid: username?.uid,
         address: username?.address,
         post: data
@@ -100,7 +98,7 @@ export const handlePublish = async (data: any) => {
 export const followUser = async (userId: string) => {
     try {
         const [token] = getTkAndUserName();
-        const result: any = await Request('post', '/api/v1/follow', {userId}, token);
+        const result: any = await request('post', '/api/v1/follow', {userId}, token);
         if (result.status === 200) {
             return result.data
         } else {
@@ -113,7 +111,7 @@ export const followUser = async (userId: string) => {
 export const unfollowUser = async (userId: string) => {
     try {
         const [token] = getTkAndUserName();
-        const result: any = await Request('post', '/api/v1/unfollow', {uid: userId}, token);
+        const result: any = await request('post', '/api/v1/unfollow', {uid: userId}, token);
         if (result.status === 200) {
             return result.data
         } else {
