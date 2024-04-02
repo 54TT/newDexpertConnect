@@ -333,6 +333,7 @@ body {
 
   .tweetsFollow {
     color: #879188;
+
     p:first-child {
       color: white;
       margin-bottom: 4px;
@@ -403,11 +404,9 @@ body {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(
-      to right,
-      rgb(9, 21, 17),
-      rgb(37, 70, 59)
-    ) !important;
+    background: linear-gradient(to right,
+    rgb(9, 21, 17),
+    rgb(37, 70, 59)) !important;
   }
 }
 
@@ -624,10 +623,12 @@ span {
     overflow: hidden;
   }
 }
-.flexable-box {
-  > div {
-    max-width: 1800px;
-    display: flex;
-    justify-content: center;
+
+.bigCen {
+  max-width: 1800px;
+  margin: 0 auto;
+
+  & > div {
+    width: 100%;
   }
 }
