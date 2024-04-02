@@ -254,6 +254,7 @@ function Layout() {
         [chains, client, onSessionConnected]
     );
     const [browser, setBrowser] = useState<any>(false)
+    const [big, setBig] = useState<any>(false)
     useEffect(() => {
         if (cookie.get('username') && cookie.get('username') != undefined) {
             const abc = JSON.parse(cookie.get('username') as any)
@@ -293,6 +294,11 @@ function Layout() {
                 body.style.overflow = 'auto'
                 setBrowser(false)
             }
+            if (window?.innerWidth > 2000) {
+                setBig(true)
+            } else {
+                setBig(false)
+            }
         }
         const handleResize = () => {
             // 更新状态，保存当前窗口高度
@@ -303,6 +309,11 @@ function Layout() {
                 body.style.overflow = 'auto'
                 setBrowser(false)
             }
+            if (window?.innerWidth > 2000) {
+                setBig(true)
+            } else {
+                setBig(false)
+            }
         };
         // 添加事件监听器
         window.addEventListener('resize', handleResize);
@@ -310,7 +321,7 @@ function Layout() {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, []); // 仅在组件挂载和卸载时执行
+    }, []);
 
     const value: any = {
         connect,
@@ -331,7 +342,7 @@ function Layout() {
     return (
         <CountContext.Provider value={value}>
             <Header />
-            <div style={{ width: '100vw', display: 'flex', justifyContent: 'center' }} className='flexable-box'>
+            <div className={big ? 'bigCen' : ''}>
                 <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/newpairDetails" element={<NewpairDetails />} />
