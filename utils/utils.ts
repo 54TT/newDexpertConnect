@@ -12,6 +12,6 @@ export function getQueryParams() {
 
 export const formatAddress = (address: string) => {
   if (typeof address !== 'string') return '';
-  if (address.length <= 20) return address
+  if (address.length <= 10) return address
   return `${address.slice(0,5)}...${address.slice(address.length - 4, address.length)}`
 }
