@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import UserInfo from './components/UserInfo'
 import "./index.less"
 import PostContent from './components/PostContent';
@@ -7,11 +7,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PostDetail from './components/PostDetail';
 import Profie from "./components/Profie.tsx";
 import ContactList from './components/ContactList.tsx';
-
+import { CountContext } from '../../Layout.tsx';
 type ActiveTabType = 'lastest' | 'profile' | 'following'
 function Community() {
   // 左侧选中的Tab
   const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
+  const { browser } = useContext(CountContext);
   const history = useNavigate();
   const onActiveUserTabChange = (tab: string) => {
     setActiveUserTab(tab as ActiveTabType);
@@ -37,15 +38,19 @@ function Community() {
 
   return (
     <div className='community-page' >
-      <div className='community-page-left'>
-        <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange} />
-      </div>
+      {
+        browser && <div className='community-page-left'>
+          <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange} />
+        </div>
+      }
       <div className='community-page-content'>
         {ComponentMap[activeUserTab as ActiveTabType]}
       </div>
-      <div className='community-page-right'>
-        <CommunityRight />
-      </div>
+      {
+        browser && <div className='community-page-right'>
+          <CommunityRight />
+        </div>
+      }
     </div>
 
   )
