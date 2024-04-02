@@ -12,7 +12,7 @@ type ActiveTabType = 'lastest' | 'profile' | 'following'
 function Community() {
   // 左侧选中的Tab
   const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
-  const { browser } = useContext(CountContext);
+  const { browser } = useContext(CountContext) as any;
   const history = useNavigate();
   const onActiveUserTabChange = (tab: string) => {
     setActiveUserTab(tab as ActiveTabType);

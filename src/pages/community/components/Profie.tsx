@@ -1,18 +1,20 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Copy from '../../../components/copy.tsx'
 import TWeetHome from "../../../components/tweetHome.tsx";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd'
-import { followUser,request, unfollowUser } from "../../../../utils/axios.ts";
+import { followUser, request, unfollowUser } from "../../../../utils/axios.ts";
 import Cookies from "js-cookie";
 import { formatAddress, getQueryParams } from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
 import { message } from 'antd';
 import { useLocation } from "react-router-dom";
+import { CountContext } from '../../../Layout.tsx'
 
 
 
 function Profie() {
+    const { browser } = useContext(CountContext)
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
     const [options, setOptions] = useState('Community')
