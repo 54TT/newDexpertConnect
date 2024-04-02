@@ -8,6 +8,8 @@ import PostDetail from './components/PostDetail';
 import Profile from "./components/Profile.tsx";
 import ContactList from './components/ContactList.tsx';
 import { CountContext } from '../../Layout.tsx';
+import { message } from 'antd';
+import { getTkAndUserName } from '../../../utils/axios.ts';
 type ActiveTabType = 'lastest' | 'profile' | 'following'
 function Community() {
   // 左侧选中的Tab
@@ -15,6 +17,8 @@ function Community() {
   const { browser } = useContext(CountContext) as any;
   const history = useNavigate();
   const onActiveUserTabChange = (tab: string) => {
+    const [token, username] = getTkAndUserName()
+    if (!token || !username) return message.warning('please connect your wallet')
     setActiveUserTab(tab as ActiveTabType);
     history(`/community/${tab}`);
   }

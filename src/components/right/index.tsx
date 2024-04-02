@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import Tweets from '../tweets.tsx'
 import { useContext, useEffect, useRef, useState } from 'react'
-import {request} from '../../../utils/axios.ts';
+import { request } from '../../../utils/axios.ts';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Skeleton } from 'antd'
 import { CountContext } from "../../Layout.tsx";
