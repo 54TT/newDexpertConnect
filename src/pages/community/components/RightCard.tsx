@@ -2,17 +2,8 @@ import {Card} from "antd";
 import {setMany, simplify} from "../../../../utils/change.ts";
 import newPair from "../../../components/getNewPair.tsx";
 import Loading from "../../../components/loading.tsx";
-import {useContext, useEffect} from "react";
-import {CountContext} from "../../../Layout.tsx";
 import {DownOutlined, LoadingOutlined} from '@ant-design/icons'
-
 function RightCard({title}: any) {
-    const {setPage}: any = useContext(CountContext);
-    useEffect(() => {
-        if (title === 'New Pairs') {
-            setPage(10)
-        }
-    }, [title]);
     const {moreLoad, tableDta, changePage, tableDtaLoad} = newPair() as any
     return <Card className="" title={title} bordered={false}
                  style={{width: '90%', maxWidth: '400px', marginTop: '24px'}}>

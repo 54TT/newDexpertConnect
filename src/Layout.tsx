@@ -2,11 +2,11 @@ import Header from './components/header.tsx'
 import { Route, Routes, useLocation, useNavigate, } from "react-router-dom";
 import Index from './pages/index/index.tsx'
 import NewpairDetails from './pages/newpairDetails/index.tsx'
-import './style/all.less'
+import './style/all.less';
 import { createContext, useCallback, useEffect, useRef, useState } from 'react'
 import { getAppMetadata, getSdkError } from "@walletconnect/utils";
 import 'swiper/css';
-import { notification } from 'antd'
+import {message, } from 'antd'
 import Bot from './components/bottom.tsx';
 import { Web3Modal } from "@web3modal/standalone";
 import cookie from 'js-cookie';
@@ -29,6 +29,8 @@ export const CountContext = createContext(null);
 function Layout() {
     const router = useLocation()
     const history = useNavigate()
+    const [messageApi, contextHolder] = message.useMessage();
+
     const [chains, setChains] = useState<any>([]);
     const [client, setClient] = useState<any>(null);
     const [session, setSession] = useState<any>(null);
@@ -38,7 +40,6 @@ function Layout() {
     const [newPairPar, setNewPairPar] = useState<any>([])
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalSet, setIsModalSet] = useState(false);
-    const [page, setPage] = useState<number>(25);
     const createClient = async () => {
         try {
             const _client: any = await Client.init({
@@ -108,12 +109,7 @@ function Layout() {
         if (typeof (window as any).ethereum != 'undefined') {
             handleLogin()
         } else {
-            notification.warning({
-                message: `warning`,
-                description: 'Please install MetaMask! And refresh',
-                placement: 'topLeft',
-                duration: 2
-            });
+            messageApi.warning('Please install MetaMask! And refresh');
         }
     }, 800)
     const handleLogin = async () => {
@@ -143,20 +139,10 @@ function Layout() {
                         return null
                     }
                 } else {
-                    notification.warning({
-                        description: 'Please select ETH!',
-                        placement: 'topLeft',
-                        duration: 2,
-                        message: ''
-                    });
+                    messageApi.warning('Please select ETH!');
                 }
             } else {
-                notification.warning({
-                    description: 'Please log in or connect to your account!',
-                    placement: 'topLeft',
-                    duration: 2,
-                    message: ''
-                });
+                messageApi.warning('Please log in or connect to your account!');
             }
             setLoad(false)
         } catch (err) {
@@ -340,8 +326,6 @@ function Layout() {
         newPairPar,
         setNewPairPar,
         isModalOpen,
-        page,
-        setPage,
         setIsModalOpen, isModalSet, setIsModalSet
     }
     return (
@@ -356,6 +340,7 @@ function Layout() {
                 </Routes>
             </div>
             <Bot />
+            {contextHolder}
         </CountContext.Provider>
     );
 }

@@ -14,7 +14,6 @@ function Date({tableDta, time, setDta}: any) {
     useEffect(() => {
         cookie.remove('newpair')
     }, []);
-
     const click = (i: any, e: any) => {
         e.stopPropagation();
         tableDta.map((it: any) => {
@@ -38,7 +37,7 @@ function Date({tableDta, time, setDta}: any) {
                     const create = record?.createdAtTimestamp.toString().length > 10 ? Number(record.createdAtTimestamp.toString().slice(0, 10)) : Number(record.createdAtTimestamp)
                     return <div key={ind} className={`indexNewPairBodyData dis`} onClick={() => push(record)}>
                         <div className={`indexTableLogo indexNewPairBone`}>
-                            <img src={record.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""
+                            <img src={record.collect ? '/collectSelect.svg' : "/collect.svg"} style={{display:'none'}} alt=""
                                  onClick={(e: any) => click(record, e)}/>
                             <div>
                                 <p style={{marginBottom: '4px'}}>{simplify(record?.token0?.symbol)}</p>

@@ -1,28 +1,20 @@
 import {useContext, useEffect, useState} from 'react';
-import {Collapse, Drawer, Dropdown, Input, message, Modal} from 'antd'
+import {Collapse, Drawer, Dropdown, } from 'antd'
 import {CountContext} from '../Layout.tsx'
 import {useLocation, useNavigate} from 'react-router-dom';
 import {DownOutlined, LoadingOutlined} from '@ant-design/icons';
 import {simplify} from '../../utils/change.ts';
-import cookie from "js-cookie";
-import {request} from "../../utils/axios.ts";
+import HeaderModal from "./headerModal.tsx";
 
 function Header() {
     const router = useLocation()
     const {
-        connect,
-        getMoneyEnd,
         user,
-        setLoad,
         load,
         clear,
         browser,
-        isModalOpen,
         setIsModalOpen,
-        isModalSet,
-        setIsModalSet
     }: any = useContext(CountContext);
-    const [messageApi, contextHolder] = message.useMessage();
     const history = useNavigate();
     const [open, setOpen] = useState(false);
     const [, setSelect] = useState('')
@@ -37,30 +29,6 @@ function Header() {
     const onClose = () => {
         setOpen(false);
     };
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-        setIsModalSet(false)
-    };
-    const onConnect = () => {
-        connect();
-        setIsModalOpen(false)
-    };
-    const connectWallet = async () => {
-        try {
-            if (window.innerWidth > 768) {
-                setLoad(true)
-                getMoneyEnd()
-            } else {
-                window.open('metamask:https://dexpert.io/', '_blank');
-            }
-            setIsModalOpen(false)
-        } catch (e) {
-            return null
-        }
-    }
     // 改变路由方法
     const historyChange = (i: number) => {
         switch (i) {
@@ -175,26 +143,6 @@ function Header() {
             return 'rgb(214,223,215)'
         }
     }
-    const [value, setValue] = useState('')
-    const changeName = (e: any) => {
-        setValue(e.target.value)
-    }
-    const pushSet = async () => {
-        if (value) {
-            const username = cookie.get('username')
-            const token = cookie.get('token')
-            if (username && token) {
-                const ab = JSON.parse(username)
-                const user = {...ab, username: value}
-                const result: any = await request('post', '/api/v1/userinfo', {user}, token);
-                if (result?.status === 200) {
-                    cookie.set('username', JSON.stringify(user))
-                    messageApi.success('update success');
-                    handleCancel()
-                }
-            }
-        }
-    }
     return (
         <div className={'headerBox'}>
             <img src={"/topLogo.svg"} alt="" style={{cursor: 'pointer'}} onClick={() => {
@@ -248,38 +196,10 @@ function Header() {
                          }}/>
                 }
             </div>
-            <Modal destroyOnClose={true} centered title={null} footer={null} className={'walletModal'}
-                   maskClosable={false} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                {
-                    isModalSet ? <div className={'headerModalSetName'}>
-                        <p>Welcome new user</p>
-                        <p>Set up name</p>
-                        <Input allowClear onChange={changeName} className={'input'}/>
-                        <p onClick={pushSet}>OK</p>
-                    </div> : <div className={'headerModal'}>
-                        <img src="/logo1.svg" alt=""/>
-                        <p>Connect to Dexpert</p>
-                        {
-                            browser &&
-                            <button onClick={connectWallet} className={'walletButton'} style={{margin: '10px 0'}}>
-                                <img
-                                    src="/metamask.svg" style={{width: '25px'}}
-                                    alt=""/><span>MetaMask</span></button>
-                        }
-                        <button onClick={onConnect} className={'walletButton'}><img
-                            src="/webAll.svg"
-                            style={{
-                                width: '25px',
-                            }}
-                            alt=""/><span>WlletConnect</span>
-                        </button>
-                    </div>
-                }
-            </Modal>
+            <HeaderModal/>
             <Drawer width={'65vw'} className={'headerDrawerOpen'} destroyOnClose={true} onClose={onClose} open={open}>
                 <Collapse items={collapseItems} accordion className={'headerCollapse'} onChange={onChange} ghost/>
             </Drawer>
-            {contextHolder}
         </div>
     );
 }
