@@ -7,7 +7,7 @@
     "dev": "vite --mode development",
     "dev:pro": "vite --mode production",
     "build:dev": "tsc && vite build --mode development",
-    "build": "tsc && vite build --mode production",
+    "build": "tsc && vite build --mode development",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
