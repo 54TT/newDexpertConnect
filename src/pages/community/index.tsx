@@ -5,16 +5,20 @@ import PostContent from './components/PostContent';
 import CommunityRight from './components/RightSider';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostDetail from './components/PostDetail';
-import Profie from "./components/Profie.tsx";
+import Profile from "./components/Profile.tsx";
 import ContactList from './components/ContactList.tsx';
 import { CountContext } from '../../Layout.tsx';
+import { message } from 'antd';
+import { getTkAndUserName } from '../../../utils/axios.ts';
 type ActiveTabType = 'lastest' | 'profile' | 'following'
 function Community() {
   // 左侧选中的Tab
   const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
-  const { browser } = useContext(CountContext);
+  const { browser } = useContext(CountContext) as any;
   const history = useNavigate();
   const onActiveUserTabChange = (tab: string) => {
+    const [token, username] = getTkAndUserName()
+    if (!token || !username) return message.warning('please connect your wallet')
     setActiveUserTab(tab as ActiveTabType);
     history(`/community/${tab}`);
   }
@@ -29,17 +33,17 @@ function Community() {
 
   const ComponentMap = {
     'lastest': <PostContent />,
-    'profile': <Profie />,
+    'profile': <Profile />,
     'following': <ContactList />,
     'detail': <PostDetail />,
     'comment': <PostDetail />,
-    'user': <Profie />,
+    'user': <Profile />,
   }
 
   return (
     <div className='community-page' >
       {
-        browser && <div className='community-page-left'>
+        <div className='community-page-left' style={{ width: !browser ? '0px' : '18%' }}>
           <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange} />
         </div>
       }
@@ -51,7 +55,7 @@ function Community() {
           <CommunityRight />
         </div>
       }
-    </div>
+    </div >
 
   )
 }

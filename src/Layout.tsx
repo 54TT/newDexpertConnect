@@ -1,20 +1,20 @@
 import Header from './components/header.tsx'
-import {Route, Routes, useLocation, useNavigate,} from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate, } from "react-router-dom";
 import Index from './pages/index/index.tsx'
 import NewpairDetails from './pages/newpairDetails/index.tsx'
 import './style/all.less'
-import {createContext, useCallback, useEffect, useRef, useState} from 'react'
-import {getAppMetadata, getSdkError} from "@walletconnect/utils";
+import { createContext, useCallback, useEffect, useRef, useState } from 'react'
+import { getAppMetadata, getSdkError } from "@walletconnect/utils";
 import 'swiper/css';
-import {notification} from 'antd'
+import { notification } from 'antd'
 import Bot from './components/bottom.tsx';
-import {Web3Modal} from "@web3modal/standalone";
+import { Web3Modal } from "@web3modal/standalone";
 import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
-import {request} from '../utils/axios.ts';
+import { request } from '../utils/axios.ts';
 import Client from "@walletconnect/sign-client";
-import {ethers} from 'ethers';
-import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
+import { ethers } from 'ethers';
+import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces } from "../utils/default";
 import _ from 'lodash';
 import Dapp from './pages/dapp';
 import Community from './pages/community';
@@ -121,7 +121,7 @@ function Layout() {
             const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
             // provider._isProvider   判断是否还有请求没有结束
             // 请求用户授权连接钱包
-            await (window as any).ethereum.request({method: 'eth_requestAccounts'});
+            await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
             const account = await provider.send("eth_requestAccounts", []);
             // 连接的网络和链信息。
             const chain = await provider.getNetwork();
@@ -132,7 +132,7 @@ function Layout() {
                 // 判断是否是eth
                 if (chain && chain.name === 'homestead' && chain.chainId === 1) {
                     try {
-                        const token: any = await request('post', '/api/v1/token', {address: account[0]})
+                        const token: any = await request('post', '/api/v1/token', { address: account[0] })
                         if (token && token?.data && token?.status === 200) {
                             // 签名消息
                             const message = token?.data?.nonce
@@ -205,7 +205,7 @@ function Layout() {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token: any = await request('post', '/api/v1/token', {address: address})
+            const token: any = await request('post', '/api/v1/token', { address: address })
             if (token === 'please') {
                 clear()
             } else if (token && token?.data && token?.status === 200) {
@@ -238,7 +238,7 @@ function Layout() {
             try {
                 const requiredNamespaces = getRequiredNamespaces(['eip155:1']);
                 const optionalNamespaces = getOptionalNamespaces(['eip155:1']);
-                const {uri, approval} = await client.connect({
+                const { uri, approval } = await client.connect({
                     requiredNamespaces,
                     optionalNamespaces,
                 });
@@ -246,7 +246,7 @@ function Layout() {
                     const standaloneChains = Object.values(requiredNamespaces)
                         .map((namespace) => namespace.chains)
                         .flat()
-                    await web3Modal.openModal({uri, standaloneChains});
+                    await web3Modal.openModal({ uri, standaloneChains });
                 }
                 const ab = await approval();
                 await onSessionConnected(ab, 'yes', client);
@@ -346,16 +346,16 @@ function Layout() {
     }
     return (
         <CountContext.Provider value={value}>
-            <Header/>
+            <Header />
             <div className={big ? 'bigCen' : ''}>
                 <Routes>
-                    <Route path="/" element={<Index/>}/>
-                    <Route path="/newpairDetails" element={<NewpairDetails/>}/>
-                    <Route path='/community/:tab' element={<Community/>}/>
-                    <Route path='/dapp' element={<Dapp/>}/>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/newpairDetails" element={<NewpairDetails />} />
+                    <Route path='/community/:tab' element={<Community />} />
+                    <Route path='/dapp' element={<Dapp />} />
                 </Routes>
             </div>
-            <Bot/>
+            <Bot />
         </CountContext.Provider>
     );
 }

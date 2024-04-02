@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Copy from '../../../components/copy.tsx'
 import TWeetHome from "../../../components/tweetHome.tsx";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd'
-import { followUser,request, unfollowUser } from "../../../../utils/axios.ts";
+import { followUser, request, unfollowUser } from "../../../../utils/axios.ts";
 import Cookies from "js-cookie";
 import { formatAddress, getQueryParams } from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
@@ -13,6 +13,7 @@ import { useLocation } from "react-router-dom";
 
 
 function Profie() {
+
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
     const [options, setOptions] = useState('Community')
@@ -77,6 +78,8 @@ function Profie() {
         if (result.status === 200) {
             const data = result.data;
             setData(data.data);
+            console.log(data);
+
             setIsFollowed(data.isFollowed)
             setPreviewAvatar(data.avatarUrl);
             setPreviewBG(data.coverUrl);
@@ -285,11 +288,11 @@ function Profie() {
                             [{
                                 img: ["/btc.svg", "/eth1.svg", "/sol.svg"],
                                 holding: 123,
-                                following: 2324
+                                following: data.followeeCnt,
                             }, {
                                 img: ["/pepe.svg", "/uni.svg", "/blur.svg"],
                                 holding: 33,
-                                following: 66
+                                following: data.followerCnt
                             },].map((i: any, ind: number) => {
                                 return <div className={`following dis`} key={ind}>
                                     <div>

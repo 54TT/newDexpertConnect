@@ -29,7 +29,7 @@ requestA.interceptors.response.use(
         return null
     }
 );
-const getTkAndUserName = () => {
+export const getTkAndUserName = () => {
     const token = Cookies.get('token');
     const username = JSON.parse(Cookies.get('username') || '{}');
     return [token, username];
