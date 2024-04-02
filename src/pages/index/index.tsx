@@ -8,10 +8,11 @@ import {ethers} from 'ethers';
 import Loading from '../../components/loading.tsx'
 import {CountContext} from "../../Layout.tsx";
 import newPair from '../../components/getNewPair.tsx'
+
 function Index() {
     const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad} = newPair() as any
     const hei = useRef<any>()
-    const {browser, setPage}: any = useContext(CountContext);
+    const {browser, }: any = useContext(CountContext);
     const [select, setSelect] = useState('newPair')
     const [time, setTime] = useState('24h')
     const [tableHei, setTableHei] = useState('')
@@ -24,7 +25,6 @@ function Index() {
             setTableHei(o)
         }
         getGas()
-        setPage(25)
     }, [])
     const getGas = async () => {
         const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.g.alchemy.com/v2/BhTc3g2lt1Qj3IagsyOJsH5065ueK1Aw')
@@ -75,7 +75,7 @@ function Index() {
                                allowClear className={'indexInput'}/>
                     }
                     <div className={`indexRight dis`}>
-                        <p style={{marginRight:'5px'}}><img src="/eth.svg" alt=""/><span>$:{ethPrice}</span></p>
+                        <p style={{marginRight: '5px'}}><img src="/eth.svg" alt=""/><span>$:{ethPrice}</span></p>
                         <p><img src="/gas.svg" alt=""/><span>{gas}</span></p>
                     </div>
                 </div>
@@ -88,10 +88,11 @@ function Index() {
                                 ['Name', 'Price($)', time + ' Change(%)', 'Create Time', 'Pooled Amt', 'Swap Count', 'Liquidity', 'Links'].map((i: string, ind: number) => {
                                     return <p className={`${ind === 0 ? 'disCen' : 'textAlign'} homeTableTittle`}
                                               key={ind}>
-                                        {/*{*/}
-                                        {/*    ind === 0 &&*/}
-                                        {/*    <img src="/collect.svg" alt="" style={{marginRight: '5px'}} width={'15px'}/>*/}
-                                        {/*}*/}
+                                        {
+                                            ind === 0 &&
+                                            <img src="/collect.svg" alt="" style={{marginRight: '5px', display: 'none'}}
+                                                 width={'15px'}/>
+                                        }
                                         <span>{i}</span>
                                     </p>
 

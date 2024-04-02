@@ -1,13 +1,11 @@
 import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
-import {useContext, useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import {cloneDeep, differenceBy} from "lodash";
-import {CountContext} from "../Layout.tsx";
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });
 function GetNewPair() {
-    const {page}: any = useContext(CountContext);
     const [current, setCurrent] = useState(1);
     const [ethPrice, setEthprice] = useState<string>('')
     const [moreLoad, setMoreLoad] = useState(false)
@@ -24,7 +22,7 @@ function GetNewPair() {
   bundles {
     ethPrice
   }
-  pairs(first: ${page}, orderBy: createdAtTimestamp,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
+  pairs(first: ${25}, orderBy: createdAtTimestamp,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
     createdAtTimestamp
     id
     liquidityPositionSnapshots(orderBy: timestamp, orderDirection: desc, first: 1) {
