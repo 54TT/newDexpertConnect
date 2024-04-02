@@ -36,19 +36,18 @@ function Community() {
   }
 
   return (
-    <div style={{ width: '100vw', display: 'flex', justifyContent: 'center' }}>
-      <div className='community-page' >
-        <div className='community-page-left'>
-          <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange} />
-        </div>
-        <div className='community-page-content'>
-          {ComponentMap[activeUserTab as ActiveTabType]}
-        </div>
-        <div className='community-page-right'>
-          <CommunityRight />
-        </div>
+    <div className='community-page' >
+      <div className='community-page-left'>
+        <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange} />
+      </div>
+      <div className='community-page-content'>
+        {ComponentMap[activeUserTab as ActiveTabType]}
+      </div>
+      <div className='community-page-right'>
+        <CommunityRight />
       </div>
     </div>
+
   )
 }
 export default Community;
