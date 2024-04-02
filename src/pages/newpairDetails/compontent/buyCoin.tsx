@@ -64,7 +64,7 @@ function BuyCoin({changStatus}: any) {
                             ind === 1 ? <div>
                                 <p>Auto</p>
                                 <p>{i.price}</p>
-                            </div> : ind === 2 ? <p><img src="/gas.svg" alt=""/><span>{i.price}</span></p> :
+                            </div> : ind === 2 ? <p><img loading={'lazy'} src="/gas.svg" alt=""/><span>{i.price}</span></p> :
                                 <span>{i.price}</span>
                         }
                     </div>

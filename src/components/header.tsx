@@ -87,7 +87,7 @@ function Header() {
                                 history('/dapp')
                                 onClose()
                             }
-                        }}><img src={i.img} alt=""/><span
+                        }}><img src={i.img} alt="" loading={'lazy'}/><span
                             style={{color: ind > 0 ? 'gray' : 'rgb(200,200,200)'}}>{i.name}</span></p>
                     })
                 }
@@ -106,7 +106,7 @@ function Header() {
                             history(`/community/${i.name}`);
                             onClose()
                         }}>
-                            <img src={i.img} alt=""/>
+                            <img src={i.img} alt="" loading={'lazy'}/>
                             <span>{i.name}</span>
                         </p>
                     })
@@ -145,7 +145,7 @@ function Header() {
     }
     return (
         <div className={'headerBox'}>
-            <img src={"/topLogo.svg"} alt="" style={{cursor: 'pointer'}} onClick={() => {
+            <img src={"/topLogo.svg"} loading={'lazy'} alt="" style={{cursor: 'pointer'}} onClick={() => {
                 history('/')
             }}/>
             {
@@ -171,10 +171,10 @@ function Header() {
                             browser ? <div className={'disCen'} style={{cursor: 'pointer'}}>
                                 <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
                                      style={{width: '25px', display: 'block', marginRight: '4px', borderRadius: '100%'}}
-                                     alt=""/>
+                                     alt="" loading={'lazy'}/>
                                 <p style={{color: 'rgb(214,223,215)'}}> {simplify(user?.username)}</p>
                                 <DownOutlined style={{color: 'rgb(214,223,215)', marginTop: '3px'}}/>
-                            </div> : <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
+                            </div> : <img loading={'lazy'} src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
                                           style={{
                                               width: '28px',
                                               display: 'block',
@@ -186,11 +186,11 @@ function Header() {
                         <div className={'disCen'}><span>Connect Wallet</span> {load ?
                             <LoadingOutlined style={{marginLeft: '4px'}}/> : ''}
                         </div>
-                    </div> : <img src="/wallet.svg" onClick={loginModal} style={{width: '13%'}} alt=""/>
+                    </div> : <img  loading={'lazy'}src="/wallet.svg" onClick={loginModal} style={{width: '13%'}} alt=""/>
                 }
                 {
                     !browser &&
-                    <img src="/side.svg" alt="" style={{cursor: 'pointer', width: '28px', marginLeft: '8px'}}
+                    <img src="/side.svg" loading={'lazy'} alt="" style={{cursor: 'pointer', width: '28px', marginLeft: '8px'}}
                          onClick={() => {
                              showDrawer()
                          }}/>

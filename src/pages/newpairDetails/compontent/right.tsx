@@ -56,7 +56,7 @@ function Right() {
                 value === 'com' ? <TweetHome hei={`${hei}px`}/> : sta ? <div className={`buyCoinBorder success`}>
                     <div>
                         <p>Transaction successful</p>
-                        <img src="/right.svg" alt=""/>
+                        <img loading={'lazy'} src="/right.svg" alt=""/>
                     </div>
                     <p onClick={() => setSta(false)}><ArrowLeftOutlined/>Return to the previous step</p>
                 </div> : <div style={{position: 'relative'}}><BuyCoin changStatus={changStatus}/>

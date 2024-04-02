@@ -77,7 +77,7 @@ function Index() {
                 autoplay={{ delay: 2000, disableOnInteraction: false }}>
                 {
                     ['/swiper.svg', '/swiper.svg', '/swiper.svg', '/swiper.svg',].map((i, ind) => {
-                        return <SwiperSlide key={ind}><img src={i} onClick={() => {
+                        return <SwiperSlide key={ind}><img src={i} loading={'lazy'} onClick={() => {
                             if (ind === 0) {
                                 window.open('https://info.dexpert.io/pointsDetail')
                             }

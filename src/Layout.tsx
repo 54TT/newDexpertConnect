@@ -136,6 +136,7 @@ function Layout() {
                             login(sign, account[0], message, 'more')
                         }
                     } catch (err) {
+                        setLoad(false)
                         return null
                     }
                 } else {

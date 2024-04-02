@@ -8,7 +8,7 @@ function Copy({status, setStatus, name}: any) {
                  content={status ? 'Pair Copied successfully' : 'copy to clipboard'}>
             {
                 status ? <CheckCircleOutlined style={{fontSize: '15px', marginLeft: '5px'}}/> :
-                    <img src="/copy.svg" alt="" style={{width: '15px', cursor: 'pointer', marginLeft: '5px'}}
+                    <img src="/copy.svg" alt="" loading={'lazy'} style={{width: '15px', cursor: 'pointer', marginLeft: '5px'}}
                          onClick={() => {
                              copy(name)
                              setStatus(true)

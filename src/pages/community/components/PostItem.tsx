@@ -46,21 +46,21 @@ function PostItem({
       <div className="post-item-info-content">
         <span>{content}</span>
         <div>
-          {imageList.map((src: string,ind:number) => <img key={ind} alt={''} style={{ height: '100%' }} src={src} />)}
+          {imageList.map((src: string,ind:number) => <img loading={'lazy'} key={ind} alt={''} style={{ height: '100%' }} src={src} />)}
         </div>
       </div>
       <div className="post-item-info-tag">{['#ETH', '#BTC'].map((tag: string,ind:number) => <span key={ind}>{tag}</span>)}</div>
       <div className="post-item-info-action">
         <div className="post-item-info-action-comment">
-          <img src="/community/comment.svg" alt="" />
+          <img loading={'lazy'} src="/community/comment.svg" alt="" />
           <span>{commentNum}</span>
         </div>
         <div className="post-item-info-action-like">
-          <img src="/community/like.svg" alt="" />
+          <img loading={'lazy'} src="/community/like.svg" alt="" />
           <span>{likeNum}</span>
         </div>
         <div className="post-item-info-action-share">
-          <img src="/community/share.svg" alt="" />
+          <img loading={'lazy'} src="/community/share.svg" alt="" />
           <span>42</span>
         </div>
         <div className="post-item-info-action-watch">

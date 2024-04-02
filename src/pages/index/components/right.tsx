@@ -40,7 +40,7 @@ function Right() {
                     autoplay={{delay: 2000, disableOnInteraction: false}}>
                     {
                         ['/poster1.jpg','/poster2.jpg', '/poster3.jpg',].map((i, ind) => {
-                            return <SwiperSlide key={ind}><img src={i} onClick={() => {
+                            return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={() => {
                                 if (ind === 0) {
                                     window.open('https://info.dexpert.io/pointsDetail')
                                 }

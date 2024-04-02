@@ -181,7 +181,7 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
         {contextHolder}
         <div className="community-content-post-send">
             <div className="community-content-post-send-avatar">
-                <img src={user?.avatarUrl || '/logo.svg'} alt="" />
+                <img loading={'lazy'} src={user?.avatarUrl || '/logo.svg'} alt="" />
             </div>
             <div className="community-content-post-send-input">
                 <TextArea value={value} autoSize variant="borderless" placeholder='Share your insights...'
@@ -194,7 +194,7 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
         <div className='post-send-imgList'>
             {
                 imgPreview ? <div className='post-send-imgList-delete'>
-                    <img src={imgPreview} alt="" />
+                    <img loading={'lazy'} src={imgPreview} alt="" />
                     <Button size='small' icon={<CloseOutlined />} shape="circle" onClick={() => clearImg()} />
                 </div> : <></>
             }
@@ -205,10 +205,10 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
                     toolsIcon.map((data: any, ind: number) => {
                         if (data.name === 'emoji') {
                             return <Popover content={content} key={ind} overlayClassName={'sendPostClass'} trigger="click">
-                                <img  alt={''} src={data.img} onClick={data.onClick} />
+                                <img loading={'lazy'}  alt={''} src={data.img} onClick={data.onClick} />
                             </Popover>
                         } else {
-                            return <img key={ind} alt={''} src={data.img} onClick={data.onClick} />
+                            return <img key={ind} loading={'lazy'} alt={''} src={data.img} onClick={data.onClick} />
                         }
                     })
                 }

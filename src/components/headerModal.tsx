@@ -67,17 +67,17 @@ function HeaderModal() {
                     <Input allowClear onChange={changeName} className={'input'}/>
                     <p onClick={pushSet}>OK</p>
                 </div> : <div className={'headerModal'}>
-                    <img src="/logo1.svg" alt=""/>
+                    <img src="/logo1.svg" loading={'lazy'} alt=""/>
                     <p>Connect to Dexpert</p>
                     {
                         browser &&
                         <button onClick={connectWallet} className={'walletButton'} style={{margin: '10px 0'}}>
-                            <img
+                            <img loading={'lazy'}
                                 src="/metamask.svg" style={{width: '25px'}}
                                 alt=""/><span>MetaMask</span></button>
                     }
                     <button onClick={onConnect} className={'walletButton'}><img
-                        src="/webAll.svg"
+                        src="/webAll.svg" loading={'lazy'}
                         style={{
                             width: '25px',
                         }}

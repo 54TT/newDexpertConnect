@@ -185,17 +185,17 @@ function Profie() {
 
         return <>
             <div className="profile-background">
-                <img className="profile-background-cover" src='/community/changeImg.svg' onClick={() => {
+                <img className="profile-background-cover" loading={'lazy'} src='/community/changeImg.svg' onClick={() => {
                     setInputType('background')
                     inputRef?.current?.click()
                 }} alt={''} />
-                <img className="profile-background-img"
+                <img loading={'lazy'} className="profile-background-img"
                     src={previewBG || data?.coverUrl || "/community/profileBackground.png"} alt="" />
                 <div className="profile-background-info">
                     <div className="profile-background-avatar">
-                        <img className="profile-background-avatar-img"
+                        <img loading={'lazy'} className="profile-background-avatar-img"
                             src={previewAvatar || data?.avatarUrl || '/logo.svg'} alt="" />
-                        <img className="profile-background-avatar-cover" src='/community/changeImg.svg' alt=""
+                        <img loading={'lazy'} className="profile-background-avatar-cover" src='/community/changeImg.svg' alt=""
                             onClick={() => {
                                 setInputType('avatar')
                                 inputRef?.current?.click()
@@ -256,7 +256,7 @@ function Profie() {
                         }} />
                     <div>
                         <p><span>{data?.username ? formatAddress(data.username) : ''}</span><img
-                            src="/certification.svg" alt="" /></p>
+                            src="/certification.svg" alt="" loading={'lazy'} /></p>
                         <p>{data?.address ? formatAddress(data.address) : ''}</p>
                     </div>
                 </div>
@@ -264,13 +264,13 @@ function Profie() {
                     <img src={data?.coverUrl || "/community/profileBackground.png"} alt="" />
                     <div className="profile-background-info">
                         <div className="profile-background-avatar">
-                            <img src={data?.avatarUrl || '/logo.svg'} alt="" />
-                        </div>
+                            <img loading={'lazy'} src={data?.avatarUrl || '/logo.svg'} alt="" />
+                        </div >
                         <div className="profile-background-button">
                             {
 
                                 IMAGE_MAP.map((v, ind) =>
-                                    v.show(loginId, uid) ? <img key={ind} onClick={v.onClick} style={{
+                                    v.show(loginId, uid) ? <img loading={'lazy'} key={ind} onClick={v.onClick} style={{
                                         width: '24px',
                                         height: '24px',
                                         padding: '5px',
@@ -288,20 +288,20 @@ function Profie() {
                                     <span className="follow-icon" onClick={() => handleFollow()}>Follow</span>)
                             }
                         </div>
-                    </div>
-                </div>
+                    </div >
+                </div >
                 <div className={`information`}>
                     <div style={{ zIndex: '20' }} className={'informationLeft'}>
-                        <p className={'p'}><span>{data?.username ? formatAddress(data.username) : ''}</span><img
+                        <p className={'p'}><span>{data?.username ? formatAddress(data.username) : ''}</span><img loading={'lazy'}
                             src="/certification.svg" alt="" /></p>
                         <p>{data?.address ? formatAddress(data.address) : ''} <Copy status={status}
                             setStatus={setStatus}
                             name={'0x3758...5478'} /></p>
                         <p className={'p'}>
-                            {data?.twitter && <img src="/titter.svg" alt="" />}
-                            <img src="/facebook.svg" alt="" />
-                        </p>
-                    </div>
+                            {data?.twitter && <img loading={'lazy'} src="/titter.svg" alt="" />}
+                            <img loading={'lazy'} src="/facebook.svg" alt="" />
+                        </p >
+                    </div >
                     <div style={{ zIndex: '20' }} className={`informationRight `}>
                         {
                             [{
@@ -317,7 +317,7 @@ function Profie() {
                                     <div>
                                         {
                                             i.img.map((it: string, index: number) => {
-                                                return <img src={it} key={index} alt="" />
+                                                return <img loading={'lazy'} src={it} key={index} alt="" />
                                             })
                                         }
                                     </div>
@@ -352,7 +352,7 @@ function Profie() {
                         {/*    <p><span>1345 </span>Following</p>*/}
                         {/*</div>*/}
                     </div>
-                </div>
+                </div >
                 <p className={'hello'}>{data.bio || 'Nothing here'}</p>
                 <div className={'tokenTop'}>
                     {
@@ -366,7 +366,7 @@ function Profie() {
                         })
                     }
                 </div>
-            </div>
+            </div >
             <div id='profileScroll' style={{ height: hei + 'px', overflowY: 'auto' }}
                 className={`scrollStyle community-content-post`}>
                 <TWeetHome uid={id} scrollId='profileScroll' style={{ overflowY: 'unset' }} />
@@ -377,7 +377,7 @@ function Profie() {
                 <ModifyUserInfoForm />
             </CommonModal>
             <input ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{ display: 'none' }} />
-        </div>
+        </div >
     );
 }
 

@@ -37,7 +37,7 @@ function Date({tableDta, time, setDta}: any) {
                     const create = record?.createdAtTimestamp.toString().length > 10 ? Number(record.createdAtTimestamp.toString().slice(0, 10)) : Number(record.createdAtTimestamp)
                     return <div key={ind} className={`indexNewPairBodyData dis`} onClick={() => push(record)}>
                         <div className={`indexTableLogo indexNewPairBone`}>
-                            <img src={record.collect ? '/collectSelect.svg' : "/collect.svg"} style={{display:'none'}} alt=""
+                            <img loading={'lazy'} src={record.collect ? '/collectSelect.svg' : "/collect.svg"} style={{display:'none'}} alt=""
                                  onClick={(e: any) => click(record, e)}/>
                             <div>
                                 <p style={{marginBottom: '4px'}}>{simplify(record?.token0?.symbol)}</p>
@@ -66,11 +66,11 @@ function Date({tableDta, time, setDta}: any) {
                         <div style={{color: 'white'}}>{li}</div>
 
                         <div className={`dis indexTableLogo`}>
-                            <img src="/ethLogo.svg" alt=""/>
-                            <img
+                            <img loading={'lazy'} src="/ethLogo.svg" alt=""/>
+                            <img loading={'lazy'}
                                 src="/feima.svg" style={{margin: '0 5px'}}
                                 alt=""/>
-                            <img
+                            <img loading={'lazy'}
                                 src="/huo.svg" alt=""/></div>
                     </div>
                 })
