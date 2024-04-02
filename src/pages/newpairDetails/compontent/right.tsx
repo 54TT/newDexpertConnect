@@ -4,6 +4,7 @@ import {useContext, useEffect, useRef, useState} from "react";
 import TweetHome from "../../../components/tweetHome.tsx";
 import BuyCoin from './buyCoin.tsx'
 import {CountContext} from "../../../Layout.tsx";
+import CommingSoon from "../../../components/commingSoon.tsx";
 
 function Right() {
     const {browser}: any = useContext(CountContext);
@@ -58,8 +59,11 @@ function Right() {
                         <img src="/right.svg" alt=""/>
                     </div>
                     <p onClick={() => setSta(false)}><ArrowLeftOutlined/>Return to the previous step</p>
-                </div> : <BuyCoin changStatus={changStatus}/>
+                </div> : <div style={{position: 'relative'}}><BuyCoin changStatus={changStatus}/>
+                    <CommingSoon hei={'90vh'}/>
+                </div>
             }
+
         </div>
     );
 }

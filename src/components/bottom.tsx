@@ -1,11 +1,11 @@
+import CommingSoon from "./commingSoon.tsx";
 function Bottom() {
 
     return (
         <div className={'bottomBox'}>
-            <div>
                 <p></p>
+            <CommingSoon hei={'25px'}/>
                 <p>Live Chat</p>
-            </div>
         </div>
     );
 }

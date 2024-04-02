@@ -37,6 +37,7 @@ function Layout() {
     const [load, setLoad] = useState<boolean>(false)
     const [newPairPar, setNewPairPar] = useState<any>([])
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalSet, setIsModalSet] = useState(false);
     const [page, setPage] = useState<number>(25);
     const createClient = async () => {
         try {
@@ -85,9 +86,13 @@ function Layout() {
                     } else if (data && data?.status === 200) {
                         const user = data?.data?.data
                         setUserPar(user)
-                        cookie.set('username', JSON.stringify(user), {expires: 1})
-                        cookie.set('token', res.data?.accessToken, {expires: 1})
-                        cookie.set('jwt', JSON.stringify(decodedToken), {expires: 1})
+                        cookie.set('username', JSON.stringify(user))
+                        cookie.set('token', res.data?.accessToken)
+                        cookie.set('jwt', JSON.stringify(decodedToken))
+                        if (user?.address === user?.username) {
+                            setIsModalSet(true)
+                            setIsModalOpen(true)
+                        }
                         if (name === 'modal') {
                             web3Modal.closeModal();
                         }
@@ -337,7 +342,7 @@ function Layout() {
         isModalOpen,
         page,
         setPage,
-        setIsModalOpen
+        setIsModalOpen, isModalSet, setIsModalSet
     }
     return (
         <CountContext.Provider value={value}>

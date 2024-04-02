@@ -1,6 +1,7 @@
 import Conyent from '../../community/components/PostContent.tsx'
 import {useContext} from "react";
 import {CountContext} from "../../../Layout.tsx";
+import CommingSoon from "../../../components/commingSoon.tsx";
 
 function Center() {
     const {browser}: any = useContext(CountContext);
@@ -15,7 +16,7 @@ function Center() {
                     <div className={'dis'}>
                         {
                             ['Video Guide', 'Start on Telegram', 'Start on Web'].map((i: string, ind: number) => {
-                                return <p style={{width: browser ? '28%' : '30%',fontSize:'14px',letterSpacing:'-1px'}} key={ind}>{i}</p>
+                                return <p style={{width: browser ? '28%' : '30%',fontSize:'14px',letterSpacing:'-1px',position:'relative'}} key={ind}>{i}{ind===2&&<CommingSoon hei={'30px'}/>}</p>
                             })
                         }
                     </div>

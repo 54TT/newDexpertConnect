@@ -369,28 +369,24 @@ body {
   height: 25px;
   box-sizing: border-box;
   background-color: rgb(9, 15, 12);
+  padding-right: 20px;
+  border-top: 1.5px solid rgb(104, 124, 105);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 
-  & > div:last-child {
-    padding-top: 5px;
-    padding-right: 20px;
-    border-top: 1.5px solid rgb(104, 124, 105);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+  & > p:first-child {
+    width: 10px;
+    height: 10px;
+    background-color: rgb(134, 240, 151);
+    border-radius: 50%;
+    margin-right: 6px;
+  }
 
-    & > p:first-child {
-      width: 10px;
-      height: 10px;
-      background-color: rgb(134, 240, 151);
-      border-radius: 50%;
-      margin-right: 6px;
-    }
-
-    & > p:last-child {
-      cursor: pointer;
-      color: white;
-      font-size: 15px;
-    }
+  & > p:last-child {
+    cursor: pointer;
+    color: white;
+    font-size: 15px;
   }
 }
 
@@ -450,12 +446,6 @@ body {
     line-height: 1;
   }
 
-  & > p:nth-child(2) {
-    color: #f3f3f3;
-    text-align: center;
-    line-height: 1;
-  }
-
   .walletButton {
     cursor: pointer;
     width: 150px;
@@ -474,6 +464,45 @@ body {
 
     img {
       margin: 0 10px;
+    }
+  }
+}
+
+.headerModalSetName {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 50%;
+  margin: 0 auto;
+
+  p:first-child {
+    color: white;
+    font-size: 20px;
+    text-align: center;
+  }
+
+  p:nth-child(2) {
+    color: rgb(200, 200, 200);
+    text-align: center;
+    margin: 6px 0 10px;
+  }
+
+  p:last-child {
+    background: linear-gradient(to bottom, rgb(134, 240, 151), rgb(1, 255, 72));
+    border-radius: 8px;
+    text-align: center;
+    line-height: 25px;
+    width: 70px;
+    margin: 10px auto;
+    cursor: pointer;
+  }
+
+  .input {
+    background-color: rgb(104, 124, 105);
+    border: none;
+    color: rgb(200, 200, 200);
+    .ant-input-clear-icon{
+      color: rgb(220,220,200);
     }
   }
 }

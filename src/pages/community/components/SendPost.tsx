@@ -170,8 +170,6 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
         const user = Cookies.get('username');
         if (user) {
             setUser(JSON.parse(user));
-            console.log(JSON.parse(user));
-
         }
     }, [])
     const change = (e: any) => {

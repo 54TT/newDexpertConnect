@@ -33,8 +33,6 @@ const RenderCommentTweet = ({ data = {}, token, type }: any) => {
     const result: any = await request('post', '/api/v1/reply/list', params, token);
     if (result.status === 200) {
       const { data } = result;
-      console.log(data);
-
     }
   } */
 
