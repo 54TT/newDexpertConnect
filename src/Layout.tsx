@@ -331,12 +331,14 @@ function Layout() {
     return (
         <CountContext.Provider value={value}>
             <Header/>
-            <Routes>
-                <Route path="/" element={<Index/>}/>
-                <Route path="/newpairDetails" element={<NewpairDetails/>}/>
-                <Route path='/community/:tab' element={<Community/>}/>
-                <Route path='/dapp' element={<Dapp/>}/>
-            </Routes>
+            <div style={{width: '100vw', display: 'flex', justifyContent: 'center'}} className='flexable-box'>
+                <Routes>
+                    <Route path="/" element={<Index/>}/>
+                    <Route path="/newpairDetails" element={<NewpairDetails/>}/>
+                    <Route path='/community/:tab' element={<Community/>}/>
+                    <Route path='/dapp' element={<Dapp/>}/>
+                </Routes>
+            </div>
             <Bot/>
         </CountContext.Provider>
     );
