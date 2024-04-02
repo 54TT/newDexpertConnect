@@ -70,11 +70,9 @@ function Profie() {
         const token = Cookies.get('token');
         if (!token) return;
         const result: any = await request('get', `/api/v1/userinfo/${id}`, {}, token);
-        if (result.status === 200) {
+        if (result?.status === 200) {
             const data = result.data;
             setData(data.data);
-            console.log(data);
-
             setIsFollowed(data.isFollowed)
             setPreviewAvatar(data.avatarUrl);
             setPreviewBG(data.coverUrl);
@@ -205,8 +203,8 @@ function Profie() {
                 </div>
             </div>
             {contextHolder}
-            <div className="user-info-form" style={{padding: '12px 48px'}}>
-                <Form form={form} initialValues={data} layout="vertical" onFinish={(data: any) => handleSubmit(data)}>
+            <div className="user-info-form" style={{padding: '10px 48px'}}>
+                <Form form={form} initialValues={data} onFinish={(data: any) => handleSubmit(data)}>
                     <Form.Item name='username' label='Name'>
                         <Input/>
                     </Form.Item>
@@ -262,7 +260,7 @@ function Profie() {
                     </div>
                 </div>
                 <div className="profile-background">
-                    <img src={data.coverUrl || "/community/profileBackground.png"} alt=""/>
+                    <img src={data?.coverUrl || "/community/profileBackground.png"} alt=""/>
                     <div className="profile-background-info">
                         <div className="profile-background-avatar">
                             <img src={data?.avatarUrl || '/logo.svg'} alt=""/>
@@ -292,27 +290,27 @@ function Profie() {
                     </div>
                 </div>
                 <div className={`information`}>
-                    <div className={'informationLeft'}>
+                    <div style={{zIndex: '20'}} className={'informationLeft'}>
                         <p className={'p'}><span>{data?.username ? formatAddress(data.username) : ''}</span><img
                             src="/certification.svg" alt=""/></p>
                         <p>{data?.address ? formatAddress(data.address) : ''} <Copy status={status}
                                                                                     setStatus={setStatus}
                                                                                     name={'0x3758...5478'}/></p>
                         <p className={'p'}>
-                            {data.twitter && <img src="/twitter.svg" alt=""/>}
+                            {data?.twitter && <img src="/titter.svg" alt=""/>}
                             <img src="/facebook.svg" alt=""/>
                         </p>
                     </div>
-                    <div className={`informationRight `}>
+                    <div style={{zIndex: '20'}} className={`informationRight `}>
                         {
                             [{
                                 img: ["/btc.svg", "/eth1.svg", "/sol.svg"],
                                 holding: 123,
-                                following: data.followeeCnt,
+                                following: data?.followeeCnt || 0,
                             }, {
                                 img: ["/pepe.svg", "/uni.svg", "/blur.svg"],
                                 holding: 33,
-                                following: data.followerCnt
+                                following: data?.followerCnt || 0
                             },].map((i: any, ind: number) => {
                                 return <div className={`following dis`} key={ind}>
                                     <div>
@@ -327,9 +325,9 @@ function Profie() {
                                         if (uid) {
                                             history('/community/following?uid=' + uid)
                                         } else {
-                                            history('/community/following?uid=' + uid)
+                                            history('/community/following')
                                         }
-                                    }}><span>{i.following + ' '} </span>{ind === 0 ? 'Following' : 'Follower'}
+                                    }}><span>{i?.following + ' '} </span>{ind === 0 ? 'Following' : 'Follower'}
                                     </div>
                                 </div>
                             })
