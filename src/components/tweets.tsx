@@ -144,7 +144,7 @@ function Tweets({
                 <div className={`dis`}>
                     {/* left*/}
                     <div className={'tweetsLeft'} style={{ flex: '1' }}>
-                        <img onClick={(e) => handleClickAvatar(e)}
+                        <img loading={'lazy'} onClick={(e) => handleClickAvatar(e)}
                             src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
                             style={{ width: '36px', marginRight: '5%', borderRadius: '50%' }} />
                         <p>
@@ -171,7 +171,7 @@ function Tweets({
                 <>
                     {
                         localData?.imageList?.length > 0 && localData?.imageList[0] ?
-                            <img className='post-item-img' src={localData?.imageList[0]} alt=""
+                            <img loading={'lazy'} className='post-item-img' src={localData?.imageList[0]} alt=""
                                 style={{
                                     maxWidth: '50%',
                                     maxHeight: '200px',
@@ -187,14 +187,14 @@ function Tweets({
             </div> */}
                 <div className={'tweetsOperate'}>
                     <p className={'tweetsIn'}>
-                        <img src="/comment.svg" alt="" onClick={(e) => {
+                        <img loading={'lazy'} src="/comment.svg" alt="" onClick={(e) => {
                             setOpenComment(true);
                             e.stopPropagation();
                         }} />
                         <span>{localData?.commentNum ? localData.commentNum : 0}</span>
                     </p>
                     <div className={'tweetsIn like-icon'} onClick={clickLike}>
-                        <img src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
+                        <img loading={'lazy'} src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
                         <span>{localData?.likeNum ? localData.likeNum : 0}</span>
                         <motion.div
                             initial="hidden"
@@ -207,11 +207,11 @@ function Tweets({
                         </motion.div>
                     </div>
                     <p className={'tweetsIn share-icon'}>
-                        <img src="/share.svg" style={{ width: '22px' }} alt="" />
+                        <img loading={'lazy'} src="/share.svg" style={{ width: '22px' }} alt="" />
                         <span>{setMany(Math.ceil(Math.random() * 10 + Math.random() * 100))}</span>
                     </p>
                     <p className={'tweetsIn look-icon'}>
-                        <img src="/look.svg" alt="" />
+                        <img loading={'lazy'} src="/look.svg" alt="" />
                         <span>{setMany(Math.ceil(Math.random() * 1000 + Math.random() * 1000))}</span>
                     </p>
                 </div>

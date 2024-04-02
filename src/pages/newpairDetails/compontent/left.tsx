@@ -32,7 +32,7 @@ function Left({par}: any) {
             {/*top*/}
             <div className={`top dis`}>
                 <div>
-                    <img src="/logo1.svg" alt=""/>
+                    <img loading={'lazy'} src="/logo1.svg" alt=""/>
                     <p>
                         <span>{simplify(data?.token0?.symbol)}</span>
                         <span>{simplify(data?.token1?.symbol)}</span>
@@ -61,7 +61,7 @@ function Left({par}: any) {
                 {
                     ["/website.svg", "/titter.svg", "/telegram.svg", "/information.svg"].map((i: string, ind: number) => {
                         return <div key={ind}>
-                            <img src={i} alt=""/>
+                            <img loading={'lazy'} src={i} alt=""/>
                         </div>
                     })
                 }

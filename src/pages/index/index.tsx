@@ -75,8 +75,8 @@ function Index() {
                                allowClear className={'indexInput'}/>
                     }
                     <div className={`indexRight dis`}>
-                        <p style={{marginRight: '5px'}}><img src="/eth.svg" alt=""/><span>$:{ethPrice}</span></p>
-                        <p><img src="/gas.svg" alt=""/><span>{gas}</span></p>
+                        <p style={{marginRight: '5px'}}><img src="/eth.svg"  loading={'lazy'} alt=""/><span>$:{ethPrice}</span></p>
+                        <p><img loading={'lazy'} src="/gas.svg" alt=""/><span>{gas}</span></p>
                     </div>
                 </div>
                 <div style={{width: '100%', overflow: browser ? 'hidden' : 'auto'}}>
@@ -90,7 +90,7 @@ function Index() {
                                               key={ind}>
                                         {
                                             ind === 0 &&
-                                            <img src="/collect.svg" alt="" style={{marginRight: '5px', display: 'none'}}
+                                            <img loading={'lazy'} src="/collect.svg" alt="" style={{marginRight: '5px', display: 'none'}}
                                                  width={'15px'}/>
                                         }
                                         <span>{i}</span>

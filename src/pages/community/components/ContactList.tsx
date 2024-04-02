@@ -48,7 +48,7 @@ function UserItem({
     return <div className="post-item follow-list" style={{maxHeight: '300px'}}
                 onClick={() => history(`/community/user?uid=${uid}`)}>
         <div className="post-item-avatar">
-            <img src={avatar || '/logo.svg'} style={{display:'block',cursor:'pointer'}} alt=""/>
+            <img loading={'lazy'} src={avatar || '/logo.svg'} style={{display:'block',cursor:'pointer'}} alt=""/>
         </div>
         <div className="post-item-info">
             <div className="post-item-info-user">
