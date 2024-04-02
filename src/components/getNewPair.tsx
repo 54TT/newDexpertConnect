@@ -1,10 +1,12 @@
 import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
-import { useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {cloneDeep, differenceBy} from "lodash";
+
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });
+
 function GetNewPair() {
     const [current, setCurrent] = useState(1);
     const [ethPrice, setEthprice] = useState<string>('')
@@ -144,7 +146,7 @@ function GetNewPair() {
                 getParams(data.pairs)
                 const abc = data.bundles
                 const price = abc[0].ethPrice
-                setEthprice(Number(price).toFixed(3))
+                setEthprice(parseFloat(Number(price).toFixed(1)).toString())
             }
         }
     }, [data]);
@@ -155,4 +157,5 @@ function GetNewPair() {
     }
     return {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad}
 }
+
 export default GetNewPair;

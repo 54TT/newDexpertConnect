@@ -6,7 +6,7 @@ function CommingSoon({hei}: any) {
             backgroundColor: 'black',
             opacity: '0.8',
             top: '0',
-            color: 'white',
+            color: 'gray',
             textAlign: 'center',
             lineHeight: hei,
             borderRadius:'7px'

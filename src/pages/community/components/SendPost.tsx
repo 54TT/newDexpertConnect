@@ -204,8 +204,8 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
                 {
                     toolsIcon.map((data: any, ind: number) => {
                         if (data.name === 'emoji') {
-                            return <Popover content={content} overlayClassName={'sendPostClass'} trigger="click">
-                                <img key={ind} alt={''} src={data.img} onClick={data.onClick} />
+                            return <Popover content={content} key={ind} overlayClassName={'sendPostClass'} trigger="click">
+                                <img  alt={''} src={data.img} onClick={data.onClick} />
                             </Popover>
                         } else {
                             return <img key={ind} alt={''} src={data.img} onClick={data.onClick} />

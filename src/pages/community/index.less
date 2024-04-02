@@ -226,9 +226,9 @@
       .following {
         display: flex;
         align-items: center;
-
         & > div {
           flex: 1;
+          cursor: pointer;
         }
 
         div:first-child {
@@ -280,8 +280,8 @@
 
   > img {
     width: 100%;
-    aspect-ratio: 3 / 1;
-    object-fit: contain;
+    aspect-ratio: 3 / 0.6;
+    object-fit: cover;
   }
   &-info {
     display: flex;
@@ -434,41 +434,6 @@
           }
         }
       }
-    }
-  }
-
-  .profile-background {
-    > img {
-      width: 100%;
-      aspect-ratio: 3 / 1;
-    }
-    &-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: absolute;
-      left: 8%;
-      right: 8%;
-      bottom: -64px;
-    }
-    &-avatar {
-      position: relative;
-      top: -50px;
-      img {
-        width: 42px;
-        height: 42px;
-        border-radius: 100%;
-      }
-      &-cover {
-        width: auto !important;
-        padding: 0 2px !important;
-      }
-    }
-    &-button {
-      display: flex;
-      align-items: center;
-      position: relative;
-      top: -45px;
     }
   }
 }

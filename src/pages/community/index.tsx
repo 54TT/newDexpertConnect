@@ -39,7 +39,6 @@ function Community() {
     'comment': <PostDetail />,
     'user': <Profile />,
   }
-
   return (
     <div className='community-page' >
       {
