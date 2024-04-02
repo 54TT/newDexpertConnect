@@ -447,25 +447,56 @@
     right: 24px;
     bottom: 48px;
     z-index: 6;
-
     > button {
     }
   }
-
   .username-page {
     .information {
       margin: 24px 8%;
       display: block !important;
-
       .informationRight {
         margin-top: 12px;
-
         .following {
           img {
             width: 24px !important;
           }
         }
       }
+    }
+  }
+
+  .profile-background {
+    > img {
+      width: 100%;
+      aspect-ratio: 3 / 1;
+    }
+    &-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      bottom: -64px;
+    }
+    &-avatar {
+      position: relative;
+      top: -50px;
+      img {
+        width: 42px;
+        height: 42px;
+        border-radius: 100%;
+      }
+      &-cover {
+        width: auto !important;
+        padding: 0 2px !important;
+      }
+    }
+    &-button {
+      display: flex;
+      align-items: center;
+      position: relative;
+      top: -45px;
     }
   }
 }
