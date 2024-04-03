@@ -71,11 +71,11 @@ function Date({tableDta, time, setDta}: any) {
                             <div className={`dis indexTableLogo`}>
                                 <img loading={'lazy'} src="/ethLogo.svg" alt="" onClick={(e) => {
                                     e.stopPropagation()
-                                    window.open('https://etherscan.io/token/' + record?.id)
+                                    window.open('https://etherscan.io/token/' + record?.token0?.id)
                                 }}/>
                                 <img loading={'lazy'} onClick={(e) => {
                                     e.stopPropagation()
-                                    window.open('https://app.uniswap.org/#/swap?inputCurrency=' + record?.id)
+                                    window.open('https://app.uniswap.org/#/swap?inputCurrency=' + record?.token1?.id + '&outputCurrency=' + record?.token1?.id)
                                 }}
                                      src="/feima.svg" style={{margin: '0 5px'}}
                                      alt=""/>

@@ -63,9 +63,8 @@ function Tweets({
             try {
                 if (localData?.likeStatus === false) {
                     setClickAnimate(true)
-                    const result: any =  getAll({method:'post',url,data,token});
-                    result?.status === 200 ? setLocalData({ ...localData, likeStatus: true }) : null;
-                   if (result && result?.status === 200) {
+                    const result: any = await getAll({method:'post',url,data,token});
+                   if ( result?.status === 200) {
                         setLocalData({ ...localData, likeStatus: true, likeNum: Number(localData.likeNum) + 1 })
                     }
                 } else {
@@ -82,7 +81,7 @@ function Tweets({
                         data = { replyId: localData.id }
                     }
                     const result: any = await getAll({method:'post',url,data,token});
-                 if (result && result?.status === 200) {
+                 if ( result?.status === 200) {
                         setLocalData({ ...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1 })
                     }
                 }

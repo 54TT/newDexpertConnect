@@ -75,7 +75,7 @@ const PostDetail = () => {
     setPageStatus(true)
     // const result: any = await Request('post', url, params, token);
     const result: any = await getAll({method:'post',url,data:params,token});
-    if (result.status === 200) {
+    if (result?.status === 200) {
       const comments: never[] = reply ? result.data.replyList : result.data.comments
       if (page === 1) {
         setData(comments)

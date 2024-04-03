@@ -147,14 +147,14 @@ function Profie() {
         if (newAvatar) {
             // const result: any = await Request('post', '/api/v1/upload/image', newAvatar, token);
             const result: any = await getAll({method: 'post', url: '/api/v1/upload/image', data: newAvatar, token});
-            if (result.status === 200) {
+            if (result?.status === 200) {
                 avatarUrl = result?.data?.url;
             }
         }
         if (newBG) {
             // const result: any = await Request('post', '/api/v1/upload/image', newBG, token);
             const result: any = await getAll({method: 'post', url: '/api/v1/upload/image', data: newBG, token});
-            if (result.status === 200) {
+            if (result?.status === 200) {
                 coverUrl = result?.data?.url;
             }
         }
@@ -169,7 +169,7 @@ function Profie() {
         }
         // const result: any = await Request('post', '/api/v1/userinfo', params, token);
         const result: any =await getAll({method: 'post', url: '/api/v1/userinfo', data: params, token});
-        if (result.status === 200) {
+        if (result?.status === 200) {
             messageApi.success('update success');
             getUserProfile(true)
             handleCancel();

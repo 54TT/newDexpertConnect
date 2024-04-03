@@ -123,10 +123,10 @@ export default function ContactList() {
             setLoading(true)
             // const result: any = await Request('post', url, {uid: uid ? uid : at?.uid, page}, token);
             const result: any =await  getAll({method:'post',url,data:{uid: uid ? uid : at?.uid, page},token});
-            if (result.status === 200) {
+            if (result?.status === 200) {
                 const {
                     followeeList, followerList
-                } = result.data;
+                } = result?.data;
                 if (page === 1) {
                     setData(followeeList || followerList)
                 } else {

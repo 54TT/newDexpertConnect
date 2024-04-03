@@ -39,7 +39,7 @@ function Header() {
                 history('/')
                 break;
             case 1:
-                history('/dapp')
+                history('/app')
                 break;
         }
     }
@@ -84,7 +84,7 @@ function Header() {
                     }, {name: 'Trending', img: '/trending.svg'}].map((i: any, ind: number) => {
                         return <p key={ind} onClick={() => {
                             if (ind === 0) {
-                                history('/dapp')
+                                history('/app')
                                 onClose()
                             }
                         }}><img src={i.img} alt="" loading={'lazy'}/><span
@@ -133,7 +133,7 @@ function Header() {
             } else {
                 return 'rgb(214,223,215)'
             }
-        } else if (router.pathname === '/dapp') {
+        } else if (router.pathname === '/app') {
             if (ind === 1) {
                 return 'rgb(134,240,151)'
             } else {
@@ -145,11 +145,18 @@ function Header() {
     }
     return (
         <div className={'headerBox'}>
-            <div style={{display:'flex',alignItems:'center'}} onClick={() => {
-                history('/')
+            <div style={{display: 'flex', alignItems: 'center'}} onClick={() => {
+                window.open('https://info.dexpert.io/')
             }}>
-                <img src={"/topLogo.svg"} loading={'lazy'} alt="" style={{cursor: 'pointer'}} />
-                <p style={{color:'rgb(134,240,151)',fontSize:'22px',marginTop:'3px',marginLeft:'7px',lineHeight:'1',fontWeight:'bold'}}>DEXPERT</p>
+                <img src={"/topLogo.svg"} loading={'lazy'} alt="" style={{cursor: 'pointer'}}/>
+                <p style={{
+                    color: 'rgb(134,240,151)',
+                    fontSize: '22px',
+                    marginTop: '3px',
+                    marginLeft: '7px',
+                    lineHeight: '1',
+                    fontWeight: 'bold'
+                }}>DEXPERT</p>
             </div>
             {
                 browser && <p className={`headerCenter dis`}>

@@ -38,7 +38,6 @@ function CommunityRight() {
       totalLiquidity
       totalSupply
     }
-
     pairDayData(first: 1, orderBy: startUnix, orderDirection: desc) {
       priceChange
       volumeUSD
@@ -51,7 +50,6 @@ function CommunityRight() {
   }
 }`
     const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any
-    console.log(data)
     const {getPage} = newPair() as any
     useEffect(() => {
         const interval = setInterval(async () => {

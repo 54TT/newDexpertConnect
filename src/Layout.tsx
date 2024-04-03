@@ -85,7 +85,7 @@ function Layout() {
                         data: '',
                         token: res.data?.accessToken
                     })
-                    if (data && data?.status === 200) {
+                    if (data?.status === 200) {
                         const user = data?.data?.data
                         setUserPar(user)
                         cookie.set('username', JSON.stringify(user))
@@ -124,17 +124,21 @@ function Layout() {
             const chain = await provider.getNetwork();
             // 获取签名
             const signer = await provider.getSigner();
+            console.log(signer)
+            console.log(account)
             // 判断是否有账号
             if (account.length > 0) {
                 // 判断是否是eth
                 if (chain && chain.name === 'homestead' && chain.chainId === 1) {
                     try {
                         const at = {method: 'post', url: '/api/v1/token', data: {address: account[0]}, token: ''}
-                        const token: any = getAll(at)
-                        if (token && token?.data && token?.status === 200) {
+                        const token: any = await getAll(at)
+                        console.log(token)
+                        if ( token?.data && token?.status === 200) {
                             // 签名消息
                             const message = token?.data?.nonce
                             const sign = await signer.signMessage(message)
+                            console.log(sign)
                             login(sign, account[0], message, 'more')
                         }
                     } catch (err) {
@@ -194,7 +198,7 @@ function Layout() {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token: any = getAll({method: 'post', url: '/api/v1/token', data: {address: address}, token: ''})
+            const token: any =await getAll({method: 'post', url: '/api/v1/token', data: {address: address}, token: ''})
             if (token && token?.data && token?.status === 200) {
                 await loginMore(chainId, address, client, session, token?.data?.nonce);
             } else {
@@ -338,7 +342,7 @@ function Layout() {
                     <Route path="/" element={<Index/>}/>
                     <Route path="/newpairDetails" element={<NewpairDetails/>}/>
                     <Route path='/community/:tab' element={<Community/>}/>
-                    <Route path='/dapp' element={<Dapp/>}/>
+                    <Route path='/app' element={<Dapp/>}/>
                 </Routes>
             </div>
             <Bot/>
