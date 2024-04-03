@@ -2,7 +2,7 @@ import {Input, message, Modal} from "antd";
 import {useContext, useState} from "react";
 import {CountContext} from "../Layout.tsx";
 import cookie from "js-cookie";
-import {request} from "../../utils/axios.ts";
+import Request from "./axios.tsx";
 function HeaderModal() {
     const {
         browser,
@@ -10,8 +10,9 @@ function HeaderModal() {
         setIsModalOpen,
         isModalSet,
         setIsModalSet, connect, setLoad,
-        getMoneyEnd
+        getMoneyEnd,
     }: any = useContext(CountContext);
+    const {getAll} = Request()
     const [messageApi, contextHolder] = message.useMessage();
     const handleOk = () => {
         setIsModalOpen(false);
@@ -31,7 +32,8 @@ function HeaderModal() {
             if (username && token) {
                 const ab = JSON.parse(username)
                 const user = {...ab, username: value}
-                const result: any = await request('post', '/api/v1/userinfo', {user}, token);
+                // const result: any = await Request('post', '/api/v1/userinfo', {user}, token);
+                const result: any = await getAll({method:'post',url: '/api/v1/userinfo',data:{user},token});
                 if (result?.status === 200) {
                     cookie.set('username', JSON.stringify(user))
                     messageApi.success('update success');
@@ -81,7 +83,7 @@ function HeaderModal() {
                         style={{
                             width: '25px',
                         }}
-                        alt=""/><span>WlletConnect</span>
+                        alt=""/><span>WalletConnect</span>
                     </button>
                 </div>
             }

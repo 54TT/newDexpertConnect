@@ -1,11 +1,11 @@
 import classNames from "classnames";
-import {useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import Cookies from "js-cookie";
-import {followUser, request, unfollowUser} from "../../../../utils/axios";
+import Request from "../../../components/axios.tsx";
+// ,{followUser, unfollowUser}
 import {formatAddress, getQueryParams} from "../../../../utils/utils";
 import {Spin} from "antd";
 import {useNavigate} from "react-router";
-
 export interface FollowTabType {
     label: 'Following' | 'Follower',
     key: '1' | '2',
@@ -86,11 +86,11 @@ function UserItem({
         <div className="follow-list-action">
             {tab === '1' && follow ? <div className="follow-list-action-unfollow follow-icon" onClick={async (e) => {
                 e.stopPropagation()
-                await unfollowUser(uid);
+                // await unfollowUser(uid);
                 setFollow(false);
             }}>Unfollow</div> : <div className="follow-list-action-unfollow unfollow-icon" onClick={async (e) => {
                 e.stopPropagation()
-                await followUser(uid);
+                // await followUser(uid);
                 setFollow(false);
             }}>Follow</div>}
         </div>
@@ -98,6 +98,7 @@ function UserItem({
 }
 
 export default function ContactList() {
+    const {getAll} =Request()
     const [activeTab, setActiveTab] = useState<FollowTabType['key']>('1');
     const [loading, setLoading] = useState<boolean>(true);
     const [data, setData] = useState<any[]>([]);
@@ -120,7 +121,8 @@ export default function ContactList() {
         if (token && username) {
             const at = JSON.parse(username)
             setLoading(true)
-            const result: any = await request('post', url, {uid: uid ? uid : at?.uid, page}, token);
+            // const result: any = await Request('post', url, {uid: uid ? uid : at?.uid, page}, token);
+            const result: any =await  getAll({method:'post',url,data:{uid: uid ? uid : at?.uid, page},token});
             if (result.status === 200) {
                 const {
                     followeeList, followerList

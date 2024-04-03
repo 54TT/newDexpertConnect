@@ -1,8 +1,6 @@
-import {ApolloClient, InMemoryCache, useQuery} from "@apollo/client";
-import {gql} from "graphql-tag";
+import {ApolloClient, InMemoryCache,gql, useQuery} from "@apollo/client";
 import {useEffect, useState} from "react";
 import {cloneDeep, differenceBy} from "lodash";
-
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
 });
@@ -14,6 +12,10 @@ function GetNewPair() {
     const [polling, setPolling] = useState<boolean>(false)
     const [tableDta, setDta] = useState([])
     const [tableDtaLoad, setDtaLoad] = useState(true)
+    const [page, setPage] = useState<any>(5)
+    const getPage = (name: number) => {
+        setPage(name)
+    }
     const GET_DATA = gql`query LiveNewPair {
   _meta {
     block {
@@ -24,7 +26,7 @@ function GetNewPair() {
   bundles {
     ethPrice
   }
-  pairs(first: ${25}, orderBy: createdAtTimestamp,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
+  pairs(first: ${page}, orderBy: createdAtTimestamp,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
     createdAtTimestamp
     id
     liquidityPositionSnapshots(orderBy: timestamp, orderDirection: desc, first: 1) {
@@ -88,7 +90,7 @@ function GetNewPair() {
     id
   }
 }`
-    const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any
+    const {loading, data, refetch} = useQuery( GET_DATA, {client}) as any
     useEffect(() => {
         const interval = setInterval(async () => {
             setPolling(true)
@@ -98,6 +100,12 @@ function GetNewPair() {
             clearInterval(interval);
         }
     }, [])
+    useEffect(() => {
+        if (page) {
+            setCurrent(1)
+            refetch()
+        }
+    }, [page]);
     const getParams = (par: any) => {
         const dataLi = []
         const a = cloneDeep(par)
@@ -155,7 +163,7 @@ function GetNewPair() {
         setMoreLoad(true)
         refetch()
     }
-    return {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad}
+    return {ethPrice, moreLoad, tableDta, getPage, setDta, changePage, tableDtaLoad}
 }
 
 export default GetNewPair;

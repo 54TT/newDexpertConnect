@@ -2,15 +2,16 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import Tweets from '../tweets.tsx'
 import { useContext, useEffect, useRef, useState } from 'react'
-import { request } from '../../../utils/axios.ts';
+import Request from '../axios.tsx';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Skeleton } from 'antd'
 import { CountContext } from "../../Layout.tsx";
 import { LoadingOutlined } from '@ant-design/icons'
 function Index() {
-    const { headHeight, botHeight, clear }: any = useContext(CountContext)
+    const { headHeight, botHeight, }: any = useContext(CountContext)
     const swiperRef: any = useRef()
     const topRef: any = useRef()
+    const {getAll}: any =  Request()
     const [hei, setHei] = useState('')
     const [page, setPage] = useState(1)
     const [tableData, setData] = useState([])
@@ -33,10 +34,9 @@ function Index() {
         }
     }
     const getTweet = async (page: number) => {
-        const res: any = await request('post', '/api/v1/post/public', { page: page }, '')
-        if (res === 'please') {
-            clear()
-        } else if (res && res?.status === 200) {
+        // const res: any = await Request('post', '/api/v1/post/public', { page: page }, '')
+        const res: any =await  getAll({method:'post',url: '/api/v1/post/public',data:{page},token:''})
+      if (res && res?.status === 200) {
             const { data } = res
             const r = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {

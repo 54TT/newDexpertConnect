@@ -2,7 +2,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Tweets from "./tweets.tsx";
 import {LoadingOutlined} from "@ant-design/icons";
 import {useContext, useEffect, useState} from "react";
-import {request} from "../../utils/axios.ts";
+import Request from "./axios.tsx";
 import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
 import {CountContext} from "../Layout.tsx";
@@ -21,7 +21,8 @@ function TweetHome({
                        style = {},
                        uid = ''
                    }: TweetHomePropsType) {
-    const {clear, browser}: any = useContext(CountContext)
+    const { browser}: any = useContext(CountContext)
+    const {getAll,} = Request()
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
     const [status, setStatus] = useState(false)
@@ -42,21 +43,9 @@ function TweetHome({
             }
         }
     }, [page])
-    const getTweet = async (page: number) => {
-        const token = cookie.get('token')
-        let url = '/api/v1/post/public'
-        let data: any = {page: page}
-        if (uid) {
-            url = '/api/v1/post/list'
-            data = {
-                uid,
-                page
-            }
-        }
-        const res: any = await request('post', url, data, token ? token : '')
-        if (res == 'please') {
-            clear()
-        } else if (res && res?.status === 200) {
+
+    const tweetPar = (res: any) => {
+       if (res && res?.status === 200) {
             const {data} = res
             const r: any = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
@@ -79,23 +68,36 @@ function TweetHome({
             setBol(true)
         }
     }
-
+    const getTweet = async (page: number) => {
+        const token = cookie.get('token')
+        let url = '/api/v1/post/public'
+        let data: any = {page}
+        if (uid) {
+            url = '/api/v1/post/list'
+            data = {
+                uid,
+                page
+            }
+        }
+        const at = await getAll({method: 'post', url, data, token: token ? token : ''})
+        tweetPar(at)
+    }
     useEffect(() => {
         const abc = cookie.get('token')
         if (abc) {
             setIsLogin(true)
         }
-        getTweet(1)
         setBol(false)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cookie.get('token')]);
-
-
     useEffect(() => {
         if (refresh) {
             getTweet(1)
         }
     }, [refresh]);
+    useEffect(() => {
+        getTweet(1)
+    }, []);
 
     return (
         <>

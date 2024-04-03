@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from 'react'
-import { CountContext } from "../Layout.tsx";
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion';
-import { request } from '../../utils/axios.ts';
+import Request from './axios.tsx';
 import Cookies from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
 import { useNavigate } from 'react-router-dom';
@@ -23,10 +22,9 @@ interface TweetsPropsType {
 }
 
 function Tweets({
-    name, isLogin, type = 'post', onPublish = () => {
-    }
+    name, isLogin, type = 'post', onPublish = () => {}
 }: TweetsPropsType) {
-    const { clear }: any = useContext(CountContext)
+    const  {getAll} =Request()
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
     const [openComment, setOpenComment] = useState(false);
@@ -40,7 +38,6 @@ function Tweets({
     }, [clickAnimate])
     // 是否是comment 而非reply，用于调用不同的like接口, parentId为0则为comment
     const isComment = localData.parentId === "0"
-
     const animationVariants = {
         hidden: { y: '100%', opacity: 0 },
         visible: { y: '-100%', opacity: 1 },
@@ -68,11 +65,9 @@ function Tweets({
             try {
                 if (localData?.likeStatus === false) {
                     setClickAnimate(true)
-                    const result: any = await request('post', url, data, token);
+                    const result: any =  getAll({method:'post',url,data,token});
                     result?.status === 200 ? setLocalData({ ...localData, likeStatus: true }) : null;
-                    if (result === 'please') {
-                        clear()
-                    } else if (result && result?.status === 200) {
+                   if (result && result?.status === 200) {
                         setLocalData({ ...localData, likeStatus: true, likeNum: Number(localData.likeNum) + 1 })
                     }
                 } else {
@@ -88,10 +83,8 @@ function Tweets({
                         url = '/api/v1//reply/like/cancel';
                         data = { replyId: localData.id }
                     }
-                    const result: any = await request('post', url, data, token);
-                    if (result === 'please') {
-                        clear()
-                    } else if (result && result?.status === 200) {
+                    const result: any = await getAll({method:'post',url,data,token});
+                 if (result && result?.status === 200) {
                         setLocalData({ ...localData, likeStatus: false, likeNum: Number(localData.likeNum) - 1 })
                     }
                 }
@@ -147,14 +140,13 @@ function Tweets({
                         <img loading={'lazy'} onClick={(e) => handleClickAvatar(e)}
                             src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
                             style={{ width: '36px', marginRight: '12px', borderRadius: '50%' }} />
-
-                        <p>
-                            <div>
+                        <div>
+                            <div style={{display:'flex',alignItems:'center',flexDirection:'row'}}>
                                 <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
                                 <img style={{ marginLeft: '4px' }} src="/certification.svg" alt="" />
                             </div>
                             <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
-                        </p>
+                        </div>
                         <p style={{
                             margin: '3px 0 0 8px',
                             color: 'rgb(83, 100, 113)',

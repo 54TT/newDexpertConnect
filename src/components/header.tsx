@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from 'react';
-import {Collapse, Drawer, Dropdown, } from 'antd'
+import {Collapse, Drawer, Dropdown,} from 'antd'
 import {CountContext} from '../Layout.tsx'
 import {useLocation, useNavigate} from 'react-router-dom';
 import {DownOutlined, LoadingOutlined} from '@ant-design/icons';
@@ -145,13 +145,16 @@ function Header() {
     }
     return (
         <div className={'headerBox'}>
-            <img src={"/topLogo.svg"} loading={'lazy'} alt="" style={{cursor: 'pointer'}} onClick={() => {
+            <div style={{display:'flex',alignItems:'center'}} onClick={() => {
                 history('/')
-            }}/>
+            }}>
+                <img src={"/topLogo.svg"} loading={'lazy'} alt="" style={{cursor: 'pointer'}} />
+                <p style={{color:'rgb(134,240,151)',fontSize:'22px',marginTop:'3px',marginLeft:'7px',lineHeight:'1',fontWeight:'bold'}}>DEXPERT</p>
+            </div>
             {
                 browser && <p className={`headerCenter dis`}>
                     {
-                        ['Market', 'DApp & Tools', 'Community'].map((i, ind) => {
+                        ['Market', 'DApps & Tools', 'Community'].map((i, ind) => {
                             return <span key={ind}
                                          style={{color: change(ind)}}
                                          onClick={() => {
@@ -183,14 +186,16 @@ function Header() {
                                           }} alt=""/>
                         }
                     </Dropdown> : browser ? <div className={'headerConnect'} onClick={loginModal}>
-                        <div className={'disCen'}><span>Connect Wallet</span> {load ?
-                            <LoadingOutlined style={{marginLeft: '4px'}}/> : ''}
-                        </div>
-                    </div> : <img  loading={'lazy'}src="/wallet.svg" onClick={loginModal} style={{width: '13%'}} alt=""/>
+                            <div className={'disCen'}><span>Connect Wallet</span> {load ?
+                                <LoadingOutlined style={{marginLeft: '4px'}}/> : ''}
+                            </div>
+                        </div> :
+                        <img loading={'lazy'} src="/wallet.svg" onClick={loginModal} style={{width: '13%'}} alt=""/>
                 }
                 {
                     !browser &&
-                    <img src="/side.svg" loading={'lazy'} alt="" style={{cursor: 'pointer', width: '28px', marginLeft: '8px'}}
+                    <img src="/side.svg" loading={'lazy'} alt=""
+                         style={{cursor: 'pointer', width: '28px', marginLeft: '8px'}}
                          onClick={() => {
                              showDrawer()
                          }}/>

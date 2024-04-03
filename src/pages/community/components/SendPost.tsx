@@ -1,23 +1,19 @@
 import {Button, Input, message, Popover} from 'antd';
-import {request} from '../../../../utils/axios.ts';
-import {useContext, useEffect, useRef, useState} from 'react';
+import Request from '../../../components/axios.tsx';
+import { useEffect, useRef, useState} from 'react';
 import {CloseOutlined} from '@ant-design/icons';
-import {CountContext} from '../../../Layout.tsx'
 import Cookies from 'js-cookie';
 import Picker from "@emoji-mart/react";
 import emojiData from "@emoji-mart/data";
-
 const { TextArea } = Input;
-
 interface SendPostTypeProps {
     type?: 'comment' | 'post' | 'reply',
     changeRefresh?: (name: any) => void,
     onPublish?: (data: any) => void,
     postData?: any,
 }
-
 function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPostTypeProps) {
-    const { clear }: any = useContext(CountContext)
+    const {getAll} =Request()
     const [img, setImg] = useState<any>(null);
     const [imgPreview, setImgPreview] = useState<any>(null);
     const [value, setValue] = useState('');
@@ -85,12 +81,12 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
         try {
             setPublishing(true);
             if (img !== null) {
-                imgUrl = await request('post', '/api/v1/upload/image', img, token);
+                const at ={method:'post', url:'/api/v1/upload/image', data:img, token}
+            //     imgUrl =  Request();
+                imgUrl = await getAll(at);
             }
             if (imgUrl !== null) {
-                if (imgUrl === 'please') {
-                    clear()
-                } else if (!imgUrl || imgUrl?.status !== 200) {
+           if (!imgUrl || imgUrl?.status !== 200) {
                     return messageApi.open({
                         type: 'warning',
                         content: 'Upload failed, please upload again!',
@@ -125,8 +121,8 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
                 }
                 url = '/api/v1/reply'
             }
-            const result: any = await request('post', url, params, token)
-
+            // const result: any = await Request(, , , token)
+            const result: any = await getAll({method:'post',url,data:params,token})
             if (result?.status === 200) {
                 onPublish?.(data);
                 changeRefresh?.(true)
@@ -134,9 +130,7 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
             setPublishing(false);
             clearImg();
             setValue('')
-            if (result === 'please') {
-                clear()
-            } else if (result && result.status === 200) {
+            if (result && result.status === 200) {
                 changeRefresh?.(true)
             }
         } catch (e) {

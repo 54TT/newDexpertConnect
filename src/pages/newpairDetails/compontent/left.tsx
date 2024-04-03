@@ -105,7 +105,7 @@ function Left({par}: any) {
                     <span>{data?.buyTxs || 0}</span>
                     <span>——</span>
                 </div>
-                <Progress percent={50} showInfo={false} strokeColor={'rgb(0,255,71)'}/>
+                <Progress percent={100} showInfo={false} strokeColor={'rgb(0,255,71)'}/>
                 <div className={`dis swapTop`}>
                     <span>——</span>
                     <span>——</span>

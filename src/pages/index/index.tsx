@@ -8,9 +8,8 @@ import {ethers} from 'ethers';
 import Loading from '../../components/loading.tsx'
 import {CountContext} from "../../Layout.tsx";
 import newPair from '../../components/getNewPair.tsx'
-
 function Index() {
-    const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad} = newPair() as any
+    const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad,getPage} = newPair() as any
     const hei = useRef<any>()
     const {browser,}: any = useContext(CountContext);
     const [select, setSelect] = useState('newPair')
@@ -25,6 +24,7 @@ function Index() {
             setTableHei(o)
         }
         getGas()
+        getPage(25)
     }, [])
     const getGas = async () => {
         const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.g.alchemy.com/v2/BhTc3g2lt1Qj3IagsyOJsH5065ueK1Aw')

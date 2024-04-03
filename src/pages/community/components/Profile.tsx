@@ -1,15 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState} from "react";
 import Copy from '../../../components/copy.tsx'
 import TWeetHome from "../../../components/tweetHome.tsx";
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Button, Form, Input, message } from 'antd'
-import { followUser, request, unfollowUser } from "../../../../utils/axios.ts";
+import {ArrowLeftOutlined} from '@ant-design/icons';
+import {Button, Form, Input, message} from 'antd'
+import Request from "../../../components/axios.tsx";
+// { followUser, unfollowUser }
 import Cookies from "js-cookie";
-import { formatAddress, getQueryParams } from "../../../../utils/utils.ts";
+import {formatAddress, getQueryParams} from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
-import { useLocation, useNavigate } from "react-router-dom";
-
+import {useLocation, useNavigate} from "react-router-dom";
 function Profie() {
+    const {getAll} = Request()
     const history = useNavigate();
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
@@ -25,9 +26,9 @@ function Profie() {
     const [newAvatar, setNewAvatar] = useState();
     const [newBG, setNewBG] = useState();
     const [form] = Form.useForm();
-    const { uid } = getQueryParams();
+    const {uid} = getQueryParams();
     const loginId = JSON.parse(Cookies.get('username') || '{}').uid
-    const { pathname } = useLocation();
+    const {pathname} = useLocation();
     const [isFollowed, setIsFollowed] = useState(false);
     useEffect(() => {
         if (status) {
@@ -63,13 +64,13 @@ function Profie() {
 
 
     const getUserProfile = async (setCookise?: boolean) => {
-
         if (!id) {
             return messageApi.warning('please connect your wallet')
         }
         const token = Cookies.get('token');
         if (!token) return;
-        const result: any = await request('get', `/api/v1/userinfo/${id}`, {}, token);
+        // const result: any = await Request('get', `/api/v1/userinfo/${id}`, {}, token);
+        const result: any = await getAll({method: 'get', url: `/api/v1/userinfo/${id}`, data: '', token});
         if (result?.status === 200) {
             const data = result.data;
             setData(data.data);
@@ -144,13 +145,15 @@ function Profie() {
         let coverUrl = previewBG;
 
         if (newAvatar) {
-            const result: any = await request('post', '/api/v1/upload/image', newAvatar, token);
+            // const result: any = await Request('post', '/api/v1/upload/image', newAvatar, token);
+            const result: any = await getAll({method: 'post', url: '/api/v1/upload/image', data: newAvatar, token});
             if (result.status === 200) {
                 avatarUrl = result?.data?.url;
             }
         }
         if (newBG) {
-            const result: any = await request('post', '/api/v1/upload/image', newBG, token);
+            // const result: any = await Request('post', '/api/v1/upload/image', newBG, token);
+            const result: any = await getAll({method: 'post', url: '/api/v1/upload/image', data: newBG, token});
             if (result.status === 200) {
                 coverUrl = result?.data?.url;
             }
@@ -160,11 +163,12 @@ function Profie() {
             user: {
                 ...data,
                 uid: id,
-                ...(avatarUrl ? { avatarUrl } : {}),
-                ...(coverUrl ? { coverUrl } : {})
+                ...(avatarUrl ? {avatarUrl} : {}),
+                ...(coverUrl ? {coverUrl} : {})
             }
         }
-        const result: any = await request('post', '/api/v1/userinfo', params, token);
+        // const result: any = await Request('post', '/api/v1/userinfo', params, token);
+        const result: any =await getAll({method: 'post', url: '/api/v1/userinfo', data: params, token});
         if (result.status === 200) {
             messageApi.success('update success');
             getUserProfile(true)
@@ -185,58 +189,60 @@ function Profie() {
 
         return <>
             <div className="profile-background">
-                <img className="profile-background-cover" loading={'lazy'} src='/community/changeImg.svg' onClick={() => {
-                    setInputType('background')
-                    inputRef?.current?.click()
-                }} alt={''} />
+                <img className="profile-background-cover" loading={'lazy'} src='/community/changeImg.svg'
+                     onClick={() => {
+                         setInputType('background')
+                         inputRef?.current?.click()
+                     }} alt={''}/>
                 <img loading={'lazy'} className="profile-background-img"
-                    src={previewBG || data?.coverUrl || "/community/profileBackground.png"} alt="" />
+                     src={previewBG || data?.coverUrl || "/community/profileBackground.png"} alt=""/>
                 <div className="profile-background-info">
                     <div className="profile-background-avatar">
                         <img loading={'lazy'} className="profile-background-avatar-img"
-                            src={previewAvatar || data?.avatarUrl || '/logo.svg'} alt="" />
-                        <img loading={'lazy'} className="profile-background-avatar-cover" src='/community/changeImg.svg' alt=""
-                            onClick={() => {
-                                setInputType('avatar')
-                                inputRef?.current?.click()
-                            }} />
+                             src={previewAvatar || data?.avatarUrl || '/logo.svg'} alt=""/>
+                        <img loading={'lazy'} className="profile-background-avatar-cover" src='/community/changeImg.svg'
+                             alt=""
+                             onClick={() => {
+                                 setInputType('avatar')
+                                 inputRef?.current?.click()
+                             }}/>
                     </div>
                 </div>
             </div>
             {contextHolder}
-            <div className="user-info-form" style={{ padding: '10px 48px' }}>
+            <div className="user-info-form" style={{padding: '10px 48px'}}>
                 <Form form={form} initialValues={data} onFinish={(data: any) => handleSubmit(data)}>
                     <Form.Item name='username' label='Name'>
-                        <Input />
+                        <Input/>
                     </Form.Item>
                     <Form.Item name='bio' label='Bio'>
-                        <Input />
+                        <Input/>
                     </Form.Item>
                     <Form.Item name='twitter' label='Twitter'>
-                        <Input />
+                        <Input/>
                     </Form.Item>
                     <Form.Item name='telegram' label='Telegram'>
-                        <Input />
+                        <Input/>
                     </Form.Item>
                     <Form.Item name='discord' label='Discord'>
-                        <Input />
+                        <Input/>
                     </Form.Item>
                 </Form>
             </div>
-            <div className="" style={{ display: 'flex', justifyContent: 'center' }}>
+            <div className="" style={{display: 'flex', justifyContent: 'center'}}>
                 <Button className="modify-form-submit" onClick={() => form.submit()}>Submit</Button>
             </div>
         </>
     }
 
     const handleFollow = async () => {
-        await followUser(id);
+        // await followUser(id);
         message.success('success follow')
         setIsFollowed(true);
     }
 
     const handleUnfollow = async () => {
-        await unfollowUser(id);
+        // await unfollowUser(id);
         message.success('success unfollow')
         setIsFollowed(false);
     }
@@ -248,24 +254,24 @@ function Profie() {
                     <ArrowLeftOutlined onClick={() => {
                         history(-1)
                     }}
-                        style={{
-                            color: 'rgb(214,223,215)',
-                            fontSize: '20px',
-                            marginRight: '10px',
-                            cursor: 'pointer'
-                        }} />
+                                       style={{
+                                           color: 'rgb(214,223,215)',
+                                           fontSize: '20px',
+                                           marginRight: '10px',
+                                           cursor: 'pointer'
+                                       }}/>
                     <div>
                         <p><span>{data?.username ? formatAddress(data.username) : ''}</span><img
-                            src="/certification.svg" alt="" loading={'lazy'} /></p>
+                            src="/certification.svg" alt="" loading={'lazy'}/></p>
                         <p>{data?.address ? formatAddress(data.address) : ''}</p>
                     </div>
                 </div>
                 <div className="profile-background">
-                    <img src={data?.coverUrl || "/community/profileBackground.png"} alt="" />
+                    <img src={data?.coverUrl || "/community/profileBackground.png"} alt=""/>
                     <div className="profile-background-info">
                         <div className="profile-background-avatar">
-                            <img loading={'lazy'} src={data?.avatarUrl || '/logo.svg'} alt="" />
-                        </div >
+                            <img loading={'lazy'} src={data?.avatarUrl || '/logo.svg'} alt=""/>
+                        </div>
                         <div className="profile-background-button">
                             {
 
@@ -279,7 +285,7 @@ function Profie() {
                                         marginRight: '12px',
                                         background: '#181e1c',
                                         cursor: 'pointer'
-                                    }} src={`/community/${v.key}.svg`} alt={''} /> : <></>
+                                    }} src={`/community/${v.key}.svg`} alt={''}/> : <></>
                                 )
                             }
                             {
@@ -288,21 +294,22 @@ function Profie() {
                                     <span className="follow-icon" onClick={() => handleFollow()}>Follow</span>)
                             }
                         </div>
-                    </div >
-                </div >
+                    </div>
+                </div>
                 <div className={`information`}>
-                    <div style={{ zIndex: '20' }} className={'informationLeft'}>
-                        <p className={'p'}><span>{data?.username ? formatAddress(data.username) : ''}</span><img loading={'lazy'}
-                            src="/certification.svg" alt="" /></p>
+                    <div style={{zIndex: '20'}} className={'informationLeft'}>
+                        <p className={'p'}><span>{data?.username ? formatAddress(data.username) : ''}</span><img
+                            loading={'lazy'}
+                            src="/certification.svg" alt=""/></p>
                         <p>{data?.address ? formatAddress(data.address) : ''} <Copy status={status}
-                            setStatus={setStatus}
-                            name={'0x3758...5478'} /></p>
+                                                                                    setStatus={setStatus}
+                                                                                    name={'0x3758...5478'}/></p>
                         <p className={'p'}>
-                            {data?.twitter && <img loading={'lazy'} src="/titter.svg" alt="" />}
-                            <img loading={'lazy'} src="/facebook.svg" alt="" />
-                        </p >
-                    </div >
-                    <div style={{ zIndex: '20' }} className={`informationRight `}>
+                            {data?.twitter && <img loading={'lazy'} src="/titter.svg" alt=""/>}
+                            <img loading={'lazy'} src="/facebook.svg" alt=""/>
+                        </p>
+                    </div>
+                    <div style={{zIndex: '20'}} className={`informationRight `}>
                         {
                             [{
                                 img: ["/btc.svg", "/eth1.svg", "/sol.svg"],
@@ -317,7 +324,7 @@ function Profie() {
                                     <div>
                                         {
                                             i.img.map((it: string, index: number) => {
-                                                return <img loading={'lazy'} src={it} key={index} alt="" />
+                                                return <img loading={'lazy'} src={it} key={index} alt=""/>
                                             })
                                         }
                                     </div>
@@ -352,7 +359,7 @@ function Profie() {
                         {/*    <p><span>1345 </span>Following</p>*/}
                         {/*</div>*/}
                     </div>
-                </div >
+                </div>
                 <p className={'hello'}>{data.bio || 'Nothing here'}</p>
                 <div className={'tokenTop'}>
                     {
@@ -362,22 +369,22 @@ function Profie() {
                                     setOptions(i)
                                 }
                             }} key={ind}
-                                style={{ color: options === i ? 'rgb(134,240,151 )' : 'rgb(214,223,215)' }}>{i}</p>
+                                      style={{color: options === i ? 'rgb(134,240,151 )' : 'rgb(214,223,215)'}}>{i}</p>
                         })
                     }
                 </div>
-            </div >
-            <div id='profileScroll' style={{ height: hei + 'px', overflowY: 'auto' }}
-                className={`scrollStyle community-content-post`}>
-                <TWeetHome uid={id} scrollId='profileScroll' style={{ overflowY: 'unset' }} />
+            </div>
+            <div id='profileScroll' style={{height: hei + 'px', overflowY: 'auto'}}
+                 className={`scrollStyle community-content-post`}>
+                <TWeetHome uid={id} scrollId='profileScroll' style={{overflowY: 'unset'}}/>
             </div>
             <CommonModal width='800px' className="modify-user-modal" footer={null} open={isModalOpen} onOk={handleOk}
-                onCancel={handleCancel}
+                         onCancel={handleCancel}
             >
-                <ModifyUserInfoForm />
+                <ModifyUserInfoForm/>
             </CommonModal>
-            <input ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{ display: 'none' }} />
-        </div >
+            <input ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{display: 'none'}}/>
+        </div>
     );
 }
 

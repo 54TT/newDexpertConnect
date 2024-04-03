@@ -1,36 +1,34 @@
 import Header from './components/header.tsx'
-import { Route, Routes, useLocation, useNavigate, } from "react-router-dom";
+import {Route, Routes, useLocation, useNavigate,} from "react-router-dom";
 import Index from './pages/index/index.tsx'
 import NewpairDetails from './pages/newpairDetails/index.tsx'
 import './style/all.less';
-import { createContext, useCallback, useEffect, useRef, useState } from 'react'
-import { getAppMetadata, getSdkError } from "@walletconnect/utils";
+import {createContext, useCallback, useEffect, useRef, useState} from 'react'
+import {getAppMetadata, getSdkError} from "@walletconnect/utils";
 import 'swiper/css';
-import {message, } from 'antd'
+import {message,} from 'antd'
 import Bot from './components/bottom.tsx';
-import { Web3Modal } from "@web3modal/standalone";
+import {Web3Modal} from "@web3modal/standalone";
 import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
-import { request } from '../utils/axios.ts';
+import Request from './components/axios.tsx';
 import Client from "@walletconnect/sign-client";
-import { ethers } from 'ethers';
-import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces } from "../utils/default";
+import {ethers} from 'ethers';
+import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
 import _ from 'lodash';
 import Dapp from './pages/dapp';
 import Community from './pages/community';
-
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
     walletConnectVersion: 1,
 });
 export const CountContext = createContext(null);
-
 function Layout() {
     const router = useLocation()
+    const {getAll, } = Request()
     const history = useNavigate()
     const [messageApi, contextHolder] = message.useMessage();
-
     const [chains, setChains] = useState<any>([]);
     const [client, setClient] = useState<any>(null);
     const [session, setSession] = useState<any>(null);
@@ -67,24 +65,27 @@ function Layout() {
     const login = async (sign: string, account: string, message: string, name: string) => {
         try {
             // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
-            const res: any = await request('post', '/api/v1/login', {
-                signature: sign,
-                addr: account,
-                message,
-                inviteCode: ''
+            const res = await getAll({
+                method: 'post', url: '/api/v1/login', data: {
+                    signature: sign,
+                    addr: account,
+                    message,
+                    inviteCode: ''
+                }, token: ''
             })
-            if (res === 'please') {
-                clear()
-            } else if (res && res.data && res.data?.accessToken) {
+            if (res?.status === 200 && res?.data?.accessToken) {
                 //    解析 token获取用户信息
                 const base64Url = res.data?.accessToken.split('.')[1];
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 const decodedToken = JSON.parse(atob(base64));
                 if (decodedToken && decodedToken?.uid) {
-                    const data: any = await request('get', "/api/v1/userinfo/" + decodedToken.uid, '', res.data?.accessToken)
-                    if (data === 'please') {
-                        clear()
-                    } else if (data && data?.status === 200) {
+                    const data: any = await getAll({
+                        method: 'get',
+                        url: "/api/v1/userinfo/" + decodedToken.uid,
+                        data: '',
+                        token: res.data?.accessToken
+                    })
+                    if (data && data?.status === 200) {
                         const user = data?.data?.data
                         setUserPar(user)
                         cookie.set('username', JSON.stringify(user))
@@ -117,7 +118,7 @@ function Layout() {
             const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
             // provider._isProvider   判断是否还有请求没有结束
             // 请求用户授权连接钱包
-            await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+            await (window as any).ethereum.request({method: 'eth_requestAccounts'});
             const account = await provider.send("eth_requestAccounts", []);
             // 连接的网络和链信息。
             const chain = await provider.getNetwork();
@@ -128,7 +129,8 @@ function Layout() {
                 // 判断是否是eth
                 if (chain && chain.name === 'homestead' && chain.chainId === 1) {
                     try {
-                        const token: any = await request('post', '/api/v1/token', { address: account[0] })
+                        const at = {method: 'post', url: '/api/v1/token', data: {address: account[0]}, token: ''}
+                        const token: any = getAll(at)
                         if (token && token?.data && token?.status === 200) {
                             // 签名消息
                             const message = token?.data?.nonce
@@ -192,10 +194,8 @@ function Layout() {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token: any = await request('post', '/api/v1/token', { address: address })
-            if (token === 'please') {
-                clear()
-            } else if (token && token?.data && token?.status === 200) {
+            const token: any = getAll({method: 'post', url: '/api/v1/token', data: {address: address}, token: ''})
+            if (token && token?.data && token?.status === 200) {
                 await loginMore(chainId, address, client, session, token?.data?.nonce);
             } else {
                 return null
@@ -225,7 +225,7 @@ function Layout() {
             try {
                 const requiredNamespaces = getRequiredNamespaces(['eip155:1']);
                 const optionalNamespaces = getOptionalNamespaces(['eip155:1']);
-                const { uri, approval } = await client.connect({
+                const {uri, approval} = await client.connect({
                     requiredNamespaces,
                     optionalNamespaces,
                 });
@@ -233,7 +233,7 @@ function Layout() {
                     const standaloneChains = Object.values(requiredNamespaces)
                         .map((namespace) => namespace.chains)
                         .flat()
-                    await web3Modal.openModal({ uri, standaloneChains });
+                    await web3Modal.openModal({uri, standaloneChains});
                 }
                 const ab = await approval();
                 await onSessionConnected(ab, 'yes', client);
@@ -251,6 +251,8 @@ function Layout() {
         if (cookie.get('username') && cookie.get('username') != undefined) {
             const abc = JSON.parse(cookie.get('username') as any)
             setUserPar(abc)
+        }else {
+            setUserPar(null)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cookie.get('username')]);
@@ -314,7 +316,6 @@ function Layout() {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-
     const value: any = {
         connect,
         clear,
@@ -327,20 +328,20 @@ function Layout() {
         newPairPar,
         setNewPairPar,
         isModalOpen,
-        setIsModalOpen, isModalSet, setIsModalSet
+        setIsModalOpen, isModalSet, setIsModalSet,
     }
     return (
         <CountContext.Provider value={value}>
-            <Header />
+            <Header/>
             <div className={big ? 'bigCen' : ''}>
                 <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/newpairDetails" element={<NewpairDetails />} />
-                    <Route path='/community/:tab' element={<Community />} />
-                    <Route path='/dapp' element={<Dapp />} />
+                    <Route path="/" element={<Index/>}/>
+                    <Route path="/newpairDetails" element={<NewpairDetails/>}/>
+                    <Route path='/community/:tab' element={<Community/>}/>
+                    <Route path='/dapp' element={<Dapp/>}/>
                 </Routes>
             </div>
-            <Bot />
+            <Bot/>
             {contextHolder}
         </CountContext.Provider>
     );

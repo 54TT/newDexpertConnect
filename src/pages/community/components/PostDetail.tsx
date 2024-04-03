@@ -1,8 +1,8 @@
 
-import { useCallback, useEffect, useState } from 'react';
+import {useCallback,useEffect, useState} from 'react';
 import Tweets from '../../../components/tweets';
 import SendPost from './SendPost';
-import {request} from '../../../../utils/axios.ts';
+import Request from '../../../components/axios.tsx';
 import Cookies from 'js-cookie';
 import { Spin } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -11,7 +11,6 @@ import { getQueryParams } from '../../../../utils/utils'
 
 // 渲染单条评论
 const RenderCommentTweet = ({ data = {}, token, type }: any) => {
-
   const renderData = {
     ...data,
     CreatedAt: data.createdAt,
@@ -30,7 +29,7 @@ const RenderCommentTweet = ({ data = {}, token, type }: any) => {
       commentId: data.id,
       page
     }
-    const result: any = await request('post', '/api/v1/reply/list', params, token);
+    const result: any = await Request('post', '/api/v1/reply/list', params, token);
     if (result.status === 200) {
       const { data } = result;
     }
@@ -46,6 +45,7 @@ const RenderCommentTweet = ({ data = {}, token, type }: any) => {
 
 
 const PostDetail = () => {
+  const {getAll} = Request()
   const postDetail = JSON.parse(localStorage.getItem('post-detail') || '{}');
   const [localDetail] = useState(postDetail);
   const [localReplyDetail, setLocalReplyDetail] = useState({})
@@ -55,8 +55,6 @@ const PostDetail = () => {
   const token = Cookies.get('token');
   const isLogin = token !== '';
   const { reply } = getQueryParams() as any;
-
-
   const getCommentOrReplyData = async (page = 1) => {
     setPage(page);
     let params = {};
@@ -75,7 +73,8 @@ const PostDetail = () => {
       url = '/api/v1/post/comment/list'
     }
     setPageStatus(true)
-    const result: any = await request('post', url, params, token);
+    // const result: any = await Request('post', url, params, token);
+    const result: any = await getAll({method:'post',url,data:params,token});
     if (result.status === 200) {
       const comments: never[] = reply ? result.data.replyList : result.data.comments
       if (page === 1) {
