@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 import Request from './axios.tsx';
 import Cookies from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
@@ -10,9 +10,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { DashOutlined } from '@ant-design/icons';
 import { setMany } from "../../utils/change.ts";
-
 dayjs.extend(relativeTime)
-
 interface TweetsPropsType {
     user?: any;
     name: any;
@@ -38,10 +36,10 @@ function Tweets({
     }, [clickAnimate])
     // 是否是comment 而非reply，用于调用不同的like接口, parentId为0则为comment
     const isComment = localData.parentId === "0"
-    const animationVariants = {
-        hidden: { y: '100%', opacity: 0 },
-        visible: { y: '-100%', opacity: 1 },
-    };
+    // const animationVariants = {
+    //     hidden: { y: '100%', opacity: 0 },
+    //     visible: { y: '-100%', opacity: 1 },
+    // };
 
     const clickLike = async (e: any) => {
         e.stopPropagation();
@@ -192,15 +190,15 @@ function Tweets({
                     <div className={'tweetsIn like-icon'} onClick={clickLike}>
                         <img loading={'lazy'} src={localData?.likeStatus ? '/loveClick.svg' : "/love.svg"} alt="" />
                         <span>{localData?.likeNum ? localData.likeNum : 0}</span>
-                        <motion.div
-                            initial="hidden"
-                            className={`tweetsLick`}
-                            animate={!clickAnimate ? 'hidden' : 'visible'}
-                            variants={animationVariants}
-                            exit="hidden"
-                            transition={{ duration: 1, ease: 'easeInOut' }}>
-                            <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>
-                        </motion.div>
+                        {/*<motion.div*/}
+                        {/*    initial="hidden"*/}
+                        {/*    className={`tweetsLick`}*/}
+                        {/*    animate={!clickAnimate ? 'hidden' : 'visible'}*/}
+                        {/*    variants={animationVariants}*/}
+                        {/*    exit="hidden"*/}
+                        {/*    transition={{ duration: 1, ease: 'easeInOut' }}>*/}
+                        {/*    <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>*/}
+                        {/*</motion.div>*/}
                     </div>
                     <p className={'tweetsIn share-icon'}>
                         <img loading={'lazy'} src="/share.svg" style={{ width: '22px' }} alt="" />
