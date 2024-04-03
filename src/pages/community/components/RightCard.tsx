@@ -45,7 +45,7 @@ function RightCard({title, par, load}: any) {
                             const float = i?.pairDayData[0]?.priceChange && Number(i?.pairDayData[0]?.priceChange) > 0 ? 1 : Number(i?.pairDayData[0]?.priceChange) < 0 ? -1 : 0
                             return (change && change.includes('T') && change.length > 10) ? '' :
                                 <div className="card-pair-info" key={ind}>
-                                    <p>{simplify(i?.token0?.symbol)}</p>
+                                    <p>{i?.token0?.symbol && i?.token0?.symbol === 'WETH' ? simplify(i?.token1?.symbol) : simplify(i?.token0?.symbol)}</p>
                                     <p>{setMany(i?.priceUSD)}</p>
                                     <p style={{color: float > 0 ? 'rgb(0,255,71)' : float < 0 ? 'rgb(213,9,58)' : '#d6dfd7'}}>{change || 0}</p>
                                 </div>
@@ -58,7 +58,7 @@ function RightCard({title, par, load}: any) {
                                setPage(res => res + 1)
                            }}>
                             <span style={{marginRight: '4px'}}>More</span>
-                               <DownOutlined/>
+                            <DownOutlined/>
                         </p>
                     }
                 </div>
