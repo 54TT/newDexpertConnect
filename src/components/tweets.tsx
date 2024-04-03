@@ -146,9 +146,13 @@ function Tweets({
                     <div className={'tweetsLeft'} style={{ flex: '1' }}>
                         <img loading={'lazy'} onClick={(e) => handleClickAvatar(e)}
                             src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
-                            style={{ width: '36px', marginRight: '5%', borderRadius: '50%' }} />
+                            style={{ width: '36px', marginRight: '12px', borderRadius: '50%' }} />
+
                         <p>
-                            <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
+                            <div>
+                                <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
+                                <img style={{ marginLeft: '4px' }} src="/certification.svg" alt="" />
+                            </div>
                             <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
                         </p>
                         <p style={{

@@ -332,7 +332,16 @@
 .modify-user-modal {
   .ant-modal-content {
     padding: 12px 0;
-
+    > button {
+      background: #879188;
+      border-radius: 100%;
+      &:hover {
+        background: #879188;
+      }
+      span {
+        color: #000000;
+      }
+    }
     .user-info-form {
       margin-top: 24px;
     }
@@ -390,7 +399,7 @@
           .ant-col {
             padding: 0 !important;
           }
-          padding:6px 10px;
+          padding: 6px 10px;
           border: 0.4px solid #687c69;
           border-radius: 12px;
           background: #000000;
@@ -399,7 +408,7 @@
             background: #000000;
             border: none;
             color: #fff;
-            padding: 0!important;
+            padding: 0 !important;
             &::placeholder {
               color: gray;
             }
