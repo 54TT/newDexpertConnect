@@ -1,10 +1,10 @@
 import axios from "axios";
 import cookie from "js-cookie";
-import {message,} from "antd";
+import { message, } from "antd";
 import dayjs from 'dayjs'
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 const requestA = axios.create({
-    baseURL: process.env.NODE_ENV === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io/'
+    baseURL: import.meta.env.MODE === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io/'
 })
 requestA.interceptors.request.use(
     (config) => {
@@ -54,7 +54,7 @@ const Request = () => {
         }
     }
     const getAll = async (name: any) => {
-        const {method, url, data, token} = name as any
+        const { method, url, data, token } = name as any
         if (username && username != 'undefined') {
             const params = JSON.parse(username)
             if (params && params?.exp && dayjs(dayjs.unix(params?.exp)).isAfter(dayjs())) {
@@ -73,7 +73,7 @@ const Request = () => {
             return await encapsulation(method, data, url, token, '')
         }
     }
-    return {getAll}
+    return { getAll }
 }
 export default Request
 // export const handlePublish = async (data: any) => {
