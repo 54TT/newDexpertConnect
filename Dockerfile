@@ -6,7 +6,7 @@ run npm install
 
 from base as build
 workdir /frontend
-run npm run test;
+run npm run build;
 
 FROM nginx:1.19.0 as prod
 COPY --from=build /frontend/dist /frontend
