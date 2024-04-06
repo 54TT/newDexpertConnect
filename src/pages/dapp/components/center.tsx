@@ -4,7 +4,7 @@ import { CountContext } from "../../../Layout.tsx";
 import { useLocation } from "react-router-dom";
 
 const LINK_BUTTON = [
-    '',
+    'https://drive.google.com/file/d/1ED7qadkVJMKJazvnqlgVARGR4-RYMCbc/view?usp=sharing',
     'https://t.me/DexpertThorBot',
     ''
 ]
