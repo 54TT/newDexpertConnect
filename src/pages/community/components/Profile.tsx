@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import {formatAddress, getQueryParams} from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
+import {throttle} from "lodash";
 function Profie() {
     const {getAll} = Request()
     const history = useNavigate();
@@ -190,10 +191,12 @@ function Profie() {
         return <>
             <div className="profile-background">
                 <img className="profile-background-cover" loading={'lazy'} src='/community/changeImg.svg'
-                     onClick={() => {
-                         setInputType('background')
-                         inputRef?.current?.click()
-                     }} alt={''}/>
+                     onClick={
+                         throttle(   function (){
+                             setInputType('background')
+                             inputRef?.current?.click()
+                         }, 1500, {'trailing': false})
+                     } alt={''}/>
                 <img loading={'lazy'} className="profile-background-img"
                      src={previewBG || data?.coverUrl || "/community/profileBackground.png"} alt=""/>
                 <div className="profile-background-info">
@@ -202,10 +205,12 @@ function Profie() {
                              src={previewAvatar || data?.avatarUrl || '/logo.svg'} alt=""/>
                         <img loading={'lazy'} className="profile-background-avatar-cover" src='/community/changeImg.svg'
                              alt=""
-                             onClick={() => {
-                                 setInputType('avatar')
-                                 inputRef?.current?.click()
-                             }}/>
+                             onClick={
+                                 throttle(   function (){
+                                     setInputType('avatar')
+                                     inputRef?.current?.click()
+                                 }, 1500, {'trailing': false})
+                        }/>
                     </div>
                 </div>
             </div>
@@ -230,23 +235,27 @@ function Profie() {
                 </Form>
             </div>
             <div className="" style={{display: 'flex', justifyContent: 'center'}}>
-                <Button className="modify-form-submit" onClick={() => form.submit()}>Submit</Button>
+                <Button className="modify-form-submit" onClick={
+                    throttle(   function (){
+                        form.submit()
+                }, 1500, {'trailing': false})}>Submit</Button>
             </div>
         </>
     }
 
-    const handleFollow = async () => {
-        // await followUser(id);
-        message.success('success follow')
-        setIsFollowed(true);
-    }
+    const handleFollow =
+        throttle(async    function (){
+            // await followUser(id);
+            message.success('success follow')
+            setIsFollowed(true);
+        }, 1500, {'trailing': false})
 
-    const handleUnfollow = async () => {
-        // await unfollowUser(id);
-        message.success('success unfollow')
-        setIsFollowed(false);
-    }
-
+    const handleUnfollow =
+        throttle(async    function (){
+            // await unfollowUser(id);
+            message.success('success unfollow')
+            setIsFollowed(false);
+        }, 1500, {'trailing': false})
     return (
         <div className={'username-page'}>
             <div ref={topRef}>
@@ -329,13 +338,15 @@ function Profie() {
                                         }
                                     </div>
                                     <div><span>{i.holding + ' '} </span>Holding</div>
-                                    <div onClick={() => {
+                                    <div onClick={
+                                        throttle(    function (){
                                         if (uid) {
                                             history('/community/following?uid=' + uid)
                                         } else {
                                             history('/community/following')
                                         }
-                                    }}><span>{i?.following + ' '} </span>{ind === 0 ? 'Following' : 'Follower'}
+                                        }, 1500, {'trailing': false})
+                                    }><span>{i?.following + ' '} </span>{ind === 0 ? 'Following' : 'Follower'}
                                     </div>
                                 </div>
                             })
@@ -364,11 +375,13 @@ function Profie() {
                 <div className={'tokenTop'}>
                     {
                         ['Community', 'Token'].map((i: string, ind: number) => {
-                            return <p onClick={() => {
-                                if (options !== i) {
-                                    setOptions(i)
-                                }
-                            }} key={ind}
+                            return <p onClick={
+                                throttle(    function (){
+                                    if (options !== i) {
+                                        setOptions(i)
+                                    }
+                                }, 1500, {'trailing': false})
+                            } key={ind}
                                       style={{color: options === i ? 'rgb(134,240,151 )' : 'rgb(214,223,215)'}}>{i}</p>
                         })
                     }

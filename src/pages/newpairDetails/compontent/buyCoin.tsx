@@ -1,6 +1,7 @@
 import {Input, Select} from 'antd'
 import {CaretDownOutlined} from "@ant-design/icons";
 import {useState} from "react";
+import {throttle} from "lodash";
 
 function BuyCoin({changStatus}: any) {
     const [value, setValue] = useState('')
@@ -16,11 +17,12 @@ function BuyCoin({changStatus}: any) {
             setTwo(e.target.value)
         }
     }
-    const result = () => {
-        if (value && one && two) {
-            changStatus(true)
-        }
-    }
+    const result =
+        throttle(    function (){
+            if (value && one && two) {
+                changStatus(true)
+            }
+        }, 1500, {'trailing': false})
     return (
         <div className={`buyCoin buyCoinBorder`}>
             <Select

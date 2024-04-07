@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { DashOutlined } from '@ant-design/icons';
 import { setMany } from "../../utils/change.ts";
+import {throttle} from "lodash";
 dayjs.extend(relativeTime)
 interface TweetsPropsType {
     user?: any;
@@ -41,7 +42,7 @@ function Tweets({
     //     visible: { y: '-100%', opacity: 1 },
     // };
 
-    const clickLike = async (e: any) => {
+    const clickLike = throttle( async function (e:any) {
         e.stopPropagation();
         if (isLogin) {
             const token = Cookies.get('token');
@@ -89,16 +90,14 @@ function Tweets({
                 return null
             }
         }
-    }
-
+    }, 1500, {'trailing': false})
     const handleAddComment = () => {
         // 设置评论数量
         setLocalData({ ...localData, commentNum: localData?.commentNum ? Number(localData?.commentNum) + 1 : 1 });
         onPublish?.()
         setOpenComment(false);
     }
-
-    const handleToDetail = () => {
+    const handleToDetail = throttle( function () {
         if (!isLogin) {
             message.warning('pleast connect your wallet');
             return;
@@ -114,17 +113,14 @@ function Tweets({
         }
         localStorage.setItem('post-detail', JSON.stringify(localData))
         history('/community/detail')
-    }
-
-    const handleClickAvatar = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+    }, 1500, {'trailing': false})
+    const handleClickAvatar = throttle( function (e:any) {
         e.stopPropagation()
         if (!isLogin) {
             return message.warning('please connect your wallet')
         }
         history(`/community/user?uid=${localData.user.uid}`)
-    }
-
-
+        }, 1500, {'trailing': false})
     return (
         <>
             <div className={classNames('tweetsBox', { 'tweets-comment': type === 'comment' })} onClick={() => {
@@ -180,10 +176,12 @@ function Tweets({
             </div> */}
                 <div className={'tweetsOperate'}>
                     <p className={'tweetsIn'}>
-                        <img loading={'lazy'} src="/comment.svg" alt="" onClick={(e) => {
-                            setOpenComment(true);
-                            e.stopPropagation();
-                        }} />
+                        <img loading={'lazy'} src="/comment.svg" alt="" onClick={
+                            throttle( function (e:any) {
+                                e.stopPropagation();
+                                setOpenComment(true);
+                            }, 1500, {'trailing': false})
+                        } />
                         <span>{localData?.commentNum ? localData.commentNum : 0}</span>
                     </p>
                     <div className={'tweetsIn like-icon'} onClick={clickLike}>

@@ -1,6 +1,7 @@
 import {CheckCircleOutlined} from "@ant-design/icons";
 import copy from "copy-to-clipboard";
 import {Popover} from "antd";
+import {throttle} from "lodash";
 
 function Copy({status, setStatus, name}: any) {
     return (
@@ -9,10 +10,12 @@ function Copy({status, setStatus, name}: any) {
             {
                 status ? <CheckCircleOutlined style={{fontSize: '15px', marginLeft: '5px'}}/> :
                     <img src="/copy.svg" alt="" loading={'lazy'} style={{width: '15px', cursor: 'pointer', marginLeft: '5px'}}
-                         onClick={() => {
-                             copy(name)
-                             setStatus(true)
-                         }}/>
+                         onClick={
+                             throttle( function () {
+                                 copy(name)
+                                 setStatus(true)
+                             }, 1500, {'trailing': false})
+                         }/>
             }
         </Popover>
     );

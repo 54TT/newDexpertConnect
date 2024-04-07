@@ -5,6 +5,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import {DownOutlined, LoadingOutlined} from '@ant-design/icons';
 import {simplify} from '../../utils/change.ts';
 import HeaderModal from "./headerModal.tsx";
+import {throttle} from "lodash";
 
 function Header() {
     const router = useLocation()
@@ -23,14 +24,14 @@ function Header() {
             setSelect(router.pathname)
         }
     }, []);
-    const showDrawer = () => {
-        setOpen(true);
-    };
+    const showDrawer = throttle( function () {
+            setOpen(true);
+        }, 1500, {'trailing': false})
     const onClose = () => {
         setOpen(false);
     };
     // 改变路由方法
-    const historyChange = (i: number) => {
+    const historyChange =throttle( function (i: number) {
         switch (i) {
             case 2:
                 history('/community/lastest')
@@ -42,10 +43,10 @@ function Header() {
                 history('/app')
                 break;
         }
-    }
-    const logout = () => {
+    }, 1500, {'trailing': false})
+    const logout = throttle( function () {
         clear()
-    }
+    }, 1500, {'trailing': false})
     const items: any = [
         {
             key: '1',
@@ -54,13 +55,13 @@ function Header() {
             ),
         },
     ];
-    const loginModal = () => {
-        if (!load) {
-            if (!user) {
-                setIsModalOpen(true)
+    const loginModal = throttle( function () {
+            if (!load) {
+                if (!user) {
+                    setIsModalOpen(true)
+                }
             }
-        }
-    }
+        }, 1500, {'trailing': false})
 
     const collapseItems: any = [
         {
@@ -82,12 +83,14 @@ function Header() {
                         name: 'Token Checker',
                         img: '/checker.svg'
                     }, {name: 'Trending', img: '/trending.svg'}].map((i: any, ind: number) => {
-                        return <p key={ind} onClick={() => {
-                            if (ind === 0) {
-                                history('/app')
-                                onClose()
-                            }
-                        }}><img src={i.img} alt="" loading={'lazy'}/><span
+                        return <p key={ind} onClick={
+                            throttle( function () {
+                                if (ind === 0) {
+                                    history('/app')
+                                    onClose()
+                                }
+                            }, 1500, {'trailing': false})
+                        }><img src={i.img} alt="" loading={'lazy'}/><span
                             style={{color: ind > 0 ? 'gray' : 'rgb(200,200,200)'}}>{i.name}</span></p>
                     })
                 }
@@ -98,14 +101,16 @@ function Header() {
             label: 'Community',
             children: <div className={'collapseChildeen'}>
                 {
-                    [{name: 'lastest', img: "/community/latest.svg"}, {
-                        name: 'profile',
+                    [{name: 'Lastest', img: "/community/latest.svg"}, {
+                        name: 'Profile',
                         img: "/community/profile.svg"
-                    }, {name: 'following', img: "/community/follow.svg"}].map((i: any, ind: number) => {
-                        return <p key={ind} onClick={() => {
-                            history(`/community/${i.name}`);
-                            onClose()
-                        }}>
+                    }, {name: 'Following', img: "/community/follow.svg"}].map((i: any, ind: number) => {
+                        return <p key={ind} onClick={
+                            throttle( function () {
+                                history(`/community/${i.name}`);
+                                onClose()
+                            }, 1500, {'trailing': false})
+                        }>
                             <img src={i.img} alt="" loading={'lazy'}/>
                             <span>{i.name}</span>
                         </p>
@@ -145,9 +150,11 @@ function Header() {
     }
     return (
         <div className={'headerBox'}>
-            <div style={{display: 'flex', alignItems: 'center'}} onClick={() => {
-                window.open('https://info.dexpert.io/')
-            }}>
+            <div style={{display: 'flex', alignItems: 'center'}} onClick={
+                throttle( function () {
+                    window.open('https://info.dexpert.io/')
+                }, 1500, {'trailing': false})
+            }>
                 <img src={"/topLogo.svg"} loading={'lazy'} alt="" style={{cursor: 'pointer'}}/>
                 <p style={{
                     color: 'rgb(134,240,151)',
@@ -164,9 +171,10 @@ function Header() {
                         ['Market', 'DApps & Tools', 'Community'].map((i, ind) => {
                             return <span key={ind}
                                          style={{color: change(ind)}}
-                                         onClick={() => {
-                                             historyChange(ind);
-                                         }}>{i}</span>
+                                         onClick={throttle( function () {
+                                                 historyChange(ind);
+                                             }, 1500, {'trailing': false})
+                                         }>{i}</span>
                         })
                     }
                 </p>

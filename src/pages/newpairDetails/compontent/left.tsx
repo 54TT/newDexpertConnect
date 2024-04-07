@@ -5,6 +5,7 @@ import {setMany, simplify} from '../../../../utils/change.ts'
 import Copy from '../../../components/copy.tsx'
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
+import {throttle} from "lodash";
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({par}: any) {
     const h = window.innerHeight - 25 - 54
@@ -38,13 +39,15 @@ function Left({par}: any) {
                         <span>{simplify(data?.token1?.symbol)}</span>
                     </p>
                 </div>
-                <p onClick={() => {
-                    if (data?.collect) {
-                        setData({...data, collect: false})
-                    } else {
-                        setData({...data, collect: true})
-                    }
-                }}>
+                <p onClick={
+                    throttle(    function (){
+                        if (data?.collect) {
+                            setData({...data, collect: false})
+                        } else {
+                            setData({...data, collect: true})
+                        }
+                    }, 1500, {'trailing': false})
+               }>
                     {/*<img src={data?.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""/>*/}
                 </p>
             </div>

@@ -4,6 +4,7 @@ import newPair from "../../../components/getNewPair.tsx";
 import Loading from "../../../components/loading.tsx";
 import {DownOutlined, LoadingOutlined} from '@ant-design/icons'
 import {useState} from "react";
+import {throttle} from "lodash";
 
 function RightCard({title, par, load}: any) {
     const {moreLoad, tableDta, changePage, tableDtaLoad} = newPair() as any
@@ -54,9 +55,10 @@ function RightCard({title, par, load}: any) {
                     {
                         page !== 3 &&
                         <p style={{color: 'rgb(135,145,136)', textAlign: 'center', margin: '6px 0', cursor: 'pointer'}}
-                           onClick={() => {
-                               setPage(res => res + 1)
-                           }}>
+                           onClick={
+                               throttle(    function (){
+                                   setPage(res => res + 1)
+                               }, 1500, {'trailing': false})}>
                             <span style={{marginRight: '4px'}}>More</span>
                             <DownOutlined/>
                         </p>

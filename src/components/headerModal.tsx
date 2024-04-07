@@ -3,6 +3,7 @@ import {useContext, useState} from "react";
 import {CountContext} from "../Layout.tsx";
 import cookie from "js-cookie";
 import Request from "./axios.tsx";
+import {throttle} from "lodash";
 function HeaderModal() {
     const {
         browser,
@@ -25,7 +26,7 @@ function HeaderModal() {
     const changeName = (e: any) => {
         setValue(e.target.value)
     }
-    const pushSet = async () => {
+    const pushSet = throttle( async function () {
         if (value) {
             const username = cookie.get('username')
             const token = cookie.get('token')
@@ -41,8 +42,8 @@ function HeaderModal() {
                 }
             }
         }
-    }
-    const connectWallet = async () => {
+    }, 1500, {'trailing': false})
+    const connectWallet = throttle( async function () {
         try {
             if (window.innerWidth > 768) {
                 setLoad(true)
@@ -54,11 +55,11 @@ function HeaderModal() {
         } catch (e) {
             return null
         }
-    }
-    const onConnect = () => {
+    }, 1500, {'trailing': false})
+    const onConnect = throttle( function () {
         connect();
         setIsModalOpen(false)
-    };
+        }, 1500, {'trailing': false})
     return (
         <Modal destroyOnClose={true} centered title={null} footer={null} className={'walletModal'}
                maskClosable={false} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>

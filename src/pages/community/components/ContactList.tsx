@@ -6,6 +6,7 @@ import Request from "../../../components/axios.tsx";
 import {formatAddress, getQueryParams} from "../../../../utils/utils";
 import {Spin} from "antd";
 import {useNavigate} from "react-router";
+import {throttle} from "lodash";
 export interface FollowTabType {
     label: 'Following' | 'Follower',
     key: '1' | '2',
@@ -46,7 +47,8 @@ function UserItem({
     const history = useNavigate();
 
     return <div className="post-item follow-list" style={{maxHeight: '300px'}}
-                onClick={() => history(`/community/user?uid=${uid}`)}>
+                onClick={throttle(  function (){  history(`/community/user?uid=${uid}`)  }, 1500, {'trailing': false})
+    }>
         <div className="post-item-avatar">
             <img loading={'lazy'} src={avatar || '/logo.svg'} style={{display:'block',cursor:'pointer'}} alt=""/>
         </div>
@@ -84,15 +86,19 @@ function UserItem({
       </div> */}
         </div>
         <div className="follow-list-action">
-            {tab === '1' && follow ? <div className="follow-list-action-unfollow follow-icon" onClick={async (e) => {
-                e.stopPropagation()
-                // await unfollowUser(uid);
-                setFollow(false);
-            }}>Unfollow</div> : <div className="follow-list-action-unfollow unfollow-icon" onClick={async (e) => {
-                e.stopPropagation()
-                // await followUser(uid);
-                setFollow(false);
-            }}>Follow</div>}
+            {tab === '1' && follow ? <div className="follow-list-action-unfollow follow-icon" onClick={
+                throttle(  async function (e){
+                    e.stopPropagation()
+                    // await unfollowUser(uid);
+                    setFollow(false);
+                }, 1500, {'trailing': false})
+            }>Unfollow</div> : <div className="follow-list-action-unfollow unfollow-icon" onClick={
+                throttle(  async function (e){
+                    e.stopPropagation()
+                    // await unfollowUser(uid);
+                    setFollow(false);
+                }, 1500, {'trailing': false})
+            }>Follow</div>}
         </div>
     </div>
 }

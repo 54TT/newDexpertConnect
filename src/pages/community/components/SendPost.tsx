@@ -1,19 +1,23 @@
 import {Button, Input, message, Popover} from 'antd';
 import Request from '../../../components/axios.tsx';
-import { useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {CloseOutlined} from '@ant-design/icons';
 import Cookies from 'js-cookie';
 import Picker from "@emoji-mart/react";
 import emojiData from "@emoji-mart/data";
-const { TextArea } = Input;
+import {throttle} from 'lodash'
+
+const {TextArea} = Input;
+
 interface SendPostTypeProps {
     type?: 'comment' | 'post' | 'reply',
     changeRefresh?: (name: any) => void,
     onPublish?: (data: any) => void,
     postData?: any,
 }
-function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPostTypeProps) {
-    const {getAll} =Request()
+
+function SendPost({type = 'post', changeRefresh, onPublish, postData}: SendPostTypeProps) {
+    const {getAll} = Request()
     const [img, setImg] = useState<any>(null);
     const [imgPreview, setImgPreview] = useState<any>(null);
     const [value, setValue] = useState('');
@@ -22,11 +26,10 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
     const [messageApi, contextHolder] = message.useMessage();
     const inputRef = useRef<HTMLInputElement>(null);
     const [user, setUser] = useState<any>({});
-    const clickImage = () => {
+    const clickImage = throttle( function () {
         inputRef?.current?.click?.();
-    }
-
-    const handleuploadImage = (e: any) => {
+    }, 1500, {'trailing': false})
+        const handleuploadImage = (e: any) => {
         const file = e.target.files[0];
         const allowedTypes = ['image/jpeg', 'image/png']; // 允许的图片类型
         const uploadInput = inputRef?.current
@@ -74,19 +77,19 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
         }
     }, [])
 
-    const handlePostSend = async () => {
+    const handlePostSend = throttle( async function () {
         const token = Cookies.get('token');
         const username: any = Cookies.get('username');
         let imgUrl: any = null
         try {
             setPublishing(true);
             if (img !== null) {
-                const at ={method:'post', url:'/api/v1/upload/image', data:img, token}
-            //     imgUrl =  Request();
+                const at = {method: 'post', url: '/api/v1/upload/image', data: img, token}
+                //     imgUrl =  Request();
                 imgUrl = await getAll(at);
             }
             if (imgUrl !== null) {
-           if (!imgUrl || imgUrl?.status !== 200) {
+                if (!imgUrl || imgUrl?.status !== 200) {
                     return messageApi.open({
                         type: 'warning',
                         content: 'Upload failed, please upload again!',
@@ -122,7 +125,7 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
                 url = '/api/v1/reply'
             }
             // const result: any = await Request(, , , token)
-            const result: any = await getAll({method:'post',url,data:params,token})
+            const result: any = await getAll({method: 'post', url, data: params, token})
             if (result?.status === 200) {
                 onPublish?.(data);
                 changeRefresh?.(true)
@@ -138,7 +141,7 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
             setPublishing(false);
         }
 
-    }
+    }, 1500, {'trailing': false})
 
     const handleChangeValue = (value: string, img: unknown) => {
         if (value === '' && img === null) {
@@ -147,19 +150,16 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
             setSendDisable(false);
         }
     }
-    const clearImg = () => {
+    const clearImg =   throttle( function () {
         handleChangeValue(value, null);
         setImg(null)
         setImgPreview(null)
-
         const uploadInput: any = inputRef?.current;
         // 清空value，触发input事件
-
         if (uploadInput?.value) {
             uploadInput.value = null
         }
-    }
-
+    }, 1500, {'trailing': false})
     useEffect(() => {
         const user = Cookies.get('username');
         if (user) {
@@ -170,26 +170,26 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
         setValue(value + e.native)
     }
     const content = <Picker data={emojiData} previewPosition={'none'} emojiButtonSize={'30'} searchPosition={'none'}
-        maxFrequentRows={'0'} perLine={'5'} emojiSize={'17'} onEmojiSelect={change} />
+                            maxFrequentRows={'0'} perLine={'5'} emojiSize={'17'} onEmojiSelect={change}/>
     return <>
         {contextHolder}
         <div className="community-content-post-send">
             <div className="community-content-post-send-avatar">
-                <img loading={'lazy'} src={user?.avatarUrl || '/logo.svg'} alt="" />
+                <img loading={'lazy'} src={user?.avatarUrl || '/logo.svg'} alt=""/>
             </div>
             <div className="community-content-post-send-input">
                 <TextArea value={value} autoSize variant="borderless" placeholder='Share your insights...'
-                    onChange={(e) => {
-                        setValue(e.target.value)
-                        handleChangeValue(e.target.value, img)
-                    }} />
+                          onChange={(e) => {
+                              setValue(e.target.value)
+                              handleChangeValue(e.target.value, img)
+                          }}/>
             </div>
         </div>
         <div className='post-send-imgList'>
             {
                 imgPreview ? <div className='post-send-imgList-delete'>
-                    <img loading={'lazy'} src={imgPreview} alt="" />
-                    <Button size='small' icon={<CloseOutlined />} shape="circle" onClick={() => clearImg()} />
+                    <img loading={'lazy'} src={imgPreview} alt=""/>
+                    <Button size='small' icon={<CloseOutlined/>} shape="circle" onClick={() => clearImg()}/>
                 </div> : <></>
             }
         </div>
@@ -198,11 +198,12 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
                 {
                     toolsIcon.map((data: any, ind: number) => {
                         if (data.name === 'emoji') {
-                            return <Popover content={content} key={ind} overlayClassName={'sendPostClass'} trigger="click">
-                                <img loading={'lazy'}  alt={''} src={data.img} onClick={data.onClick} />
+                            return <Popover content={content} key={ind} overlayClassName={'sendPostClass'}
+                                            trigger="click">
+                                <img loading={'lazy'} alt={''} src={data.img} onClick={data.onClick}/>
                             </Popover>
                         } else {
-                            return <img key={ind} loading={'lazy'} alt={''} src={data.img} onClick={data.onClick} />
+                            return <img key={ind} loading={'lazy'} alt={''} src={data.img} onClick={data.onClick}/>
                         }
                     })
                 }
@@ -211,7 +212,7 @@ function SendPost({ type = 'post', changeRefresh, onPublish, postData }: SendPos
                 <Button onClick={() => handlePostSend()} disabled={sendDisable} loading={publishing}>Post</Button>
             </div>
         </div>
-        <input ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{ display: 'none' }} />
+        <input ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{display: 'none'}}/>
     </>
 }
 

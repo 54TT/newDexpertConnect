@@ -3,6 +3,7 @@ import {A11y, Autoplay, EffectFade, Pagination} from 'swiper/modules';
 import {useContext, useEffect, useRef, useState} from 'react'
 import TweetHome from "../../../components/tweetHome.tsx";
 import {CountContext} from "../../../Layout.tsx";
+import {throttle} from "lodash";
 function Right() {
     const swiperRef: any = useRef()
     const topRef: any = useRef()
@@ -19,11 +20,11 @@ function Right() {
             setHei(remain.toString())
         }
     }, []);
-    const selectTweet = (name: string) => {
+    const selectTweet =  throttle(    function ( name: string){
         if (select !== name) {
             setSelect(name)
         }
-    }
+    }, 1500, {'trailing': false})
     const changeHei = (name: boolean) => {
         setHeiBol(name)
     }
@@ -40,11 +41,11 @@ function Right() {
                     autoplay={{delay: 2000, disableOnInteraction: false}}>
                     {
                         ['/poster1.jpg','/poster2.jpg', '/poster3.jpg',].map((i, ind) => {
-                            return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={() => {
-                                if (ind === 0) {
-                                    window.open('https://info.dexpert.io/pointsDetail')
-                                }
-                            }} style={{width: '100%',borderRadius: "20px", cursor: "pointer"}}
+                            return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={
+                                throttle(    function (){   if (ind === 0) {
+                                    // window.open('https://info.dexpert.io/pointsDetail')
+                                }}, 1500, {'trailing': false})
+                            } style={{width: '100%',borderRadius: "20px", cursor: "pointer"}}
                                                                alt=""/></SwiperSlide>
                         })
                     }
