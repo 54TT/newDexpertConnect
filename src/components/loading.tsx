@@ -4,7 +4,6 @@ import {CountContext} from "../Layout.tsx";
 
 function Loading({status}: any) {
     const {browser}: any = useContext(CountContext);
-
     return (
         <div className={'disCen'} style={{
             marginTop: status === 'none' ? '0' : status === '20' ? '20%' : '50%',

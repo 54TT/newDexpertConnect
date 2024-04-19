@@ -40,7 +40,7 @@ function Date({tableDta, time, setDta}: any) {
                     return (b && b.includes('T') && b.length > 10) ? '' :
                         <div key={ind} className={`indexNewPairBodyData dis`} onClick={() => push(record)}>
                             <div className={`indexTableLogo indexNewPairBone`}>
-                                <img loading={'lazy'} src={record.collect ? '/collectSelect.svg' : "/collect.svg"}
+                                <img loading={'lazy'} src={record?.collect ? '/collectSelect.svg' : "/collect.svg"}
                                      style={{display: 'none'}} alt=""
                                      onClick={(e: any) => click(record, e)}/>
                                 <div>

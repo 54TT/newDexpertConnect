@@ -1,10 +1,9 @@
 import classNames from "classnames";
 import { useEffect, useState} from "react";
 import Cookies from "js-cookie";
-import Request from "../../../components/axios.tsx";
-// ,{followUser, unfollowUser}
+import Request, {getTkAndUserName} from "../../../components/axios.tsx";
 import {formatAddress, getQueryParams} from "../../../../utils/utils";
-import {Spin} from "antd";
+import {message, Spin} from "antd";
 import {useNavigate} from "react-router";
 import {throttle} from "lodash";
 export interface FollowTabType {
@@ -31,11 +30,12 @@ export interface PostImteDataType {
 interface PostImtePropsType {
     data: any
     tab: string;
+    getAll:any
 }
 
 function UserItem({
                       data,
-                      tab
+                      tab,getAll
                   }: PostImtePropsType) {
     const {
         uid,
@@ -89,14 +89,32 @@ function UserItem({
             {tab === '1' && follow ? <div className="follow-list-action-unfollow follow-icon" onClick={
                 throttle(  async function (e){
                     e.stopPropagation()
-                    // await unfollowUser(uid);
-                    setFollow(false);
+                    try {
+                        const [token] = getTkAndUserName();
+                        const result: any = await getAll({method:'post',url: '/api/v1/unfollow', data:{uid: uid}, token});
+                        if (result?.status === 200) {
+                            setFollow(false);
+                        } else {
+                            return message.error('faild to unfollow');
+                        }
+                    } catch (e) {
+                        return Promise.reject(e)
+                    }
                 }, 1500, {'trailing': false})
             }>Unfollow</div> : <div className="follow-list-action-unfollow unfollow-icon" onClick={
                 throttle(  async function (e){
                     e.stopPropagation()
-                    // await unfollowUser(uid);
-                    setFollow(false);
+                    try {
+                        const [token] = getTkAndUserName();
+                        const result: any = await getAll({method:'post',url: '/api/v1/unfollow', data:{uid: uid}, token});
+                        if (result?.status === 200) {
+                            setFollow(false);
+                        } else {
+                            return message.error('faild to unfollow');
+                        }
+                    } catch (e) {
+                        return Promise.reject(e)
+                    }
                 }, 1500, {'trailing': false})
             }>Follow</div>}
         </div>
@@ -168,7 +186,7 @@ export default function ContactList() {
                     alignItems: 'center',
                     color: '#fff',
                     marginTop: '20px'
-                }}>Not data</div> : data.map((v,ind) => <UserItem data={v} key={ind} tab={activeTab}/>)
+                }}>Not data</div> : data.map((v,ind) => <UserItem data={v} getAll={getAll} key={ind} tab={activeTab}/>)
         }
     </>
 }

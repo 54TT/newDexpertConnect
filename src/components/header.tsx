@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useState} from 'react';
 import {Collapse, Drawer, Dropdown,} from 'antd'
 import {CountContext} from '../Layout.tsx'
 import {useLocation, useNavigate} from 'react-router-dom';
@@ -18,20 +18,14 @@ function Header() {
     }: any = useContext(CountContext);
     const history = useNavigate();
     const [open, setOpen] = useState(false);
-    const [, setSelect] = useState('')
-    useEffect(() => {
-        if (router.pathname) {
-            setSelect(router.pathname)
-        }
-    }, []);
-    const showDrawer = throttle( function () {
-            setOpen(true);
-        }, 1500, {'trailing': false})
+    const showDrawer = throttle(function () {
+        setOpen(true);
+    }, 1500, {'trailing': false})
     const onClose = () => {
         setOpen(false);
     };
     // 改变路由方法
-    const historyChange =throttle( function (i: number) {
+    const historyChange = throttle(function (i: number) {
         switch (i) {
             case 2:
                 history('/community/lastest')
@@ -44,7 +38,7 @@ function Header() {
                 break;
         }
     }, 1500, {'trailing': false})
-    const logout = throttle( function () {
+    const logout = throttle(function () {
         clear()
     }, 1500, {'trailing': false})
     const items: any = [
@@ -55,13 +49,13 @@ function Header() {
             ),
         },
     ];
-    const loginModal = throttle( function () {
-            if (!load) {
-                if (!user) {
-                    setIsModalOpen(true)
-                }
+    const loginModal = throttle(function () {
+        if (!load) {
+            if (!user) {
+                setIsModalOpen(true)
             }
-        }, 1500, {'trailing': false})
+        }
+    }, 1500, {'trailing': false})
 
     const collapseItems: any = [
         {
@@ -84,7 +78,7 @@ function Header() {
                         img: '/checker.svg'
                     }, {name: 'Trending', img: '/trending.svg'}].map((i: any, ind: number) => {
                         return <p key={ind} onClick={
-                            throttle( function () {
+                            throttle(function () {
                                 if (ind === 0) {
                                     history('/app')
                                     onClose()
@@ -106,7 +100,7 @@ function Header() {
                         img: "/community/profile.svg"
                     }, {name: 'Following', img: "/community/follow.svg"}].map((i: any, ind: number) => {
                         return <p key={ind} onClick={
-                            throttle( function () {
+                            throttle(function () {
                                 history(`/community/${i.name}`);
                                 onClose()
                             }, 1500, {'trailing': false})
@@ -151,7 +145,7 @@ function Header() {
     return (
         <div className={'headerBox'}>
             <div style={{display: 'flex', alignItems: 'center'}} onClick={
-                throttle( function () {
+                throttle(function () {
                     window.open('https://info.dexpert.io/')
                 }, 1500, {'trailing': false})
             }>
@@ -171,9 +165,9 @@ function Header() {
                         ['Market', 'DApps & Tools', 'Community'].map((i, ind) => {
                             return <span key={ind}
                                          style={{color: change(ind)}}
-                                         onClick={throttle( function () {
-                                                 historyChange(ind);
-                                             }, 1500, {'trailing': false})
+                                         onClick={throttle(function () {
+                                             historyChange(ind);
+                                         }, 1500, {'trailing': false})
                                          }>{i}</span>
                         })
                     }

@@ -1,11 +1,14 @@
 import Header from './components/header.tsx'
-import {Route, Routes, useLocation, useNavigate,} from "react-router-dom";
+import {Route, Routes, useLocation, useNavigate, useSearchParams,} from "react-router-dom";
 import Index from './pages/index/index.tsx'
 import NewpairDetails from './pages/newpairDetails/index.tsx'
 import './style/all.less';
+import Active from './pages/activity/index.tsx'
+import Oauth from './pages/activity/components/oauth.tsx'
 import {createContext, useCallback, useEffect, useRef, useState} from 'react'
 import {getAppMetadata, getSdkError} from "@walletconnect/utils";
 import 'swiper/css';
+import 'swiper/css/bundle'
 import {message,} from 'antd'
 import Bot from './components/bottom.tsx';
 import {Web3Modal} from "@web3modal/standalone";
@@ -18,15 +21,18 @@ import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequ
 import _ from 'lodash';
 import Dapp from './pages/dapp';
 import Community from './pages/community';
+
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
     walletConnectVersion: 1,
 });
 export const CountContext = createContext(null);
+
 function Layout() {
     const router = useLocation()
-    const {getAll, } = Request()
+    const [search] = useSearchParams();
+    const {getAll,} = Request()
     const history = useNavigate()
     const [messageApi, contextHolder] = message.useMessage();
     const [chains, setChains] = useState<any>([]);
@@ -38,6 +44,7 @@ function Layout() {
     const [newPairPar, setNewPairPar] = useState<any>([])
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalSet, setIsModalSet] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
     const createClient = async () => {
         try {
             const _client: any = await Client.init({
@@ -53,10 +60,15 @@ function Layout() {
             return null
         }
     }
-    const clear = async () => {
-        if (router.pathname !== '/') {
-            history('/')
+    useEffect(() => {
+        const at = search.get('change')
+        if (at === '1' && router.pathname === '/') {
+            setIsLogin(true)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search.get('change')]);
+    const clear = async () => {
+        history('/?change=1')
         cookie.remove('username')
         cookie.remove('token')
         cookie.remove('jwt')
@@ -98,6 +110,7 @@ function Layout() {
                         if (name === 'modal') {
                             web3Modal.closeModal();
                         }
+                        setIsLogin(true)
                     }
                 }
             }
@@ -124,8 +137,6 @@ function Layout() {
             const chain = await provider.getNetwork();
             // 获取签名
             const signer = await provider.getSigner();
-            console.log(signer)
-            console.log(account)
             // 判断是否有账号
             if (account.length > 0) {
                 // 判断是否是eth
@@ -133,12 +144,10 @@ function Layout() {
                     try {
                         const at = {method: 'post', url: '/api/v1/token', data: {address: account[0]}, token: ''}
                         const token: any = await getAll(at)
-                        console.log(token)
-                        if ( token?.data && token?.status === 200) {
+                        if (token?.data && token?.status === 200) {
                             // 签名消息
                             const message = token?.data?.nonce
                             const sign = await signer.signMessage(message)
-                            console.log(sign)
                             login(sign, account[0], message, 'more')
                         }
                     } catch (err) {
@@ -198,7 +207,7 @@ function Layout() {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token: any =await getAll({method: 'post', url: '/api/v1/token', data: {address: address}, token: ''})
+            const token: any = await getAll({method: 'post', url: '/api/v1/token', data: {address: address}, token: ''})
             if (token && token?.data && token?.status === 200) {
                 await loginMore(chainId, address, client, session, token?.data?.nonce);
             } else {
@@ -255,7 +264,7 @@ function Layout() {
         if (cookie.get('username') && cookie.get('username') != undefined) {
             const abc = JSON.parse(cookie.get('username') as any)
             setUserPar(abc)
-        }else {
+        } else {
             setUserPar(null)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -271,22 +280,15 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
-
-    useEffect(() => {
-        if (window && window.innerWidth) {
-            const wid = window.innerWidth
-            const body = document.getElementsByTagName('body')[0]
-            if (wid > 800) {
-                body.style.overflow = 'hidden'
-                setBrowser(true)
-            }
-        }
-    }, []);
     useEffect(() => {
         const body = document.getElementsByTagName('body')[0]
         if (window && window?.innerWidth) {
             if (window?.innerWidth > 800) {
-                body.style.overflow = 'hidden'
+                if (router.pathname === '/activity') {
+                    body.style.overflow = 'auto'
+                } else {
+                    body.style.overflow = 'hidden'
+                }
                 setBrowser(true)
             } else {
                 body.style.overflow = 'auto'
@@ -301,7 +303,11 @@ function Layout() {
         const handleResize = () => {
             // 更新状态，保存当前窗口高度
             if (window?.innerWidth > 800) {
-                body.style.overflow = 'hidden'
+                if (router.pathname === '/activity') {
+                    body.style.overflow = 'auto'
+                } else {
+                    body.style.overflow = 'hidden'
+                }
                 setBrowser(true)
             } else {
                 body.style.overflow = 'auto'
@@ -319,7 +325,7 @@ function Layout() {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, []);
+    }, [router]);
     const value: any = {
         connect,
         clear,
@@ -332,17 +338,21 @@ function Layout() {
         newPairPar,
         setNewPairPar,
         isModalOpen,
-        setIsModalOpen, isModalSet, setIsModalSet,
+        setIsModalOpen, isModalSet, setIsModalSet, isLogin, setIsLogin
     }
     return (
         <CountContext.Provider value={value}>
-            <Header/>
+            {
+                router.pathname!=='/oauth/twitter/callback'&&  <Header />
+            }
             <div className={big ? 'bigCen' : ''}>
                 <Routes>
                     <Route path="/" element={<Index/>}/>
                     <Route path="/newpairDetails" element={<NewpairDetails/>}/>
                     <Route path='/community/:tab' element={<Community/>}/>
                     <Route path='/app' element={<Dapp/>}/>
+                    <Route path='/activity' element={<Active/>}/>
+                    <Route path='/oauth/twitter/callback' element={<Oauth/>}/>
                 </Routes>
             </div>
             <Bot/>

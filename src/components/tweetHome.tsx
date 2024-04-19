@@ -21,14 +21,13 @@ function TweetHome({
                        style = {},
                        uid = ''
                    }: TweetHomePropsType) {
-    const { browser}: any = useContext(CountContext)
+    const { browser,isLogin, setIsLogin}: any = useContext(CountContext)
     const {getAll,} = Request()
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
     const [status, setStatus] = useState(false)
     const [iconLoad, setIconLoad] = useState(false)
     const [page, setPage] = useState(1)
-    const [isLogin, setIsLogin] = useState(false)
     const changePage = () => {
         if (!status) {
             getTweet(page + 1)
@@ -43,7 +42,6 @@ function TweetHome({
             }
         }
     }, [page])
-
     const tweetPar = (res: any) => {
        if (res && res?.status === 200) {
             const {data} = res
@@ -66,6 +64,7 @@ function TweetHome({
                 setData([...r])
             }
             setBol(true)
+           setIsLogin(false)
         }
     }
     const getTweet = async (page: number) => {
@@ -83,15 +82,14 @@ function TweetHome({
         tweetPar(at)
     }
     useEffect(() => {
-        const abc = cookie.get('token')
-        if (abc) {
-            setIsLogin(true)
+        if(isLogin){
+            setBol(false)
+            getTweet(1)
         }
-        setBol(false)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cookie.get('token')]);
+    }, [isLogin]);
     useEffect(() => {
         if (refresh) {
+            setBol(false)
             getTweet(1)
         }
     }, [refresh]);
@@ -112,7 +110,7 @@ function TweetHome({
                                 loader={null}
                                 dataLength={tableData.length}>
                                 {tableData.map((post: any, index: number) => {
-                                    return <Tweets key={index} isLogin={isLogin} name={post}/>
+                                    return <Tweets key={index}  name={post}/>
                                 })}
                             </InfiniteScroll>
                             {

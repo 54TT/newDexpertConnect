@@ -2,7 +2,6 @@ import {CheckCircleOutlined} from "@ant-design/icons";
 import copy from "copy-to-clipboard";
 import {Popover} from "antd";
 import {throttle} from "lodash";
-
 function Copy({status, setStatus, name}: any) {
     return (
         <Popover placement="top" title={''} overlayClassName={'newPairLeftPopover'}

@@ -1,0 +1,114 @@
+.activityBox {
+  background-image: url("/public/backActive.svg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%;
+  .top {
+    margin: 2% auto 2.5%;
+    width: 19%;
+    padding: 2.2% 1.7% 1%;
+    display: flex;
+    align-items: flex-end;
+    background: linear-gradient(to right, rgb(6, 14, 11), rgb(22, 51, 42));
+    border-radius: 10px;
+    justify-content: space-between;
+
+    div {
+      p:first-child {
+        color: white;
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      p:last-child {
+        font-size: 15px;
+        color: rgb(200, 200, 200);
+      }
+    }
+
+    & > p:last-child {
+      background-color: rgb(134, 240, 151);
+      border-radius: 5px;
+      font-size: 15px;
+      padding: 6px 13px;
+      cursor: pointer;
+    }
+  }
+
+  .p2 {
+    text-align: center;
+    font-size: 38px;
+    background-image: -webkit-gradient(linear, left 0, right 0, from(rgb(130, 240, 150)), to(rgb(2, 255, 72)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .p3 {
+    text-align: center;
+    color: rgb(250, 250, 250);
+    margin: 10px auto 2.5%;
+    font-size: 12px;
+  }
+  .active {
+    padding: 0 15%;
+    margin-top: 2.2%;
+
+    .box {
+      display: flex;
+      justify-content: space-between;
+
+      div {
+        width: 47%;
+      }
+
+      div:first-child {
+        p {
+          padding: 4% 2.6%;
+          border-radius: 10px;
+          font-size: 20px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          background: linear-gradient(to right, rgb(30, 30, 30), rgb(38, 45, 38));
+
+          img {
+            width: 28px;
+            margin-left: 5px;
+            display: block;
+          }
+        }
+
+        p:not(:last-child) {
+          margin-bottom: 20px;
+        }
+      }
+
+      div:last-child {
+        border-radius: 10px;
+        padding: 2.5%;
+        box-sizing: border-box;
+        background: linear-gradient(140deg, rgb(25, 30, 25), rgb(40, 45, 40));
+
+        p:first-child {
+          color: white;
+          font-size: 20px;
+        }
+
+        p:nth-child(2) {
+          font-size: 14px;
+          line-height: 1.2;
+          margin: 4% 0;
+          color: rgb(200, 200, 200);
+        }
+
+        p:last-child {
+          border-radius: 5px;
+          padding: 6px 10px;
+          cursor: pointer;
+          display: inline-block;
+          background-color: rgb(134, 240, 151);
+        }
+      }
+    }
+  }
+}

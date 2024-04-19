@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import Copy from '../../../components/copy.tsx'
 import TWeetHome from "../../../components/tweetHome.tsx";
 import {ArrowLeftOutlined} from '@ant-design/icons';
 import {Button, Form, Input, message} from 'antd'
-import Request from "../../../components/axios.tsx";
-// { followUser, unfollowUser }
+import Request, {getTkAndUserName} from "../../../components/axios.tsx";
 import Cookies from "js-cookie";
 import {formatAddress, getQueryParams} from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {throttle} from "lodash";
+
 function Profie() {
     const {getAll} = Request()
     const history = useNavigate();
@@ -169,7 +169,7 @@ function Profie() {
             }
         }
         // const result: any = await Request('post', '/api/v1/userinfo', params, token);
-        const result: any =await getAll({method: 'post', url: '/api/v1/userinfo', data: params, token});
+        const result: any = await getAll({method: 'post', url: '/api/v1/userinfo', data: params, token});
         if (result?.status === 200) {
             messageApi.success('update success');
             getUserProfile(true)
@@ -192,7 +192,7 @@ function Profie() {
             <div className="profile-background">
                 <img className="profile-background-cover" loading={'lazy'} src='/community/changeImg.svg'
                      onClick={
-                         throttle(   function (){
+                         throttle(function () {
                              setInputType('background')
                              inputRef?.current?.click()
                          }, 1500, {'trailing': false})
@@ -206,11 +206,11 @@ function Profie() {
                         <img loading={'lazy'} className="profile-background-avatar-cover" src='/community/changeImg.svg'
                              alt=""
                              onClick={
-                                 throttle(   function (){
+                                 throttle(function () {
                                      setInputType('avatar')
                                      inputRef?.current?.click()
                                  }, 1500, {'trailing': false})
-                        }/>
+                             }/>
                     </div>
                 </div>
             </div>
@@ -236,25 +236,42 @@ function Profie() {
             </div>
             <div className="" style={{display: 'flex', justifyContent: 'center'}}>
                 <Button className="modify-form-submit" onClick={
-                    throttle(   function (){
+                    throttle(function () {
                         form.submit()
-                }, 1500, {'trailing': false})}>Submit</Button>
+                    }, 1500, {'trailing': false})}>Submit</Button>
             </div>
         </>
     }
 
-    const handleFollow =
-        throttle(async    function (){
-            // await followUser(id);
-            message.success('success follow')
-            setIsFollowed(true);
-        }, 1500, {'trailing': false})
+    const handleFollow = throttle(async function () {
+        try {
+            const [token] = getTkAndUserName();
+            const result: any = await getAll({method: 'post', url: '/api/v1/follow', data: {userId: id}, token});
+            if (result?.status === 200) {
+                message.success('success follow')
+                setIsFollowed(true);
+            } else {
+                return message.error('faild to follow');
+            }
+        } catch (e) {
+            return Promise.reject(e)
+        }
+    }, 1500, {'trailing': false})
 
     const handleUnfollow =
-        throttle(async    function (){
-            // await unfollowUser(id);
-            message.success('success unfollow')
-            setIsFollowed(false);
+        throttle(async function () {
+            try {
+                const [token] = getTkAndUserName();
+                const result: any = await getAll({method: 'post', url: '/api/v1/unfollow', data: {uid: id}, token});
+                if (result?.status === 200) {
+                    message.success('success unfollow')
+                    setIsFollowed(false);
+                } else {
+                    return message.error('faild to unfollow');
+                }
+            } catch (e) {
+                return Promise.reject(e)
+            }
         }, 1500, {'trailing': false})
     return (
         <div className={'username-page'}>
@@ -339,12 +356,12 @@ function Profie() {
                                     </div>
                                     <div><span>{i.holding + ' '} </span>Holding</div>
                                     <div onClick={
-                                        throttle(    function (){
-                                        if (uid) {
-                                            history('/community/following?uid=' + uid)
-                                        } else {
-                                            history('/community/following')
-                                        }
+                                        throttle(function () {
+                                            if (uid) {
+                                                history('/community/following?uid=' + uid)
+                                            } else {
+                                                history('/community/following')
+                                            }
                                         }, 1500, {'trailing': false})
                                     }><span>{i?.following + ' '} </span>{ind === 0 ? 'Following' : 'Follower'}
                                     </div>
@@ -376,7 +393,7 @@ function Profie() {
                     {
                         ['Community', 'Token'].map((i: string, ind: number) => {
                             return <p onClick={
-                                throttle(    function (){
+                                throttle(function () {
                                     if (options !== i) {
                                         setOptions(i)
                                     }

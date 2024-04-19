@@ -4,10 +4,14 @@ import {useContext, useEffect, useRef, useState} from 'react'
 import TweetHome from "../../../components/tweetHome.tsx";
 import {CountContext} from "../../../Layout.tsx";
 import {throttle} from "lodash";
+import {useNavigate} from "react-router-dom";
+import cookie from "js-cookie";
+
 function Right() {
     const swiperRef: any = useRef()
     const topRef: any = useRef()
-    const {browser}: any = useContext(CountContext);
+    const history = useNavigate()
+    const {browser, setIsModalOpen}: any = useContext(CountContext);
     const [hei, setHei] = useState('')
     const [select, setSelect] = useState('one')
     const [heiol, setHeiBol] = useState(false)
@@ -20,7 +24,7 @@ function Right() {
             setHei(remain.toString())
         }
     }, []);
-    const selectTweet =  throttle(    function ( name: string){
+    const selectTweet = throttle(function (name: string) {
         if (select !== name) {
             setSelect(name)
         }
@@ -40,12 +44,17 @@ function Right() {
                     loop
                     autoplay={{delay: 2000, disableOnInteraction: false}}>
                     {
-                        ['/poster1.jpg','/poster2.jpg', '/poster3.jpg',].map((i, ind) => {
+                        [ "https://dex-pert-pic.sgp1.cdn.digitaloceanspaces.com/dexpert-compaign.jpg", "https://dex-pert-pic.sgp1.cdn.digitaloceanspaces.com/dexpert-compaign2.jpg", "https://dex-pert-pic.sgp1.cdn.digitaloceanspaces.com/dexpert-compaign1.jpg"].map((i, ind) => {
                             return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={
-                                throttle(    function (){   if (ind === 0) {
-                                    // window.open('https://info.dexpert.io/pointsDetail')
-                                }}, 1500, {'trailing': false})
-                            } style={{width: '100%',borderRadius: "20px", cursor: "pointer"}}
+                                throttle(function () {
+                                    const token = cookie.get('token')
+                                    if (token) {
+                                        history('/activity')
+                                    } else {
+                                        setIsModalOpen(true)
+                                    }
+                                }, 1500, {'trailing': false})
+                            } style={{width: '100%', borderRadius: "20px", cursor: "pointer"}}
                                                                alt=""/></SwiperSlide>
                         })
                     }
