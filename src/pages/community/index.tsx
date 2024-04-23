@@ -12,7 +12,6 @@ import {message} from 'antd';
 import {getTkAndUserName} from '../../components/axios.tsx';
 type ActiveTabType = 'lastest' | 'profile' | 'following'
 function Community() {
-
     // 左侧选中的Tab
     const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
     const {browser} = useContext(CountContext) as any;

@@ -24,7 +24,7 @@ body::-webkit-scrollbar {
 
 /*定义滚动条轨道：内阴影+圆角*/
 body::-webkit-scrollbar-track {
-  background-color: rgb(10,21,17);
+  background-color: rgb(10, 21, 17);
 }
 
 /*定义滑块：内阴影+圆角*/
@@ -36,6 +36,124 @@ body::-webkit-scrollbar-thumb {
 
 .scrollStyle::-webkit-scrollbar {
   width: 8px !important;
+}
+
+.activeModal {
+  .ant-modal-content {
+    background-color: rgb(10, 15, 34);
+
+    .ant-modal-header {
+      background-color: rgb(10, 15, 34);
+
+      .ant-modal-title {
+        text-align: center;
+        color: rgb(200, 200, 200);
+        font-size: 22px;
+      }
+    }
+
+    .ant-modal-body {
+      & > p:first-child {
+        margin-top: 20px;
+        font-size: 18px;
+        color: rgb(200, 200, 200);
+      }
+
+      & > p:last-child:hover {
+        transform: scale(0.9);
+      }
+
+      & > p:last-child {
+        border-radius: 10px;
+        background-color: rgb(220, 220, 220);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
+        object-fit: cover;
+        transition: all 0.8s;
+        cursor: pointer;
+
+        img {
+          width: 18px;
+          display: block;
+          margin-right: 2px;
+        }
+
+        span {
+          margin-left: 2px;
+        }
+      }
+
+      & > div {
+        margin: 35px 0 15px;
+        background-color: rgb(220, 240, 220);
+        border-radius: 10px;
+        display: flex;
+        padding: 10px 15px 20px;
+        box-sizing: border-box;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        & > img {
+          width: 20px;
+          display: block;
+          cursor: pointer;
+        }
+
+        & > div {
+          display: flex;
+          align-items: center;
+
+          & > div {
+            p:first-child {
+              font-weight: bold;
+              font-size: 18px;
+              cursor: pointer;
+              line-height: 1;
+              display: inline-block;
+            }
+
+            p:first-child:hover {
+              border-bottom: 2px solid;
+            }
+
+            p:last-child {
+              box-sizing: border-box;
+              height: 14px;
+
+              span {
+                color: rgb(0, 111, 214);
+                cursor: pointer;
+                line-height: 1;
+                font-weight: bold;
+                display: inline-block;
+              }
+
+              span:hover {
+                border-bottom: 2px solid;
+              }
+            }
+
+          }
+
+          & > img {
+            width: 45px;
+            cursor: pointer;
+            margin-right: 10px;
+            display: block;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+
+    .ant-modal-close {
+      color: rgb(170, 180, 190);
+      background-color: gray;
+      border-radius: 50%;
+    }
+  }
 }
 
 .scrollStyle::-webkit-scrollbar-thumb {
@@ -683,7 +801,8 @@ span {
     width: 100%;
   }
 }
-.activeSwiper{
+
+.activeSwiper {
   .swiper {
     width: 100%;
   }

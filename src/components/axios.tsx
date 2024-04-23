@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import {useNavigate} from "react-router-dom";
 
 const requestA = axios.create({
-    baseURL: import.meta.env.MODE === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io/'
+    baseURL: import.meta.env.MODE === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io'
 })
 requestA.interceptors.request.use(
     (config) => {

@@ -134,29 +134,29 @@ function Layout() {
             await (window as any).ethereum.request({method: 'eth_requestAccounts'});
             const account = await provider.send("eth_requestAccounts", []);
             // 连接的网络和链信息。
-            const chain = await provider.getNetwork();
+            // const chain = await provider.getNetwork();
             // 获取签名
             const signer = await provider.getSigner();
             // 判断是否有账号
             if (account.length > 0) {
                 // 判断是否是eth
-                if (chain && chain.name === 'homestead' && chain.chainId === 1) {
-                    try {
-                        const at = {method: 'post', url: '/api/v1/token', data: {address: account[0]}, token: ''}
-                        const token: any = await getAll(at)
-                        if (token?.data && token?.status === 200) {
-                            // 签名消息
-                            const message = token?.data?.nonce
-                            const sign = await signer.signMessage(message)
-                            login(sign, account[0], message, 'more')
-                        }
-                    } catch (err) {
-                        setLoad(false)
-                        return null
+                // if (chain && chain.name === 'homestead' && chain.chainId === 1) {
+                try {
+                    const at = {method: 'post', url: '/api/v1/token', data: {address: account[0]}, token: ''}
+                    const token: any = await getAll(at)
+                    if (token?.data && token?.status === 200) {
+                        // 签名消息
+                        const message = token?.data?.nonce
+                        const sign = await signer.signMessage(message)
+                        login(sign, account[0], message, 'more')
                     }
-                } else {
-                    messageApi.warning('Please select ETH!');
+                } catch (err) {
+                    setLoad(false)
+                    return null
                 }
+                // } else {
+                //     messageApi.warning('Please select ETH!');
+                // }
             } else {
                 messageApi.warning('Please log in or connect to your account!');
             }
@@ -343,7 +343,7 @@ function Layout() {
     return (
         <CountContext.Provider value={value}>
             {
-                router.pathname!=='/oauth/twitter/callback'&&  <Header />
+                router.pathname !== '/oauth/twitter/callback' && <Header/>
             }
             <div className={big ? 'bigCen' : ''}>
                 <Routes>
@@ -352,7 +352,7 @@ function Layout() {
                     <Route path='/community/:tab' element={<Community/>}/>
                     <Route path='/app' element={<Dapp/>}/>
                     <Route path='/activity' element={<Active/>}/>
-                    <Route path='/oauth/twitter/callback' element={<Oauth/>}/>
+                    <Route path='/oauth/:id/callback' element={<Oauth/>}/>
                 </Routes>
             </div>
             <Bot/>

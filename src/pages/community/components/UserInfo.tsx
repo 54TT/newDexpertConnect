@@ -44,7 +44,6 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
   }
 
   const onPublish = async () => {
-    console.log('1111111111111111111')
     try {
       const event = new CustomEvent("publish-post");
       document.dispatchEvent(event);
