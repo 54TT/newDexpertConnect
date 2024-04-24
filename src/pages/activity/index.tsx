@@ -72,7 +72,7 @@ function Index() {
             const res = await getAll({
                 method: select === 1 ? 'post' : 'get',
                 url: select === 0 ? '/api/v1/oauth/twitter/follow' : select === 1 ? '/api/v1/oauth/telegram/chat/follow' : '/api/v1/oauth/discord/follow',
-                data: select === 1 ? {chatId: '-1002054355211', taskId: id} : {taskId: id},
+                data: select === 1 ? {chatId: '-1002120873901', taskId: id} : {taskId: id},
                 token
             })
             if (res?.data?.url) {
@@ -90,7 +90,10 @@ function Index() {
             const res = await getAll({
                 method: 'post',
                 url: select === 0 ? '/api/v1/oauth/twitter/verify' : select === 1 ? '/api/v1/oauth/telegram/chat/verify' : '/api/v1/oauth/discord/verify',
-                data: select === 1 ? {taskId: id, chatId: '-1002054355211'} : select === 0 ? {taskId: id} : {groupId: '1218109860999204904', botName: 'dis_bot', taskId: id},
+                data: select === 1 ? {
+                    taskId: id,
+                    chatId: '-1002120873901'
+                } : select === 0 ? {taskId: id} : {groupId: '1218109860999204904', botName: 'dis_bot', taskId: id},
                 token
             })
             if (res?.status === 200 && res.data?.exist) {
@@ -145,41 +148,10 @@ function Index() {
         }
     }
 
-    const claim = async () => {
-        const token = cookie.get('token')
-        if (token) {
-            const res = await getAll({
-                method: 'post',
-                // url: '/api/v1/oauth/telegram/chat/bind',
-                // data: {
-                //     tgAuthResult:'eyJpZCI6Njg2MzkwNjE4NSwiZmlyc3RfbmFtZSI6InR0IiwibGFzdF9uYW1lIjoidHQiLCJ1c2VybmFtZSI6InR0aXNoanQiLCJhdXRoX2RhdGUiOjE3MTM4NzU1OTgsImhhc2giOiIwNjc2OGUwMTUyMTNmMmUxNGUxYWMxZGQxYjE4NWY3Yzc3ZDEyZjQ5MTljNTA3NWVmOGI1MmI4NTdkNDcxNzJhIn0',
-                //     chatId: '-1002054355211',
-                //     taskId: '2'
-                // },
-
-                url: '/api/v1/oauth/discord/claim',
-                data: {
-                    code: 'm82vESw1RK0uZTn1UVIMF4COtbjs8N',
-                    groupId: '1218109860999204904',
-                    taskId: '3'
-                },
-                // url: '/api/v1/oauth/twitter/claim',
-                // data:{
-                //     OAuthToken:'BgD-WQAAAAABs7ZHAAABjwr1UE8',
-                //     OAuthVerifier:'1lOzET3ZguNVA8ZczSls8PVEi8fCdw92',
-                //     taskId:'1'
-                // },
-
-                token
-            })
-            console.log(res)
-        }
-    }
     return (
         <>
             {
                 load ? <div className={'activityBox'} style={{marginBottom: '50px'}}>
-                    <p style={{color: 'white'}} onClick={claim}>show</p>
                     <div className={'top'}>
                         <div>
                             <p>{point}</p>
