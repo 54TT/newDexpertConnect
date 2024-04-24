@@ -75,7 +75,7 @@ function Index() {
                                allowClear className={'indexInput'}/>
                     }
                     <div className={`indexRight dis`}>
-                        <p style={{marginRight: '5px'}}><img src="/eth.svg"  loading={'lazy'} alt=""/><span>$:{ethPrice}</span></p>
+                        <p style={{marginRight: '10px'}}><img src="/eth.svg"  loading={'lazy'} alt=""/><span>$:{ethPrice}</span></p>
                         <p><img loading={'lazy'} src="/gas.svg" alt=""/><span>{gas}</span></p>
                     </div>
                 </div>

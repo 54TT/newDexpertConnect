@@ -4,6 +4,16 @@
   justify-content: space-between;
 }
 
+@font-face {
+  font-family: 'FontName';
+  //src: url("/fonts/mi.ttf");
+  src: url("/fonts/simsunb.ttf");
+}
+
+body {
+  font-family: 'FontName', "Segoe UI";
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -215,7 +225,7 @@ body::-webkit-scrollbar-thumb {
         img {
           display: block;
           width: 22px;
-          margin-right: 5px;
+          margin-right: 3px;
         }
 
         span {
@@ -286,8 +296,7 @@ body::-webkit-scrollbar-thumb {
 
         .indexNewPairBone {
           display: flex;
-          align-items: center;
-          justify-content: flex-start;
+          justify-content: center;
           padding-left: 0.5%;
         }
 
@@ -314,11 +323,10 @@ body::-webkit-scrollbar-thumb {
 }
 
 .headerBox {
-  height: 54px;
   box-sizing: border-box;
-  padding: 0 4% 8px;
+  padding: 8px 4%;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   //background-color: #0d1a14;
   background: linear-gradient(to bottom, rgb(3, 5, 3), rgb(9, 18, 13));
@@ -331,6 +339,10 @@ body::-webkit-scrollbar-thumb {
     span {
       font-size: 18px;
       cursor: pointer;
+    }
+
+    span:hover {
+      color: rgb(134, 240, 151) !important;
     }
   }
 
@@ -385,7 +397,7 @@ body::-webkit-scrollbar-thumb {
   cursor: pointer;
 
   &:hover {
-    background-color: #0c1815;
+    background-color: rgb(34,36,34);
   }
 
   .post-item-img {

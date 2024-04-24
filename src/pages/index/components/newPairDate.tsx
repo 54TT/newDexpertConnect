@@ -44,7 +44,7 @@ function Date({tableDta, time, setDta}: any) {
                                      style={{display: 'none'}} alt=""
                                      onClick={(e: any) => click(record, e)}/>
                                 <div>
-                                    <p style={{marginBottom: '4px'}}>{simplify(record?.token0?.symbol)}</p>
+                                    <p style={{marginBottom: '4px',fontWeight:'500'}}>{simplify(record?.token0?.symbol)}</p>
                                     <div style={{
                                         fontSize: '14px',
                                         color: 'rgb(104,124,105)'

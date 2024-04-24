@@ -10,7 +10,7 @@ import { getQueryParams } from '../../../../utils/utils'
 
 
 // 渲染单条评论
-const RenderCommentTweet = ({ data = {}, token, type }: any) => {
+const RenderCommentTweet = ({ data = {}, type }: any) => {
   const renderData = {
     ...data,
     CreatedAt: data.createdAt,
@@ -39,7 +39,7 @@ const RenderCommentTweet = ({ data = {}, token, type }: any) => {
      getCommentReply();
    }, []) */
 
-  return data ? <Tweets isLogin={token != ""} name={renderData} type={type} onPublish={() => console.log('123123')
+  return data ? <Tweets  name={renderData} type={type} onPublish={() => console.log('123123')
   } /> : <></>
 }
 
@@ -53,7 +53,6 @@ const PostDetail = () => {
   const [page, setPage] = useState(1);
   const [getPageStatus, setPageStatus] = useState(true);
   const token = Cookies.get('token');
-  const isLogin = token !== '';
   const { reply } = getQueryParams() as any;
   const getCommentOrReplyData = async (page = 1) => {
     setPage(page);
@@ -94,7 +93,7 @@ const PostDetail = () => {
   }, [reply])
 
 
-  const CommentTweets = useCallback(() => reply ? <Tweets type={reply ? 'reply' : 'comment'} name={localReplyDetail} isLogin={isLogin} onPublish={() => getCommentOrReplyData()
+  const CommentTweets = useCallback(() => reply ? <Tweets type={reply ? 'reply' : 'comment'} name={localReplyDetail} onPublish={() => getCommentOrReplyData()
   } /> : <></>, [localReplyDetail, reply])
 
   return <div id='scrollabelDetail' style={{ height: 'calc(100vh - 54px )', overflow: 'auto' }}>
@@ -102,14 +101,14 @@ const PostDetail = () => {
       getCommentOrReplyData(page + 1);
     }} loader={<></>}>
       <div className='community-post-detail'>
-        <Tweets type='post' name={localDetail} isLogin={isLogin} onPublish={() => getCommentOrReplyData()} />
+        <Tweets type='post' name={localDetail}  onPublish={() => getCommentOrReplyData()} />
         <CommentTweets />
         <SendPost type={reply ? 'reply' : "comment"} changeRefresh={() => { }} postData={reply ? localReplyDetail : localDetail} onPublish={() => getCommentOrReplyData()} />
         {
           getPageStatus && page === 1 ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: '48px' }}>
             <Spin size='large' />
           </div> : data.length > 0 ? data?.map?.((data,ind) =>
-            <RenderCommentTweet data={data} key={ind} token={token} type={reply ? 'reply' : "comment"} />
+            <RenderCommentTweet data={data} key={ind}  type={reply ? 'reply' : "comment"} />
           ) : <p style={{ marginTop: '48px', color: '#d6dfd7', textAlign: 'center' }}>
             No Data
           </p>

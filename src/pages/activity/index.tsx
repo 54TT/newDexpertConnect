@@ -44,7 +44,6 @@ function Index() {
                 token
             })
             if (res?.data?.url) {
-                // console.log(res?.data?.url)
                 window.open(res?.data?.url, '_self')
                 setLoading(false)
             } else {
