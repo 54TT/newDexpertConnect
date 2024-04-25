@@ -184,6 +184,7 @@ function Index() {
                                             throttle(function () {
                                             }, 1500, {'trailing': false})
                                         }
+                                                                           style={{borderRadius: '15px'}}
                                                                            alt=""/></SwiperSlide>
                                     }) : ''
                             }
@@ -194,7 +195,7 @@ function Index() {
                         data.length > 0 ? data.map((i: any, ind: number) => {
                             return <div key={ind} className={'active'}>
                                 <p className={'p2'}>{i?.campaign?.title || ''}</p>
-                                <p className={'p3'}>{i?.campaign?.createdAt || ''} -- {i?.campaign?.endTime}</p>
+                                <p className={'p3'}>{i?.campaign?.startTime || ''} -- {i?.campaign?.endTime}</p>
                                 {
                                     i?.tasks?.length > 0 && <div className={'box'}>
                                         <div>

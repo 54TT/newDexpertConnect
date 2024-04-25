@@ -20,7 +20,7 @@ function Index() {
         if (hei && hei.current) {
             const h = hei.current.scrollHeight
             const w = window.innerHeight
-            const o: any = w - h - 25 - 54 - 90
+            const o: any = w - h - 50 - 90
             setTableHei(o)
         }
         getGas()

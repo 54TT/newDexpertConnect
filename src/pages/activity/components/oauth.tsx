@@ -14,11 +14,11 @@ function Oauth() {
             const res = await getAll({
                 method: 'post',
                 url: nu === 1 ? '/api/v1/oauth/twitter/claim' : nu === 2 ? '/api/v1/oauth/telegram/chat/bind' : '/api/v1/oauth/discord/claim',
-                data: nu === 1 ? {OAuthToken: name, OAuthVerifier: da, taskId: '1'} : nu === 3 ? {
+                data: nu === 1 ? {OAuthToken: name, OAuthVerifier: da, taskId: '1'} : nu === 2 ? {
                     tgAuthResult: name,
                     chatId: '-1002120873901',
-                    taskId: '3'
-                } : {code: name, groupId: '1218109860999204904', taskId: '2'},
+                    taskId: '2'
+                } : {code: name, groupId: '1218109860999204904', taskId: '3'},
                 token
             })
             if (res?.data?.message === 'ok') {
@@ -31,19 +31,18 @@ function Oauth() {
 
     useEffect(() => {
         const token = search.get('oauth_token')
-        const verifier = search.get('oauth_verifier')   //数据
-        const denied = search.get('denied')   //取消
-        const code = search.get('code')   //取消
-        const state = search.get('state')   //取消
-        const error_description = search.get('error_description')   //取消
-        const error = search.get('error')   //取消
+        const verifier = search.get('oauth_verifier')
+        const denied = search.get('denied')
+        const code = search.get('code')
+        const error_description = search.get('error_description')
+        const error = search.get('error')
         if (denied) {
             history('/activity')
-        }else if(error_description&&error){
+        } else if (error_description && error) {
             history('/activity')
-        }else if (token && verifier) {
+        } else if (token && verifier) {
             claim(token, verifier, 1)
-        } else if (state && code) {
+        } else if (code) {
             claim(code, '', 2)
         } else {
             const at = window.location.href
