@@ -1,5 +1,5 @@
 import './index.less';
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {A11y, Autoplay, EffectCoverflow, Pagination} from "swiper/modules";
 import {throttle} from "lodash";
@@ -10,14 +10,16 @@ import cookie from "js-cookie";
 import {Modal} from 'antd'
 import Loading from '../../components/loading.tsx'
 import {LoadingOutlined} from '@ant-design/icons'
+import {CountContext} from "../../Layout.tsx";
 
 function Index() {
     const {getAll,} = Request()
+    const {setIsModalOpen,}: any = useContext(CountContext);
     const [select, setSelect] = useState(0)
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<any>([])
     const [point, setPoint] = useState('0')
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
     const getParams = async (token: string) => {
@@ -101,7 +103,7 @@ function Index() {
             } else {
                 if (res?.data?.url) {
                     setLink(res?.data?.url)
-                    setIsModalOpen(true);
+                    setIsModalOpe(true);
                 }
                 setLoading(false)
             }
@@ -123,30 +125,34 @@ function Index() {
         }
     }
     const param = (tasks: any) => {
-        if (Number(tasks[select]?.isCompleted)) {
-            if (Number(tasks[select]?.isCompleted) === 1) {
-                follow(tasks[select]?.taskId)
+        const token = cookie.get('token')
+        if (token) {
+            if (Number(tasks[select]?.isCompleted)) {
+                if (Number(tasks[select]?.isCompleted) === 1) {
+                    follow(tasks[select]?.taskId)
+                    setLoading(true)
+                }
+                if (Number(tasks[select]?.isCompleted) === 2) {
+                    verify(tasks[select]?.taskId)
+                    setLoading(true)
+                }
+            } else {
                 setLoading(true)
-            }
-            if (Number(tasks[select]?.isCompleted) === 2) {
-                verify(tasks[select]?.taskId)
-                setLoading(true)
+                getT(tasks[select]?.taskId)
             }
         } else {
-            setLoading(true)
-            getT(tasks[select]?.taskId)
+            setIsModalOpen(true)
         }
     }
     const handleCancel = () => {
-        setIsModalOpen(false);
+        setIsModalOpe(false);
     }
     const openLink = () => {
         if (link) {
             window.open(link)
-            setIsModalOpen(false);
+            setIsModalOpe(false);
         }
     }
-
     return (
         <>
             {

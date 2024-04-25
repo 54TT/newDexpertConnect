@@ -14,7 +14,6 @@ interface TweetHomePropsType {
 
 function TweetHome({
                        hei,
-                       changeHei,
                        refresh,
                        changeRefresh,
                        scrollId = 'scrollableDiv',
@@ -35,13 +34,6 @@ function TweetHome({
             setIconLoad(true)
         }
     }
-    useEffect(() => {
-        if (page === 3) {
-            if (changeHei) {
-                changeHei(true)
-            }
-        }
-    }, [page])
     const tweetPar = (res: any) => {
        if (res && res?.status === 200) {
             const {data} = res

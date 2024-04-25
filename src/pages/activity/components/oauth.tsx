@@ -43,12 +43,12 @@ function Oauth() {
         } else if (token && verifier) {
             claim(token, verifier, 1)
         } else if (code) {
-            claim(code, '', 2)
+            claim(code, '', 3)
         } else {
             const at = window.location.href
             if (at.length > 0 && at.includes('#tgAuthResult=')) {
                 const abc = at.split('#tgAuthResult=')
-                claim(abc[1], '', 3)
+                claim(abc[1], '', 2)
             }
         }
     }, []);
