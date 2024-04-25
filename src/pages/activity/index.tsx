@@ -7,14 +7,14 @@ import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import Request from "../../components/axios.tsx";
 import cookie from "js-cookie";
-import {Modal} from 'antd'
+import {Modal} from 'antd';
 import Loading from '../../components/loading.tsx'
 import {LoadingOutlined} from '@ant-design/icons'
 import {CountContext} from "../../Layout.tsx";
 
 function Index() {
     const {getAll,} = Request()
-    const {setIsModalOpen,}: any = useContext(CountContext);
+    const {setIsModalOpen, isLogin, setIsLogin}: any = useContext(CountContext);
     const [select, setSelect] = useState(0)
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<any>([])
@@ -34,6 +34,15 @@ function Index() {
             setLoad(true)
         }
     }
+    useEffect(() => {
+        if (isLogin) {
+            const toeken = cookie.get('token')
+            if (toeken) {
+                getParams(toeken)
+                setIsLogin(false)
+            }
+        }
+    }, [isLogin]);
 
 
     const getT = async (id: string) => {
@@ -54,10 +63,7 @@ function Index() {
         }
     }
     useEffect(() => {
-        const token = cookie.get('token')
-        if (token) {
-            getParams(token)
-        }
+        getParams('')
     }, []);
     const change = (name: string) => {
         if (name.length > 0) {
