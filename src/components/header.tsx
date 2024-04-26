@@ -144,11 +144,12 @@ function Header() {
     }
     return (
         <div className={'headerBox'}>
-            <div style={{display: 'flex', alignItems: 'center', cursor: 'pointer', width: '10%'}} onClick={
-                throttle(function () {
-                    window.open('https://info.dexpert.io/')
-                }, 1500, {'trailing': false})
-            }>
+            <div style={{display: 'flex', alignItems: 'center', cursor: 'pointer', width: browser ? '10%' : '20%'}}
+                 onClick={
+                     throttle(function () {
+                         window.open('https://info.dexpert.io/')
+                     }, 1500, {'trailing': false})
+                 }>
                 {/*<img src={"/topLogo.svg"} loading={'lazy'} alt="" style={{cursor: 'pointer'}}/>*/}
                 {/*<p style={{*/}
                 {/*    color: 'rgb(134,240,151)',*/}

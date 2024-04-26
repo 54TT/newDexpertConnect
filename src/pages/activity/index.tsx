@@ -1,7 +1,7 @@
 import './index.less';
 import {useContext, useEffect, useState} from "react";
 import {Swiper, SwiperSlide} from "swiper/react";
-import {A11y, Autoplay, EffectCoverflow, Pagination} from "swiper/modules";
+import {Autoplay, EffectCoverflow, Navigation, Pagination,} from "swiper/modules";
 import {throttle} from "lodash";
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -14,6 +14,7 @@ import {CountContext} from "../../Layout.tsx";
 
 function Index() {
     const {getAll,} = Request()
+    const {browser,}: any = useContext(CountContext);
     const {setIsModalOpen, isLogin, setIsLogin}: any = useContext(CountContext);
     const [select, setSelect] = useState(0)
     const [loading, setLoading] = useState(false)
@@ -22,9 +23,10 @@ function Index() {
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
-    const getParams = async (token: string) => {
+    const getParams = async () => {
+        const token = cookie.get('token')
         const res = await getAll({
-            method: 'post', url: '/api/v1/campaign/home', data: {}, token
+            method: 'post', url: '/api/v1/campaign/home', data: {token: token || ''}, token: token || ''
         })
         if (res?.status === 200) {
             setData(res?.data?.campaignHome)
@@ -36,11 +38,8 @@ function Index() {
     }
     useEffect(() => {
         if (isLogin) {
-            const toeken = cookie.get('token')
-            if (toeken) {
-                getParams(toeken)
-                setIsLogin(false)
-            }
+            getParams()
+            setIsLogin(false)
         }
     }, [isLogin]);
 
@@ -63,7 +62,7 @@ function Index() {
         }
     }
     useEffect(() => {
-        getParams('')
+        getParams()
     }, []);
     const change = (name: string) => {
         if (name.length > 0) {
@@ -84,7 +83,7 @@ function Index() {
             })
             if (res?.data?.url) {
                 window.open(res?.data?.url)
-                getParams(token)
+                getParams()
                 setLoading(false)
             } else {
                 setLoading(false)
@@ -105,7 +104,7 @@ function Index() {
             })
             if (res?.status === 200 && res.data?.exist) {
                 setLoading(false)
-                getParams(token)
+                getParams()
             } else {
                 if (res?.data?.url) {
                     setLink(res?.data?.url)
@@ -121,7 +120,7 @@ function Index() {
                 if (Number(tasks[select]?.isCompleted) === 1) {
                     return change(tasks[select]?.title)
                 } else if (Number(tasks[select]?.isCompleted) === 2) {
-                    return 'Verify'
+                    return 'Claim'
                 } else {
                     return 'Completed'
                 }
@@ -163,7 +162,7 @@ function Index() {
         <>
             {
                 load ? <div className={'activityBox'} style={{marginBottom: '50px'}}>
-                    <div className={'top'}>
+                    <div className={'top'} style={{width:browser?'20%':'90%',justifyContent:browser?'space-between':'space-around',padding:browser?'2.2% 1.7% 1%':'6% 0 4%'}}>
                         <div>
                             <p>{point}</p>
                             <p>POINTS</p>
@@ -186,12 +185,15 @@ function Index() {
                                 slideShadows: true,
                             }}
                             pagination={true}
-                            modules={[EffectCoverflow, Autoplay, Pagination, A11y]}
+                            navigation
+                            modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
                             loop
-                            autoplay={{delay: 2000, disableOnInteraction: false}}>
+                            autoplay={{delay: 2000, disableOnInteraction: false}}
+                        >
                             {
                                 data.length > 0 && data[0]?.campaign?.noticeUrl?.length > 0 ?
-                                    data[0]?.campaign?.noticeUrl.map((i: string, ind: number) => {
+                                    // data[0]?.campaign?.noticeUrl.map((i: string, ind: number) => {
+                                    ['/background.svg','/checker.svg','/eth.svg','/facebook.svg','/feima.svg','/gas.svg','/finish.svg','/huo.svg'].map((i: string, ind: number) => {
                                         return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={
                                             throttle(function () {
                                             }, 1500, {'trailing': false})
