@@ -192,8 +192,8 @@ function Index() {
                         >
                             {
                                 data.length > 0 && data[0]?.campaign?.noticeUrl?.length > 0 ?
-                                    // data[0]?.campaign?.noticeUrl.map((i: string, ind: number) => {
-                                    ['/background.svg','/checker.svg','/eth.svg','/facebook.svg','/feima.svg','/gas.svg','/finish.svg','/huo.svg'].map((i: string, ind: number) => {
+                                    data[0]?.campaign?.noticeUrl.map((i: string, ind: number) => {
+                                    // ['/background.svg','/checker.svg','/eth.svg','/facebook.svg','/feima.svg','/gas.svg','/finish.svg','/huo.svg'].map((i: string, ind: number) => {
                                         return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={
                                             throttle(function () {
                                             }, 1500, {'trailing': false})
@@ -207,17 +207,19 @@ function Index() {
                     {/*活动*/}
                     {
                         data.length > 0 ? data.map((i: any, ind: number) => {
-                            return <div key={ind} className={'active'}>
+                            return <div key={ind} style={{padding:browser?'0 15%':'0 6%'}} className={'active'}>
                                 <p className={'p2'}>{i?.campaign?.title || ''}</p>
                                 <p className={'p3'}>{i?.campaign?.startTime || ''} -- {i?.campaign?.endTime}</p>
                                 {
-                                    i?.tasks?.length > 0 && <div className={'box'}>
-                                        <div>
+                                    i?.tasks?.length > 0 && <div className={'box'} style={{flexDirection:browser?'row':'column'}}>
+                                        <div style={{width:browser?'47%':'100%'}}>
                                             {
                                                 i?.tasks.map((it: any, ind: number) => {
                                                     return <p style={{
                                                         background: select === ind ? 'rgb(52,62,53)' : '',
-                                                        color: select === ind ? 'rgb(134,240,151)' : 'white'
+                                                        color: select === ind ? 'rgb(134,240,151)' : 'white',
+                                                        marginBottom:browser?ind+1===i?.tasks.length?'':'20px':'20px',
+                                                        padding: browser?'4% 2.6%':'4% 6.5%'
                                                     }} onClick={() => {
                                                         if (select !== ind && !loading) {
                                                             setSelect(ind)
@@ -230,14 +232,15 @@ function Index() {
                                                 })
                                             }
                                         </div>
-                                        <div>
+                                        <div style={{width:browser?'47%':'100%',padding:browser?'2.5%':'5.5%'}}>
                                             <p>{i?.tasks[select]?.title || ''}</p>
                                             <p>{i?.tasks[select]?.description || ''}</p>
-                                            <p onClick={() => {
-                                                param(i?.tasks)
-                                            }}
-                                               style={{color: i?.tasks[select]?.isCompleted === '3' ? 'gray' : 'black'}}>{operate(i?.tasks)}
-                                                {loading ? <LoadingOutlined/> : ''}</p>
+                                            {
+                                                i?.tasks[select]?.isCompleted !== '3' && <p onClick={() => {
+                                                    param(i?.tasks)
+                                                }} style={{color:'black'}}>{operate(i?.tasks)}
+                                                    {loading ? <LoadingOutlined/> : ''}</p>
+                                            }
                                         </div>
                                     </div>
                                 }
