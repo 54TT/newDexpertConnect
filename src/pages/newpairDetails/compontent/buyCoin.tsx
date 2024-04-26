@@ -48,10 +48,10 @@ function BuyCoin({changStatus}: any) {
             />
             <div className={`pay buyCoinBorder`}>
                 <p>Pay</p>
-                <Input className={'input'} onChange={(e: any) => change(e, 'one')} suffix="WETH" allowClear/>
+                <Input className={'input'}  autoComplete={'off'}  onChange={(e: any) => change(e, 'one')} suffix="WETH" allowClear/>
                 <p className={'num'}>~ $34322</p>
                 <p>Receive</p>
-                <Input className={'input'} onChange={(e: any) => change(e, 'two')} style={{marginBottom: '11%'}}
+                <Input className={'input'}  autoComplete={'off'}  onChange={(e: any) => change(e, 'two')} style={{marginBottom: '11%'}}
                        suffix="BTC" allowClear/>
                 <div className={'but'} onClick={result}>
                     Trade

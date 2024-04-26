@@ -67,7 +67,7 @@ function HeaderModal() {
                 isModalSet ? <div className={'headerModalSetName'}>
                     <p>Welcome new user</p>
                     <p>Set up name</p>
-                    <Input allowClear onChange={changeName} className={'input'}/>
+                    <Input  autoComplete={'off'}  allowClear onChange={changeName} className={'input'}/>
                     <p onClick={pushSet}>OK</p>
                 </div> : <div className={'headerModal'}>
                     <img src="/logo1.svg" loading={'lazy'} alt=""/>

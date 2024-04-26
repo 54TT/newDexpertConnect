@@ -70,7 +70,7 @@ function Index() {
                                defaultValue={'24h'}/>
                     {
                         browser &&
-                        <Input suffix={<SearchOutlined style={{fontSize: '16px', color: 'white', display: 'none'}}/>}
+                        <Input autoComplete={'off'} suffix={<SearchOutlined style={{fontSize: '16px', color: 'white', display: 'none'}}/>}
                                onChange={changeInput}
                                allowClear className={'indexInput'}/>
                     }

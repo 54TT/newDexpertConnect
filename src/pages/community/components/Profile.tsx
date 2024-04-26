@@ -218,19 +218,19 @@ function Profie() {
             <div className="user-info-form" style={{padding: '10px 48px'}}>
                 <Form form={form} initialValues={data} onFinish={(data: any) => handleSubmit(data)}>
                     <Form.Item name='username' label='Name'>
-                        <Input/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                     <Form.Item name='bio' label='Bio'>
-                        <Input/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                     <Form.Item name='twitter' label='Twitter'>
-                        <Input/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                     <Form.Item name='telegram' label='Telegram'>
-                        <Input/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                     <Form.Item name='discord' label='Discord'>
-                        <Input/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                 </Form>
             </div>
@@ -395,7 +395,7 @@ function Profie() {
             >
                 <ModifyUserInfoForm/>
             </CommonModal>
-            <input ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{display: 'none'}}/>
+            <input  autoComplete={'off'}  ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{display: 'none'}}/>
         </div>
     );
 }
