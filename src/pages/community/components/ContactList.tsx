@@ -57,33 +57,7 @@ function UserItem({
                 <span className="post-item-info-user-nickName">{formatAddress(username)}</span>
                 <span className="post-item-info-user-icon">
         </span>
-                {/*         <span className="post-item-info-user-date">{CreatedAt}</span> */}
             </div>
-            {/*   <div className="post-item-info-content">
-        <span>{content}</span>
-        <div>
-          {imageList.map((src: string) => <img style={{ height: '100%' }} src={src} />)}
-        </div>
-      </div> */}
-            {/*     <div className="post-item-info-tag">{['#ETH', '#BTC'].map((tag: string) => <span>{tag}</span>)}</div> */}
-            {/*       <div className="post-item-info-action">
-        <div className="post-item-info-action-comment">
-          <img src="/community/comment.svg" alt="" />
-          <span>{commentNum}</span>
-        </div>
-        <div className="post-item-info-action-like">
-          <img src="/community/like.svg" alt="" />
-          <span>{likeNum}</span>
-        </div>
-        <div className="post-item-info-action-share">
-          <img src="/community/share.svg" alt="" />
-          <span>42</span>
-        </div>
-        <div className="post-item-info-action-watch">
-          <img src="/community/watch.svg" alt="" />
-          <span>1200k</span>
-        </div>
-      </div> */}
         </div>
         <div className="follow-list-action">
             {tab === '1' && follow ? <div className="follow-list-action-unfollow follow-icon" onClick={

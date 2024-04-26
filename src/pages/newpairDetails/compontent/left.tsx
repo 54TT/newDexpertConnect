@@ -48,7 +48,6 @@ function Left({par}: any) {
                         }
                     }, 1500, {'trailing': false})
                }>
-                    {/*<img src={data?.collect ? '/collectSelect.svg' : "/collect.svg"} alt=""/>*/}
                 </p>
             </div>
             {/*address*/}

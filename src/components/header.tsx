@@ -150,15 +150,6 @@ function Header() {
                          window.open('https://info.dexpert.io/')
                      }, 1500, {'trailing': false})
                  }>
-                {/*<img src={"/topLogo.svg"} loading={'lazy'} alt="" style={{cursor: 'pointer'}}/>*/}
-                {/*<p style={{*/}
-                {/*    color: 'rgb(134,240,151)',*/}
-                {/*    fontSize: '22px',*/}
-                {/*    marginTop: '3px',*/}
-                {/*    marginLeft: '7px',*/}
-                {/*    lineHeight: '1',*/}
-                {/*    fontWeight: 'bold'*/}
-                {/*}}>DEXPERT</p>*/}
                 <img src="/logo1111.svg" alt="" style={{width: '100%', display: 'block'}}/>
             </div>
             {

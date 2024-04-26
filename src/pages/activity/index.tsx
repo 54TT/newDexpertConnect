@@ -193,7 +193,6 @@ function Index() {
                             {
                                 data.length > 0 && data[0]?.campaign?.noticeUrl?.length > 0 ?
                                     data[0]?.campaign?.noticeUrl.map((i: string, ind: number) => {
-                                    // ['/background.svg','/checker.svg','/eth.svg','/facebook.svg','/feima.svg','/gas.svg','/finish.svg','/huo.svg'].map((i: string, ind: number) => {
                                         return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={
                                             throttle(function () {
                                             }, 1500, {'trailing': false})

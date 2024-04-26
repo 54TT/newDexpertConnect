@@ -368,24 +368,6 @@ function Profie() {
                                 </div>
                             })
                         }
-                        {/*<div className={`following dis`}>*/}
-                        {/*    <div>*/}
-                        {/*        <img src="/btc.svg" alt=""/>*/}
-                        {/*        <img src="/eth1.svg" alt=""/>*/}
-                        {/*        <img src="/sol.svg" alt=""/>*/}
-                        {/*    </div>*/}
-                        {/*    <p><span>142 </span>Holding</p>*/}
-                        {/*    <p><span>1345 </span>Following</p>*/}
-                        {/*</div>*/}
-                        {/*<div className={`following dis`}>*/}
-                        {/*    <div>*/}
-                        {/*        <img src="/btc.svg" alt=""/>*/}
-                        {/*        <img src="/eth1.svg" alt=""/>*/}
-                        {/*        <img src="/sol.svg" alt=""/>*/}
-                        {/*    </div>*/}
-                        {/*    <p><span>142 </span>Holding</p>*/}
-                        {/*    <p><span>1345 </span>Following</p>*/}
-                        {/*</div>*/}
                     </div>
                 </div>
                 <p className={'hello'}>{data.bio || 'Nothing here'}</p>
