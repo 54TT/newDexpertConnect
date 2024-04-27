@@ -185,7 +185,7 @@ function Index() {
                                 slideShadows: true,
                             }}
                             pagination={true}
-                            navigation
+                            // navigation
                             modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
                             loop
                             autoplay={{delay: 2000, disableOnInteraction: false}}
