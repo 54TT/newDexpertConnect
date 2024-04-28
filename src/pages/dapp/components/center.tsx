@@ -26,46 +26,48 @@ function Center() {
             </p>
             <p>
               {router.pathname === "/app"
-                ? "Thor is a user-friendly DApp that automates the ERC-20 token creation process. By providing an intuitive interface and simplifying complex tasks, Thor empowers users to efficiently create and deploy their tokens."
-                : "In the Uniswap protocol design, the development team does not extract fees from transactions, and all fees in transactions are returned to the liquidity provider."}
+                ? t("Dapps.Thor Desc")
+                : t("Dapps.Run Tips")}
             </p>
             <div className={"dis"}>
-              {["Video Guide", "Start on Telegram", "Start on Web"].map(
-                (i: string, ind: number) => {
-                  return (
-                    <div
-                      onClick={() =>
-                        LINK_BUTTON[ind] ? window.open(LINK_BUTTON[ind]) : null
-                      }
-                      style={{
-                        width: browser ? "28%" : "30%",
-                        color: ind === 2 ? "gray" : "rgb(220, 220, 220)",
-                        fontSize: "14px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                      key={ind}
-                    >
-                      {i}
-                      {ind === 2 ? (
-                        <span
-                          style={{
-                            fontSize: "10px",
-                            backgroundColor: "rgb(40,40,40)",
-                            borderRadius: "6px",
-                            padding: "4px",
-                          }}
-                        >
-                          Coming soon
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  );
-                }
-              )}
+              {[
+                t("Dapps.Video Guide"),
+                t("Dapps.Start on Telegram"),
+                t("Dapps.Start on Web"),
+              ].map((i: string, ind: number) => {
+                return (
+                  <div
+                    onClick={() =>
+                      LINK_BUTTON[ind] ? window.open(LINK_BUTTON[ind]) : null
+                    }
+                    style={{
+                      width: browser ? "28%" : "30%",
+                      color: ind === 2 ? "gray" : "rgb(220, 220, 220)",
+                      fontSize: "14px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    key={ind}
+                  >
+                    {i}
+                    {ind === 2 ? (
+                      <span
+                        style={{
+                          fontSize: "10px",
+                          backgroundColor: "rgb(40,40,40)",
+                          borderRadius: "6px",
+                          padding: "4px",
+                        }}
+                      >
+                        Coming soon
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

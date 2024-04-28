@@ -93,7 +93,7 @@ function Header() {
               name: t("Dapps.Market maker"),
               img: "/money.svg",
             },
-            { name: t("Dapps.New Buy notification"), img: "/news.svg" },
+            { name: t("Dapps.New Buy Notification"), img: "/news.svg" },
             {
               name: t("Dapps.Token Checker"),
               img: "/checker.svg",

@@ -17,9 +17,12 @@
     "Trending": "趋势",
     "Video Guide": "视频介绍",
     "Start on Telegram": "在Telegram中使用",
-    "Start on Web": "在网页中使用"
+    "Start on Web": "在网页中使用",
+    "Telegram Suite": "Telegram 套件",
+    "Thor Desc": "Thor是一个用户友好的DApp，它自动化了ERC-20代币创建过程。通过提供直观的界面和简化复杂任务，Thor使用户能够高效地创建和部署他们的代币。",
+    "Run Tips": "在Uniswap协议设计中，开发团队不会从交易中提取费用，所有交易中的费用都会返还给提供流动性的提供者。"
   },
-  "Sider": {
+  "Slider": {
     "New Pairs": "新交易对",
     "Trending": "趋势",
     "Name": "名称",
