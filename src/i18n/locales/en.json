@@ -55,5 +55,15 @@
   },
   "Alert": {
     "please connect your wallet": "please connect your wallet"
+  },
+  "Market": {
+    "Name": "Name",
+    "Price": "Price",
+    "24h Change": "24h Change",
+    "Create Time": "Create Time",
+    "Pooled Amt": "Pooled Amt",
+    "Swap Count": "Swap Count",
+    "Liquidity": "Liquidity",
+    "Links": "Links"
   }
 }

@@ -8,9 +8,11 @@ import {ethers} from 'ethers';
 import Loading from '../../components/loading.tsx'
 import {CountContext} from "../../Layout.tsx";
 import newPair from '../../components/getNewPair.tsx'
+import { useTranslation } from "react-i18next";
 function Index() {
     const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad,getPage} = newPair() as any
     const hei = useRef<any>()
+    const {t} = useTranslation();
     const {browser,}: any = useContext(CountContext);
     const [select, setSelect] = useState('newPair')
     const [time, setTime] = useState('24h')
@@ -85,7 +87,7 @@ function Index() {
                         {/*tittle*/}
                         <div className={'indexNewPairTitle'}>
                             {
-                                ['Name', 'Price($)', time + ' Change(%)', 'Create Time', 'Pooled Amt', 'Swap Count', 'Liquidity', 'Links'].map((i: string, ind: number) => {
+                                [t('Market.Name'), `${t('Market.Price')}($)`, time + ' Change(%)', t('Market.Create Time'), t('Market.Pooled Amt'), t('Market.Swap Count'), t('Market.Liquidity'), t('Market.Links')].map((i: string, ind: number) => {
                                     return <p className={`${ind === 0 ? 'disCen' : 'textAlign'} homeTableTittle`}
                                               key={ind}>
                                         {

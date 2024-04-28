@@ -56,5 +56,15 @@
   },
   "Alert": {
     "please connect your wallet": "请连接你的钱包"
+  },
+  "Market": {
+    "Name": "名称",
+    "Price": "价格",
+    "24h Change": "24h 变化",
+    "Create Time": "创建时间",
+    "Pooled Amt": "流动池数量",
+    "Swap Count": "交易数量",
+    "Liquidity": "流动性",
+    "Links": "链接"
   }
 }
