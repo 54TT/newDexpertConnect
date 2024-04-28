@@ -8,7 +8,7 @@ function Left() {
     [
       {
         label: t("Dapps.Token Creation Bot"),
-        value: "'Token Creation Bot'",
+        value: "Token Creation Bot",
       },
       {
         label: t("Dapps.Sniper Bot"),
@@ -44,13 +44,13 @@ function Left() {
         return (
           <div className={"top"} key={ind}>
             {ind === 0 ? <p>DApps</p> : <p>{t("Dapps.Telegram Suite")}</p>}
-            {i.map(({ label, value }: any, it: number) => {
+            {i.map(({ label, value: valueData }: any, it: number) => {
               return (
                 <p
                   key={it}
                   className={"list"}
                   onClick={() => {
-                    if (value !== value) {
+                    if (value !== valueData) {
                       // {
                       //     if (it !== 2 && it !== 3 && it !== 1) {
                       //         setValue(item)
@@ -58,7 +58,7 @@ function Left() {
                       // } else
                       if (ind === 0) {
                         if (it !== 2 && it !== 1) {
-                          setValue(value);
+                          setValue(valueData);
                         }
                       }
                     }
@@ -66,7 +66,7 @@ function Left() {
                   // style={{color: ind === 0 ? value === item ? 'rgb(134,240,151)' : it === 2 || it === 1 || it === 3 ? 'rgb(104,124,105)' : 'rgb(214, 223, 215)' : value === item ? 'rgb(134,240,151)' : it === 0 ? 'rgb(214, 223, 215)' : 'rgb(104,124,105)'}}>
                   style={{
                     color:
-                      value === "Token Creation Bot"
+                    valueData === "Token Creation Bot"
                         ? "rgb(134,240,151)"
                         : "rgb(104,124,105)",
                   }}
@@ -91,12 +91,12 @@ function Left() {
                     alt=""
                   />
                   <span>{label}</span>
-                  {(value === "Token Checker" ||
-                    value === "New Buy Notification" ||
-                    value === "Trending" ||
-                    value === "Sniper Bot" ||
-                    value === "Air drop Bot" ||
-                    value === "Market maker") && (
+                  {(valueData === "Token Checker" ||
+                    valueData === "New Buy Notification" ||
+                    valueData === "Trending" ||
+                    valueData === "Sniper Bot" ||
+                    valueData === "Air drop Bot" ||
+                    valueData === "Market maker") && (
                     <span
                       style={{
                         fontSize: "10px",

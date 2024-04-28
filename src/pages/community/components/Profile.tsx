@@ -16,7 +16,7 @@ function Profie() {
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
     const [options, setOptions] = useState('Community')
-    const [hei, setHei] = useState('')
+    const [hei, setHei] = useState<any>('')
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [data, setData] = useState<any>({});
     const [messageApi, contextHolder] = message.useMessage();
@@ -386,7 +386,7 @@ function Profie() {
                     }
                 </div>
             </div>
-            <div id='profileScroll' style={{height: hei - 15 + 'px', overflowY: 'auto'}}
+            <div id='profileScroll' style={{height: Number(hei) - 15 + 'px', overflowY: 'auto'}}
                  className={`scrollStyle community-content-post`}>
                 <TWeetHome uid={id} scrollId='profileScroll' style={{overflowY: 'unset'}}/>
             </div>

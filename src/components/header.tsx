@@ -207,7 +207,7 @@ function Header() {
     },
   ];
 
-  const changeLanguage = (e: HTMLElement) => {
+  const changeLanguage = (e: any) => {
     const { target } = e.target.dataset;
     if (target) {
       localStorage.setItem("language", target);
