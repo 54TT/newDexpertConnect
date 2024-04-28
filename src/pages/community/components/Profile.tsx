@@ -218,19 +218,19 @@ function Profie() {
             <div className="user-info-form" style={{padding: '10px 48px'}}>
                 <Form form={form} initialValues={data} onFinish={(data: any) => handleSubmit(data)}>
                     <Form.Item name='username' label='Name'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                     <Form.Item name='bio' label='Bio'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                     <Form.Item name='twitter' label='Twitter'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                     <Form.Item name='telegram' label='Telegram'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                     <Form.Item name='discord' label='Discord'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                 </Form>
             </div>
@@ -386,7 +386,7 @@ function Profie() {
                     }
                 </div>
             </div>
-            <div id='profileScroll' style={{height: hei + 'px', overflowY: 'auto'}}
+            <div id='profileScroll' style={{height: hei - 15 + 'px', overflowY: 'auto'}}
                  className={`scrollStyle community-content-post`}>
                 <TWeetHome uid={id} scrollId='profileScroll' style={{overflowY: 'unset'}}/>
             </div>
@@ -395,7 +395,8 @@ function Profie() {
             >
                 <ModifyUserInfoForm/>
             </CommonModal>
-            <input  autoComplete={'off'}  ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{display: 'none'}}/>
+            <input autoComplete={'off'} ref={inputRef} type="file" name="file" id='img-load' accept="image/*"
+                   style={{display: 'none'}}/>
         </div>
     );
 }

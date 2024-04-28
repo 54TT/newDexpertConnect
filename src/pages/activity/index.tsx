@@ -171,7 +171,7 @@ function Index() {
                     </div>
                     <p className={'p2'}>Events</p>
                     <p className={'p3'}>View activities here</p>
-                    <div className={'activeSwiper'}>
+                    <div className={`activeSwiper ${browser?'activeSwiperWeb':'activeSwiperActive'}`}>
                         <Swiper
                             effect={'coverflow'}
                             grabCursor={true}
@@ -192,7 +192,7 @@ function Index() {
                         >
                             {
                                 data.length > 0 && data[0]?.campaign?.noticeUrl?.length > 0 ?
-                                    data[0]?.campaign?.noticeUrl.map((i: string, ind: number) => {
+                                    data[0]?.campaign?.noticeUrl.concat(data[0]?.campaign?.noticeUrl).map((i: string, ind: number) => {
                                         return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={
                                             throttle(function () {
                                             }, 1500, {'trailing': false})
