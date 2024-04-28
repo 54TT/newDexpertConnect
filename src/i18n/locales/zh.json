@@ -1,0 +1,87 @@
+{
+  "Language": {
+    "Chinese": "中文",
+    "English": "English",
+    "Setting": "设置",
+    "Select": "语言选择"
+  },
+  "Title": {
+    "Select Network": "选择网络",
+    "Manage Token": "管理Token",
+    "Existence Token": "已添加Token",
+    "Select Wallet": "选择钱包"
+  },
+  "Trade": {
+    "Send": "发送",
+    "Receive": "接收",
+    "Sell": "卖出",
+    "Buy": "买入",
+    "Swap": "交换",
+    "Limit": "限价",
+    "Sniping": "抢先",
+    "Market": "市价",
+    "Maximum Slip": "最大滑点",
+    "Trade Deadline": "交易期限",
+    "Order Deadline": "订单期限",
+    "Gas Price": "Gas Price",
+    "Gas Limit": "Gas Limit"
+  },
+  "Setting": {
+    "Rename": "重命名钱包",
+    "Show Private Key": "查看私钥",
+    "Display Mnemonic phrase": "显示助记词",
+    "Change Access Password": "更改密码"
+  },
+  "Common": {
+    "Home": "首页",
+    "Auto": "自动",
+    "Customize": "自定义",
+    "Hour": "小时",
+    "Minute": "分钟",
+    "low": "慢速",
+    "avg": "平均",
+    "high": "快速",
+    "No Data": "暂无数据",
+    "Approval": "交易申请",
+    "Processing": "加载中...",
+    "View on etherscan": "在以太坊浏览器上查看",
+    "Confirm": "确认交易",
+    "Select Token": "选择代币",
+    "Max Count": "最大值",
+    "Approve Amount": "授权数量",
+    "This password will unlock your Dexpert wallet only on this telegram": "密码仅用于解锁telegram上的Dexpert钱包",
+    "Price Limit": "限制价格"
+  },
+  "MainButton": {
+    "Approve": "审核",
+    "Netx Step": "下一步",
+    "Confirm": "确认",
+    "Transfer": "转账"
+  },
+  "Detail": {
+    "Completed": "已完成",
+    "Pending": "正在执行",
+    "Failed": "失败",
+    "Waiting": "等待执行"
+  },
+  "Login": {
+    "Unlock": "解锁",
+    "Save": "保存",
+    "Confirm": "确定",
+    "Done": "完成",
+    "Enter your password": "请输入密码"
+  },
+  "Register": {
+    "Create": "创建账户",
+    "Update": "更新"
+  },
+  "State": {
+    "Completed": "已完成",
+    "In Progress": "正在进行",
+    "Pending": "等待"
+  },
+  "Message": {
+    "Add Token Fail": "添加Token失败",
+    "Please check transfer params": "请检查转账参数"
+  }
+}
