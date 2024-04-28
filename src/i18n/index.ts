@@ -19,7 +19,7 @@ i18n
       en_US: { translation: enTranslation },
       zh_CN: { translation: zhTranslation },
     },
-    fallbackLng: "zh_CN", // 默认当前环境的语言
+    fallbackLng: "en_US", // 默认当前环境的语言
     // 需要链式调用messages.welcome
     // keySeparator: false, // we do not use keys in form messages.welcome
     debug: false,

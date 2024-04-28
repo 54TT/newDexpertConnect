@@ -1,87 +1,40 @@
 {
-  "Language": {
-    "Chinese": "中文",
-    "English": "English",
-    "Setting": "设置",
-    "Select": "语言选择"
-  },
-  "Title": {
-    "Select Network": "选择网络",
-    "Manage Token": "管理Token",
-    "Existence Token": "已添加Token",
-    "Select Wallet": "选择钱包"
-  },
-  "Trade": {
-    "Send": "发送",
-    "Receive": "接收",
-    "Sell": "卖出",
-    "Buy": "买入",
-    "Swap": "交换",
-    "Limit": "限价",
-    "Sniping": "抢先",
-    "Market": "市价",
-    "Maximum Slip": "最大滑点",
-    "Trade Deadline": "交易期限",
-    "Order Deadline": "订单期限",
-    "Gas Price": "Gas Price",
-    "Gas Limit": "Gas Limit"
-  },
-  "Setting": {
-    "Rename": "重命名钱包",
-    "Show Private Key": "查看私钥",
-    "Display Mnemonic phrase": "显示助记词",
-    "Change Access Password": "更改密码"
-  },
   "Common": {
-    "Home": "首页",
-    "Auto": "自动",
-    "Customize": "自定义",
-    "Hour": "小时",
-    "Minute": "分钟",
-    "low": "慢速",
-    "avg": "平均",
-    "high": "快速",
-    "No Data": "暂无数据",
-    "Approval": "交易申请",
-    "Processing": "加载中...",
-    "View on etherscan": "在以太坊浏览器上查看",
-    "Confirm": "确认交易",
-    "Select Token": "选择代币",
-    "Max Count": "最大值",
-    "Approve Amount": "授权数量",
-    "This password will unlock your Dexpert wallet only on this telegram": "密码仅用于解锁telegram上的Dexpert钱包",
-    "Price Limit": "限制价格"
+    "Market": "市场",
+    "DApps & Tools": "DApps 与 工具",
+    "Community": "社区",
+    "Recommand": "推荐",
+    "Lastest": "最新",
+    "Connect Wallet": "连接钱包"
   },
-  "MainButton": {
-    "Approve": "审核",
-    "Netx Step": "下一步",
-    "Confirm": "确认",
-    "Transfer": "转账"
+  "Dapps": {
+    "Token Creation Bot": "发币机器人",
+    "Sniper Bot": "狙击机器人",
+    "Air drop Bot": "空投机器人",
+    "Market maker": "市场情绪机器人",
+    "New Buy Notification": "新交易提醒",
+    "Token Checker": "代币检查器",
+    "Trending": "趋势",
+    "Video Guide": "视频介绍",
+    "Start on Telegram": "在Telegram中使用",
+    "Start on Web": "在网页中使用"
   },
-  "Detail": {
-    "Completed": "已完成",
-    "Pending": "正在执行",
-    "Failed": "失败",
-    "Waiting": "等待执行"
+  "Sider": {
+    "New Pairs": "新交易对",
+    "Trending": "趋势",
+    "Name": "名称",
+    "Price": "价格",
+    "24h(%)": "24h(%)",
+    "More": "加载更多"
   },
-  "Login": {
-    "Unlock": "解锁",
-    "Save": "保存",
-    "Confirm": "确定",
-    "Done": "完成",
-    "Enter your password": "请输入密码"
+  "Community": {
+    "Share your insights...": "分享你的见闻...",
+    "Post": "发送",
+    "Lastest": "最新",
+    "Profile": "我的",
+    "Following": "关注列表"
   },
-  "Register": {
-    "Create": "创建账户",
-    "Update": "更新"
-  },
-  "State": {
-    "Completed": "已完成",
-    "In Progress": "正在进行",
-    "Pending": "等待"
-  },
-  "Message": {
-    "Add Token Fail": "添加Token失败",
-    "Please check transfer params": "请检查转账参数"
+  "Alert": {
+    "please connect your wallet": "请连接你的钱包"
   }
 }
