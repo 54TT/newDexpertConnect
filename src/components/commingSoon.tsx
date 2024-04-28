@@ -1,4 +1,7 @@
-function CommingSoon({hei}: any) {
+import { useTranslation } from "react-i18next";
+
+function CommingSoon(hei: any) {
+    const {t} = useTranslation()
     return (
         <div style={{
             position: 'absolute',
@@ -11,7 +14,7 @@ function CommingSoon({hei}: any) {
             lineHeight: hei,
             borderRadius:'7px'
         }}>
-            Coming soon
+            {t("Common.Coming soon")}
         </div>
     );
 }

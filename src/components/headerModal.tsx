@@ -4,6 +4,7 @@ import {CountContext} from "../Layout.tsx";
 import cookie from "js-cookie";
 import Request from "./axios.tsx";
 import {throttle} from "lodash";
+import { useTranslation } from "react-i18next";
 function HeaderModal() {
     const {
         browser,
@@ -13,6 +14,7 @@ function HeaderModal() {
         setIsModalSet, connect, setLoad,
         getMoneyEnd,
     }: any = useContext(CountContext);
+    const {t} = useTranslation();
     const {getAll} = Request()
     const [messageApi, contextHolder] = message.useMessage();
     const handleOk = () => {
@@ -71,7 +73,7 @@ function HeaderModal() {
                     <p onClick={pushSet}>OK</p>
                 </div> : <div className={'headerModal'}>
                     <img src="/logo1.svg" loading={'lazy'} alt=""/>
-                    <p>Connect to Dexpert</p>
+                    <p>{t("Common.Connect to Dexpert")}</p>
                     {
                         browser &&
                         <button onClick={connectWallet} className={'walletButton'} style={{margin: '10px 0'}}>

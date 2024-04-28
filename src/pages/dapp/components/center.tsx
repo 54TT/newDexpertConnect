@@ -60,7 +60,7 @@ function Center() {
                           padding: "4px",
                         }}
                       >
-                        Coming soon
+                                    {t("Common.Coming soon")}
                       </span>
                     ) : (
                       ""

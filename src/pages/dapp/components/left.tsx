@@ -26,7 +26,7 @@ function Left() {
     [
       {
         label: t("Dapps.New Buy Notification"),
-        valie: "New Buy Notification",
+        value: "New Buy Notification",
       },
       {
         label: t("Dapps.Token Checker"),
@@ -45,6 +45,8 @@ function Left() {
           <div className={"top"} key={ind}>
             {ind === 0 ? <p>DApps</p> : <p>{t("Dapps.Telegram Suite")}</p>}
             {i.map(({ label, value: valueData }: any, it: number) => {
+              console.log(valueData);
+              
               return (
                 <p
                   key={it}
@@ -108,7 +110,7 @@ function Left() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      Coming soon
+                                  {t("Common.Coming soon")}
                     </span>
                   )}
                 </p>

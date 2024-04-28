@@ -4,7 +4,10 @@
     "DApps & Tools": "DApps & Tools",
     "Community": "Community",
     "Recommand": "Recommand",
-    "Lastest": "Lastest"
+    "Lastest": "Lastest",
+    "Connect Wallet": "Connect Wallet",
+    "Coming soon": "Coming soon",
+    "Connect to Dexpert": "Connect to Dexpert"
   },
   "Dapps": {
     "Token Creation Bot": "Token Creation Bot",
@@ -16,6 +19,7 @@
     "Trending": "Trending",
     "Video Guide": "Video Guide",
     "Start on Telegram": "Start on Telegram",
+    "Telegram Suite": "Telegram Suite",
     "Start on Web": "Start on Web",
     "Thor Desc": "Thor is a user-friendly DApp that automates the ERC-20 token creation process. By providing an intuitive interface and simplifying complex tasks, Thor empowers users to efficiently create and deploy their tokens.",
     "Run Tips": "In the Uniswap protocol design, the development team does not extract fees from transactions, and all fees in transactions are returned to the liquidity provider."
