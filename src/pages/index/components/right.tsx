@@ -31,7 +31,8 @@ function Right() {
                     loop
                     autoplay={{delay: 2000, disableOnInteraction: false}}>
                     {
-                        ["https://dex-pert-pic.sgp1.cdn.digitaloceanspaces.com/dexpert-compaign.jpg", "https://dex-pert-pic.sgp1.cdn.digitaloceanspaces.com/dexpert-compaign2.jpg", "https://dex-pert-pic.sgp1.cdn.digitaloceanspaces.com/dexpert-compaign1.jpg"].map((i, ind) => {
+                        ['/abc1.jpg','/abc2.jpg','/abc3.jpg'].map((i, ind) => {
+                        // ["https://dex-pert-pic.sgp1.cdn.digitaloceanspaces.com/dexpert-compaign.jpg", "https://dex-pert-pic.sgp1.cdn.digitaloceanspaces.com/dexpert-compaign2.jpg", "https://dex-pert-pic.sgp1.cdn.digitaloceanspaces.com/dexpert-compaign1.jpg"].map((i, ind) => {
                             return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={
                                 throttle(function () {
                                     history('/activity')
@@ -57,7 +58,7 @@ function Right() {
                          onClick={() => selectTweet('two')}>Lastest
                     </div>
                 </div>
-                <TweetHome hei={`${hei}px`}/>
+                <TweetHome hei={`${hei-53}px`}/>
             </div>
         </div>
     );

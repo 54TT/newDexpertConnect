@@ -397,7 +397,7 @@ body::-webkit-scrollbar-thumb {
   cursor: pointer;
 
   &:hover {
-    background-color: rgb(34,36,34);
+    background-color: rgb(34, 36, 34);
   }
 
   .post-item-img {
@@ -818,15 +818,25 @@ span {
   .swiper {
     width: 100%;
   }
-
   .swiper-slide {
     background-position: center;
     background-size: cover;
-    width: 30%;
   }
 
   .swiper-slide img {
     display: block;
     width: 100%;
+  }
+}
+
+.activeSwiperWeb {
+  .swiper-slide {
+    width: 30%;
+  }
+}
+
+.activeSwiperActive {
+  .swiper-slide {
+    width: 80%;
   }
 }
