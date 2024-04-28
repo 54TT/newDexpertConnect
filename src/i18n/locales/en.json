@@ -7,7 +7,21 @@
     "Lastest": "Lastest",
     "Connect Wallet": "Connect Wallet",
     "Coming soon": "Coming soon",
-    "Connect to Dexpert": "Connect to Dexpert"
+    "Connect to Dexpert": "Connect to Dexpert",
+    "Volume": "Volume",
+    "Liquidity": "Liquidity",
+    "Market Cap": "Market Cap",
+    "FDV": "FDV",
+    "Swap Count": "Swap Count",
+    "Buys": "Buys",
+    "Total": "Total",
+    "Sells": "Sells",
+    "Created Time": "Created Time",
+    "Total Supply": "Total Supply",
+    "Initial Pool Amount": "Initial Pool Amount",
+    "Pooled WETH": "Pooled WETH",
+    "Pooled bTC": "Pooled bTC",
+    "Fast Trade": "Fast Trade"
   },
   "Dapps": {
     "Token Creation Bot": "Token Creation Bot",
@@ -24,7 +38,7 @@
     "Thor Desc": "Thor is a user-friendly DApp that automates the ERC-20 token creation process. By providing an intuitive interface and simplifying complex tasks, Thor empowers users to efficiently create and deploy their tokens.",
     "Run Tips": "In the Uniswap protocol design, the development team does not extract fees from transactions, and all fees in transactions are returned to the liquidity provider."
   },
-  "Sider": {
+  "Slider": {
     "New Pairs": "New Pairs",
     "Trending": "Trending",
     "Name": "Name",

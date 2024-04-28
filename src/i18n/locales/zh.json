@@ -7,7 +7,21 @@
     "Lastest": "最新",
     "Connect Wallet": "连接钱包",
     "Coming soon": "敬请期待",
-    "Connect to Dexpert": "连接到Dexpert"
+    "Connect to Dexpert": "连接到Dexpert",
+    "Volume": "交易量",
+    "Liquidity": "流动性",
+    "Market Cap": "市场份额",
+    "FDV": "FDV",
+    "Swap Count": "交易数量",
+    "Buys": "购买",
+    "Total": "总量",
+    "Sells": "卖出",
+    "Created Time": "创建时间",
+    "Total Supply": "提供总量",
+    "Initial Pool Amount": "初始流动池数量",
+    "Pooled WETH": "汇总 ETH",
+    "Pooled bTC": "汇总 btc",
+    "Fast Trade": "快速交易"
   },
   "Dapps": {
     "Token Creation Bot": "发币机器人",
@@ -23,6 +37,7 @@
     "Telegram Suite": "Telegram 套件",
     "Thor Desc": "Thor是一个用户友好的DApp，它自动化了ERC-20代币创建过程。通过提供直观的界面和简化复杂任务，Thor使用户能够高效地创建和部署他们的代币。",
     "Run Tips": "在Uniswap协议设计中，开发团队不会从交易中提取费用，所有交易中的费用都会返还给提供流动性的提供者。"
+
   },
   "Slider": {
     "New Pairs": "新交易对",

@@ -6,12 +6,14 @@ import Copy from '../../../components/copy.tsx'
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {throttle} from "lodash";
+import { useTranslation } from 'react-i18next';
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({par}: any) {
     const h = window.innerHeight - 25 - 54
     const [data, setData] = useState(par)
     const [status, setStatus] = useState(false)
     const [pairStatus, setPairStatus] = useState(false)
+    const {t} = useTranslation();
     useEffect(() => {
         if (status) {
             setTimeout(() => {
@@ -81,11 +83,11 @@ function Left({par}: any) {
             </div>
             <div className={'valume'}>
                 {
-                    [{name: 'Volume', price: data?.pairDayData[0]?.volumeUSD || 0}, {
-                        name: 'Liquidity',
+                    [{name: t('Common.Volume'), price: data?.pairDayData[0]?.volumeUSD || 0}, {
+                        name: t('Common.Liquidity'),
                         price: setMany(data?.liquidity) || 0
-                    }, {name: 'Market Cap', price: market}, {
-                        name: 'FDV',
+                    }, {name: t('Common.Market Cap'), price: market}, {
+                        name: t('Common.FDV'),
                         price: market
                     },].map((i: any, ind: number) => {
                         return <div className={`dis butt`} key={ind} style={{marginBottom: '10px'}}>
@@ -96,7 +98,7 @@ function Left({par}: any) {
                 }
             </div>
             <div className={'swap'}>
-                <p>Swap Count</p>
+                <p>{t("Common.Swap Count")}</p>
                 <div className={`dis swapTop`} style={{margin: '1.5% 0'}}>
                     <span>Buys</span>
                     <span>Total</span>
@@ -116,13 +118,13 @@ function Left({par}: any) {
             </div>
             <div className={'valume'}>
                 {
-                    [{name: 'Created Time', price: dayjs.unix(create).fromNow()}, {
-                        name: 'Total Supply',
+                    [{name: t('Common.Created Time'), price: dayjs.unix(create).fromNow()}, {
+                        name: t('Common.Total Supply'),
                         price: setMany(data?.token0?.totalSupply) || 0
-                    }, {name: 'Initial Pool Amount', price: pooled}, {
-                        name: 'Pooled WETH',
+                    }, {name: t('Common.Initial Pool Amount'), price: pooled}, {
+                        name: t('Common.Pooled WETH'),
                         price: '——'
-                    }, {name: 'Pooled bTC', price: '——'},].map((i: any, ind: number) => {
+                    }, {name: t('Common.Pooled bTC'), price: '——'},].map((i: any, ind: number) => {
                         return <div className={`dis butt`} key={ind} style={{marginBottom: '10px'}}>
                             <span>{i.name}</span>
                             <span>{i.price}</span>
