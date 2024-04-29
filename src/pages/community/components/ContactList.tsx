@@ -3,9 +3,10 @@ import { useEffect, useState} from "react";
 import Cookies from "js-cookie";
 import Request, {getTkAndUserName} from "../../../components/axios.tsx";
 import {formatAddress, getQueryParams} from "../../../../utils/utils";
-import {message, Spin} from "antd";
+import { Spin} from "antd";
 import {useNavigate} from "react-router";
 import {throttle} from "lodash";
+import {MessageAll} from "../../../components/message.ts";
 export interface FollowTabType {
     label: 'Following' | 'Follower',
     key: '1' | '2',
@@ -69,7 +70,7 @@ function UserItem({
                         if (result?.status === 200) {
                             setFollow(false);
                         } else {
-                            return message.error('faild to unfollow');
+                            return  MessageAll('warning','faild to unfollow')
                         }
                     } catch (e) {
                         return Promise.reject(e)
@@ -84,7 +85,8 @@ function UserItem({
                         if (result?.status === 200) {
                             setFollow(false);
                         } else {
-                            return message.error('faild to unfollow');
+
+                            return   MessageAll('error','faild to unfollow')
                         }
                     } catch (e) {
                         return Promise.reject(e)

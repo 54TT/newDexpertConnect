@@ -1,17 +1,16 @@
 import {useEffect, useState} from 'react'
-// import { motion } from 'framer-motion';
 import Request from './axios.tsx';
 import Cookies from 'js-cookie';
 import cookie from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
 import {useNavigate} from 'react-router-dom';
 import classNames from 'classnames';
-import {message} from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {DashOutlined} from '@ant-design/icons';
 import {setMany} from "../../utils/change.ts";
 import {throttle} from "lodash";
+import {MessageAll} from "./message.ts";
 
 dayjs.extend(relativeTime)
 
@@ -21,7 +20,6 @@ interface TweetsPropsType {
     type?: 'comment' | 'post' | 'reply';
     onPublish?: () => void;
 }
-
 function Tweets({
                     name,  type = 'post', onPublish = () => {
     }
@@ -106,7 +104,7 @@ function Tweets({
         const token = cookie.get('token')
         const jwt = cookie.get('jwt')
         if (!jwt && !token) {
-            message.warning('pleast connect your wallet');
+            MessageAll('warning','pleast connect your wallet')
             return;
         }
         if (type === 'reply' || type === 'comment') {
@@ -126,7 +124,7 @@ function Tweets({
         const token = cookie.get('token')
         const jwt = cookie.get('jwt')
         if (!token && !jwt) {
-            return message.warning('please connect your wallet')
+            return MessageAll('warning','please connect your wallet')
         }
         history(`/community/user?uid=${localData.user.uid}`)
     }, 1500, {'trailing': false})

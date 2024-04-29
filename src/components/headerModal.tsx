@@ -1,9 +1,10 @@
-import {Input, message, Modal} from "antd";
+import {Input,  Modal} from "antd";
 import {useContext, useState} from "react";
 import {CountContext} from "../Layout.tsx";
 import cookie from "js-cookie";
 import Request from "./axios.tsx";
 import {throttle} from "lodash";
+import {MessageAll} from "./message.ts";
 function HeaderModal() {
     const {
         browser,
@@ -14,7 +15,6 @@ function HeaderModal() {
         getMoneyEnd,
     }: any = useContext(CountContext);
     const {getAll} = Request()
-    const [messageApi, contextHolder] = message.useMessage();
     const handleOk = () => {
         setIsModalOpen(false);
     };
@@ -37,7 +37,7 @@ function HeaderModal() {
                 const result: any = await getAll({method:'post',url: '/api/v1/userinfo',data:{user},token});
                 if (result?.status === 200) {
                     cookie.set('username', JSON.stringify(user))
-                    messageApi.success('update success');
+                    MessageAll('warning','update success')
                     handleCancel()
                 }
             }
@@ -88,7 +88,6 @@ function HeaderModal() {
                     </button>
                 </div>
             }
-            {contextHolder}
         </Modal>
     );
 }

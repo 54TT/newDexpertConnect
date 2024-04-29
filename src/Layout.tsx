@@ -9,7 +9,6 @@ import {createContext, useCallback, useEffect, useRef, useState} from 'react'
 import {getAppMetadata, getSdkError} from "@walletconnect/utils";
 import 'swiper/css';
 import 'swiper/css/bundle'
-import {message,} from 'antd'
 import Bot from './components/bottom.tsx';
 import {Web3Modal} from "@web3modal/standalone";
 import cookie from 'js-cookie';
@@ -21,6 +20,7 @@ import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequ
 import _ from 'lodash';
 import Dapp from './pages/dapp';
 import Community from './pages/community';
+import {MessageAll} from "./components/message.ts";
 
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
@@ -34,7 +34,6 @@ function Layout() {
     const [search] = useSearchParams();
     const {getAll,} = Request()
     const history = useNavigate()
-    const [messageApi, contextHolder] = message.useMessage();
     const [chains, setChains] = useState<any>([]);
     const [client, setClient] = useState<any>(null);
     const [session, setSession] = useState<any>(null);
@@ -123,7 +122,7 @@ function Layout() {
         if (typeof (window as any).ethereum != 'undefined') {
             handleLogin()
         } else {
-            messageApi.warning('Please install MetaMask! And refresh');
+            MessageAll('warning','Please install MetaMask! And refresh')
         }
     }, 800)
     const handleLogin = async () => {
@@ -154,11 +153,8 @@ function Layout() {
                     setLoad(false)
                     return null
                 }
-                // } else {
-                //     messageApi.warning('Please select ETH!');
-                // }
             } else {
-                messageApi.warning('Please log in or connect to your account!');
+                MessageAll('warning','Please log in or connect to your account!')
             }
             setLoad(false)
         } catch (err) {
@@ -356,7 +352,6 @@ function Layout() {
                 </Routes>
             </div>
             <Bot/>
-            {contextHolder}
         </CountContext.Provider>
     );
 }

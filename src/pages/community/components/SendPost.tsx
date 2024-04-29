@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import Picker from "@emoji-mart/react";
 import emojiData from "@emoji-mart/data";
 import {throttle} from 'lodash'
+import {MessageAll} from "../../../components/message.ts";
 
 const {TextArea} = Input;
 
@@ -35,7 +36,7 @@ function SendPost({type = 'post', changeRefresh, onPublish, postData}: SendPostT
         const uploadInput = inputRef?.current
         const fileType = file.type;
         if (!allowedTypes.includes(fileType)) {
-            messageApi.warning('Only images in JPEG and PNG formats can be uploaded');
+            MessageAll('warning','Only images in JPEG and PNG formats can be uploaded')
             if (uploadInput?.value) {
                 // 清空输入框的值，防止上传无效文件
                 uploadInput.value = ""

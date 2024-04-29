@@ -8,6 +8,7 @@ import {ethers} from 'ethers';
 import Loading from '../../components/loading.tsx'
 import {CountContext} from "../../Layout.tsx";
 import newPair from '../../components/getNewPair.tsx'
+import {MessageAll} from "../../components/message.ts";
 function Index() {
     const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad,getPage} = newPair() as any
     const hei = useRef<any>()

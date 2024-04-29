@@ -9,6 +9,7 @@ import {formatAddress, getQueryParams} from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {throttle} from "lodash";
+import {MessageAll} from "../../../components/message.ts";
 
 function Profie() {
     const {getAll} = Request()
@@ -16,7 +17,7 @@ function Profie() {
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
     const [options, setOptions] = useState('Community')
-    const [hei, setHei] = useState('')
+    const [hei, setHei] = useState<any>(null)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [data, setData] = useState<any>({});
     const [messageApi, contextHolder] = message.useMessage();
@@ -66,7 +67,8 @@ function Profie() {
 
     const getUserProfile = async (setCookise?: boolean) => {
         if (!id) {
-            return messageApi.warning('please connect your wallet')
+
+            return MessageAll('warning','please connect your wallet')
         }
         const token = Cookies.get('token');
         if (!token) return;
@@ -119,7 +121,7 @@ function Profie() {
         const uploadInput = inputRef?.current
         const fileType = file.type;
         if (!allowedTypes.includes(fileType)) {
-            messageApi.warning('Only images in JPEG and PNG formats can be uploaded');
+            MessageAll('warning','Only images in JPEG and PNG formats can be uploaded')
             if (uploadInput?.value) {
                 // 清空输入框的值，防止上传无效文件
                 uploadInput.value = ""
@@ -140,7 +142,8 @@ function Profie() {
 
         const token = Cookies.get('token');
         if (!token || !id) {
-            return messageApi.warning('please connect your wallet')
+
+            return   MessageAll('warning','please connect your wallet')
         }
         let avatarUrl = previewAvatar;
         let coverUrl = previewBG;
@@ -171,7 +174,7 @@ function Profie() {
         // const result: any = await Request('post', '/api/v1/userinfo', params, token);
         const result: any = await getAll({method: 'post', url: '/api/v1/userinfo', data: params, token});
         if (result?.status === 200) {
-            messageApi.success('update success');
+            MessageAll('success','update success')
             getUserProfile(true)
             handleCancel();
         }
@@ -218,19 +221,19 @@ function Profie() {
             <div className="user-info-form" style={{padding: '10px 48px'}}>
                 <Form form={form} initialValues={data} onFinish={(data: any) => handleSubmit(data)}>
                     <Form.Item name='username' label='Name'>
-                        <Input autoComplete={'off'}/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                     <Form.Item name='bio' label='Bio'>
-                        <Input autoComplete={'off'}/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                     <Form.Item name='twitter' label='Twitter'>
-                        <Input autoComplete={'off'}/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                     <Form.Item name='telegram' label='Telegram'>
-                        <Input autoComplete={'off'}/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                     <Form.Item name='discord' label='Discord'>
-                        <Input autoComplete={'off'}/>
+                        <Input  autoComplete={'off'} />
                     </Form.Item>
                 </Form>
             </div>
@@ -248,10 +251,11 @@ function Profie() {
             const [token] = getTkAndUserName();
             const result: any = await getAll({method: 'post', url: '/api/v1/follow', data: {userId: id}, token});
             if (result?.status === 200) {
-                message.success('success follow')
+                MessageAll('success','success follow')
                 setIsFollowed(true);
             } else {
-                return message.error('faild to follow');
+
+                return MessageAll('error','faild to follow')
             }
         } catch (e) {
             return Promise.reject(e)
@@ -264,10 +268,10 @@ function Profie() {
                 const [token] = getTkAndUserName();
                 const result: any = await getAll({method: 'post', url: '/api/v1/unfollow', data: {uid: id}, token});
                 if (result?.status === 200) {
-                    message.success('success unfollow')
+                    MessageAll('success','success unfollow')
                     setIsFollowed(false);
                 } else {
-                    return message.error('faild to unfollow');
+                    return MessageAll('error','faild to unfollow')
                 }
             } catch (e) {
                 return Promise.reject(e)
@@ -386,7 +390,7 @@ function Profie() {
                     }
                 </div>
             </div>
-            <div id='profileScroll' style={{height: hei - 15 + 'px', overflowY: 'auto'}}
+            <div id='profileScroll' style={{height: hei-15 + 'px', overflowY: 'auto'}}
                  className={`scrollStyle community-content-post`}>
                 <TWeetHome uid={id} scrollId='profileScroll' style={{overflowY: 'unset'}}/>
             </div>
@@ -395,8 +399,7 @@ function Profie() {
             >
                 <ModifyUserInfoForm/>
             </CommonModal>
-            <input autoComplete={'off'} ref={inputRef} type="file" name="file" id='img-load' accept="image/*"
-                   style={{display: 'none'}}/>
+            <input  autoComplete={'off'}  ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{display: 'none'}}/>
         </div>
     );
 }

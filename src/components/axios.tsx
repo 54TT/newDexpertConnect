@@ -1,8 +1,8 @@
 import axios from "axios";
 import cookie from "js-cookie";
-import {message,} from "antd";
 import dayjs from 'dayjs'
 import {useNavigate} from "react-router-dom";
+import {MessageAll} from "./message.ts";
 
 const requestA = axios.create({
     baseURL: import.meta.env.MODE === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io'
@@ -20,7 +20,7 @@ requestA.interceptors.response.use(
         return response;
     },
     (e: any) => {
-        message.warning(e?.message);
+        MessageAll('warning',e?.message)
     }
 );
 const Request = () => {
@@ -64,7 +64,7 @@ const Request = () => {
                     return await encapsulation(method, data, url, token, '')
                 }
             } else {
-                message.warning('Please login again!');
+                MessageAll('warning','Please login again!')
                 clear()
             }
         } else {
