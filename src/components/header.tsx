@@ -266,6 +266,26 @@ function Header() {
                     justifyContent: "flex-end",
                 }}
             >
+                <div onClick={(e) => changeLanguage(e)}>
+                    {languageChange === "zh_CN" && (
+                        <img
+                            className="language-icon language-icon_CN"
+                            id="zh_CN"
+                            data-target="en_US"
+                            src="/zhong.svg"
+                            alt=""
+                        />
+                    )}
+                    {languageChange === "en_US" && (
+                        <img
+                            id="en_US"
+                            data-target="zh_CN"
+                            className="language-icon  language-icon_EN"
+                            src="/ying.svg"
+                            alt=""
+                        />
+                    )}
+                </div>
                 {user?.uid ? (
                     <Dropdown
                         menu={{
@@ -308,26 +328,6 @@ function Header() {
                     </Dropdown>
                 ) : (
                     <>
-                        <div onClick={(e) => changeLanguage(e)}>
-                            {languageChange === "zh_CN" && (
-                                <img
-                                    className="language-icon language-icon_CN"
-                                    id="zh_CN"
-                                    data-target="en_US"
-                                    src="/zhong.svg"
-                                    alt=""
-                                />
-                            )}
-                            {languageChange === "en_US" && (
-                                <img
-                                    id="en_US"
-                                    data-target="zh_CN"
-                                    className="language-icon  language-icon_EN"
-                                    src="/ying.svg"
-                                    alt=""
-                                />
-                            )}
-                        </div>
                         {browser ? (
                             <div className={"headerConnect"} onClick={loginModal}>
                                 <div className={"disCen"}>

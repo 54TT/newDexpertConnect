@@ -37,6 +37,9 @@ function Index() {
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
+    console.log(zhData)
+    console.log(enData)
+    console.log(languageChange)
     const getParams = async () => {
         const token = cookie.get('token')
         const res = await getAll({
@@ -44,12 +47,12 @@ function Index() {
         })
         if (res?.status === 200) {
             if (languageChange === 'zh_CN') {
-                setZhData(res?.data?.campaignHomeCN)
-                setData(res?.data?.campaignHome)
-            } else {
-                setEnData(res?.data?.campaignHome)
                 setData(res?.data?.campaignHomeCN)
+            } else {
+                setData(res?.data?.campaignHome)
             }
+            setZhData(res?.data?.campaignHomeCN)
+            setEnData(res?.data?.campaignHome)
             setPoint(res?.data?.totalPoint)
             setLoad(true)
         } else {
@@ -86,8 +89,12 @@ function Index() {
     }, []);
     const change = (name: string) => {
         if (name.length > 0) {
-            const data = name.split(' ')
-            return data[0]
+            if(languageChange === 'zh_CN') {
+                return name.slice(0,2)
+            }else {
+                const data = name.split(' ')
+                return data[0]
+            }
         } else {
             return ''
         }
