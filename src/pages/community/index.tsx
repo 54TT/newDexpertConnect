@@ -10,7 +10,7 @@ import ContactList from './components/ContactList.tsx';
 import {CountContext} from '../../Layout.tsx';
 import {message} from 'antd';
 import {getTkAndUserName} from '../../components/axios.tsx';
-type ActiveTabType = 'lastest' | 'profile' | 'following'
+type ActiveTabType = 'Lastest' | 'Profile' | 'Following' | 'Detail' | 'Comment' | 'User'
 function Community() {
     // 左侧选中的Tab
     const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
@@ -32,12 +32,12 @@ function Community() {
     }, [tab])
 
     const ComponentMap = {
-        'lastest': <PostContent/>,
-        'profile': <Profile/>,
-        'following': <ContactList/>,
-        'detail': <PostDetail/>,
-        'comment': <PostDetail/>,
-        'user': <Profile/>,
+        'Lastest': <PostContent/>,
+        'Profile': <Profile/>,
+        'Following': <ContactList/>,
+        'Detail': <PostDetail/>,
+        'Comment': <PostDetail/>,
+        'User': <Profile/>,
     }
     return (
         <div className='community-page'>
