@@ -7,18 +7,32 @@ import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import Request from "../../components/axios.tsx";
 import cookie from "js-cookie";
-import {Modal} from 'antd';
+import {Modal, Statistic} from 'antd';
 import Loading from '../../components/loading.tsx'
 import {LoadingOutlined} from '@ant-design/icons'
 import {CountContext} from "../../Layout.tsx";
+import dayjs from "dayjs";
+import {useTranslation} from "react-i18next";
+
+const {Countdown} = Statistic;
 
 function Index() {
     const {getAll,} = Request()
+    const {t} = useTranslation();
     const {browser,}: any = useContext(CountContext);
-    const {setIsModalOpen, isLogin, setIsLogin}: any = useContext(CountContext);
+    const {
+        setIsModalOpen,
+        languageChange,
+        isLogin,
+        changeLan,
+        setChangeLan,
+        setIsLogin
+    }: any = useContext(CountContext);
     const [select, setSelect] = useState(0)
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<any>([])
+    const [enData, setEnData] = useState<any>([])
+    const [zhData, setZhData] = useState<any>([])
     const [point, setPoint] = useState('0')
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
@@ -29,7 +43,13 @@ function Index() {
             method: 'post', url: '/api/v1/campaign/home', data: {token: token || ''}, token: token || ''
         })
         if (res?.status === 200) {
-            setData(res?.data?.campaignHome)
+            if (languageChange === 'zh_CN') {
+                setZhData(res?.data?.campaignHomeCN)
+                setData(res?.data?.campaignHome)
+            } else {
+                setEnData(res?.data?.campaignHome)
+                setData(res?.data?.campaignHomeCN)
+            }
             setPoint(res?.data?.totalPoint)
             setLoad(true)
         } else {
@@ -78,7 +98,7 @@ function Index() {
             const res = await getAll({
                 method: select === 1 ? 'post' : 'get',
                 url: select === 0 ? '/api/v1/oauth/twitter/follow' : select === 1 ? '/api/v1/oauth/telegram/chat/follow' : '/api/v1/oauth/discord/follow',
-                data: select === 1 ? {chatId: '-1002120873901', taskId: id} : {taskId: id},
+                data: select === 1 ? {taskId: id} : {taskId: id},
                 token
             })
             if (res?.data?.url) {
@@ -98,8 +118,7 @@ function Index() {
                 url: select === 0 ? '/api/v1/oauth/twitter/verify' : select === 1 ? '/api/v1/oauth/telegram/chat/verify' : '/api/v1/oauth/discord/verify',
                 data: select === 1 ? {
                     taskId: id,
-                    chatId: '-1002120873901'
-                } : select === 0 ? {taskId: id} : {groupId: '1218109860999204904', botName: 'dis_bot', taskId: id},
+                } : select === 0 ? {taskId: id} : {taskId: id},
                 token
             })
             if (res?.status === 200 && res.data?.exist) {
@@ -120,12 +139,12 @@ function Index() {
                 if (Number(tasks[select]?.isCompleted) === 1) {
                     return change(tasks[select]?.title)
                 } else if (Number(tasks[select]?.isCompleted) === 2) {
-                    return 'Claim'
+                    return t('Market.Claim')
                 } else {
-                    return 'Completed'
+                    return t('Market.Completed')
                 }
             } else {
-                return 'Authorize'
+                return t('Market.Authorize')
             }
         }
     }
@@ -159,22 +178,55 @@ function Index() {
         }
     }
 
-
-
+    const countdownNow = (t1: string, t2: string) => {
+        if (t1 && t2) {
+            // 判断有几个月
+            const abc = dayjs(t2).diff(t1, 'month')
+            //  是否过了今天
+            const at = dayjs(t2).isAfter(dayjs())
+            if (at) {
+                if (abc) {
+                    return t1 + '---' + t2
+                } else {
+                    const date = dayjs(t2).diff(dayjs())
+                    return Date.now() + Number(date)
+                }
+            } else {
+                return '00:00:00 00:00:00'
+            }
+        } else {
+            return '00:00:00 00:00:00'
+        }
+    }
+    useEffect(() => {
+        if (changeLan) {
+            if (languageChange === 'zh_CN') {
+                setData([...zhData])
+                setChangeLan(false)
+            } else {
+                setData([...enData])
+                setChangeLan(false)
+            }
+        }
+    }, [changeLan]);
     return (
         <>
             {
                 load ? <div className={'activityBox'} style={{marginBottom: '50px'}}>
-                    <div className={'top'} style={{width:browser?'20%':'90%',justifyContent:browser?'space-between':'space-around',padding:browser?'2.2% 1.7% 1%':'6% 0 4%'}}>
+                    <div className={'top'} style={{
+                        width: browser ? '20%' : '90%',
+                        justifyContent: browser ? 'space-between' : 'space-around',
+                        padding: browser ? '2.2% 1.7% 1%' : '6% 0 4%'
+                    }}>
                         <div>
                             <p>{point}</p>
-                            <p>POINTS</p>
+                            <p>{t('Market.POINTS')}</p>
                         </div>
-                        <p>Redeem</p>
+                        <p>{t('Market.Redeem')}</p>
                     </div>
-                    <p className={'p2'}>Events</p>
-                    <p className={'p3'}>View activities here</p>
-                    <div className={`activeSwiper ${browser?'activeSwiperWeb':'activeSwiperActive'}`}>
+                    <p className={'p2'}>{t('Market.Events')}</p>
+                    <p className={'p3'}> {t('Market.view')}</p>
+                    <div className={`activeSwiper ${browser ? 'activeSwiperWeb' : 'activeSwiperActive'}`}>
                         <Swiper
                             effect={'coverflow'}
                             grabCursor={true}
@@ -196,12 +248,12 @@ function Index() {
                             {
                                 data.length > 0 && data[0]?.campaign?.noticeUrl?.length > 0 ?
                                     data[0]?.campaign?.noticeUrl.concat(data[0]?.campaign?.noticeUrl).map((i: string, ind: number) => {
-                                        return <SwiperSlide key={ind}><img loading={'lazy'} src={i} onClick={
+                                        return <SwiperSlide key={ind}><img loading={'lazy'} className={'activeImgHover'}
+                                                                           src={i} onClick={
                                             throttle(function () {
+
                                             }, 1500, {'trailing': false})
-                                        }
-                                                                           style={{borderRadius: '15px'}}
-                                                                           alt=""/></SwiperSlide>
+                                        } style={{borderRadius: '15px', width: '100%'}} alt=""/></SwiperSlide>
                                     }) : ''
                             }
                         </Swiper>
@@ -209,19 +261,35 @@ function Index() {
                     {/*活动*/}
                     {
                         data.length > 0 ? data.map((i: any, ind: number) => {
-                            return <div key={ind} style={{padding:browser?'0 15%':'0 6%'}} className={'active'}>
+                            const date = countdownNow(i?.campaign?.startTime, i?.campaign?.endTime)
+                            return <div key={ind} style={{padding: browser ? '0 15%' : '0 6%'}} className={'active'}>
                                 <p className={'p2'}>{i?.campaign?.title || ''}</p>
-                                <p className={'p3'}>{i?.campaign?.startTime || ''} -- {i?.campaign?.endTime}</p>
                                 {
-                                    i?.tasks?.length > 0 && <div className={'box'} style={{flexDirection:browser?'row':'column'}}>
-                                        <div style={{width:browser?'47%':'100%'}}>
+                                    Number(date) ?
+                                        <Countdown title=""
+                                                   className={'avtiveCountdown'}
+                                                   value={date}
+                                                   format="D[D] H[H] m[M] s[S]"
+                                        /> :
+                                        <p className={'p3'}>{date}</p>
+
+                                }
+                                <p style={{
+                                    marginTop: '20px',
+                                    color: 'rgb(200,200,200)',
+                                    lineHeight: '1.1', marginBottom: '10px'
+                                }}>{i?.campaign?.description}</p>
+                                {
+                                    i?.tasks?.length > 0 &&
+                                    <div className={'box'} style={{flexDirection: browser ? 'row' : 'column'}}>
+                                        <div style={{width: browser ? '47%' : '100%'}}>
                                             {
                                                 i?.tasks.map((it: any, ind: number) => {
                                                     return <p style={{
                                                         background: select === ind ? 'rgb(52,62,53)' : '',
                                                         color: select === ind ? 'rgb(134,240,151)' : 'white',
-                                                        marginBottom:browser?ind+1===i?.tasks.length?'':'20px':'20px',
-                                                        padding: browser?'4% 2.6%':'4% 6.5%'
+                                                        marginBottom: browser ? ind + 1 === i?.tasks.length ? '' : '20px' : '20px',
+                                                        padding: browser ? '5% 5%' : '4% 6.5%'
                                                     }} onClick={() => {
                                                         if (select !== ind && !loading) {
                                                             setSelect(ind)
@@ -234,25 +302,23 @@ function Index() {
                                                 })
                                             }
                                         </div>
-                                        <div style={{width:browser?'47%':'100%',padding:browser?'2.5%':'5.5%'}}>
+                                        <div style={{
+                                            width: browser ? '47%' : '100%',
+                                            padding: browser ? '2.5%' : '5.5%'
+                                        }}>
                                             <p>{i?.tasks[select]?.title || ''}</p>
                                             <p>{i?.tasks[select]?.description || ''}</p>
                                             {
                                                 i?.tasks[select]?.isCompleted !== '3' && <p onClick={() => {
                                                     param(i?.tasks)
-                                                }} style={{color:'black'}}>{operate(i?.tasks)}
+                                                }} style={{color: 'black'}}>{operate(i?.tasks)}
                                                     {loading ? <LoadingOutlined/> : ''}</p>
                                             }
                                         </div>
                                     </div>
                                 }
-                                <p style={{
-                                    marginTop: '20px',
-                                    color: 'rgb(200,200,200)',
-                                    lineHeight: '1.1'
-                                }}>{i?.campaign?.description}</p>
                             </div>
-                        }) : <p style={{textAlign: 'center', marginTop: '20px'}}>暂无活动</p>
+                        }) : <p style={{textAlign: 'center', marginTop: '20px', color: 'white'}}> {t('Market.no')}</p>
                     }
                 </div> : <Loading status={'20'}/>
             }

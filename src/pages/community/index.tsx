@@ -10,22 +10,24 @@ import ContactList from './components/ContactList.tsx';
 import {CountContext} from '../../Layout.tsx';
 import {getTkAndUserName} from '../../components/axios.tsx';
 import {MessageAll} from "../../components/message.ts";
-type ActiveTabType = 'lastest' | 'profile' | 'following'
+import {useTranslation} from "react-i18next";
+type ActiveTabType = 'lastest' | 'profile' | 'following' | 'detail' | 'comment' | 'user'
 function Community() {
+    const {t} = useTranslation();
     // 左侧选中的Tab
     const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
     const {browser} = useContext(CountContext) as any;
     const history = useNavigate();
     const onActiveUserTabChange = (tab: string) => {
         const [token, username] = getTkAndUserName()
-        if (!token || !username) return MessageAll('warning','please connect your wallet')
+        if (!token || !username) return MessageAll('warning',t('Market.line'))
         setActiveUserTab(tab as ActiveTabType);
         history(`/community/${tab}`);
     }
     const {tab} = useParams()
     useEffect(() => {
-        setActiveUserTab(tab || 'lastest')
-        if (tab !== 'comment') {
+        setActiveUserTab(tab || 'Lastest')
+        if (tab !== 'Comment') {
             localStorage.removeItem('reply-detail')
         }
 

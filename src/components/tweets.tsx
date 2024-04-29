@@ -11,9 +11,8 @@ import {DashOutlined} from '@ant-design/icons';
 import {setMany} from "../../utils/change.ts";
 import {throttle} from "lodash";
 import {MessageAll} from "./message.ts";
-
+import {useTranslation} from "react-i18next";
 dayjs.extend(relativeTime)
-
 interface TweetsPropsType {
     user?: any;
     name: any;
@@ -25,6 +24,7 @@ function Tweets({
     }
                 }: TweetsPropsType) {
     const {getAll} = Request()
+    const {t} = useTranslation();
     const [clickAnimate, setClickAnimate] = useState(false);
     const [localData, setLocalData] = useState(name);
     const [openComment, setOpenComment] = useState(false);
@@ -104,7 +104,7 @@ function Tweets({
         const token = cookie.get('token')
         const jwt = cookie.get('jwt')
         if (!jwt && !token) {
-            MessageAll('warning','pleast connect your wallet')
+            MessageAll('warning',t('Market.line'))
             return;
         }
         if (type === 'reply' || type === 'comment') {
@@ -124,7 +124,7 @@ function Tweets({
         const token = cookie.get('token')
         const jwt = cookie.get('jwt')
         if (!token && !jwt) {
-            return MessageAll('warning','please connect your wallet')
+            return MessageAll('warning',t('Market.line'))
         }
         history(`/community/user?uid=${localData.user.uid}`)
     }, 1500, {'trailing': false})

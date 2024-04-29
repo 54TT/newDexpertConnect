@@ -3,7 +3,6 @@ import {useNavigate, useSearchParams,} from "react-router-dom";
 import Loading from '../../../components/loading.tsx'
 import Request from "../../../components/axios.tsx";
 import cookie from "js-cookie";
-
 function Oauth() {
     const {getAll,} = Request()
     const [search] = useSearchParams();
@@ -16,9 +15,8 @@ function Oauth() {
                 url: nu === 1 ? '/api/v1/oauth/twitter/claim' : nu === 2 ? '/api/v1/oauth/telegram/chat/bind' : '/api/v1/oauth/discord/claim',
                 data: nu === 1 ? {OAuthToken: name, OAuthVerifier: da, taskId: '1'} : nu === 2 ? {
                     tgAuthResult: name,
-                    chatId: '-1002120873901',
                     taskId: '2'
-                } : {code: name, groupId: '1218109860999204904', taskId: '3'},
+                } : {code: name,  taskId: '3'},
                 token
             })
             if (res?.data?.message === 'ok') {

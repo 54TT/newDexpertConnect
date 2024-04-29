@@ -1,86 +1,91 @@
 {
-  "Language": {
-    "Setting": "Language Setting",
-    "Chinese": "中文",
-    "English": "English",
-    "Select": "Select Language"
-  },
-  "Title": {
-    "Select Network": "Select Network",
-    "Manage Token": "Manage Token",
-    "Existence Token": "Existence Token",
-    "Select Wallet": "Select Wallet"
-  },
-  "Trade": {
-    "Send": "Send",
-    "Buy": "Buy",
-    "Sell": "Sell",
-    "Receive": "Receive",
-    "Sniping": "Sniping",
-    "Swap": "Swap",
-    "Limit": "Limit",
-    "Maximum Slip": "Maximum Slip",
-    "Trade Deadline": "Trade Deadline",
-    "Order Deadline": "Order Deadline",
-    "Gas Price": "Gas Price",
-    "Gas Limit": "Gas Limit"
-  },
-  "Setting": {
-    "Rename": "Rename",
-    "Show Private Key": "Show Private Key",
-    "Display Mnemonic phrase": "Display Mnemonic phrase",
-    "Change Access Password": "Change Access Password"
-  },
   "Common": {
-    "Home": "Home",
-    "Auto": "Auto",
-    "Customize": "Customize",
-    "Hour": "Hour",
-    "Minute": "Minute",
-    "low": "low",
-    "avg": "avg",
-    "high": "high",
-    "No Data": "No Data",
-    "Approval": "Approval",
-    "Processing": "Processing",
-    "View on etherscan": "View on etherscan",
-    "Confirm": "Confirm",
-    "Select Token": "Select Token",
-    "Max Count": "Max Count",
-    "Approve Amount": "Approve Amount",
-    "This password will unlock your Dexpert wallet only on this telegram": "This password will unlock your Dexpert wallet only on this telegram.",
-    "Price Limit": "Price Limit"
+    "Market": "Market",
+    "DApps & Tools": "DApps & Tools",
+    "Community": "Community",
+    "Recommand": "Recommand",
+    "Lastest": "Lastest",
+    "Connect Wallet": "Connect Wallet",
+    "Coming soon": "Coming soon",
+    "Connect to Dexpert": "Connect to Dexpert",
+    "Volume": "Volume",
+    "Liquidity": "Liquidity",
+    "Market Cap": "Market Cap",
+    "FDV": "FDV",
+    "Swap Count": "Swap Count",
+    "Buys": "Buys",
+    "Total": "Total",
+    "Sells": "Sells",
+    "Created Time": "Created Time",
+    "Total Supply": "Total Supply",
+    "Initial Pool Amount": "Initial Pool Amount",
+    "Pooled WETH": "Pooled WETH",
+    "Pooled bTC": "Pooled bTC",
+    "Fast Trade": "Fast Trade"
   },
-  "MainButton": {
-    "Approve": "Approve",
-    "Netx Step": "Netx Step",
-    "Confirm": "Confirm",
-    "Transfer": "Transfer"
+  "Dapps": {
+    "Token Creation Bot": "Token Creation Bot",
+    "Sniper Bot": "Sniper Bot",
+    "Air drop Bot": "Air drop Bot",
+    "Market maker": "Market maker",
+    "New Buy Notification": "New Buy Notification",
+    "Token Checker": "Token Checker",
+    "Trending": "Trending",
+    "Video Guide": "Video Guide",
+    "Start on Telegram": "Start on Telegram",
+    "Telegram Suite": "Telegram Suite",
+    "Start on Web": "Start on Web",
+    "Thor Desc": "Thor is a user-friendly DApp that automates the ERC-20 token creation process. By providing an intuitive interface and simplifying complex tasks, Thor empowers users to efficiently create and deploy their tokens.",
+    "Run Tips": "In the Uniswap protocol design, the development team does not extract fees from transactions, and all fees in transactions are returned to the liquidity provider."
   },
-  "Detail": {
+  "Slider": {
+    "New Pairs": "New Pairs",
+    "Trending": "Trending",
+    "Name": "Name",
+    "Price": "Price",
+    "24h(%)": "24h(%)",
+    "More": "More"
+  },
+  "Community": {
+    "Share your insights...": "Share your insights...",
+    "Post": "Post",
+    "Lastest": "Lastest",
+    "Profile": "Profile",
+    "Following": "Following"
+  },
+  "Alert": {
+    "please connect your wallet": "please connect your wallet"
+  },
+  "Market": {
+    "Name": "Name",
+    "Price": "Price",
+    "24h Change": "24h Change",
+    "Create Time": "Create Time",
+    "Pooled Amt": "Pooled Amt",
+    "Swap Count": "Swap Count",
+    "Liquidity": "Liquidity",
+    "Links": "Links",
+    "login": "Please login again!",
+    "unF": "faild to unfollow",
+    "unFo": "faild to follow",
+    "line": "please connect your wallet",
+    "only": "Only images in JPEG and PNG formats can be uploaded",
+    "update": "update success",
+    "succ": "success follow",
+    "unSucc": "success unfollow",
+    "inst": "Please install MetaMask! And refresh",
+    "log": "Please log in or connect to your account!",
+    "fail": "Upload failed, please upload again!",
+    "pub": "Publish failed",
+    "POINTS": "POINTS",
+    "Events": "Events",
+    "Redeem": "Redeem",
+    "view": "View activities here",
+    "Authorize": "Authorize",
     "Completed": "Completed",
-    "Pending": "Pending",
-    "Failed": "Failed",
-    "Waiting": "Waiting"
-  },
-  "Login": {
-    "Unlock": "Unlock",
-    "Save": "Save",
-    "Confirm": "Confirm",
-    "Done": "Done",
-    "Enter your password": "Enter your password"
-  },
-  "Register": {
-    "Create": "Create",
-    "Update": "Update"
-  },
-  "State": {
-    "Completed": "Completed",
-    "In Progress": "In Progress",
-    "Pending": "Pending"
-  },
-  "Message": {
-    "Add Token Fail": "Add Token Fail",
-    "Please check transfer params": "Please check transfer params"
+    "Claim": "Claim",
+    "no": "No activity yet"
+
+
   }
 }

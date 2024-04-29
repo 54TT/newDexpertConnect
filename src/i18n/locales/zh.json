@@ -1,87 +1,91 @@
 {
-  "Language": {
-    "Chinese": "中文",
-    "English": "English",
-    "Setting": "设置",
-    "Select": "语言选择"
-  },
-  "Title": {
-    "Select Network": "选择网络",
-    "Manage Token": "管理Token",
-    "Existence Token": "已添加Token",
-    "Select Wallet": "选择钱包"
-  },
-  "Trade": {
-    "Send": "发送",
-    "Receive": "接收",
-    "Sell": "卖出",
-    "Buy": "买入",
-    "Swap": "交换",
-    "Limit": "限价",
-    "Sniping": "抢先",
-    "Market": "市价",
-    "Maximum Slip": "最大滑点",
-    "Trade Deadline": "交易期限",
-    "Order Deadline": "订单期限",
-    "Gas Price": "Gas Price",
-    "Gas Limit": "Gas Limit"
-  },
-  "Setting": {
-    "Rename": "重命名钱包",
-    "Show Private Key": "查看私钥",
-    "Display Mnemonic phrase": "显示助记词",
-    "Change Access Password": "更改密码"
-  },
   "Common": {
-    "Home": "首页",
-    "Auto": "自动",
-    "Customize": "自定义",
-    "Hour": "小时",
-    "Minute": "分钟",
-    "low": "慢速",
-    "avg": "平均",
-    "high": "快速",
-    "No Data": "暂无数据",
-    "Approval": "交易申请",
-    "Processing": "加载中...",
-    "View on etherscan": "在以太坊浏览器上查看",
-    "Confirm": "确认交易",
-    "Select Token": "选择代币",
-    "Max Count": "最大值",
-    "Approve Amount": "授权数量",
-    "This password will unlock your Dexpert wallet only on this telegram": "密码仅用于解锁telegram上的Dexpert钱包",
-    "Price Limit": "限制价格"
+    "Market": "市场",
+    "DApps & Tools": "DApps 与 工具",
+    "Community": "社区",
+    "Recommand": "推荐",
+    "Lastest": "最新",
+    "Connect Wallet": "连接钱包",
+    "Coming soon": "敬请期待",
+    "Connect to Dexpert": "连接到Dexpert",
+    "Volume": "交易量",
+    "Liquidity": "流动性",
+    "Market Cap": "市场份额",
+    "FDV": "FDV",
+    "Swap Count": "交易数量",
+    "Buys": "购买",
+    "Total": "总量",
+    "Sells": "卖出",
+    "Created Time": "创建时间",
+    "Total Supply": "提供总量",
+    "Initial Pool Amount": "初始流动池数量",
+    "Pooled WETH": "汇总 ETH",
+    "Pooled bTC": "汇总 btc",
+    "Fast Trade": "快速交易"
   },
-  "MainButton": {
-    "Approve": "审核",
-    "Netx Step": "下一步",
-    "Confirm": "确认",
-    "Transfer": "转账"
+  "Dapps": {
+    "Token Creation Bot": "发币机器人",
+    "Sniper Bot": "狙击机器人",
+    "Air drop Bot": "空投机器人",
+    "Market maker": "市场情绪机器人",
+    "New Buy Notification": "新交易提醒",
+    "Token Checker": "代币检查器",
+    "Trending": "趋势",
+    "Video Guide": "视频介绍",
+    "Start on Telegram": "在Telegram中使用",
+    "Start on Web": "在网页中使用",
+    "Telegram Suite": "Telegram 套件",
+    "Thor Desc": "Thor是一个用户友好的DApp，它自动化了ERC-20代币创建过程。通过提供直观的界面和简化复杂任务，Thor使用户能够高效地创建和部署他们的代币。",
+    "Run Tips": "在Uniswap协议设计中，开发团队不会从交易中提取费用，所有交易中的费用都会返还给提供流动性的提供者。"
+
   },
-  "Detail": {
+  "Slider": {
+    "New Pairs": "新交易对",
+    "Trending": "趋势",
+    "Name": "名称",
+    "Price": "价格",
+    "24h(%)": "24h(%)",
+    "More": "加载更多"
+  },
+  "Community": {
+    "Share your insights...": "分享你的见闻...",
+    "Post": "发送",
+    "Lastest": "最新",
+    "Profile": "我的",
+    "Following": "关注列表"
+  },
+  "Alert": {
+    "please connect your wallet": "请连接你的钱包"
+  },
+  "Market": {
+    "Name": "名称",
+    "Price": "价格",
+    "24h Change": "24h 变化",
+    "Create Time": "创建时间",
+    "Pooled Amt": "流动池数量",
+    "Swap Count": "交易数量",
+    "Liquidity": "流动性",
+    "Links": "链接",
+    "login": "请重新登录!",
+    "unF": "取消关注失败",
+    "unFo": "关注失败",
+    "line": "请连接您的钱包",
+    "only": "只能上传JPEG和PNG格式的图片",
+    "update": "更新成功",
+    "succ": "关注成功",
+    "unSucc": "取消关注成功",
+    "inst": "请安装MetaMask！并刷新",
+    "log": "请登录或连接到您的帐户！",
+    "fail": "上传失败，请重新上传！",
+    "pub": "发布失败",
+    "POINTS": "积分",
+    "Events": "活动",
+    "Redeem": "兑换",
+    "view": "在此查看活动",
+    "Authorize": "授权",
     "Completed": "已完成",
-    "Pending": "正在执行",
-    "Failed": "失败",
-    "Waiting": "等待执行"
-  },
-  "Login": {
-    "Unlock": "解锁",
-    "Save": "保存",
-    "Confirm": "确定",
-    "Done": "完成",
-    "Enter your password": "请输入密码"
-  },
-  "Register": {
-    "Create": "创建账户",
-    "Update": "更新"
-  },
-  "State": {
-    "Completed": "已完成",
-    "In Progress": "正在进行",
-    "Pending": "等待"
-  },
-  "Message": {
-    "Add Token Fail": "添加Token失败",
-    "Please check transfer params": "请检查转账参数"
+    "Claim": "领取",
+    "no": "暂无活动"
+
   }
 }

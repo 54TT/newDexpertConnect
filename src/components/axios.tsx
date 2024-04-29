@@ -3,6 +3,7 @@ import cookie from "js-cookie";
 import dayjs from 'dayjs'
 import {useNavigate} from "react-router-dom";
 import {MessageAll} from "./message.ts";
+import {useTranslation} from "react-i18next";
 
 const requestA = axios.create({
     baseURL: import.meta.env.MODE === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io'
@@ -24,6 +25,7 @@ requestA.interceptors.response.use(
     }
 );
 const Request = () => {
+    const {t} = useTranslation();
     const history = useNavigate()
     const clear = () => {
         history('/?change=1')
@@ -64,7 +66,7 @@ const Request = () => {
                     return await encapsulation(method, data, url, token, '')
                 }
             } else {
-                MessageAll('warning','Please login again!')
+                MessageAll('warning',t('Market.login'))
                 clear()
             }
         } else {

@@ -7,6 +7,7 @@ import { Spin} from "antd";
 import {useNavigate} from "react-router";
 import {throttle} from "lodash";
 import {MessageAll} from "../../../components/message.ts";
+import {useTranslation} from "react-i18next";
 export interface FollowTabType {
     label: 'Following' | 'Follower',
     key: '1' | '2',
@@ -43,6 +44,7 @@ function UserItem({
         avatar,
         username,
     } = data
+    const {t} = useTranslation();
 
     const [follow, setFollow] = useState(true);
     const history = useNavigate();
@@ -70,7 +72,7 @@ function UserItem({
                         if (result?.status === 200) {
                             setFollow(false);
                         } else {
-                            return  MessageAll('warning','faild to unfollow')
+                            return  MessageAll('warning',t('Market.unF'))
                         }
                     } catch (e) {
                         return Promise.reject(e)
@@ -86,7 +88,7 @@ function UserItem({
                             setFollow(false);
                         } else {
 
-                            return   MessageAll('error','faild to unfollow')
+                            return   MessageAll('error',t('Market.unFo'))
                         }
                     } catch (e) {
                         return Promise.reject(e)

@@ -1,4 +1,4 @@
-import Header from './components/header.tsx'
+import Header, {I18N_Key} from './components/header.tsx'
 import {Route, Routes, useLocation, useNavigate, useSearchParams,} from "react-router-dom";
 import Index from './pages/index/index.tsx'
 import NewpairDetails from './pages/newpairDetails/index.tsx'
@@ -21,6 +21,7 @@ import _ from 'lodash';
 import Dapp from './pages/dapp';
 import Community from './pages/community';
 import {MessageAll} from "./components/message.ts";
+import {useTranslation} from "react-i18next";
 
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
@@ -31,6 +32,7 @@ export const CountContext = createContext(null);
 
 function Layout() {
     const router = useLocation()
+    const {t} = useTranslation();
     const [search] = useSearchParams();
     const {getAll,} = Request()
     const history = useNavigate()
@@ -44,6 +46,12 @@ function Layout() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalSet, setIsModalSet] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
+    const language = (localStorage.getItem("language") || "en_US") as I18N_Key;
+    const [languageChange, setLanguageChange] = useState(language);
+    const [changeLan, setChangeLan] = useState(false);
+
+
+
     const createClient = async () => {
         try {
             const _client: any = await Client.init({
@@ -122,7 +130,7 @@ function Layout() {
         if (typeof (window as any).ethereum != 'undefined') {
             handleLogin()
         } else {
-            MessageAll('warning','Please install MetaMask! And refresh')
+            MessageAll('warning',t('Market.inst'))
         }
     }, 800)
     const handleLogin = async () => {
@@ -154,7 +162,7 @@ function Layout() {
                     return null
                 }
             } else {
-                MessageAll('warning','Please log in or connect to your account!')
+                MessageAll('warning',t('Market.log'))
             }
             setLoad(false)
         } catch (err) {
@@ -334,7 +342,7 @@ function Layout() {
         newPairPar,
         setNewPairPar,
         isModalOpen,
-        setIsModalOpen, isModalSet, setIsModalSet, isLogin, setIsLogin
+        setIsModalOpen, isModalSet, setIsModalSet, isLogin, setIsLogin,languageChange, setLanguageChange,changeLan, setChangeLan
     }
     return (
         <CountContext.Provider value={value}>

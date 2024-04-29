@@ -33,7 +33,6 @@ body::-webkit-scrollbar-thumb {
   background-color: rgb(66, 64, 61);
 }
 
-
 .scrollStyle::-webkit-scrollbar {
   width: 8px !important;
 }
@@ -134,7 +133,6 @@ body::-webkit-scrollbar-thumb {
                 border-bottom: 2px solid;
               }
             }
-
           }
 
           & > img {
@@ -808,6 +806,7 @@ span {
   .swiper {
     width: 100%;
   }
+
   .swiper-slide {
     background-position: center;
     background-size: cover;
@@ -817,6 +816,15 @@ span {
     display: block;
     width: 100%;
   }
+}
+
+.language-icon {
+  cursor: pointer;
+  width: 20px;
+  background: linear-gradient(to right, #86f097, #00ff47);
+  padding: 2px;
+  border-radius: 100%;
+  margin-right: 24px;
 }
 
 .activeSwiperWeb {
@@ -829,4 +837,12 @@ span {
   .swiper-slide {
     width: 80%;
   }
+}
+
+.activeImgHover {
+  transition: all 1s;
+}
+
+.activeImgHover:hover {
+  transform: scale(1.2);
 }
