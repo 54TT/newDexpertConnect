@@ -10,7 +10,7 @@ import ContactList from './components/ContactList.tsx';
 import {CountContext} from '../../Layout.tsx';
 import {message} from 'antd';
 import {getTkAndUserName} from '../../components/axios.tsx';
-type ActiveTabType = 'Lastest' | 'Profile' | 'Following' | 'Detail' | 'Comment' | 'User'
+type ActiveTabType = 'lastest' | 'profile' | 'following' | 'detail' | 'comment' | 'user'
 function Community() {
     // 左侧选中的Tab
     const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
@@ -24,20 +24,20 @@ function Community() {
     }
     const {tab} = useParams()
     useEffect(() => {
-        setActiveUserTab(tab || 'lastest')
-        if (tab !== 'comment') {
+        setActiveUserTab(tab || 'Lastest')
+        if (tab !== 'Comment') {
             localStorage.removeItem('reply-detail')
         }
 
     }, [tab])
 
     const ComponentMap = {
-        'Lastest': <PostContent/>,
-        'Profile': <Profile/>,
-        'Following': <ContactList/>,
-        'Detail': <PostDetail/>,
-        'Comment': <PostDetail/>,
-        'User': <Profile/>,
+        'lastest': <PostContent/>,
+        'profile': <Profile/>,
+        'following': <ContactList/>,
+        'detail': <PostDetail/>,
+        'comment': <PostDetail/>,
+        'user': <Profile/>,
     }
     return (
         <div className='community-page'>

@@ -33,17 +33,17 @@ const UserInfo = ({ activeTab, onChange }: UserInfoPropsType) => {
     [UserActionKeyEnum.LASTEST]: {
       img: "/community/latest.svg",
       label: t("Community.Lastest"),
-      key: "Lastest",
+      key: "lastest",
     },
     [UserActionKeyEnum.PROFILE]: {
       img: "/community/profile.svg",
       label: t("Community.Profile"),
-      key: "Profile",
+      key: "profile",
     },
     [UserActionKeyEnum.FOLLOWING]: {
       img: "/community/follow.svg",
       label: t("Community.Following"),
-      key: "Following",
+      key: "following",
     },
   };
 
