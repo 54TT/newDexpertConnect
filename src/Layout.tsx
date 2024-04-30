@@ -22,6 +22,7 @@ import Dapp from './pages/dapp';
 import Community from './pages/community';
 import {MessageAll} from "./components/message.ts";
 import {useTranslation} from "react-i18next";
+import Dpass from './pages/dpass/index.tsx';
 
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
@@ -357,6 +358,7 @@ function Layout() {
                     <Route path='/app' element={<Dapp/>}/>
                     <Route path='/activity' element={<Active/>}/>
                     <Route path='/oauth/:id/callback' element={<Oauth/>}/>
+                    <Route path='/dpass' element={<Dpass/>} />
                 </Routes>
             </div>
             <Bot/>
