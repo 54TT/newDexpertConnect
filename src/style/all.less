@@ -324,7 +324,6 @@ body::-webkit-scrollbar-thumb {
   .headerData {
     display: flex;
     align-items: center;
-    justify-content: center;
 
     .headLine {
       display: flex;
@@ -821,6 +820,30 @@ span {
   }
 }
 
+.headerDropdownClass {
+  background-color: rgb(33, 36, 33) !important;
+  border: 2px solid rgb(60, 69, 60);
+
+  .ant-dropdown-menu {
+    padding: 0 !important;
+    background-color: transparent !important;
+
+    .ant-dropdown-menu-item:not(:last-child) {
+      border-bottom: 1px solid rgb(60, 69, 60);
+    }
+
+    .ant-dropdown-menu-item {
+      padding: 10px 25px;
+      color: white;
+      border-radius: 0;
+    }
+
+    .ant-dropdown-menu-item:hover {
+      background-color: #00ff47 !important;
+    }
+  }
+}
+
 .activeSwiper {
   .swiper {
     width: 100%;
@@ -864,4 +887,63 @@ span {
 
 .activeImgHover:hover {
   transform: scale(1.2);
+}
+
+.activeTable {
+  background-color: transparent !important;
+
+  .ant-spin-nested-loading {
+    background-color: transparent !important;
+
+    .ant-table {
+      background-color: transparent !important;
+
+      .ant-table-container {
+        border-left: 2px solid rgb(60, 69, 60);
+        border-top: 2px solid rgb(60, 69, 60);
+        border-radius: 0 !important;
+        background-color: transparent !important;
+
+        .ant-table-content {
+          background-color: transparent !important;
+
+          table {
+            border-radius: 0 !important;
+            background-color: transparent !important;
+            .ant-table-thead {
+              background-color: transparent !important;
+
+              .ant-table-cell {
+                padding: 5px;
+                border-radius: 0 !important;
+                text-align: center;
+                color: rgb(200,200,200);
+                border-right: 2px solid rgb(60, 69, 60);
+                border-bottom: 2px solid rgb(60, 69, 60);
+                background-color: transparent !important;
+              }
+            }
+
+            .ant-table-tbody {
+              .ant-table-cell-row-hover {
+                background-color: transparent !important;
+              }
+
+              .ant-table-cell {
+                padding: 5px;
+                text-align: center;
+                color: white;
+                border-right: 2px solid rgb(60, 69, 60);
+                border-bottom: 2px solid rgb(60, 69, 60);
+                background-color: transparent !important;
+              }
+
+            }
+
+          }
+        }
+      }
+
+    }
+  }
 }

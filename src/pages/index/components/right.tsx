@@ -48,9 +48,8 @@ function Right() {
             clickable: true,
           }}
           loop
-          autoplay={{ delay: 2000, disableOnInteraction: false }}
-        >
-          {["/abc1.jpg", "/abc2.jpg", "/abc3.jpg"].map((i, ind) => {
+          autoplay={{ delay: 2000, disableOnInteraction: false }}>
+          {["/posterNow.png", "/abc2.jpg", "/abc3.jpg"].map((i, ind) => {
             return (
               <SwiperSlide key={ind}>
                 <img

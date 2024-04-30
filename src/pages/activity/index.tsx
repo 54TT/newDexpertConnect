@@ -7,7 +7,7 @@ import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import Request from "../../components/axios.tsx";
 import cookie from "js-cookie";
-import {Modal, Statistic} from 'antd';
+import {Modal, Statistic, Table} from 'antd';
 import Loading from '../../components/loading.tsx'
 import {LoadingOutlined} from '@ant-design/icons'
 import {CountContext} from "../../Layout.tsx";
@@ -29,18 +29,17 @@ function Index() {
         setIsLogin
     }: any = useContext(CountContext);
     const [select, setSelect] = useState(0)
-    console.log(select)
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<any>([])
+    const [time, setTime] = useState<any>(null)
     const [enData, setEnData] = useState<any>([])
     const [zhData, setZhData] = useState<any>([])
     const [point, setPoint] = useState('0')
+    console.log(point)
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
-    console.log(zhData)
-    console.log(enData)
-    console.log(languageChange)
+    const [option, setOption] = useState(0)
     const getParams = async () => {
         const token = cookie.get('token')
         const res = await getAll({
@@ -52,6 +51,8 @@ function Index() {
             } else {
                 setData(res?.data?.campaignHome)
             }
+            const date = countdownNow(res?.data?.campaignHome[0]?.campaign?.startTime, res?.data?.campaignHome[0]?.campaign?.endTime)
+            setTime(date)
             setZhData(res?.data?.campaignHomeCN)
             setEnData(res?.data?.campaignHome)
             setPoint(res?.data?.totalPoint)
@@ -215,24 +216,117 @@ function Index() {
             }
         }
     }, [changeLan]);
+    const columns = [
+        {
+            title: 'RANK',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'USER',
+            dataIndex: 'age',
+            key: 'age',
+        },
+        {
+            title: 'TWEETS',
+            dataIndex: 'address',
+            key: 'address',
+        },
+        {
+            title: 'VIEWS',
+            dataIndex: 'address1',
+            key: 'address1',
+        },
+    ];
+
+    const dataSource = [
+        {
+            key: '1',
+            name: 'John Brown',
+            money: '￥300,000.00',
+            address: 'New York No. 1 Lake Park',
+        },
+        {
+            key: '2',
+            name: 'Jim Green',
+            money: '￥1,256,000.00',
+            address: 'London No. 1 Lake Park',
+        },
+        {
+            key: '3',
+            name: 'Joe Black',
+            money: '￥120,000.00',
+            address: 'Sydney No. 1 Lake Park',
+        },
+        {
+            key: '3',
+            name: 'Joe Black',
+            money: '￥120,000.00',
+            address: 'Sydney No. 1 Lake Park',
+        },
+        {
+            key: '3',
+            name: 'Joe Black',
+            money: '￥120,000.00',
+            address: 'Sydney No. 1 Lake Park',
+        },
+        {
+            key: '3',
+            name: 'Joe Black',
+            money: '￥120,000.00',
+            address: 'Sydney No. 1 Lake Park',
+        },
+        {
+            key: '3',
+            name: 'Joe Black',
+            money: '￥120,000.00',
+            address: 'Sydney No. 1 Lake Park',
+        },
+        {
+            key: '3',
+            name: 'Joe Black',
+            money: '￥120,000.00',
+            address: 'Sydney No. 1 Lake Park',
+        },
+        {
+            key: '3',
+            name: 'Joe Black',
+            money: '￥120,000.00',
+            address: 'Sydney No. 1 Lake Park',
+        }, {
+            key: '3',
+            name: 'Joe Black',
+            money: '￥120,000.00',
+            address: 'Sydney No. 1 Lake Park',
+        },
+        {
+            key: '3',
+            name: 'Joe Black',
+            money: '￥120,000.00',
+            address: 'Sydney No. 1 Lake Park',
+        },
+
+    ];
+
     return (
         <>
             {
-                load ? <div className={'activityBox'} style={{marginBottom: '50px'}}>
-                    <div className={'top'} style={{
-                        width: browser ? '20%' : '90%',
-                        justifyContent: browser ? 'space-between' : 'space-around',
-                        padding: browser ? '2.2% 1.7% 1%' : '6% 0 4%'
-                    }}>
-                        <div>
-                            <p>{point}</p>
-                            <p>{t('Market.POINTS')}</p>
-                        </div>
-                        <p>{t('Market.Redeem')}</p>
-                    </div>
-                    <p className={'p2'}>{t('Market.Events')}</p>
-                    <p className={'p3'}> {t('Market.view')}</p>
-                    <div className={`activeSwiper ${browser ? 'activeSwiperWeb' : 'activeSwiperActive'}`}>
+                load ? <div className={'activityBox'} style={{marginBottom: '50px', overflow: 'hidden'}}>
+                    {/*<div className={'top'} style={{*/}
+                    {/*    width: browser ? '20%' : '90%',*/}
+                    {/*    justifyContent: browser ? 'space-between' : 'space-around',*/}
+                    {/*    padding: browser ? '2.2% 1.7% 1%' : '6% 0 4%'*/}
+                    {/*}}>*/}
+                    {/*    <div>*/}
+                    {/*        <p>{point}</p>*/}
+                    {/*        <p>{t('Market.POINTS')}</p>*/}
+                    {/*    </div>*/}
+                    {/*    <p>{t('Market.Redeem')}</p>*/}
+                    {/*</div>*/}
+                    {/*<p className={'p2'}>{t('Market.Events')}</p>*/}
+                    {/*<p className={'p3'}> {t('Market.view')}</p>*/}
+                    <div style={{marginTop: '5.5%'}}
+                         className={`activeSwiper ${browser ? 'activeSwiperWeb' : 'activeSwiperActive'}`}>
                         <Swiper
                             effect={'coverflow'}
                             grabCursor={true}
@@ -263,6 +357,82 @@ function Index() {
                                     }) : ''
                             }
                         </Swiper>
+                    </div>
+                    {/*时间*/}
+                    <div className={'allTime'}>
+                        {
+                            Number(time) ?
+                                <Countdown title=""
+                                           className={'avtiveCountdown'}
+                                           value={time}
+                                           format="D[D] H[H] m[M] s[S]"
+                                /> :
+                                <p className={'pTime'}>{time}</p>
+                        }
+                        <p>Airdrop Season 3 Ends</p>
+                    </div>
+                    <div className={'allTime'}>
+                        <p className={'pTime'}> D Points Task</p>
+                        <p>Airdrop Season 3 Ends</p>
+                    </div>
+                    <div className={'point'}>
+                        {/*frosted*/}
+
+                        {/*<div className={'connect'}>*/}
+                        {/*    <p>To commemorate the introduction of Dexpert, simply link your wallet to*/}
+                        {/*        receive 1000 D-Points.</p>*/}
+                        {/*    <p>Connect wallet</p>*/}
+                        {/*</div>*/}
+                        <div className={'youPoint'}>
+                            <div>
+                                <span>Your D points</span>
+                                <span>14444</span>
+                            </div>
+                            <div>
+                                <span>Your psaa</span>
+                                <span>144</span>
+                            </div>
+                            <div>
+                                <span>Today's points</span>
+                                <span>14444</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={'activeOptions'}>
+                        {
+                            ['Daily mission', 'First mission', 'Ranking list'].map((i: string, ind: number) => {
+                                return <p style={{
+                                    backgroundColor: option === ind ? 'rgb(134,240,151)' : '',
+                                    color: option === ind ? 'black' : 'white'
+                                }} onClick={() => {
+                                    if (ind !== option) {
+                                        setOption(ind)
+                                    }
+                                }}>{i}</p>
+                            })
+                        }
+                    </div>
+                    <div className={'activeAll'}>
+                        <div className={'first'}>
+                            <div className={'firstLine'}>
+                                <div>
+                                    <img src="/tui.svg" alt=""/>
+                                    {/*<img src="/tuiActive.svg" alt=""/>*/}
+                                    <span style={{color: 'white'}}>Follow our twitter</span>
+                                </div>
+                                <div>
+                                    <p style={{color: 'white'}}>+500</p>
+                                    <p>Post</p>
+                                </div>
+                            </div>
+                        </div>
+                        <Table
+                            columns={columns}
+                            className={'activeTable'}
+                            pagination={false}
+                            dataSource={dataSource}
+                            bordered
+                        />
                     </div>
                     {/*活动*/}
                     {
