@@ -29,6 +29,7 @@ function Index() {
         setIsLogin
     }: any = useContext(CountContext);
     const [select, setSelect] = useState(0)
+    console.log(select)
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<any>([])
     const [enData, setEnData] = useState<any>([])
@@ -65,15 +66,13 @@ function Index() {
             setIsLogin(false)
         }
     }, [isLogin]);
-
-
     const getT = async (id: string) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
                 method: select === 1 ? 'post' : 'get',
                 url: select === 0 ? '/api/v1/oauth/twitter/link' : select === 1 ? '/api/v1/oauth/telegram/chat/link' : '/api/v1/oauth/discord/link',
-                data: select === 1 ? {botId: '6579122627', taskId: id} : {taskId: id},
+                data: {taskId: id},
                 token
             })
             if (res?.data?.url) {
@@ -89,9 +88,9 @@ function Index() {
     }, []);
     const change = (name: string) => {
         if (name.length > 0) {
-            if(languageChange === 'zh_CN') {
-                return name.slice(0,2)
-            }else {
+            if (languageChange === 'zh_CN') {
+                return name.slice(0, 2)
+            } else {
                 const data = name.split(' ')
                 return data[0]
             }
@@ -316,7 +315,7 @@ function Index() {
                                             <p>{i?.tasks[select]?.title || ''}</p>
                                             <p>{i?.tasks[select]?.description || ''}</p>
                                             {
-                                                i?.tasks[select]?.isCompleted !== '3' && <p onClick={() => {
+                                                Number(i?.tasks[select]?.isCompleted) !== 3 && <p onClick={() => {
                                                     param(i?.tasks)
                                                 }} style={{color: 'black'}}>{operate(i?.tasks)}
                                                     {loading ? <LoadingOutlined/> : ''}</p>

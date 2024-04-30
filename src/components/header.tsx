@@ -1,12 +1,13 @@
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Collapse, Drawer, Dropdown} from "antd";
 import {CountContext} from "../Layout.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
-import {DownOutlined, LoadingOutlined} from "@ant-design/icons";
+import {LoadingOutlined,} from "@ant-design/icons";
 import {simplify} from "../../utils/change.ts";
 import HeaderModal from "./headerModal.tsx";
 import {throttle} from "lodash";
 import {useTranslation} from "react-i18next";
+import getBalance from '../../utils/getBalance.ts'
 
 export type I18N_Key = "zh_CN" | "en_US";
 
@@ -17,6 +18,22 @@ function Header() {
     const {t, i18n} = useTranslation();
     const history = useNavigate();
     const [open, setOpen] = useState(false);
+    const [balance, setBalance] = useState<any>(null);
+    const [isBalance, setIsBalance] = useState(false);
+    const get = async (address: string) => {
+        const at = await getBalance(address)
+        if (at && at[address]) {
+            setBalance(at)
+            setIsBalance(true)
+        }
+    }
+
+    useEffect(() => {
+        if (user?.address) {
+            get(user?.address)
+        }
+    }, [user]);
+
     const showDrawer = throttle(
         function () {
             setOpen(true);
@@ -205,38 +222,32 @@ function Header() {
         },
     ];
 
-    const changeLanguage = (e: any) => {
-        const {target} = e.target.dataset;
-        if (target) {
-            localStorage.setItem("language", target);
-            setLanguageChange(target);
-            setChangeLan(true)
-            i18n.changeLanguage(target);
-        }
-    };
-
+    const changeLanguage = throttle(
+        function () {
+            if (languageChange === "zh_CN") {
+                localStorage.setItem("language", 'en_US');
+                setLanguageChange('en_US');
+                setChangeLan(true)
+                i18n.changeLanguage('en_US');
+            } else {
+                localStorage.setItem("language", 'zh_CN');
+                setLanguageChange('zh_CN');
+                setChangeLan(true)
+                i18n.changeLanguage('zh_CN');
+            }
+        },
+        1500, {trailing: false});
     return (
         <div className={"headerBox"}>
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    width: browser ? "10%" : "20%",
-                }}
-                onClick={throttle(
-                    function () {
-                        window.open("https://info.dexpert.io/");
-                    },
-                    1500,
-                    {trailing: false}
-                )}
-            >
-                <img
-                    src="/logo1111.svg"
-                    alt=""
-                    style={{width: "100%", display: "block"}}
-                />
+            <div style={{display: "flex", alignItems: "center", cursor: "pointer", width: browser ? "100px" : "20%",}}
+                 onClick={throttle(
+                     function () {
+                         window.open("https://info.dexpert.io/");
+                     },
+                     1500,
+                     {trailing: false}
+                 )}>
+                <img src="/logo1111.svg" alt="" style={{width: "100%", display: "block"}}/>
             </div>
             {browser && (
                 <p className={`headerCenter dis`}>
@@ -259,58 +270,29 @@ function Header() {
                     })}
                 </p>
             )}
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                }}
-            >
-                <div onClick={(e) => changeLanguage(e)}>
-                    {languageChange === "zh_CN" && (
-                        <img
-                            className="language-icon language-icon_CN"
-                            id="zh_CN"
-                            data-target="en_US"
-                            src="/zhong.svg"
-                            alt=""
-                        />
-                    )}
-                    {languageChange === "en_US" && (
-                        <img
-                            id="en_US"
-                            data-target="zh_CN"
-                            className="language-icon  language-icon_EN"
-                            src="/ying.svg"
-                            alt=""
-                        />
-                    )}
-                </div>
+            <div className={'headerData'}>
                 {user?.uid ? (
-                    <Dropdown
-                        menu={{
-                            items,
-                        }}
-                    >
+                    <>
                         {browser ? (
                             <div className={"disCen"} style={{cursor: "pointer"}}>
-                                <img
-                                    src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
-                                    style={{
-                                        width: "25px",
-                                        display: "block",
-                                        marginRight: "4px",
-                                        borderRadius: "100%",
-                                    }}
-                                    alt=""
-                                    loading={"lazy"}
-                                />
-                                <p style={{color: "rgb(214,223,215)"}}>
-                                    {simplify(user?.username)}
-                                </p>
-                                <DownOutlined
-                                    style={{color: "rgb(214,223,215)", marginTop: "3px"}}
-                                />
+                                <Dropdown
+                                    menu={{
+                                        items,
+                                    }}>
+                                    <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
+                                         style={{
+                                             width: "28px",
+                                             display: "block",
+                                             marginRight: "-12px",
+                                             zIndex: '10',
+                                             borderRadius: "100%",
+                                         }} alt="" loading={"lazy"}/>
+                                </Dropdown>
+                                <div className={'headLine'}>
+                                    <p>{simplify(user?.username)}</p>
+                                    <p>{isBalance ? balance[user?.address] + 'ETH' || '0ETH' : <LoadingOutlined style={{fontSize:'15px'}}/>}</p>
+                                    <p>{user?.point + 'D' || '0D'}</p>
+                                </div>
                             </div>
                         ) : (
                             <img
@@ -325,7 +307,7 @@ function Header() {
                                 alt=""
                             />
                         )}
-                    </Dropdown>
+                    </>
                 ) : (
                     <>
                         {browser ? (
@@ -350,6 +332,11 @@ function Header() {
                         )}
                     </>
                 )}
+                {
+                    browser && <img src="/earth.svg" alt=""
+                                    style={{cursor: 'pointer', display: 'block', marginLeft: "5px", width: '20px'}}
+                                    onClick={changeLanguage}/>
+                }
                 {!browser && (
                     <img
                         src="/side.svg"
