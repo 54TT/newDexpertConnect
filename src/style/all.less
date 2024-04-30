@@ -312,7 +312,7 @@ body::-webkit-scrollbar-thumb {
 
 .headerBox {
   box-sizing: border-box;
-  padding: 8px 4%;
+  padding: 8px 2.5%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -320,6 +320,25 @@ body::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, rgb(3, 5, 3), rgb(9, 18, 13));
   border-bottom: 1px solid #687c69;
   border-radius: 0 0 10px 10px;
+
+  .headerData {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .headLine {
+      display: flex;
+      align-items: center;
+
+      p {
+        padding: 4px 14px;
+        color: rgb(214, 220, 214);
+        border-bottom: 2px solid rgb(60, 69, 60);
+        border-top: 2px solid rgb(60, 69, 60);
+        border-right: 2px solid rgb(60, 69, 60);
+      }
+    }
+  }
 
   .headerCenter {
     width: 40%;

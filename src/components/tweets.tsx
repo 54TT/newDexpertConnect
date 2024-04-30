@@ -8,19 +8,23 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {DashOutlined} from '@ant-design/icons';
-import {setMany} from "../../utils/change.ts";
+import {setMany, simplify} from "../../utils/change.ts";
 import {throttle} from "lodash";
+
 import {MessageAll} from "./message.ts";
 import {useTranslation} from "react-i18next";
+
 dayjs.extend(relativeTime)
+
 interface TweetsPropsType {
     user?: any;
     name: any;
     type?: 'comment' | 'post' | 'reply';
     onPublish?: () => void;
 }
+
 function Tweets({
-                    name,  type = 'post', onPublish = () => {
+                    name, type = 'post', onPublish = () => {
     }
                 }: TweetsPropsType) {
     const {getAll} = Request()
@@ -104,7 +108,7 @@ function Tweets({
         const token = cookie.get('token')
         const jwt = cookie.get('jwt')
         if (!jwt && !token) {
-            MessageAll('warning',t('Market.line'))
+            MessageAll('warning', t('Market.line'))
             return;
         }
         if (type === 'reply' || type === 'comment') {
@@ -124,7 +128,7 @@ function Tweets({
         const token = cookie.get('token')
         const jwt = cookie.get('jwt')
         if (!token && !jwt) {
-            return MessageAll('warning',t('Market.line'))
+            return MessageAll('warning', t('Market.line'))
         }
         history(`/community/user?uid=${localData.user.uid}`)
     }, 1500, {'trailing': false})
@@ -142,10 +146,10 @@ function Tweets({
                              style={{width: '36px', marginRight: '12px', borderRadius: '50%'}}/>
                         <div>
                             <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
-                                <span>{localData?.user?.username ? localData?.user?.username.length > 12 ? localData?.user?.username.slice(0, 5) + '...' + name?.user?.username.slice(-4) : name?.user?.username : 'Not yet registor'}</span>
+                                <span>{simplify(localData?.user?.username) ? simplify(localData?.user?.username) : 'Not yet registor'}</span>
                                 <img style={{marginLeft: '4px'}} src="/certification.svg" alt=""/>
                             </div>
-                            <span>{localData?.user?.address ? localData?.user.address.slice(0, 5) + '...' + localData?.user.address.slice(-4) : ''}</span>
+                            <span>{simplify(localData?.user?.address)}</span>
                         </div>
                         <p style={{
                             margin: '3px 0 0 8px',
