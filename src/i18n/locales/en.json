@@ -54,7 +54,10 @@
     "Following": "Following"
   },
   "Alert": {
-    "please connect your wallet": "please connect your wallet"
+    "please connect your wallet": "please connect your wallet",
+    "Please enter the purchase quantity": "Please enter the purchase quantity",
+    "success": "success",
+    "fail": "fail"
   },
   "Market": {
     "Name": "Name",
@@ -85,7 +88,5 @@
     "Completed": "Completed",
     "Claim": "Claim",
     "no": "No activity yet"
-
-
   }
 }

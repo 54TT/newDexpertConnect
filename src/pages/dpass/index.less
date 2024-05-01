@@ -4,7 +4,7 @@
   background-position: center center;
   background-size: 100% 100%;
   .dpass-content {
-    padding: 20vh;
+    padding:20vh 20vh 0 20vh;
     display: flex;
     justify-content: center;
     &-left {
@@ -59,6 +59,7 @@
             font-size: 20px;
             display: inline-block;
             padding: 0 12px;
+            cursor: pointer;
           }
           &_number {
             width: 80px;
@@ -68,7 +69,6 @@
             border-right: 1px solid #ccc;
             height: 20px;
             background-color: #828282;
-
             font-size: 16px;
             color: #fff;
             &:focus-visible {
@@ -108,6 +108,25 @@
           width: 50%;
         }
       }
+    }
+  }
+  .dpass-redeem {
+    display: flex;
+    justify-content: center;
+    > div {
+      background: #343E35;
+      width: 1030px;
+      height: 200px;
+      border-radius: 15px;
+    }
+    &-table {
+      padding: 24px;
+     &-th {
+      display: flex;
+      justify-content: space-between;
+      color: #dbdbdb;
+      font-weight: 300;
+     }
     }
   }
 }
