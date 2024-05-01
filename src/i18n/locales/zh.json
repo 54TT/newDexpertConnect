@@ -90,5 +90,19 @@
     "Claim": "领取",
     "no": "暂无活动"
 
+  },
+  "Dpass": {
+    "desc1": "6000 D 积分可兑换一张通行证，可让您使用一次 DEXpert 的机器人服务。",
+    "desc2": "将来，D点可以兑换我们的代币$DEXP。",
+    "pointsAmount": "你的 D 积分",
+    "passCount": "Pass 数量",
+    "Time": "时间",
+    "Pass Id": "Pass Id",
+    "Status": "状态",
+    "Key": "密钥",
+    "Copy": "复制",   
+    "Available": "可用",
+    "Expired": "已失效",
+    "Exchange": "兑换"
   }
 }

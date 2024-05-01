@@ -88,5 +88,19 @@
     "Completed": "Completed",
     "Claim": "Claim",
     "no": "No activity yet"
+  },
+  "Dpass": {
+    "desc1": "6000 D points can to redeem one Pass, which allows you to use DEXpert’s robot service once.",
+    "desc2": "In the future, D point can be exchanged for our token, $DEXP.",
+    "pointsAmount": "Your D Points",
+    "passCount": "Your Pass",
+    "Time": "Time",
+    "Pass Id": "Pass Id",
+    "Status": "Status",
+    "Key": "Key",
+    "Copy": "Copy",
+    "Available": "Available",
+    "Expired": "Expired",
+    "Exchange": "兑换"
   }
 }

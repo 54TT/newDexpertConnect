@@ -2,10 +2,11 @@ import { Button, Tag, message } from "antd";
 import Cookies from "js-cookie";
 import "./index.less";
 import Request from "../../components/axios";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { CopyOutlined } from "@ant-design/icons";
+import { CountContext } from "../../Layout";
 function Dpass() {
   const token = Cookies.get("token");
   const { getAll } = Request();
@@ -15,6 +16,8 @@ function Dpass() {
   const [dPassList, setDPassList] = useState([]);
   const { t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
+  const {user}: any =
+  useContext(CountContext);
 
   // 创建一个MutationObserver实例
   const observer = new MutationObserver(function (mutationsList, observer) {
@@ -56,6 +59,7 @@ function Dpass() {
     });
     if (res?.data?.code === 200) {
       getDpassCount();
+      getDpassList();
       return message.success(t("Alert.success"));
     }
   };
@@ -122,9 +126,9 @@ function Dpass() {
  (
       <>
         {status === "0" ? (
-          <Tag color="rgb(113, 173, 86)">valid</Tag>
+          <Tag color="rgb(113, 173, 86)">{t("Dpass.Available")}</Tag>
         ) : (
-          <Tag color="#f50">expired</Tag>
+          <Tag color="#f50">{t("Dpass.Expired")}</Tag>
         )}
       </>
     );
@@ -151,11 +155,10 @@ function Dpass() {
         <div className="dpass-content-right">
           <p className="dpass-content-right-title">D PASS</p>
           <p className="dpass-content-right-content">
-            6000 D points can to redeem one Pass, which allows you to use
-            DEXpert’s robot service once.
+           {t("Dpass.desc1")}
           </p>
           <p className="dpass-content-right-content">
-            In the future, D point can be exchanged for our token, $DEXP.
+          {t("Dpass.desc2")}
           </p>
           <p className="dpass-content-right-content">6000 D point</p>
           <div className="dpass-content-right-action">
@@ -177,7 +180,7 @@ function Dpass() {
               className="dpass-content-right-action-button"
               onClick={() => redeemDpass()}
             >
-              Exchange
+              {t("Dpass.Exchange")}
             </Button>
           </div>
           <div className="dpass-content-right-info">
@@ -186,12 +189,12 @@ function Dpass() {
               style={{ borderRight: "1px solid #999" }}
             >
               <div className="dpass-content-right-info-title">
-                Your D Points
+                {t("Dpass.pointsAmount")}
               </div>
-              <div className="dpass-content-right-info-amount">123123</div>
+              <div className="dpass-content-right-info-amount">{user?.rewardPointCnt || 0}</div>
             </div>
             <div className="dpass-content-right-info-points">
-              <div className="dpass-content-right-info-title">Your Pass</div>
+              <div className="dpass-content-right-info-title">{t("Dpass.passCount")}</div>
               <div className="dpass-content-right-info-amount">
                 {dPassCount}
               </div>
@@ -203,10 +206,10 @@ function Dpass() {
         <div>
           <div className="dpass-redeem-table">
             <div className="dpass-redeem-table-th">
-              <span>Time</span>
-             { !isMobile && <span>Your Pass Id</span>}
-              <span>Status</span>
-              <span>Key</span>
+              <span>   {t("Dpass.Time")}</span>
+             { !isMobile && <span>   {t("Dpass.Pass Id")}</span>}
+              <span> {t("Dpass.Status")}</span>
+              <span>{t("Dpass.Key")}</span>
             </div>
             {dPassList.map(({ createdAt, key, passId, status }: any) => (
               <div className="dpass-redeem-table-td">
@@ -227,7 +230,7 @@ function Dpass() {
                         className="copy-dpass-key"
                         icon={<CopyOutlined />}
                       >
-                        Copy
+                        {t("Dpass.Copy")}
                       </Button>
                     )
                   ) : (
