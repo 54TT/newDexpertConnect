@@ -109,13 +109,33 @@
         padding: 20px 0 27px;
         flex-direction: column;
 
-        span:first-child {
+        & > span:first-child {
           font-size: 18px;
           text-align: center;
           color: rgb(214, 223, 215);
         }
 
-        span:last-child {
+        & > p {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 20px;
+
+          img {
+            display: block;
+            width: 15px;
+            cursor: pointer;
+            margin-left: 10px;
+          }
+
+          & > span {
+            text-align: center;
+            font-size: 25px;
+            color: #86F097;
+          }
+        }
+
+        & > span:last-child {
           text-align: center;
           font-size: 25px;
           margin-top: 20px;

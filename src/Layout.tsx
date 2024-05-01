@@ -52,7 +52,6 @@ function Layout() {
     const [changeLan, setChangeLan] = useState(false);
 
 
-
     const createClient = async () => {
         try {
             const _client: any = await Client.init({
@@ -131,7 +130,7 @@ function Layout() {
         if (typeof (window as any).ethereum != 'undefined') {
             handleLogin()
         } else {
-            MessageAll('warning',t('Market.inst'))
+            MessageAll('warning', t('Market.inst'))
         }
     }, 800)
     const handleLogin = async () => {
@@ -163,7 +162,7 @@ function Layout() {
                     return null
                 }
             } else {
-                MessageAll('warning',t('Market.log'))
+                MessageAll('warning', t('Market.log'))
             }
             setLoad(false)
         } catch (err) {
@@ -289,7 +288,7 @@ function Layout() {
         const body = document.getElementsByTagName('body')[0]
         if (window && window?.innerWidth) {
             if (window?.innerWidth > 800) {
-                if (router.pathname === '/activity') {
+                if (router.pathname === '/activity' || router.pathname === '/Dpass') {
                     body.style.overflow = 'auto'
                 } else {
                     body.style.overflow = 'hidden'
@@ -308,7 +307,7 @@ function Layout() {
         const handleResize = () => {
             // 更新状态，保存当前窗口高度
             if (window?.innerWidth > 800) {
-                if (router.pathname === '/activity') {
+                if (router.pathname === '/activity'||router.pathname === '/Dpass') {
                     body.style.overflow = 'auto'
                 } else {
                     body.style.overflow = 'hidden'
@@ -343,7 +342,7 @@ function Layout() {
         newPairPar,
         setNewPairPar,
         isModalOpen,
-        setIsModalOpen, isModalSet, setIsModalSet, isLogin, setIsLogin,languageChange, setLanguageChange,changeLan, setChangeLan
+        setIsModalOpen, isModalSet, setIsModalSet, isLogin, setIsLogin, languageChange, setLanguageChange, changeLan, setChangeLan
     }
     return (
         <CountContext.Provider value={value}>
@@ -358,7 +357,7 @@ function Layout() {
                     <Route path='/app' element={<Dapp/>}/>
                     <Route path='/activity' element={<Active/>}/>
                     <Route path='/oauth/:id/callback' element={<Oauth/>}/>
-                    <Route path='/dpass' element={<Dpass/>} />
+                    <Route path='/dpass' element={<Dpass/>}/>
                 </Routes>
             </div>
             <Bot/>

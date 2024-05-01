@@ -88,5 +88,22 @@
     "Completed": "Completed",
     "Claim": "Claim",
     "no": "No activity yet"
+  },
+  "Active": {
+    "title": "Airdrop Season 3 Ends",
+    "task": "D Points Task",
+    "point": "Your D points",
+    "pass": "Your D psaa",
+    "today": "Today's points",
+    "ye": "To commemorate the introduction of Dexpert, simply link your wallet to receive 1000 D-Points.",
+    "Daily": "Daily mission",
+
+    "First" : "First mission",
+
+    "Ranking" : "Ranking list",
+    "po": "POINT",
+    "us": "USER",
+    "ra": "RANK",
+    "bot": "Each account is limited to receiving 5 airdrops. Completing all task nodes will result in a blind box reward at each task node. The reward for completing tasks multiple times is invalid. The final interpretation of this activity rule belongs to the company. Each account is limited to receiving 5 airdrops. Completing all task nodes will result in a blind box reward at each task node. The reward for completing tasks multiple times is invalid. The final interpretation of this activity rule belongs to the company."
   }
 }

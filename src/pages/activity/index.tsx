@@ -14,6 +14,8 @@ import {CountContext} from "../../Layout.tsx";
 import dayjs from "dayjs";
 import {useTranslation} from "react-i18next";
 import {MessageAll} from '../../components/message.ts'
+import {useNavigate} from "react-router-dom";
+import {simplify} from '../../../utils/change.ts'
 
 const {Countdown} = Statistic;
 
@@ -29,13 +31,13 @@ function Index() {
         setChangeLan,
         setIsLogin
     }: any = useContext(CountContext);
+    const history = useNavigate()
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<any>([])
     const [time, setTime] = useState<any>(null)
     const [enData, setEnData] = useState<any>([])
     const [zhData, setZhData] = useState<any>([])
     const [point, setPoint] = useState('0')
-    console.log(point)
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
@@ -43,6 +45,12 @@ function Index() {
     const [show, setShow] = useState(false)
     const [selectActive, setSelectActive] = useState('')
     const [select, setSelect] = useState(0)
+    const [dPassCount, setDPassCount] = useState('')
+    const [isDPassCount, setIsDPassCount] = useState(false)
+    const [rankList, setRankList] = useState<any>([])
+    const [isRankList, setIsRankList] = useState(true)
+    const [todayPoint, setTodayPoint] = useState(0)
+    const [isTodayPoint, setIsTodayPoint] = useState(false)
     const getParams = async () => {
         const token = cookie.get('token')
         const res = await getAll({
@@ -62,6 +70,56 @@ function Index() {
             setLoad(true)
         } else {
             setLoad(true)
+        }
+    }
+    const getRank = async () => {
+        const token = cookie.get('token')
+        const res = await getAll({
+            method: 'get', url: '/api/v1/reward_point/rank', data: {}, token: token || ''
+        })
+        if (res?.status === 200) {
+            setRankList(res?.data?.list)
+            setIsRankList(false)
+        }
+    }
+    const getDpass = async () => {
+        const token = cookie.get('token')
+        const res = await getAll({
+            method: 'get', url: '/api/v1/d_pass', data: {}, token: token || ''
+        })
+        if (res?.status === 200) {
+            setIsDPassCount(true)
+            setDPassCount(res?.data?.dPassCount)
+        }
+    }
+    const contrast = (name: string) => {
+        const at = dayjs(name).unix()
+        const aaa = dayjs.unix(at).format('YYYY-MM-DD')
+        const yy = dayjs().format('YYYY-MM-DD')
+        return aaa === yy;
+    }
+
+
+    const getTodayPoint = async () => {
+        const token = cookie.get('token')
+        const res = await getAll({
+            method: 'post', url: '/api/v1/rewardPoint/history', data: {page: '1'}, token: token || ''
+        })
+        if (res?.status === 200) {
+            if (res?.data?.list?.length > 0) {
+                let point = 0
+                res?.data?.list.map((i: any) => {
+                    if (contrast(i?.timestamp)) {
+                        point += Number(i?.score)
+                    }
+                })
+                if (point) {
+                    setTodayPoint(point)
+                    setIsTodayPoint(true)
+                } else {
+                    setIsTodayPoint(true)
+                }
+            }
         }
     }
 
@@ -97,6 +155,14 @@ function Index() {
         }
         getParams()
     }, []);
+    useEffect(() => {
+        if (show) {
+            getRank()
+            getDpass()
+            getTodayPoint()
+        }
+    }, [show]);
+
     const change = (name: string) => {
         if (name.length > 0) {
             if (languageChange === 'zh_CN') {
@@ -228,44 +294,22 @@ function Index() {
     }, [changeLan]);
     const columns = [
         {
-            title: 'RANK',
-            dataIndex: 'name',
-            key: 'name',
+            title: t('Active.ra'),
+            render: () => {
+                return <span>UNRANKED</span>
+            }
         },
         {
-            title: 'USER',
-            dataIndex: 'age',
-            key: 'age',
+            title: t('Active.us'),
+            render: (_: any, record: any) => {
+                return <span>{record?.user?.username ? simplify(record?.user?.username) : simplify(record?.user?.address)}</span>
+            }
         },
         {
-            title: 'TWEETS',
-            dataIndex: 'address',
-            key: 'address',
-        },
-        {
-            title: 'VIEWS',
-            dataIndex: 'address1',
-            key: 'address1',
-        },
-    ];
-    const dataSource = [
-        {
-            key: '1',
-            name: 'John Brown',
-            money: '￥300,000.00',
-            address: 'New York No. 1 Lake Park',
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            money: '￥1,256,000.00',
-            address: 'London No. 1 Lake Park',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            money: '￥120,000.00',
-            address: 'Sydney No. 1 Lake Park',
+            title: t('Active.po'),
+            render: (_: any, record: any) => {
+                return <span>{record?.score || '0'}</span>
+            }
         },
     ];
 
@@ -319,40 +363,56 @@ function Index() {
                                         /> :
                                         <p className={'pTime'}>{time}</p>
                                 }
-                                <p>Airdrop Season 3 Ends</p>
+                                <p>{t('Active.title')}</p>
                             </div>
                             <div className={'allTime'} style={{marginTop: '6%'}}>
-                                <p className={'pTime'} style={{marginBottom: '0'}}> D Points Task</p>
+                                <p className={'pTime'} style={{marginBottom: '0'}}>{t('Active.task')}</p>
                             </div>
                         </div>
                         <div className={`point`}>
                             {
                                 !show && <div className={'connect'}>
-                                    <p>To commemorate the introduction of Dexpert, simply link your wallet to
-                                        receive 1000 D-Points.</p>
+                                    <p>{t('Active.ye')}</p>
                                     <p onClick={() => {
                                         setIsModalOpen(true)
-                                    }}>Connect wallet</p>
+                                    }}>{t('Common.Connect Wallet')}</p>
                                 </div>
                             }
                             <div className={`youPoint ${show ? '' : 'frosted'}`}>
                                 <div>
-                                    <span>Your D points</span>
-                                    <span>14444</span>
+                                    <span>{t('Active.point')}</span>
+                                    <p>
+                                        <span>{point || '0'}</span>
+                                        <img onClick={() => {
+                                            history('/Dpass')
+                                        }} src="/change.svg" alt=""/>
+                                    </p>
+                                </div>
+                                <div onClick={() => {
+                                    history('/Dpass')
+                                }} style={{cursor: 'pointer'}}>
+                                    <span>{t('Active.pass')}</span>
+                                    {
+                                        isDPassCount ? <span>{dPassCount || '0'}</span> :
+                                            <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
+                                                <LoadingOutlined style={{color: 'gray'}}/>
+                                            </div>
+                                    }
                                 </div>
                                 <div>
-                                    <span>Your D psaa</span>
-                                    <span>144</span>
-                                </div>
-                                <div>
-                                    <span>Today's points</span>
-                                    <span>14444</span>
+                                    <span>{t('Active.today')}</span>
+                                    {
+                                        isTodayPoint ? <span>{todayPoint}</span> :
+                                            <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
+                                                <LoadingOutlined style={{color: 'gray'}}/>
+                                            </div>
+                                    }
                                 </div>
                             </div>
                         </div>
                         <div className={'activeOptions'}>
                             {
-                                ['Daily mission', 'First mission', 'Ranking list'].map((i: string, ind: number) => {
+                                [t('Active.Daily'), t('Active.First'), t('Active.Ranking')].map((i: string, ind: number) => {
                                     return <p style={{
                                         backgroundColor: show ? option === ind ? 'rgb(134,240,151)' : '' : '',
                                         color: show ? option === ind ? 'black' : 'white' : 'white'
@@ -373,9 +433,11 @@ function Index() {
                                 {
                                     option === 2 ? <Table
                                         columns={columns}
+                                        rowKey={(record: any) => record?.user?.uid}
                                         className={'activeTable'}
                                         pagination={false}
-                                        dataSource={dataSource}
+                                        dataSource={rankList}
+                                        loading={isRankList}
                                         bordered
                                     /> : <div className={'first'}>
                                         {
@@ -406,10 +468,10 @@ function Index() {
                                                                                 alt=""/>
                                                                     }
                                                                     <span
-                                                                        style={{color: selectActive === it?.taskId ? 'rgb(134,240,251)' : 'white'}}>{it?.title}</span>
+                                                                        style={{color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white'}}>{it?.title}</span>
                                                                 </div>
                                                                 <div>
-                                                                    <p style={{color: selectActive === it?.taskId ? 'rgb(134,240,251)' : 'white'}}>+{it?.score}</p>
+                                                                    <p style={{color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white'}}>+{it?.score}</p>
                                                                     {
                                                                         Number(it?.isCompleted) !== 3 ? <p onClick={() => {
                                                                             param(it?.isCompleted, it?.taskId, index)
@@ -448,13 +510,8 @@ function Index() {
                                 }
                             </div>
                         }
-                        <p style={{width: '80%', margin: '0 auto', color: 'rgb(212,223,214)', lineHeight: '1.1',marginTop:'5%'}}>
-                            Each account is limited to receiving 5 airdrops. Completing all task nodes will result in a
-                            blind box reward at each task node. The reward for completing tasks multiple times is
-                            invalid. The final interpretation of this activity rule belongs to the company. Each account
-                            is limited to receiving 5 airdrops. Completing all task nodes will result in a blind box
-                            reward at each task node. The reward for completing tasks multiple times is invalid. The
-                            final interpretation of this activity rule belongs to the company.
+                        <p style={{width: '80%', margin: '0 auto', color: 'rgb(212,223,214)', lineHeight: '1.1', marginTop: '5%'}}>
+                            {t('Active.bot')}
                         </p>
                     </div> :
                     <Loading status={'20'}/>
