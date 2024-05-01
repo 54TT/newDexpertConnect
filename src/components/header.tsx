@@ -239,15 +239,20 @@ function Header() {
         1500, {trailing: false});
     return (
         <div className={"headerBox"}>
-            <div style={{display: "flex", alignItems: "center", cursor: "pointer", width: browser ? "100px" : "20%",}}
-                 onClick={throttle(
-                     function () {
-                         window.open("https://info.dexpert.io/");
+            <div style={{display: "flex", alignItems: "center",}}>
+                <img src="/logo1111.svg" alt="" onClick={throttle(
+                    function () {
+                        window.open("https://info.dexpert.io/");
+                    },
+                    1500,
+                    {trailing: false})} style={{width: browser ? "100px" : "80px", display: "block"}}/>
+                <img src="/gift.svg" alt="" style={{width: '25px', marginLeft: '10px', cursor: 'pointer'}}
+                     onClick={throttle(
+                         function () {
+                         history('/activity')
                      },
-                     1500,
-                     {trailing: false}
-                 )}>
-                <img src="/logo1111.svg" alt="" style={{width: "100%", display: "block"}}/>
+                         1500,
+                     {trailing: false})}/>
             </div>
             {browser && (
                 <p className={`headerCenter dis`}>
@@ -270,12 +275,13 @@ function Header() {
                     })}
                 </p>
             )}
-            <div className={'headerData'}>
+            <div className={'headerData'} style={{justifyContent:browser?'center':'flex-end'}}>
                 {user?.uid ? (
                     <>
                         {browser ? (
                             <div className={"disCen"} style={{cursor: "pointer"}}>
                                 <Dropdown
+                                    overlayClassName={'headerDropdownClass'}
                                     menu={{
                                         items,
                                     }}>
@@ -290,8 +296,9 @@ function Header() {
                                 </Dropdown>
                                 <div className={'headLine'}>
                                     <p>{simplify(user?.username)}</p>
-                                    <p>{isBalance ? balance[user?.address] + 'ETH' || '0ETH' : <LoadingOutlined style={{fontSize:'15px'}}/>}</p>
-                                    <p>{user?.point + 'D' || '0D'}</p>
+                                    <p>{isBalance ? balance[user?.address] + 'ETH' || '0ETH' :
+                                        <LoadingOutlined style={{fontSize: '15px'}}/>}</p>
+                                    <p>{user?.rewardPointCnt + ' D' || '0 D'}</p>
                                 </div>
                             </div>
                         ) : (
