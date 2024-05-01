@@ -55,7 +55,10 @@
     "Following": "关注列表"
   },
   "Alert": {
-    "please connect your wallet": "请连接你的钱包"
+    "please connect your wallet": "请连接你的钱包",
+    "Please enter the purchase quantity": "请输入购买数量",
+    "success": "成功",
+    "fail": "失败"
   },
   "Market": {
     "Name": "名称",
