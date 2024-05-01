@@ -4,7 +4,7 @@
   background-position: center center;
   background-size: 100% 100%;
   .dpass-content {
-    padding:20vh 20vh 0 20vh;
+    padding: 20vh 20vh 0 20vh;
     display: flex;
     justify-content: center;
     &-left {
@@ -80,13 +80,12 @@
         &-button {
           width: 148px;
           height: 36px;
-          background: #86F097;
+          background: #86f097;
           border: black;
-
         }
       }
       &-info {
-        background: #343E35;
+        background: #343e35;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -101,7 +100,7 @@
           font-weight: 300;
         }
         &-amount {
-          color: #86F097;
+          color: #86f097;
           font-size: 18px;
         }
         &-points {
@@ -114,34 +113,53 @@
     display: flex;
     justify-content: center;
     > div {
-      background: #343E35;
+      background: #343e35;
       width: 1030px;
-      height: 200px;
       border-radius: 15px;
     }
     &-table {
       padding: 24px;
-     &-th {
-      display: flex;
-      justify-content: space-between;
-      color: #dbdbdb;
-      font-weight: 300;
-     }
+      &-th {
+        display: flex;
+        justify-content: space-between;
+        color: #dbdbdb;
+        font-weight: 300;
+        >span {
+          flex: 1;
+        }
+      }
+      &-td {
+        display: flex;
+        justify-content: space-between;
+        color: #fff;
+        margin-top: 24px;
+        align-items: center;
+        >span {
+          flex: 1;
+          font-family: Inter;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 19.36px;
+          text-align: left;
+        }
+        .copy-dpass-key {
+          background: #86f097;
+          border: none;
+        }
+      }
     }
   }
 }
 
-
-
-@keyframes dpass-card-ani  {
+@keyframes dpass-card-ani {
   0% {
-    transform: translate(0px,0px);
+    transform: translate(0px, 0px);
   }
   50% {
-    transform: translate(0px,-20px);
+    transform: translate(0px, -20px);
   }
   100% {
-    transform: translate(0px,0px);
+    transform: translate(0px, 0px);
   }
 }
 @keyframes dpass-light-ani {
@@ -198,6 +216,13 @@
         }
       }
     }
+      .dpass-redeem {
+        > div {
+          width: 90%;
+          overflow-x: scroll;
+
+        }
+      }
   }
   @keyframes dpass-light-ani {
     0% {
@@ -210,15 +235,15 @@
       width: 100px;
     }
   }
-  @keyframes dpass-card-ani  {
+  @keyframes dpass-card-ani {
     0% {
-      transform: translate(0px,0px);
+      transform: translate(0px, 0px);
     }
     50% {
-      transform: translate(0px,-10px);
+      transform: translate(0px, -10px);
     }
     100% {
-      transform: translate(0px,0px);
+      transform: translate(0px, 0px);
     }
   }
 }
