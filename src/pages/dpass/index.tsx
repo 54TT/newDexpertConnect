@@ -1,25 +1,28 @@
-import {Button, message, Tag} from "antd";
+import { Button, Tag,  } from "antd";
 import Cookies from "js-cookie";
 import "./index.less";
 import Request from "../../components/axios";
-import {useEffect, useLayoutEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
-import {CopyOutlined} from "@ant-design/icons";
-
+import { CopyOutlined } from "@ant-design/icons";
+import { CountContext } from "../../Layout";
+import {MessageAll} from '../../components/message.ts'
 function Dpass() {
     const token = Cookies.get("token");
-    const {getAll} = Request();
+    const { getAll } = Request();
     const [dPassCount, setDpassCount] = useState(0);
     const [redeemCount, setRedeemCount] = useState(0);
     const [page, setPage] = useState(1);
     const [dPassList, setDPassList] = useState([]);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [isMobile, setIsMobile] = useState(false);
+    const {user}: any =
+        useContext(CountContext);
 
     // 创建一个MutationObserver实例
-    const observer = new MutationObserver(function (mutationsList: any) {
-        if (mutationsList[0]?.target?.offsetWidth <= 900) {
+    const observer = new MutationObserver(function (mutationsList:any, ) {
+        if (mutationsList[0].target.offsetWidth <= 900) {
             setIsMobile(true);
         } else {
             setIsMobile(false);
@@ -32,7 +35,7 @@ function Dpass() {
     };
 
     const getDpassCount = async () => {
-        const {data}: any = await getAll({
+        const { data }: any = await getAll({
             method: "get",
             url: "/api/v1/d_pass",
             data: {},
@@ -44,10 +47,10 @@ function Dpass() {
 
     const redeemDpass = () => {
         if (redeemCount === 0) {
-            message.warning(t("Alert.Please enter the purchase quantity"));
+            MessageAll('warning',t("Alert.Please enter the purchase quantity"))
             return;
         }
-        const res: any = getAll({
+        const res:any = getAll({
             method: "post",
             url: "/api/v1/d_pass/redeem",
             data: {
@@ -57,12 +60,13 @@ function Dpass() {
         });
         if (res?.data?.code === 200) {
             getDpassCount();
-            return message.success(t("Alert.success"));
+            getDpassList();
+            return MessageAll('success',t("Alert.success"));
         }
     };
 
     const getDpassList = async () => {
-        const {data}: any = await getAll({
+        const { data }:any = await getAll({
             method: "get",
             url: "/api/v1/d_pass/list",
             data: {
@@ -73,7 +77,7 @@ function Dpass() {
         if (data?.list?.length) {
             setDPassList(data.list);
         } else {
-            message.warning("no more history");
+            MessageAll('warning',t('Alert.no'));
         }
     };
 
@@ -91,8 +95,8 @@ function Dpass() {
         return () => observer.disconnect();
     }, []);
 
-    const clickPlusOrReduce = (e: any) => {
-        const {id} = e.target;
+    const clickPlusOrReduce = (e:any) => {
+        const { id } = e.target;
         if (id === "plus") {
             setRedeemCount(redeemCount + 1);
         }
@@ -103,7 +107,7 @@ function Dpass() {
     };
 
     const handleOnInput = (e: any) => {
-        const {value} = e.target;
+        const { value } = e.target;
 
         const count = Number(value);
         if (Number.isNaN(count)) {
@@ -112,20 +116,20 @@ function Dpass() {
         if (typeof count === "number") {
             return setRedeemCount(count);
         }
-        if (typeof value) {
+        if (typeof value){
             if (value === "") {
                 setRedeemCount(0);
             }
         }
     };
 
-    const Status = ({status}: any) =>
+    const Status = ({ status }:any) =>
         (
             <>
                 {status === "0" ? (
-                    <Tag color="rgb(113, 173, 86)">valid</Tag>
+                    <Tag color="rgb(113, 173, 86)">{t("Dpass.Available")}</Tag>
                 ) : (
-                    <Tag color="#f50">expired</Tag>
+                    <Tag color="#f50">{t("Dpass.Expired")}</Tag>
                 )}
             </>
         );
@@ -138,28 +142,27 @@ function Dpass() {
         textarea.select();
         document.execCommand("copy");
         document.body.removeChild(textarea);
-        message.success("copy success");
+        MessageAll('success',t('Alert.copy'));
     }
 
     return (
         <div className="dpass-background">
+            <p style={{display:'none'}} onClick={()=>{
+                setPage(1)
+            }}>你好</p>
             <div className="dpass-content">
-                <p style={{display: 'none'}} onClick={() => {
-                    setPage(1)
-                }}>你好</p>
                 <div className="dpass-content-left">
-                    <img className="dapss-card" src="/dpassCard.png" alt=""/>
-                    <img className="dpass-light" src="/light.png" alt=""/>
-                    <img className="dpass-cap" src="/bottomCap.png" alt=""/>
+                    <img className="dapss-card" src="/dpassCard.png" alt="" />
+                    <img className="dpass-light" src="/light.png" alt="" />
+                    <img className="dpass-cap" src="/bottomCap.png" alt="" />
                 </div>
                 <div className="dpass-content-right">
                     <p className="dpass-content-right-title">D PASS</p>
                     <p className="dpass-content-right-content">
-                        6000 D points can to redeem one Pass, which allows you to use
-                        DEXpert’s robot service once.
+                        {t("Dpass.desc1")}
                     </p>
                     <p className="dpass-content-right-content">
-                        In the future, D point can be exchanged for our token, $DEXP.
+                        {t("Dpass.desc2")}
                     </p>
                     <p className="dpass-content-right-content">6000 D point</p>
                     <div className="dpass-content-right-action">
@@ -181,21 +184,21 @@ function Dpass() {
                             className="dpass-content-right-action-button"
                             onClick={() => redeemDpass()}
                         >
-                            Exchange
+                            {t("Dpass.Exchange")}
                         </Button>
                     </div>
                     <div className="dpass-content-right-info">
                         <div
                             className="dpass-content-right-info-points"
-                            style={{borderRight: "1px solid #999"}}
+                            style={{ borderRight: "1px solid #999" }}
                         >
                             <div className="dpass-content-right-info-title">
-                                Your D Points
+                                {t("Dpass.pointsAmount")}
                             </div>
-                            <div className="dpass-content-right-info-amount">123123</div>
+                            <div className="dpass-content-right-info-amount">{user?.rewardPointCnt || 0}</div>
                         </div>
                         <div className="dpass-content-right-info-points">
-                            <div className="dpass-content-right-info-title">Your Pass</div>
+                            <div className="dpass-content-right-info-title">{t("Dpass.passCount")}</div>
                             <div className="dpass-content-right-info-amount">
                                 {dPassCount}
                             </div>
@@ -207,31 +210,31 @@ function Dpass() {
                 <div>
                     <div className="dpass-redeem-table">
                         <div className="dpass-redeem-table-th">
-                            <span>Time</span>
-                            {!isMobile && <span>Your Pass Id</span>}
-                            <span>Status</span>
-                            <span>Key</span>
+                            <span>   {t("Dpass.Time")}</span>
+                            { !isMobile && <span>   {t("Dpass.Pass Id")}</span>}
+                            <span> {t("Dpass.Status")}</span>
+                            <span>{t("Dpass.Key")}</span>
                         </div>
-                        {dPassList.map(({createdAt, key, passId, status}: any) => (
+                        {dPassList.map(({ createdAt, key, passId, status }: any) => (
                             <div className="dpass-redeem-table-td">
                                 <span>{dayjs.unix(createdAt).format("DD/MM/YYYY HH:mm")}</span>
-                                {isMobile ? <></> : <span>{passId}</span>}
-                                <span>{<Status status={status}/>}</span>
+                                {isMobile ? <></> : <span>{passId}</span> }
+                                <span>{<Status status={status} />}</span>
                                 <span>
                   {status === "0" ? (
                       isMobile ? (
                           <Button
                               onClick={() => copyToClipboard(key)}
                               className="copy-dpass-key"
-                              icon={<CopyOutlined/>}
+                              icon={<CopyOutlined />}
                           />
                       ) : (
                           <Button
                               onClick={() => copyToClipboard(key)}
                               className="copy-dpass-key"
-                              icon={<CopyOutlined/>}
+                              icon={<CopyOutlined />}
                           >
-                              Copy
+                              {t("Dpass.Copy")}
                           </Button>
                       )
                   ) : (
@@ -240,7 +243,7 @@ function Dpass() {
                 </span>
                             </div>
                         ))}
-                        <div style={{display: "flex", justifyContent: "center"}}></div>
+                        <div style={{ display: "flex", justifyContent: "center" }}></div>
                     </div>
                 </div>
             </div>

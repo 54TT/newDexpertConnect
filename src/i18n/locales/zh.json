@@ -58,7 +58,9 @@
     "please connect your wallet": "请连接你的钱包",
     "Please enter the purchase quantity": "请输入购买数量",
     "success": "成功",
-    "fail": "失败"
+    "no": "没有历史记录",
+    "fail": "失败",
+    "copy": "复制成功"
   },
   "Market": {
     "Name": "名称",
@@ -104,5 +106,19 @@
     "ra": "排行",
     "us": "用户",
     "bot": "每个帐户只能接收5次空投。完成所有任务节点将在每个任务节点获得盲盒奖励。多次完成任务的奖励无效。本活动规则的最终解释权属于公司。每个帐户只能接收5次空投。完成所有任务节点将在每个任务节点获得盲盒奖励。多次完成任务的奖励无效。本活动规则的最终解释权属于公司。"
+  },
+  "Dpass": {
+    "desc1": "6000 D 积分可兑换一张通行证，可让您使用一次 DEXpert 的机器人服务。",
+    "desc2": "将来，D点可以兑换我们的代币$DEXP。",
+    "pointsAmount": "你的 D 积分",
+    "passCount": "Pass 数量",
+    "Time": "时间",
+    "Pass Id": "Pass Id",
+    "Status": "状态",
+    "Key": "密钥",
+    "Copy": "复制",   
+    "Available": "可用",
+    "Expired": "已失效",
+    "Exchange": "兑换"
   }
 }
