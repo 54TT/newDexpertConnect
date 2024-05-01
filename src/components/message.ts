@@ -1,5 +1,4 @@
 import {message} from 'antd'
-
 export function MessageAll(status: string, data: string) {
     const config = {
         content: data,

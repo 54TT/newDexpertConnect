@@ -13,6 +13,7 @@ import {LoadingOutlined} from '@ant-design/icons'
 import {CountContext} from "../../Layout.tsx";
 import dayjs from "dayjs";
 import {useTranslation} from "react-i18next";
+import {MessageAll} from '../../components/message.ts'
 
 const {Countdown} = Statistic;
 
@@ -28,7 +29,6 @@ function Index() {
         setChangeLan,
         setIsLogin
     }: any = useContext(CountContext);
-    const [select, setSelect] = useState(0)
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<any>([])
     const [time, setTime] = useState<any>(null)
@@ -40,6 +40,9 @@ function Index() {
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
     const [option, setOption] = useState(0)
+    const [show, setShow] = useState(false)
+    const [selectActive, setSelectActive] = useState('')
+    const [select, setSelect] = useState(0)
     const getParams = async () => {
         const token = cookie.get('token')
         const res = await getAll({
@@ -61,18 +64,21 @@ function Index() {
             setLoad(true)
         }
     }
+
+    // 是否登录
     useEffect(() => {
         if (isLogin) {
             getParams()
             setIsLogin(false)
+            setShow(true)
         }
     }, [isLogin]);
-    const getT = async (id: string) => {
+    const getT = async (id: string, index: number) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
-                method: select === 1 ? 'post' : 'get',
-                url: select === 0 ? '/api/v1/oauth/twitter/link' : select === 1 ? '/api/v1/oauth/telegram/chat/link' : '/api/v1/oauth/discord/link',
+                method: index === 1 ? 'post' : 'get',
+                url: index === 0 ? '/api/v1/oauth/twitter/link' : index === 1 ? '/api/v1/oauth/telegram/chat/link' : '/api/v1/oauth/discord/link',
                 data: {taskId: id},
                 token
             })
@@ -85,6 +91,10 @@ function Index() {
         }
     }
     useEffect(() => {
+        const token = cookie.get('token')
+        if (token) {
+            setShow(true)
+        }
         getParams()
     }, []);
     const change = (name: string) => {
@@ -99,13 +109,13 @@ function Index() {
             return ''
         }
     }
-    const follow = async (id: string) => {
+    const follow = async (id: string, index: number) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
-                method: select === 1 ? 'post' : 'get',
-                url: select === 0 ? '/api/v1/oauth/twitter/follow' : select === 1 ? '/api/v1/oauth/telegram/chat/follow' : '/api/v1/oauth/discord/follow',
-                data: select === 1 ? {taskId: id} : {taskId: id},
+                method: index === 1 ? 'post' : 'get',
+                url: index === 0 ? '/api/v1/oauth/twitter/follow' : index === 1 ? '/api/v1/oauth/telegram/chat/follow' : '/api/v1/oauth/discord/follow',
+                data: index === 1 ? {taskId: id} : {taskId: id},
                 token
             })
             if (res?.data?.url) {
@@ -117,15 +127,13 @@ function Index() {
             }
         }
     }
-    const verify = async (id: string) => {
+    const verify = async (id: string, index: number) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
                 method: 'post',
-                url: select === 0 ? '/api/v1/oauth/twitter/verify' : select === 1 ? '/api/v1/oauth/telegram/chat/verify' : '/api/v1/oauth/discord/verify',
-                data: select === 1 ? {
-                    taskId: id,
-                } : select === 0 ? {taskId: id} : {taskId: id},
+                url: index === 0 ? '/api/v1/oauth/twitter/verify' : index === 1 ? '/api/v1/oauth/telegram/chat/verify' : '/api/v1/oauth/discord/verify',
+                data: {taskId: id},
                 token
             })
             if (res?.status === 200 && res.data?.exist) {
@@ -140,36 +148,34 @@ function Index() {
             }
         }
     }
-    const operate = (tasks: any) => {
-        if (tasks?.length > 0) {
-            if (Number(tasks[select]?.isCompleted)) {
-                if (Number(tasks[select]?.isCompleted) === 1) {
-                    return change(tasks[select]?.title)
-                } else if (Number(tasks[select]?.isCompleted) === 2) {
-                    return t('Market.Claim')
-                } else {
-                    return t('Market.Completed')
-                }
+    const operate = (isCompleted: string, title: string) => {
+        if (Number(isCompleted)) {
+            if (Number(isCompleted) === 1) {
+                return change(title)
+            } else if (Number(isCompleted) === 2) {
+                return t('Market.Claim')
             } else {
-                return t('Market.Authorize')
+                return t('Market.Completed')
             }
+        } else {
+            return t('Market.Authorize')
         }
     }
-    const param = (tasks: any) => {
+    const param = (isCompleted: string, taskId: string, index: number) => {
         const token = cookie.get('token')
         if (token) {
-            if (Number(tasks[select]?.isCompleted)) {
-                if (Number(tasks[select]?.isCompleted) === 1) {
-                    follow(tasks[select]?.taskId)
+            if (Number(isCompleted)) {
+                if (Number(isCompleted) === 1) {
+                    follow(taskId, index)
                     setLoading(true)
                 }
-                if (Number(tasks[select]?.isCompleted) === 2) {
-                    verify(tasks[select]?.taskId)
+                if (Number(isCompleted) === 2) {
+                    verify(taskId, index)
                     setLoading(true)
                 }
             } else {
                 setLoading(true)
-                getT(tasks[select]?.taskId)
+                getT(taskId, index)
             }
         } else {
             setIsModalOpen(true)
@@ -188,12 +194,16 @@ function Index() {
     const countdownNow = (t1: string, t2: string) => {
         if (t1 && t2) {
             // 判断有几个月
-            const abc = dayjs(t2).diff(t1, 'month')
+            const abc = dayjs(t2).diff(dayjs(), 'month')
             //  是否过了今天
             const at = dayjs(t2).isAfter(dayjs())
             if (at) {
                 if (abc) {
-                    return t1 + '---' + t2
+                    if (languageChange === 'zh_CN') {
+                        return t1 + '——' + t2
+                    } else {
+                        return t1.slice(8, 10) + '/' + t1.slice(5, 7) + '/' + t1.slice(0, 4) + '——' + t2.slice(8, 10) + '/' + t2.slice(5, 7) + '/' + t2.slice(0, 4)
+                    }
                 } else {
                     const date = dayjs(t2).diff(dayjs())
                     return Date.now() + Number(date)
@@ -238,7 +248,6 @@ function Index() {
             key: 'address1',
         },
     ];
-
     const dataSource = [
         {
             key: '1',
@@ -258,249 +267,202 @@ function Index() {
             money: '￥120,000.00',
             address: 'Sydney No. 1 Lake Park',
         },
-        {
-            key: '3',
-            name: 'Joe Black',
-            money: '￥120,000.00',
-            address: 'Sydney No. 1 Lake Park',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            money: '￥120,000.00',
-            address: 'Sydney No. 1 Lake Park',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            money: '￥120,000.00',
-            address: 'Sydney No. 1 Lake Park',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            money: '￥120,000.00',
-            address: 'Sydney No. 1 Lake Park',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            money: '￥120,000.00',
-            address: 'Sydney No. 1 Lake Park',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            money: '￥120,000.00',
-            address: 'Sydney No. 1 Lake Park',
-        }, {
-            key: '3',
-            name: 'Joe Black',
-            money: '￥120,000.00',
-            address: 'Sydney No. 1 Lake Park',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            money: '￥120,000.00',
-            address: 'Sydney No. 1 Lake Park',
-        },
-
     ];
 
     return (
         <>
             {
                 load ? <div className={'activityBox'} style={{marginBottom: '50px', overflow: 'hidden'}}>
-                    {/*<div className={'top'} style={{*/}
-                    {/*    width: browser ? '20%' : '90%',*/}
-                    {/*    justifyContent: browser ? 'space-between' : 'space-around',*/}
-                    {/*    padding: browser ? '2.2% 1.7% 1%' : '6% 0 4%'*/}
-                    {/*}}>*/}
-                    {/*    <div>*/}
-                    {/*        <p>{point}</p>*/}
-                    {/*        <p>{t('Market.POINTS')}</p>*/}
-                    {/*    </div>*/}
-                    {/*    <p>{t('Market.Redeem')}</p>*/}
-                    {/*</div>*/}
-                    {/*<p className={'p2'}>{t('Market.Events')}</p>*/}
-                    {/*<p className={'p3'}> {t('Market.view')}</p>*/}
-                    <div style={{marginTop: '5.5%'}}
-                         className={`activeSwiper ${browser ? 'activeSwiperWeb' : 'activeSwiperActive'}`}>
-                        <Swiper
-                            effect={'coverflow'}
-                            grabCursor={true}
-                            centeredSlides={true}
-                            slidesPerView={"auto"}
-                            coverflowEffect={{
-                                rotate: 50,
-                                stretch: 0,
-                                depth: 100,
-                                modifier: 1,
-                                slideShadows: true,
-                            }}
-                            pagination={true}
-                            // navigation
-                            modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
-                            loop
-                            autoplay={{delay: 2000, disableOnInteraction: false}}
-                        >
-                            {
-                                data.length > 0 && data[0]?.campaign?.noticeUrl?.length > 0 ?
-                                    data[0]?.campaign?.noticeUrl.concat(data[0]?.campaign?.noticeUrl).map((i: string, ind: number) => {
-                                        return <SwiperSlide key={ind}><img loading={'lazy'} className={'activeImgHover'}
-                                                                           src={i} onClick={
-                                            throttle(function () {
+                        <div className={'activeBack'}>
+                            <div style={{marginTop: '5.5%'}}
+                                 className={`activeSwiper ${browser ? 'activeSwiperWeb' : 'activeSwiperActive'}`}>
+                                <Swiper
+                                    effect={'coverflow'}
+                                    grabCursor={true}
+                                    centeredSlides={true}
+                                    slidesPerView={"auto"}
+                                    coverflowEffect={{
+                                        rotate: 50,
+                                        stretch: 0,
+                                        depth: 100,
+                                        modifier: 1,
+                                        slideShadows: true,
+                                    }}
+                                    pagination={true}
+                                    // navigation
+                                    modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
+                                    loop
+                                    autoplay={{delay: 2000, disableOnInteraction: false}}
+                                >
+                                    {
+                                        data.length > 0 && data[0]?.campaign?.noticeUrl?.length > 0 ?
+                                            data[0]?.campaign?.noticeUrl.concat(data[0]?.campaign?.noticeUrl).map((i: string, ind: number) => {
+                                                return <SwiperSlide key={ind}><img loading={'lazy'}
+                                                                                   className={'activeImgHover'}
+                                                                                   src={i} onClick={
+                                                    throttle(function () {
 
-                                            }, 1500, {'trailing': false})
-                                        } style={{borderRadius: '15px', width: '100%'}} alt=""/></SwiperSlide>
-                                    }) : ''
-                            }
-                        </Swiper>
-                    </div>
-                    {/*时间*/}
-                    <div className={'allTime'}>
-                        {
-                            Number(time) ?
-                                <Countdown title=""
-                                           className={'avtiveCountdown'}
-                                           value={time}
-                                           format="D[D] H[H] m[M] s[S]"
-                                /> :
-                                <p className={'pTime'}>{time}</p>
-                        }
-                        <p>Airdrop Season 3 Ends</p>
-                    </div>
-                    <div className={'allTime'}>
-                        <p className={'pTime'}> D Points Task</p>
-                        <p>Airdrop Season 3 Ends</p>
-                    </div>
-                    <div className={'point'}>
-                        {/*frosted*/}
-
-                        {/*<div className={'connect'}>*/}
-                        {/*    <p>To commemorate the introduction of Dexpert, simply link your wallet to*/}
-                        {/*        receive 1000 D-Points.</p>*/}
-                        {/*    <p>Connect wallet</p>*/}
-                        {/*</div>*/}
-                        <div className={'youPoint'}>
-                            <div>
-                                <span>Your D points</span>
-                                <span>14444</span>
-                            </div>
-                            <div>
-                                <span>Your D psaa</span>
-                                <span>144</span>
-                            </div>
-                            <div>
-                                <span>Today's points</span>
-                                <span>14444</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={'activeOptions'}>
-                        {
-                            ['Daily mission', 'First mission', 'Ranking list'].map((i: string, ind: number) => {
-                                return <p style={{
-                                    backgroundColor: option === ind ? 'rgb(134,240,151)' : '',
-                                    color: option === ind ? 'black' : 'white'
-                                }} onClick={() => {
-                                    if (ind !== option) {
-                                        setOption(ind)
+                                                    }, 1500, {'trailing': false})
+                                                } style={{borderRadius: '15px', width: '100%'}} alt=""/></SwiperSlide>
+                                            }) : ''
                                     }
-                                }}>{i}</p>
-                            })
-                        }
-                    </div>
-                    <div className={'activeAll'}>
-                        <div className={'first'}>
-                            <div className={'firstLine'}>
-                                <div>
-                                    <img src="/tui.svg" alt=""/>
-                                    {/*<img src="/tuiActive.svg" alt=""/>*/}
-                                    <span style={{color: 'white'}}>Follow our twitter</span>
-                                </div>
-                                <div>
-                                    <p style={{color: 'white'}}>+500</p>
-                                    <p>Post</p>
-                                </div>
+                                </Swiper>
                             </div>
-                        </div>
-                        <Table
-                            columns={columns}
-                            className={'activeTable'}
-                            pagination={false}
-                            dataSource={dataSource}
-                            bordered
-                        />
-                    </div>
-                    {/*活动*/}
-                    {
-                        data.length > 0 ? data.map((i: any, ind: number) => {
-                            const date = countdownNow(i?.campaign?.startTime, i?.campaign?.endTime)
-                            return <div key={ind} style={{padding: browser ? '0 15%' : '0 6%'}} className={'active'}>
-                                <p className={'p2'}>{i?.campaign?.title || ''}</p>
+                            {/*时间*/}
+                            <div className={'allTime'}>
                                 {
-                                    Number(date) ?
+                                    Number(time) ?
                                         <Countdown title=""
                                                    className={'avtiveCountdown'}
-                                                   value={date}
+                                                   value={time}
                                                    format="D[D] H[H] m[M] s[S]"
                                         /> :
-                                        <p className={'p3'}>{date}</p>
-
+                                        <p className={'pTime'}>{time}</p>
                                 }
-                                <p style={{
-                                    marginTop: '20px',
-                                    color: 'rgb(200,200,200)',
-                                    lineHeight: '1.1', marginBottom: '10px'
-                                }}>{i?.campaign?.description}</p>
+                                <p>Airdrop Season 3 Ends</p>
+                            </div>
+                            <div className={'allTime'} style={{marginTop: '6%'}}>
+                                <p className={'pTime'} style={{marginBottom: '0'}}> D Points Task</p>
+                            </div>
+                        </div>
+                        <div className={`point`}>
+                            {
+                                !show && <div className={'connect'}>
+                                    <p>To commemorate the introduction of Dexpert, simply link your wallet to
+                                        receive 1000 D-Points.</p>
+                                    <p onClick={() => {
+                                        setIsModalOpen(true)
+                                    }}>Connect wallet</p>
+                                </div>
+                            }
+                            <div className={`youPoint ${show ? '' : 'frosted'}`}>
+                                <div>
+                                    <span>Your D points</span>
+                                    <span>14444</span>
+                                </div>
+                                <div>
+                                    <span>Your D psaa</span>
+                                    <span>144</span>
+                                </div>
+                                <div>
+                                    <span>Today's points</span>
+                                    <span>14444</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={'activeOptions'}>
+                            {
+                                ['Daily mission', 'First mission', 'Ranking list'].map((i: string, ind: number) => {
+                                    return <p style={{
+                                        backgroundColor: show ? option === ind ? 'rgb(134,240,151)' : '' : '',
+                                        color: show ? option === ind ? 'black' : 'white' : 'white'
+                                    }} onClick={() => {
+                                        if (show) {
+                                            if (ind !== option) {
+                                                setOption(ind)
+                                            }
+                                        } else {
+                                            MessageAll('warning', 'Please log in first')
+                                        }
+                                    }}>{i}</p>
+                                })
+                            }
+                        </div>
+                        {
+                            show && <div className={'activeAll'}>
                                 {
-                                    i?.tasks?.length > 0 &&
-                                    <div className={'box'} style={{flexDirection: browser ? 'row' : 'column'}}>
-                                        <div style={{width: browser ? '47%' : '100%'}}>
-                                            {
-                                                i?.tasks.map((it: any, ind: number) => {
-                                                    return <p style={{
-                                                        background: select === ind ? 'rgb(52,62,53)' : '',
-                                                        color: select === ind ? 'rgb(134,240,151)' : 'white',
-                                                        marginBottom: browser ? ind + 1 === i?.tasks.length ? '' : '20px' : '20px',
-                                                        padding: browser ? '5% 5%' : '4% 6.5%'
-                                                    }} onClick={() => {
-                                                        if (select !== ind && !loading) {
-                                                            setSelect(ind)
-                                                        }
-                                                    }} key={ind}>{it?.title}
-                                                        {
-                                                            Number(it?.isCompleted) && Number(it?.isCompleted) === 3 ?
-                                                                <img src="/finish.svg" alt=""/> : ''
-                                                        }</p>
-                                                })
-                                            }
-                                        </div>
-                                        <div style={{
-                                            width: browser ? '47%' : '100%',
-                                            padding: browser ? '2.5%' : '5.5%'
-                                        }}>
-                                            <p>{i?.tasks[select]?.title || ''}</p>
-                                            <p>{i?.tasks[select]?.description || ''}</p>
-                                            {
-                                                Number(i?.tasks[select]?.isCompleted) !== 3 && <p onClick={() => {
-                                                    param(i?.tasks)
-                                                }} style={{color: 'black'}}>{operate(i?.tasks)}
-                                                    {loading ? <LoadingOutlined/> : ''}</p>
-                                            }
-                                        </div>
+                                    option === 2 ? <Table
+                                        columns={columns}
+                                        className={'activeTable'}
+                                        pagination={false}
+                                        dataSource={dataSource}
+                                        bordered
+                                    /> : <div className={'first'}>
+                                        {
+                                            data.length > 0 ? data.map((i: any) => {
+                                                    if (i?.tasks?.length > 0) {
+                                                        return i?.tasks.map((it: any, index: number) => {
+                                                            return <div key={index} className={'firstLine'}
+                                                                        style={{
+                                                                            background: selectActive === it?.taskId ? 'rgb(52,62,53)' : 'linear-gradient(to right, #020c02, rgb(38, 45, 38))',
+                                                                            marginBottom: index === i?.tasks.length - 1 ? '' : '35px'
+                                                                        }}
+                                                                        onClick={() => {
+                                                                            if (selectActive !== it?.taskId) {
+                                                                                setSelectActive(it?.taskId)
+                                                                            } else {
+                                                                                setSelectActive('')
+                                                                            }
+                                                                        }}>
+                                                                <div>
+                                                                    {
+                                                                        index === 0 ? <img
+                                                                            src={selectActive === it?.taskId ? "/tuiActive.svg" : "/tui.svg"}
+                                                                            alt=""/> : index === 1 ? <img
+                                                                                src={selectActive === it?.taskId ? "/telegramsActive.svg" : '/telegrams.svg'}
+                                                                                alt=""/> :
+                                                                            <img
+                                                                                src={selectActive === it?.taskId ? '/disActive.svg' : "/dis.svg"}
+                                                                                alt=""/>
+                                                                    }
+                                                                    <span
+                                                                        style={{color: selectActive === it?.taskId ? 'rgb(134,240,251)' : 'white'}}>{it?.title}</span>
+                                                                </div>
+                                                                <div>
+                                                                    <p style={{color: selectActive === it?.taskId ? 'rgb(134,240,251)' : 'white'}}>+{it?.score}</p>
+                                                                    {
+                                                                        Number(it?.isCompleted) !== 3 ? <p onClick={() => {
+                                                                            param(it?.isCompleted, it?.taskId, index)
+                                                                            setSelect(index)
+                                                                        }}
+                                                                                                           style={{color: 'black'}}>{operate(it?.isCompleted, it?.title)}
+                                                                            {loading ? <LoadingOutlined/> : ''}</p> : <div style={{
+                                                                            width: '75px',
+                                                                            display: 'flex',
+                                                                            justifyContent: 'center'
+                                                                        }}>
+                                                                            <img
+                                                                                src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'}
+                                                                                alt=""/>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        })
+                                                    } else {
+                                                        return <p style={{
+                                                            textAlign: 'center',
+                                                            marginTop: '20px',
+                                                            color: 'white'
+                                                        }}> {t('Market.no')}</p>
+                                                    }
+
+                                                }) :
+                                                <p style={{
+                                                    textAlign: 'center',
+                                                    marginTop: '20px',
+                                                    color: 'white'
+                                                }}> {t('Market.no')}</p>
+                                        }
                                     </div>
                                 }
                             </div>
-                        }) : <p style={{textAlign: 'center', marginTop: '20px', color: 'white'}}> {t('Market.no')}</p>
-                    }
-                </div> : <Loading status={'20'}/>
+                        }
+                        <p style={{width: '80%', margin: '0 auto', color: 'rgb(212,223,214)', lineHeight: '1.1',marginTop:'5%'}}>
+                            Each account is limited to receiving 5 airdrops. Completing all task nodes will result in a
+                            blind box reward at each task node. The reward for completing tasks multiple times is
+                            invalid. The final interpretation of this activity rule belongs to the company. Each account
+                            is limited to receiving 5 airdrops. Completing all task nodes will result in a blind box
+                            reward at each task node. The reward for completing tasks multiple times is invalid. The
+                            final interpretation of this activity rule belongs to the company.
+                        </p>
+                    </div> :
+                    <Loading status={'20'}/>
             }
-            <Modal title={`Verification failed, please ${select === 0 ? 'follow' : 'join'} again`}
-                   className={'activeModal'} open={isModalOpen}
-                   footer={null} onCancel={handleCancel}>
+            <Modal
+                title={`Verification failed, please ${select === 0 ? 'follow' : 'join'} again`}
+                className={'activeModal'} open={isModalOpen}
+                footer={null} onCancel={handleCancel}>
                 <p>{select === 0 ? 'Follow the following Twitter users' : select === 1 ? 'Join the following Telegram group' : 'Join the following Discord group'}:</p>
                 <div>
                     <div>
@@ -511,17 +473,21 @@ function Index() {
                                 onClick={openLink}>{select === 0 ? 'Follow' : 'Join'}</span></p>
                         </div>
                     </div>
-                    <img src={select === 0 ? "/x.svg" : select === 1 ? '/telegram1.svg' : '/discord.svg'} alt=""
-                         onClick={openLink}/>
+                    <img
+                        src={select === 0 ? "/x.svg" : select === 1 ? '/telegram1.svg' : '/discord.svg'}
+                        alt=""
+                        onClick={openLink}/>
                 </div>
                 <p onClick={openLink}>
-                    <img src={select === 0 ? "/x.svg" : select === 1 ? '/telegram1.svg' : '/discord.svg'} alt=""/>
+                    <img
+                        src={select === 0 ? "/x.svg" : select === 1 ? '/telegram1.svg' : '/discord.svg'}
+                        alt=""/>
                     <span>{select === 0 ? 'Follow @Dexpertofficial' : select === 1 ? 'Join @DexpertCommunity' : 'Join @Dexpert'}</span>
                 </p>
             </Modal>
-
         </>
-    );
+    )
+        ;
 }
 
 export default Index;

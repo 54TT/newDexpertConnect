@@ -1,8 +1,11 @@
 .activityBox {
-  background-image: url("/backActive.svg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain;
+  .activeBack {
+    background-image: url("/badsada.svg");
+    padding: 3% 0 2%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% 135%;
+  }
 
   .top {
     margin: 2% auto 2.5%;
@@ -45,7 +48,7 @@
   .allTime {
     .pTime {
       text-align: center;
-      margin: 40px 0 7px;
+      margin: 4.5% 0 15px;
       font-size: 26px;
       background: linear-gradient(90deg, rgb(133, 240, 150) 0%, rgb(1, 255, 72) 100%);
       -webkit-background-clip: text;
@@ -66,11 +69,16 @@
 
   .point {
     width: 66%;
+    position: relative;
     margin: 0 auto;
     border: 2px solid rgb(60, 69, 60);
 
     .connect {
       width: 100%;
+      z-index: 10;
+      position: absolute;
+      top: 0;
+      left: 0;
       box-sizing: border-box;
       padding: 17px 15%;
       margin: 0 auto;
@@ -83,7 +91,7 @@
         color: black;
         cursor: pointer;
         display: inline-block;
-        margin-top: 15px;
+        margin-top: 25px;
         border-radius: 10px;
         font-weight: 600;
         background-color: rgb(134, 240, 151);
@@ -128,7 +136,7 @@
 
   .activeOptions {
     display: flex;
-    margin: 0 auto;
+    margin: 35px auto 45px;
     width: 60%;
     align-items: center;
     justify-content: space-between;
@@ -152,9 +160,9 @@
         display: flex;
         cursor: pointer;
         align-items: center;
-        background: linear-gradient(to right, #020c02, rgb(38, 45, 38));
         justify-content: space-between;
         border-radius: 10px;
+
         & > div:first-child {
           display: flex;
           align-items: center;
@@ -178,8 +186,10 @@
 
           p:last-child {
             background-color: rgb(134, 240, 151);
-            padding: 5px 15px;
             border-radius: 6px;
+            width: 75px;
+            padding: 5px 0;
+            text-align: center;
             cursor: pointer;
           }
 
