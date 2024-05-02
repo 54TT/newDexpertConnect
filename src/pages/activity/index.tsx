@@ -41,7 +41,7 @@ function Index() {
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
-    const [option, setOption] = useState(0)
+    const [option, setOption] = useState(1)
     const [show, setShow] = useState(false)
     const [selectActive, setSelectActive] = useState('')
     const [select, setSelect] = useState(0)
@@ -363,7 +363,9 @@ function Index() {
                                         /> :
                                         <p className={'pTime'}>{time}</p>
                                 }
-                                <p>{t('Active.title')}</p>
+                                <p className={'ac'}>{t('Active.title')}</p>
+                                <p className={'ac'}>{t('Active.title1')}</p>
+                                <p className={'ac'}>{t('Active.title2')}</p>
                             </div>
                             <div className={'allTime'} style={{marginTop: '6%'}}>
                                 <p className={'pTime'} style={{marginBottom: '0'}}>{t('Active.task')}</p>
@@ -413,18 +415,18 @@ function Index() {
                         <div className={'activeOptions'}>
                             {
                                 [t('Active.Daily'), t('Active.First'), t('Active.Ranking')].map((i: string, ind: number) => {
-                                    return <p style={{
+                                    return <div style={{
                                         backgroundColor: show ? option === ind ? 'rgb(134,240,151)' : '' : '',
-                                        color: show ? option === ind ? 'black' : 'white' : 'white'
+                                        color: show ? ind === 0 ? 'gray' : option === ind ? 'black' : 'white' : 'white'
                                     }} onClick={() => {
                                         if (show) {
-                                            if (ind !== option) {
+                                            if (ind !== option && ind !== 0) {
                                                 setOption(ind)
                                             }
                                         } else {
                                             MessageAll('warning', 'Please log in first')
                                         }
-                                    }}>{i}</p>
+                                    }}>{i}{ind === 0 && <p>{t('Common.Coming soon')}</p>}</div>
                                 })
                             }
                         </div>
@@ -439,7 +441,7 @@ function Index() {
                                         dataSource={rankList}
                                         loading={isRankList}
                                         bordered
-                                    /> : <div className={'first'}>
+                                    /> : option === 1 ? <div className={'first'}>
                                         {
                                             data.length > 0 ? data.map((i: any) => {
                                                     if (i?.tasks?.length > 0) {
@@ -478,7 +480,8 @@ function Index() {
                                                                             setSelect(index)
                                                                         }}
                                                                                                            style={{color: 'black'}}>{operate(it?.isCompleted, it?.title)}
-                                                                            {loading ? <LoadingOutlined/> : ''}</p> : <div style={{
+                                                                            {loading && select === index ?
+                                                                                <LoadingOutlined/> : ''}</p> : <div style={{
                                                                             width: '75px',
                                                                             display: 'flex',
                                                                             justifyContent: 'center'
@@ -506,11 +509,17 @@ function Index() {
                                                     color: 'white'
                                                 }}> {t('Market.no')}</p>
                                         }
-                                    </div>
+                                    </div> : ''
                                 }
                             </div>
                         }
-                        <p style={{width: '80%', margin: '0 auto', color: 'rgb(212,223,214)', lineHeight: '1.1', marginTop: '5%'}}>
+                        <p style={{
+                            width: '80%',
+                            margin: '0 auto',
+                            color: 'rgb(212,223,214)',
+                            lineHeight: '1.1',
+                            marginTop: '5%'
+                        }}>
                             {t('Active.bot')}
                         </p>
                     </div> :

@@ -76,8 +76,6 @@ function Dpass() {
         });
         if (data?.list?.length) {
             setDPassList(data.list);
-        } else {
-            MessageAll('warning',t('Alert.no'));
         }
     };
 
@@ -164,7 +162,7 @@ function Dpass() {
                     <p className="dpass-content-right-content">
                         {t("Dpass.desc2")}
                     </p>
-                    <p className="dpass-content-right-content">6000 D point</p>
+                    <p className="dpass-content-right-content">{t("Dpass.desc3")}</p>
                     <div className="dpass-content-right-action">
                         <div className="dpass-content-right-action-input">
               <span id="reduce" onClick={clickPlusOrReduce}>
