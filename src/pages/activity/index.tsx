@@ -478,8 +478,7 @@ function Index() {
                                                                         Number(it?.isCompleted) !== 3 ? <p onClick={() => {
                                                                             param(it?.isCompleted, it?.taskId, index)
                                                                             setSelect(index)
-                                                                        }}
-                                                                                                           style={{color: 'black'}}>{operate(it?.isCompleted, it?.title)}
+                                                                        }} style={{color: 'black',padding:'5px'}}>{operate(it?.isCompleted, it?.title)}
                                                                             {loading && select === index ?
                                                                                 <LoadingOutlined/> : ''}</p> : <div style={{
                                                                             width: '75px',

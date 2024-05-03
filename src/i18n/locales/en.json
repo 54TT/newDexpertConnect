@@ -93,7 +93,7 @@
   },
   "Active": {
     "title": "* Special Event: connect wallet to receive 1000 D-Points",
-    "title1": "* 6000 D points can be exchanged for a Pass for one free use of DEXpert's bot service.",
+    "title1": "* 6000 D points can be exchanged for a Pass for one free use of Dexpert's bot service.",
     "title2": "* D points will be redeemable for $DEXP token in the future.",
     "task": "D Points Task",
     "point": "Your D points",
@@ -109,7 +109,7 @@
     "bot": "To commemorate the introduction of Dexpert, simply link your wallet to receive 1000 D-Points. Also, you can gain extra points by connecting with us on Twitter, Discord, and Telegram; each social media platform awards 500 points."
   },
   "Dpass": {
-    "desc1": "6000 D points can to redeem one Pass, which allows you to use DEXpert’s trading bots.",
+    "desc1": "6000 D points can to redeem one Pass, which allows you to use Dexpert’s trading bots.",
     "desc2": "One Pass can be:",
     "desc3": "Use five-times sniper bot OR one-time token creation bot.",
     "pointsAmount": "Your D Points",

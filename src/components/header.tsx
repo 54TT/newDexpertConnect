@@ -249,10 +249,10 @@ function Header() {
                 <img src="/gift.svg" alt="" style={{width: '25px', marginLeft: '10px', cursor: 'pointer'}}
                      onClick={throttle(
                          function () {
-                         history('/activity')
-                     },
+                             history('/activity')
+                         },
                          1500,
-                     {trailing: false})}/>
+                         {trailing: false})}/>
             </div>
             {browser && (
                 <p className={`headerCenter dis`}>
@@ -275,7 +275,7 @@ function Header() {
                     })}
                 </p>
             )}
-            <div className={'headerData'} style={{justifyContent:browser?'center':'flex-end'}}>
+            <div className={'headerData'} style={{justifyContent: browser ? 'center' : 'flex-end'}}>
                 {user?.uid ? (
                     <>
                         {browser ? (
@@ -285,20 +285,22 @@ function Header() {
                                     menu={{
                                         items,
                                     }}>
-                                    <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
-                                         style={{
-                                             width: "28px",
-                                             display: "block",
-                                             marginRight: "-12px",
-                                             zIndex: '10',
-                                             borderRadius: "100%",
-                                         }} alt="" loading={"lazy"}/>
+                                    <div className={'headLine'}>
+                                        <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
+                                             style={{
+                                                 width: "28px",
+                                                 display: "block",
+                                                 marginRight: "-12px",
+                                                 zIndex: '10',
+                                                 borderRadius: "100%",
+                                             }} alt="" loading={"lazy"}/>
+                                        <p className={'headLineP'}>{simplify(user?.username)}</p>
+                                    </div>
                                 </Dropdown>
                                 <div className={'headLine'}>
-                                    <p>{simplify(user?.username)}</p>
-                                    <p>{isBalance ? balance[user?.address] + 'ETH' || '0ETH' :
+                                    <p className={'headLineP'}>{isBalance ? balance[user?.address] + 'ETH' || '0ETH' :
                                         <LoadingOutlined style={{fontSize: '15px'}}/>}</p>
-                                    <p>{user?.rewardPointCnt + ' D' || '0 D'}</p>
+                                    <p className={'headLineP'}>{user?.rewardPointCnt + ' D' || '0 D'}</p>
                                 </div>
                             </div>
                         ) : (
