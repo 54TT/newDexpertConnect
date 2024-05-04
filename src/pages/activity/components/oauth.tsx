@@ -3,6 +3,7 @@ import {useNavigate, useSearchParams,} from "react-router-dom";
 import Loading from '../../../components/loading.tsx'
 import Request from "../../../components/axios.tsx";
 import cookie from "js-cookie";
+
 function Oauth() {
     const {getAll,} = Request()
     const [search] = useSearchParams();
@@ -16,7 +17,7 @@ function Oauth() {
                 data: nu === 1 ? {OAuthToken: name, OAuthVerifier: da, taskId: '1'} : nu === 2 ? {
                     tgAuthResult: name,
                     taskId: '2'
-                } : {code: name,  taskId: '3'},
+                } : {code: name, taskId: '3'},
                 token
             })
             if (res?.data?.message === 'ok') {

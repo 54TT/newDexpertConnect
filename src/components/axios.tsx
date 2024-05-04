@@ -21,7 +21,11 @@ requestA.interceptors.response.use(
         return response;
     },
     (e: any) => {
-        MessageAll('warning',e?.message)
+        if (e?.config?.url === '/api/v1/oauth/twitter/claim' || e?.config?.url === '/api/v1/oauth/discord/claim') {
+            MessageAll('warning', e?.response?.data?.msg)
+        } else {
+            MessageAll('warning', e?.message)
+        }
     }
 );
 const Request = () => {
@@ -35,22 +39,20 @@ const Request = () => {
     }
     const username = cookie.get('jwt')
     const encapsulation = async (method: string, data: any, url: string, token: string, name: string) => {
-        try {
-            const abc = await requestA({
-                method,
-                params: method === 'get' ? data : method === 'delete' ? undefined : '',
-                data: method === 'get' ? '' : method === 'delete' ? undefined : data,
-                url,
-                headers: {
-                    'Content-Type': name ? 'multipart/form-data' : 'application/json', // 根据需要添加其他标头
-                    'Authorization': token,
-                }
-            })
-            if (abc?.status === 200) {
-                return abc
+        const abc = await requestA({
+            method,
+            params: method === 'get' ? data : method === 'delete' ? undefined : '',
+            data: method === 'get' ? '' : method === 'delete' ? undefined : data,
+            url,
+            headers: {
+                'Content-Type': name ? 'multipart/form-data' : 'application/json', // 根据需要添加其他标头
+                'Authorization': token,
             }
-        } catch (e) {
+        })
+        if (abc?.status === 200) {
+            return abc
         }
+        console.log('2222222222', abc)
     }
 
     const getAll = async (name: any) => {
@@ -66,7 +68,7 @@ const Request = () => {
                     return await encapsulation(method, data, url, token, '')
                 }
             } else {
-                MessageAll('warning',t('Market.login'))
+                MessageAll('warning', t('Market.login'))
                 clear()
             }
         } else {

@@ -49,8 +49,8 @@ function Index() {
     const [isDPassCount, setIsDPassCount] = useState(false)
     const [rankList, setRankList] = useState<any>([])
     const [isRankList, setIsRankList] = useState(true)
-    const [todayPoint, setTodayPoint] = useState(0)
-    const [isTodayPoint, setIsTodayPoint] = useState(false)
+    // const [todayPoint, setTodayPoint] = useState(0)
+    // const [isTodayPoint, setIsTodayPoint] = useState(false)
     const getParams = async () => {
         const token = cookie.get('token')
         const res = await getAll({
@@ -80,6 +80,8 @@ function Index() {
         if (res?.status === 200) {
             setRankList(res?.data?.list)
             setIsRankList(false)
+        } else {
+            setIsRankList(false)
         }
     }
     const getDpass = async () => {
@@ -92,36 +94,54 @@ function Index() {
             setDPassCount(res?.data?.dPassCount)
         }
     }
-    const contrast = (name: string) => {
-        const at = dayjs(name).unix()
-        const aaa = dayjs.unix(at).format('YYYY-MM-DD')
-        const yy = dayjs().format('YYYY-MM-DD')
-        return aaa === yy;
-    }
+    // const contrast = (name: string) => {
+    //     const at = dayjs(name).unix()
+    //     const aaa = dayjs.unix(at).format('YYYY-MM-DD')
+    //     const yy = dayjs().format('YYYY-MM-DD')
+    //     return aaa === yy;
+    // }
 
 
-    const getTodayPoint = async () => {
+    // const getTodayPoint = async () => {
+    //     const token = cookie.get('token')
+    //     const res = await getAll({
+    //         method: 'post', url: '/api/v1/rewardPoint/history', data: {page: '1'}, token: token || ''
+    //     })
+    //     if (res?.status === 200) {
+    //         if (res?.data?.list?.length > 0) {
+    //             let point = 0
+    //             res?.data?.list.map((i: any) => {
+    //                 if (contrast(i?.timestamp)) {
+    //                     point += Number(i?.score)
+    //                 }
+    //             })
+    //             if (point) {
+    //                 setTodayPoint(point)
+    //                 setIsTodayPoint(true)
+    //             } else {
+    //                 setIsTodayPoint(true)
+    //             }
+    //         }else{
+    //             setIsTodayPoint(true)
+    //
+    //         }
+    //     }
+    // }
+
+    const claim = async (name: string, da: string) => {
         const token = cookie.get('token')
-        const res = await getAll({
-            method: 'post', url: '/api/v1/rewardPoint/history', data: {page: '1'}, token: token || ''
-        })
-        if (res?.status === 200) {
-            if (res?.data?.list?.length > 0) {
-                let point = 0
-                res?.data?.list.map((i: any) => {
-                    if (contrast(i?.timestamp)) {
-                        point += Number(i?.score)
-                    }
-                })
-                if (point) {
-                    setTodayPoint(point)
-                    setIsTodayPoint(true)
-                } else {
-                    setIsTodayPoint(true)
-                }
-            }
+        if (token) {
+            const res = await getAll({
+                method: 'post',
+                url: '/api/v1/oauth/twitter/claim',
+                data: {OAuthToken: name, OAuthVerifier: da, taskId: '1'},
+                token
+            })
+            console.log(res)
         }
     }
+
+
 
     // 是否登录
     useEffect(() => {
@@ -157,9 +177,8 @@ function Index() {
     }, []);
     useEffect(() => {
         if (show) {
-            getRank()
+            // getTodayPoint()
             getDpass()
-            getTodayPoint()
         }
     }, [show]);
 
@@ -315,6 +334,9 @@ function Index() {
 
     return (
         <>
+            <p style={{color:'white',}} onClick={()=>{
+                claim('QVB8jgAAAAABs7ZHAAABj0OQkKM','0Tfmlig2RLOJ2lnUeu03F8lIG0mIrDMD')
+            }}>你好去11111111111111111111111111111111</p>
             {
                 load ? <div className={'activityBox'} style={{marginBottom: '50px', overflow: 'hidden'}}>
                         <div className={'activeBack'}>
@@ -403,12 +425,20 @@ function Index() {
                                 </div>
                                 <div>
                                     <span>{t('Active.today')}</span>
-                                    {
-                                        isTodayPoint ? <span>{todayPoint}</span> :
-                                            <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
-                                                <LoadingOutlined style={{color: 'gray'}}/>
-                                            </div>
-                                    }
+                                    {/*{*/}
+                                    {/*    isTodayPoint ? <span>{todayPoint}</span> :*/}
+                                    {/*        <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>*/}
+                                    {/*            <LoadingOutlined style={{color: 'gray'}}/>*/}
+                                    {/*        </div>*/}
+                                    {/*}*/}
+                                    <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
+                                        <p style={{
+                                            backgroundColor: 'gray',
+                                            borderRadius: '5px',
+                                            padding: '2px 5px',
+                                            fontSize: '14px'
+                                        }}>{t('Common.Coming soon')}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -422,6 +452,11 @@ function Index() {
                                         if (show) {
                                             if (ind !== option && ind !== 0) {
                                                 setOption(ind)
+                                                if (ind === 2) {
+                                                    if (isRankList) {
+                                                        getRank()
+                                                    }
+                                                }
                                             }
                                         } else {
                                             MessageAll('warning', 'Please log in first')
@@ -478,7 +513,10 @@ function Index() {
                                                                         Number(it?.isCompleted) !== 3 ? <p onClick={() => {
                                                                             param(it?.isCompleted, it?.taskId, index)
                                                                             setSelect(index)
-                                                                        }} style={{color: 'black',padding:'5px'}}>{operate(it?.isCompleted, it?.title)}
+                                                                        }} style={{
+                                                                            color: 'black',
+                                                                            padding: '5px'
+                                                                        }}>{operate(it?.isCompleted, it?.title)}
                                                                             {loading && select === index ?
                                                                                 <LoadingOutlined/> : ''}</p> : <div style={{
                                                                             width: '75px',
