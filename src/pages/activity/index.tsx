@@ -128,21 +128,6 @@ function Index() {
     //     }
     // }
 
-    const claim = async (name: string, da: string) => {
-        const token = cookie.get('token')
-        if (token) {
-            const res = await getAll({
-                method: 'post',
-                url: '/api/v1/oauth/twitter/claim',
-                data: {OAuthToken: name, OAuthVerifier: da, taskId: '1'},
-                token
-            })
-            console.log(res)
-        }
-    }
-
-
-
     // 是否登录
     useEffect(() => {
         if (isLogin) {
@@ -334,9 +319,6 @@ function Index() {
 
     return (
         <>
-            <p style={{color:'white',}} onClick={()=>{
-                claim('QVB8jgAAAAABs7ZHAAABj0OQkKM','0Tfmlig2RLOJ2lnUeu03F8lIG0mIrDMD')
-            }}>你好去11111111111111111111111111111111</p>
             {
                 load ? <div className={'activityBox'} style={{marginBottom: '50px', overflow: 'hidden'}}>
                         <div className={'activeBack'}>
