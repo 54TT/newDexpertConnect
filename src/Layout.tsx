@@ -66,13 +66,6 @@ function Layout() {
             return null
         }
     }
-    useEffect(() => {
-        const at = search.get('change')
-        if (at === '1' && router.pathname === '/') {
-            setIsLogin(true)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search.get('change')]);
     const clear = async () => {
         history('/?change=1')
         cookie.remove('token')
@@ -327,6 +320,7 @@ function Layout() {
         const chang = search.get('change')
         if (router.pathname === '/' && chang === '1') {
             setUserPar(null)
+            setIsLogin(true)
         }
         // 添加事件监听器
         window.addEventListener('resize', handleResize);
