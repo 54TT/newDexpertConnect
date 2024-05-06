@@ -77,6 +77,9 @@ function Header() {
     ];
     const loginModal = throttle(
         function () {
+            console.log(1111111111)
+            console.log(load)
+            console.log(user)
             if (!load) {
                 if (!user) {
                     setIsModalOpen(true);
@@ -325,9 +328,7 @@ function Header() {
                                     <span>{t("Common.Connect Wallet")}</span>
                                     {load ? (
                                         <LoadingOutlined style={{marginLeft: "4px"}}/>
-                                    ) : (
-                                        ""
-                                    )}
+                                    ) :''}
                                 </div>
                             </div>
                         ) : (
@@ -358,7 +359,7 @@ function Header() {
                     />
                 )}
             </div>
-            <HeaderModal/>
+            <HeaderModal />
             <Drawer
                 width={"65vw"}
                 className={"headerDrawerOpen"}

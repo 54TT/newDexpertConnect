@@ -68,8 +68,8 @@ function HeaderModal() {
                maskClosable={false} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
             {
                 isModalSet ? <div className={'headerModalSetName'}>
-                    <p>Welcome new user</p>
-                    <p>Set up name</p>
+                    <p>{t('Common.new')}</p>
+                    <p>{t('Common.set')}</p>
                     <Input autoComplete={'off'} allowClear onChange={changeName} className={'input'}/>
                     <p onClick={pushSet}>OK</p>
                 </div> : <div className={'headerModal'}>

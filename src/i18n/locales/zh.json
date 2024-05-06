@@ -21,7 +21,9 @@
     "Initial Pool Amount": "初始流动池数量",
     "Pooled WETH": "汇总 ETH",
     "Pooled bTC": "汇总 btc",
-    "Fast Trade": "快速交易"
+    "Fast Trade": "快速交易",
+    "new": "欢迎新用户",
+    "set": "修改用户名称"
   },
   "Dapps": {
     "Token Creation Bot": "发币机器人",

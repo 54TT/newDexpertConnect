@@ -46,7 +46,7 @@ function CommunityContent() {
             <div id="community-content-scroll" className="community-content-post"
                  style={{
                      overflowY: 'auto',
-                     height: "calc(84vh - 102px)"
+                     height: "calc(89vh)"
                  }}>
                 <SendPost changeRefresh={changeRefresh}/>
                 <TWeetHome scrollId='community-content-scroll' hei={'auto'} changeHei={() => {

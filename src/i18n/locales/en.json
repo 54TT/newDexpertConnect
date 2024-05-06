@@ -23,7 +23,9 @@
     "Pooled WETH": "Pooled WETH",
     "Pooled bTC": "Pooled bTC",
     "Fast Trade": "Fast Trade",
-    "Next": "Next page"
+    "Next": "Next page",
+    "new": "Welcome new user",
+    "set": "Set up name"
   },
   "Dapps": {
     "Token Creation Bot": "Token Creation Bot",

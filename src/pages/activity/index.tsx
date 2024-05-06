@@ -49,8 +49,6 @@ function Index() {
     const [isRankList, setIsRankList] = useState(true)
     // const [todayPoint, setTodayPoint] = useState(0)
     // const [isTodayPoint, setIsTodayPoint] = useState(false)
-
-
     const getParams = async () => {
         const token = cookie.get('token')
         const res = await getAll({
@@ -67,7 +65,9 @@ function Index() {
             setZhData(res?.data?.campaignHomeCN)
             setEnData(res?.data?.campaignHome)
             setPoint(res?.data?.totalPoint)
-            setUserPar({...user, rewardPointCnt: res?.data?.totalPoint})
+            if(user){
+                setUserPar({...user, rewardPointCnt: res?.data?.totalPoint})
+            }
             setLoad(true)
         } else {
             setLoad(true)
@@ -132,6 +132,7 @@ function Index() {
 
     // 是否登录
     useEffect(() => {
+        console.log(isLogin)
         if (isLogin) {
             getParams()
             setIsLogin(false)

@@ -15,7 +15,6 @@ import {useTranslation} from "react-i18next";
 function Profie() {
     const {getAll} = Request()
     const {t} = useTranslation();
-
     const history = useNavigate();
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
@@ -65,13 +64,17 @@ function Profie() {
 
 
     const getUserProfile = async (setCookise?: boolean) => {
+        console.log(11111111111)
+        console.log(id)
         if (!id) {
+            console.log(2222222222222)
             return MessageAll('warning',t('Market.line'))
         }
         const token = Cookies.get('token');
         if (!token) return;
         // const result: any = await Request('get', `/api/v1/userinfo/${id}`, {}, token);
         const result: any = await getAll({method: 'get', url: `/api/v1/userinfo/${id}`, data: '', token});
+        console.log(result)
         if (result?.status === 200) {
             const data = result.data;
             setData(data.data);

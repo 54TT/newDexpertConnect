@@ -10,6 +10,8 @@ function Oauth() {
     const history = useNavigate()
     const claim = async (name: string, da: string, nu: number) => {
         const token = cookie.get('token')
+        console.log(token)
+        console.log(name)
         if (token) {
             const res = await getAll({
                 method: 'post',
@@ -35,6 +37,8 @@ function Oauth() {
         const code = search.get('code')
         const error_description = search.get('error_description')
         const error = search.get('error')
+        console.log(1111111111111111)
+        console.log(token)
         if (denied) {
             history('/activity')
         } else if (error_description && error) {
