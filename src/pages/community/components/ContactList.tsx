@@ -59,7 +59,7 @@ function UserItem({
                 }, 1500, {'trailing': false})
                 }>
         <div className="post-item-avatar">
-            <img loading={'lazy'} src={avatar || '/logo.svg'} style={{display: 'block', cursor: 'pointer'}} alt=""/>
+            <img loading={'lazy'} src={avatar || '/topLogo.png'} style={{display: 'block', cursor: 'pointer'}} alt=""/>
         </div>
         <div className="post-item-info">
             <div className="post-item-info-user">

@@ -158,7 +158,7 @@ function Tweets({
                     {/* left*/}
                     <div className={'tweetsLeft'} style={{flex: '1'}}>
                         <img loading={'lazy'} onClick={(e) => handleClickAvatar(e)}
-                             src={localData?.user?.avatar ? localData?.user?.avatar : "/logo.svg"} alt=""
+                             src={localData?.user?.avatar ? localData?.user?.avatar : '/topLogo.png'} alt=""
                              style={{width: '36px', marginRight: '12px', borderRadius: '50%'}}/>
                         <div>
                             <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>

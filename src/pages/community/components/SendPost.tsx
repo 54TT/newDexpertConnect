@@ -207,7 +207,7 @@ function SendPost({
         <>
             <div className="community-content-post-send">
                 <div className="community-content-post-send-avatar">
-                    <img loading={"lazy"} src={user?.avatarUrl || "/logo.svg"} alt=""/>
+                    <img loading={"lazy"} src={user?.avatarUrl || "/topLogo.png"} alt=""/>
                 </div>
                 <div className="community-content-post-send-input">
                     <TextArea
