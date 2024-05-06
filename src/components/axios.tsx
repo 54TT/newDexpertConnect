@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {MessageAll} from "./message.ts";
 import {useTranslation} from "react-i18next";
 import dayjs from 'dayjs'
+
 const requestA = axios.create({
     baseURL: import.meta.env.MODE === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io'
 })
@@ -75,8 +76,3 @@ const Request = () => {
     return {getAll}
 }
 export default Request
-export const getTkAndUserName = () => {
-    const token = cookie.get('token');
-    const username = JSON.parse(cookie.get('username') || '{}');
-    return [token, username];
-}

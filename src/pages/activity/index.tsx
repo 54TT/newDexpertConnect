@@ -132,7 +132,6 @@ function Index() {
 
     // 是否登录
     useEffect(() => {
-        console.log(isLogin)
         if (isLogin) {
             getParams()
             setIsLogin(false)

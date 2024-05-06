@@ -6,6 +6,7 @@ import Request from "./axios.tsx";
 import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
 import {CountContext} from "../Layout.tsx";
+import {unionBy} from 'lodash'
 
 interface TweetHomePropsType {
     uid?: string
@@ -28,6 +29,14 @@ function TweetHome({
     const [status, setStatus] = useState(false)
     const [iconLoad, setIconLoad] = useState(false)
     const [page, setPage] = useState(1)
+    const [del, setDel] = useState('')
+    useEffect(() => {
+        if (del && Number(del)) {
+            const abc = tableData.filter((res: any) => res?.postId !== del)
+            setData([...abc])
+        }
+    }, [del]);
+
     const changePage = () => {
         if (!status) {
             getTweet(page + 1)
@@ -52,8 +61,13 @@ function TweetHome({
                 }
                 if (refresh) {
                     changeRefresh?.(false)
+                    const abc = r.concat(tableData)
+                    const at = unionBy(abc, 'postId')
+                    // @ts-ignore
+                    setData([...at])
+                } else {
+                    setData(r)
                 }
-                setData(r)
             }
             setBol(true)
             setIsLogin(false)
@@ -75,24 +89,21 @@ function TweetHome({
     }
     useEffect(() => {
         if (isLogin) {
-            setBol(false)
             getTweet(1)
         }
     }, [isLogin]);
     useEffect(() => {
         if (refresh) {
-            setBol(false)
             getTweet(1)
         }
     }, [refresh]);
     useEffect(() => {
         getTweet(1)
     }, []);
-
     return (
         <>
             {
-                refresh ? <Loading/> : bol ? tableData.length > 0 ?
+                bol ? tableData.length > 0 ?
                         <div id={'scrollableDiv'} style={{overflowY: 'auto', height: hei, ...style}}
                              className={`${browser ? 'rightTweetBox' : 'mobile'} scrollStyle`}>
                             <InfiniteScroll
@@ -101,8 +112,11 @@ function TweetHome({
                                 scrollableTarget={scrollId}
                                 loader={null}
                                 dataLength={tableData.length}>
-                                {tableData.map((post: any, index: number) => {
-                                    return <Tweets key={index} name={post}/>
+                                {tableData.map((post: any) => {
+
+                                    return <Tweets
+                                        key={post?.postId + (Math.floor(Math.random() * (Math.floor(100) - Math.ceil(1))) + Math.ceil(1))}
+                                        name={post} setDel={setDel}/>
                                 })}
                             </InfiniteScroll>
                             {
@@ -112,7 +126,7 @@ function TweetHome({
                             }
                         </div> :
                         <p style={{textAlign: 'center', color: 'white', marginTop: '20px'}}>No data</p> :
-                    <Loading/>
+                    <Loading status={'20'}/>
             }
         </>
     );

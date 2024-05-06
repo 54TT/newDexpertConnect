@@ -172,7 +172,6 @@ function Dpass() {
         document.body.removeChild(textarea);
         MessageAll('success', t('Alert.copy'));
     }
-
     const nextPass = () => {
         setPage(page + 1)
         getDpassList(page + 1)

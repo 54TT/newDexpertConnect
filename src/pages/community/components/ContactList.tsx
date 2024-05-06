@@ -1,13 +1,17 @@
 import classNames from "classnames";
-import { useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Cookies from "js-cookie";
-import Request, {getTkAndUserName} from "../../../components/axios.tsx";
+import cookie from "js-cookie";
+import Request from "../../../components/axios.tsx";
 import {formatAddress, getQueryParams} from "../../../../utils/utils";
-import { Spin} from "antd";
+import {Spin} from "antd";
 import {useNavigate} from "react-router";
 import {throttle} from "lodash";
 import {MessageAll} from "../../../components/message.ts";
 import {useTranslation} from "react-i18next";
+import {CountContext} from "../../../Layout.tsx";
+import {CaretDownOutlined, LoadingOutlined} from '@ant-design/icons'
+
 export interface FollowTabType {
     label: 'Following' | 'Follower',
     key: '1' | '2',
@@ -32,12 +36,12 @@ export interface PostImteDataType {
 interface PostImtePropsType {
     data: any
     tab: string;
-    getAll:any
+    getAll: any
 }
 
 function UserItem({
                       data,
-                      tab,getAll
+                      tab, getAll
                   }: PostImtePropsType) {
     const {
         uid,
@@ -50,10 +54,12 @@ function UserItem({
     const history = useNavigate();
 
     return <div className="post-item follow-list" style={{maxHeight: '300px'}}
-                onClick={throttle(  function (){  history(`/community/user?uid=${uid}`)  }, 1500, {'trailing': false})
-    }>
+                onClick={throttle(function () {
+                    history(`/community/user?uid=${uid}`)
+                }, 1500, {'trailing': false})
+                }>
         <div className="post-item-avatar">
-            <img loading={'lazy'} src={avatar || '/logo.svg'} style={{display:'block',cursor:'pointer'}} alt=""/>
+            <img loading={'lazy'} src={avatar || '/logo.svg'} style={{display: 'block', cursor: 'pointer'}} alt=""/>
         </div>
         <div className="post-item-info">
             <div className="post-item-info-user">
@@ -64,32 +70,46 @@ function UserItem({
         </div>
         <div className="follow-list-action">
             {tab === '1' && follow ? <div className="follow-list-action-unfollow follow-icon" onClick={
-                throttle(  async function (e){
+                throttle(async function (e) {
                     e.stopPropagation()
                     try {
-                        const [token] = getTkAndUserName();
-                        const result: any = await getAll({method:'post',url: '/api/v1/unfollow', data:{uid: uid}, token});
-                        if (result?.status === 200) {
-                            setFollow(false);
-                        } else {
-                            return  MessageAll('warning',t('Market.unF'))
+                        const token = cookie.get('token')
+                        if (token) {
+                            const result: any = await getAll({
+                                method: 'post',
+                                url: '/api/v1/unfollow',
+                                data: {uid: uid},
+                                token
+                            });
+                            if (result?.status === 200) {
+                                setFollow(false);
+                            } else {
+                                return MessageAll('warning', t('Market.unF'))
+                            }
                         }
                     } catch (e) {
                         return Promise.reject(e)
                     }
                 }, 1500, {'trailing': false})
             }>Unfollow</div> : <div className="follow-list-action-unfollow unfollow-icon" onClick={
-                throttle(  async function (e){
+                throttle(async function (e) {
                     e.stopPropagation()
                     try {
-                        const [token] = getTkAndUserName();
-                        const result: any = await getAll({method:'post',url: '/api/v1/unfollow', data:{uid: uid}, token});
-                        if (result?.status === 200) {
-                            setFollow(false);
-                        } else {
-
-                            return   MessageAll('error',t('Market.unFo'))
+                        const token = cookie.get('token')
+                        if (token) {
+                            const result: any = await getAll({
+                                method: 'post',
+                                url: '/api/v1/follow',
+                                data: {userId: uid},
+                                token
+                            });
+                            if (result?.status === 200) {
+                                setFollow(true);
+                            } else {
+                                return MessageAll('error', t('Market.unFo'))
+                            }
                         }
+
                     } catch (e) {
                         return Promise.reject(e)
                     }
@@ -100,10 +120,15 @@ function UserItem({
 }
 
 export default function ContactList() {
-    const {getAll} =Request()
+    const {getAll} = Request()
+    const {t} = useTranslation();
+    const {user,} = useContext(CountContext) as any;
     const [activeTab, setActiveTab] = useState<FollowTabType['key']>('1');
     const [loading, setLoading] = useState<boolean>(true);
     const [data, setData] = useState<any[]>([]);
+    const [page, setPage] = useState(1);
+    const [isNext, setIsNext] = useState(false);
+    const [isShow, setIsShow] = useState(false);
     const postTab: FollowTabType[] = [{
         label: 'Following',
         key: '1'
@@ -119,33 +144,51 @@ export default function ContactList() {
     const getContactList = async (page: number) => {
         const url = activeTab === '1' ? "/api/v1/followee/list" : "/api/v1/follower/list";
         const token = Cookies.get('token');
-        const username = Cookies.get('username');
-        if (token && username) {
-            const at = JSON.parse(username)
+        if (token && user) {
             setLoading(true)
-            // const result: any = await Request('post', url, {uid: uid ? uid : at?.uid, page}, token);
-            const result: any =await  getAll({method:'post',url,data:{uid: uid ? uid : at?.uid, page},token});
+            const result: any = await getAll({method: 'post', url, data: {uid: uid ? uid : user?.uid, page}, token});
             if (result?.status === 200) {
                 const {
                     followeeList, followerList
                 } = result?.data;
-                if (page === 1) {
-                    setData(followeeList || followerList)
+                if (activeTab === '1') {
+                    if (followeeList.length !== 10) {
+                        setIsShow(true)
+                    }
                 } else {
-                    setData([...data, ...(followeeList || followerList)])
+                    if (followerList.length !== 10) {
+                        setIsShow(true)
+                    }
+                }
+                if (page === 1) {
+                    if (activeTab === '1') {
+                        setData(followeeList)
+                    } else {
+                        setData(followerList)
+                    }
+                } else {
+                    if (activeTab === '1') {
+                        const at = data.concat(followeeList)
+                        setData([...at])
+                    } else {
+                        const at = data.concat(followerList)
+                        setData([...at])
+                    }
                 }
                 setLoading(false);
+                setIsNext(false)
             }
         }
     }
-
     return <>
         {
             <div className="community-content-post-tab">
                 {
                     postTab.map((tab: FollowTabType, ind: number) => <div key={ind}
                                                                           className={classNames("community-content-post-tab-item", {"post-tab-item-active": activeTab === tab.key})}
-                                                                          onClick={() => setActiveTab(tab.key)}>
+                                                                          onClick={() => {
+                                                                              setActiveTab(tab.key)
+                                                                          }}>
                         <span>{tab.label}</span></div>)
                 }
             </div>
@@ -164,7 +207,24 @@ export default function ContactList() {
                     alignItems: 'center',
                     color: '#fff',
                     marginTop: '20px'
-                }}>Not data</div> : data.map((v,ind) => <UserItem data={v} getAll={getAll} key={ind} tab={activeTab}/>)
+                }}>Not data</div> : data.map((v) => <UserItem data={v} getAll={getAll} key={v?.uid} tab={activeTab}/>)
+        }
+        {
+            !isShow && <p style={{
+                color: 'white',
+                fontSize: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }} onClick={() => {
+                getContactList(page + 1)
+                setPage(page + 1)
+                setIsNext(true)
+            }}><span style={{cursor: 'pointer'}}>{t('Common.Next')}</span>
+                {
+                    isNext ? <LoadingOutlined/> : <CaretDownOutlined/>
+                }
+            </p>
         }
     </>
 }

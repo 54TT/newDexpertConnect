@@ -25,7 +25,9 @@
     "Fast Trade": "Fast Trade",
     "Next": "Next page",
     "new": "Welcome new user",
-    "set": "Set up name"
+    "set": "Set up name",
+    "This": "This operation is irreversible. Are you sure you want to delete it?",
+    "del": "Delete the Post?"
   },
   "Dapps": {
     "Token Creation Bot": "Token Creation Bot",

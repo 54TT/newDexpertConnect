@@ -1,18 +1,18 @@
-import {useEffect, useState} from 'react'
+import {useContext, useEffect, useState} from 'react'
 import Request from './axios.tsx';
-import Cookies from 'js-cookie';
 import cookie from 'js-cookie';
 import PostSendModal from '../pages/community/components/PostModal';
 import {useNavigate} from 'react-router-dom';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {DashOutlined} from '@ant-design/icons';
+import {DeleteOutlined} from '@ant-design/icons';
 import {setMany, simplify} from "../../utils/change.ts";
 import {throttle} from "lodash";
-
+import {Popconfirm} from 'antd'
 import {MessageAll} from "./message.ts";
 import {useTranslation} from "react-i18next";
+import {CountContext} from "../Layout.tsx";
 
 dayjs.extend(relativeTime)
 
@@ -21,10 +21,11 @@ interface TweetsPropsType {
     name: any;
     type?: 'comment' | 'post' | 'reply';
     onPublish?: () => void;
+    setDel?: any,
 }
 
 function Tweets({
-                    name, type = 'post', onPublish = () => {
+                    name, type = 'post', setDel, onPublish = () => {
     }
                 }: TweetsPropsType) {
     const {getAll} = Request()
@@ -33,6 +34,7 @@ function Tweets({
     const [localData, setLocalData] = useState(name);
     const [openComment, setOpenComment] = useState(false);
     const history = useNavigate();
+    const {user,} = useContext(CountContext) as any;
     useEffect(() => {
         if (clickAnimate) {
             setTimeout(() => {
@@ -52,7 +54,7 @@ function Tweets({
         const token = cookie.get('token')
         const jwt = cookie.get('jwt')
         if (token && jwt) {
-            const token = Cookies.get('token');
+            const token = cookie.get('token');
             let url = '';
             let data;
             if (type === 'post') {
@@ -112,10 +114,7 @@ function Tweets({
             return;
         }
         if (type === 'reply' || type === 'comment') {
-            const user = JSON.parse(Cookies.get('username') || '{}');
-
-            if (type === 'reply' && user.uid === localData.user.uid) return;
-
+            if (type === 'reply' && user?.uid === localData.user.uid) return;
             localStorage.setItem('reply-detail', JSON.stringify(localData))
             history(`/community/comment?reply=${localData.id}`, {replace: true})
             return;
@@ -132,6 +131,22 @@ function Tweets({
         }
         history(`/community/user?uid=${localData.user.uid}`)
     }, 1500, {'trailing': false})
+
+    const confirm = async (e: any) => {
+        e.stopPropagation()
+        const token = cookie.get('token')
+        if (token) {
+            const data: any = await getAll({
+                method: 'delete',
+                url: "/api/v1/post/" + localData?.postId,
+                data: '',
+                token
+            })
+            if (data?.status === 200 && data?.data?.code === 200) {
+                setDel(localData?.postId)
+            }
+        }
+    }
     return (
         <>
             <div className={classNames('tweetsBox', {'tweets-comment': type === 'comment'})} onClick={() => {
@@ -160,9 +175,23 @@ function Tweets({
                             {dayjs().to(dayjs(localData.CreatedAt))}
                         </p>
                     </div>
-                    <div className={'tweetsFollow'}>
-                        <DashOutlined/>
-                    </div>
+                    {
+                        user?.uid === localData?.user?.uid && <div onClick={(event: any) => {
+                            event.stopPropagation()
+                        }}>
+                            <Popconfirm
+                                title={t('Common.del')}
+                                description={t('Common.This')}
+                                okText="Yes"
+                                cancelText="No"
+                                onConfirm={confirm}
+                            >
+                                <DeleteOutlined style={{fontSize: '20px', color: 'white'}} onClick={(e: any) => {
+                                    e.stopPropagation()
+                                }}/>
+                            </Popconfirm>
+                        </div>
+                    }
                 </div>
                 {
                     localData?.content ? <div className={'tweetsText'}

@@ -15,6 +15,8 @@ function HeaderModal() {
         isModalSet,
         setIsModalSet, connect, setLoad,
         getMoneyEnd,
+        user,
+        setUserPar
     }: any = useContext(CountContext);
     const {t} = useTranslation();
     const {getAll} = Request()
@@ -31,16 +33,13 @@ function HeaderModal() {
     }
     const pushSet = throttle(async function () {
         if (value) {
-            const username = cookie.get('username')
             const token = cookie.get('token')
-            if (username && token) {
-                const ab = JSON.parse(username)
-                const user = {...ab, username: value}
-                // const result: any = await Request('post', '/api/v1/userinfo', {user}, token);
-                const result: any = await getAll({method: 'post', url: '/api/v1/userinfo', data: {user}, token});
+            if (user && token) {
+                const users = {...user, username: value}
+                const result: any = await getAll({method: 'post', url: '/api/v1/userinfo', data: {users}, token});
                 if (result?.status === 200) {
-                    cookie.set('username', JSON.stringify(user))
-                    MessageAll('warning', t('Market.update'))
+                    setUserPar(users)
+                    MessageAll('success', t('Market.update'))
                     handleCancel()
                 }
             }

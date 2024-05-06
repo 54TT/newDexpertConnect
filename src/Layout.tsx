@@ -70,7 +70,6 @@ function Layout() {
         history('/?change=1')
         cookie.remove('token')
         cookie.remove('jwt')
-        cookie.remove('username')
         setUserPar(null)
     }
     const getUser = async (id: string, token: string, name: string, jwt: any) => {
@@ -84,7 +83,6 @@ function Layout() {
             const user = data?.data?.data
             setUserPar(user)
             cookie.set('token', token)
-            cookie.set('username', JSON.stringify(user))
             if (jwt) {
                 cookie.set('jwt', JSON.stringify(jwt))
             }

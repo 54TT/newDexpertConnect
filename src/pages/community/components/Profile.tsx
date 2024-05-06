@@ -1,9 +1,9 @@
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useContext, useEffect, useMemo, useRef, useState} from "react";
 import Copy from '../../../components/copy.tsx'
 import TWeetHome from "../../../components/tweetHome.tsx";
 import {ArrowLeftOutlined} from '@ant-design/icons';
-import {Button, Form, Input, } from 'antd'
-import Request, {getTkAndUserName} from "../../../components/axios.tsx";
+import {Button, Form, Input,} from 'antd'
+import Request  from "../../../components/axios.tsx";
 import Cookies from "js-cookie";
 import {formatAddress, getQueryParams} from "../../../../utils/utils.ts";
 import CommonModal from "../../../components/CommonModal/index.tsx";
@@ -11,11 +11,13 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {throttle} from "lodash";
 import {MessageAll} from "../../../components/message.ts";
 import {useTranslation} from "react-i18next";
-
+import {CountContext} from "../../../Layout.tsx";
+import cookie from "js-cookie";
 function Profie() {
     const {getAll} = Request()
     const {t} = useTranslation();
     const history = useNavigate();
+    const {user, setUserPar} = useContext(CountContext) as any;
     const topRef = useRef<any>()
     const [status, setStatus] = useState(false)
     const [options, setOptions] = useState('Community')
@@ -30,7 +32,7 @@ function Profie() {
     const [newBG, setNewBG] = useState();
     const [form] = Form.useForm();
     const {uid} = getQueryParams();
-    const loginId = JSON.parse(Cookies.get('username') || '{}').uid
+    const loginId = user?.uid || ''
     const {pathname} = useLocation();
     const [isFollowed, setIsFollowed] = useState(false);
     useEffect(() => {
@@ -64,17 +66,13 @@ function Profie() {
 
 
     const getUserProfile = async (setCookise?: boolean) => {
-        console.log(11111111111)
-        console.log(id)
         if (!id) {
-            console.log(2222222222222)
-            return MessageAll('warning',t('Market.line'))
+            return MessageAll('warning', t('Market.line'))
         }
         const token = Cookies.get('token');
         if (!token) return;
         // const result: any = await Request('get', `/api/v1/userinfo/${id}`, {}, token);
         const result: any = await getAll({method: 'get', url: `/api/v1/userinfo/${id}`, data: '', token});
-        console.log(result)
         if (result?.status === 200) {
             const data = result.data;
             setData(data.data);
@@ -82,7 +80,7 @@ function Profie() {
             setPreviewAvatar(data.avatarUrl);
             setPreviewBG(data.coverUrl);
             if (setCookise) {
-                Cookies.set('username', JSON.stringify(data.data));
+                setUserPar(data.data)
             }
         }
 
@@ -122,7 +120,7 @@ function Profie() {
         const uploadInput = inputRef?.current
         const fileType = file.type;
         if (!allowedTypes.includes(fileType)) {
-            MessageAll('warning',t('Market.only'))
+            MessageAll('warning', t('Market.only'))
             if (uploadInput?.value) {
                 // 清空输入框的值，防止上传无效文件
                 uploadInput.value = ""
@@ -144,7 +142,7 @@ function Profie() {
         const token = Cookies.get('token');
         if (!token || !id) {
 
-            return   MessageAll('warning',t('Market.line'))
+            return MessageAll('warning', t('Market.line'))
         }
         let avatarUrl = previewAvatar;
         let coverUrl = previewBG;
@@ -175,7 +173,7 @@ function Profie() {
         // const result: any = await Request('post', '/api/v1/userinfo', params, token);
         const result: any = await getAll({method: 'post', url: '/api/v1/userinfo', data: params, token});
         if (result?.status === 200) {
-            MessageAll('success',t('Market.update'))
+            MessageAll('success', t('Market.update'))
             getUserProfile(true)
             handleCancel();
         }
@@ -221,19 +219,19 @@ function Profie() {
             <div className="user-info-form" style={{padding: '10px 48px'}}>
                 <Form form={form} initialValues={data} onFinish={(data: any) => handleSubmit(data)}>
                     <Form.Item name='username' label='Name'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                     <Form.Item name='bio' label='Bio'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                     <Form.Item name='twitter' label='Twitter'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                     <Form.Item name='telegram' label='Telegram'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                     <Form.Item name='discord' label='Discord'>
-                        <Input  autoComplete={'off'} />
+                        <Input autoComplete={'off'}/>
                     </Form.Item>
                 </Form>
             </div>
@@ -248,13 +246,15 @@ function Profie() {
 
     const handleFollow = throttle(async function () {
         try {
-            const [token] = getTkAndUserName();
-            const result: any = await getAll({method: 'post', url: '/api/v1/follow', data: {userId: id}, token});
-            if (result?.status === 200) {
-                MessageAll('success',t('Market.succ'))
-                setIsFollowed(true);
-            } else {
-                return MessageAll('error',t('Market.unFo'))
+            const token = cookie.get('token')
+            if (token) {
+                const result: any = await getAll({method: 'post', url: '/api/v1/follow', data: {userId: id}, token});
+                if (result?.status === 200) {
+                    MessageAll('success', t('Market.succ'))
+                    setIsFollowed(true);
+                } else {
+                    return MessageAll('error', t('Market.unFo'))
+                }
             }
         } catch (e) {
             return Promise.reject(e)
@@ -264,13 +264,15 @@ function Profie() {
     const handleUnfollow =
         throttle(async function () {
             try {
-                const [token] = getTkAndUserName();
-                const result: any = await getAll({method: 'post', url: '/api/v1/unfollow', data: {uid: id}, token});
-                if (result?.status === 200) {
-                    MessageAll('success',t('Market.unSucc'))
-                    setIsFollowed(false);
-                } else {
-                    return MessageAll('error',t('Market.unF'))
+                const token = cookie.get('token')
+                if (token) {
+                    const result: any = await getAll({method: 'post', url: '/api/v1/unfollow', data: {uid: id}, token});
+                    if (result?.status === 200) {
+                        MessageAll('success', t('Market.unSucc'))
+                        setIsFollowed(false);
+                    } else {
+                        return MessageAll('error', t('Market.unF'))
+                    }
                 }
             } catch (e) {
                 return Promise.reject(e)
@@ -398,7 +400,8 @@ function Profie() {
             >
                 <ModifyUserInfoForm/>
             </CommonModal>
-            <input  autoComplete={'off'}  ref={inputRef} type="file" name="file" id='img-load' accept="image/*" style={{display: 'none'}}/>
+            <input autoComplete={'off'} ref={inputRef} type="file" name="file" id='img-load' accept="image/*"
+                   style={{display: 'none'}}/>
         </div>
     );
 }

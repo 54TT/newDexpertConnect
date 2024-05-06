@@ -77,9 +77,6 @@ function Header() {
     ];
     const loginModal = throttle(
         function () {
-            console.log(1111111111)
-            console.log(load)
-            console.log(user)
             if (!load) {
                 if (!user) {
                     setIsModalOpen(true);

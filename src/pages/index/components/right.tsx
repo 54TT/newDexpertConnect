@@ -6,6 +6,7 @@ import {CountContext} from "../../../Layout.tsx";
 import {throttle} from "lodash";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
+
 function Right() {
     const swiperRef: any = useRef();
     const topRef: any = useRef();
@@ -82,7 +83,7 @@ function Right() {
                 <div ref={topRef} className={"rightBoxTweetTop"}>
                     <div
                         style={{
-                            color: select === "one" ? "rgb(104,124,105)" : "rgb(134,240,151)",
+                            color: select === "one" ? "rgb(134,240,151)" : "rgb(104,124,105)",
                             backgroundColor: select === "one" ? "rgb(24,30,28)" : "",
                         }}
                         onClick={() => selectTweet("one")}
@@ -91,7 +92,7 @@ function Right() {
                     </div>
                     <div
                         style={{
-                            color: select !== "one" ? "rgb(104,124,105)" : "rgb(134,240,151)",
+                            color: select !== "one" ? "rgb(134,240,151)" : "rgb(150,182,152)",
                             backgroundColor: select !== "one" ? "rgb(24,30,28)" : "",
                         }}
                         onClick={() => selectTweet("two")}
