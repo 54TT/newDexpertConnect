@@ -145,18 +145,17 @@ export default function ContactList() {
         const url = activeTab === '1' ? "/api/v1/followee/list" : "/api/v1/follower/list";
         const token = Cookies.get('token');
         if (token && user) {
-            setLoading(true)
             const result: any = await getAll({method: 'post', url, data: {uid: uid ? uid : user?.uid, page}, token});
             if (result?.status === 200) {
                 const {
                     followeeList, followerList
                 } = result?.data;
                 if (activeTab === '1') {
-                    if (followeeList.length !== 10) {
+                    if (followeeList.length === 10) {
                         setIsShow(true)
                     }
                 } else {
-                    if (followerList.length !== 10) {
+                    if (followerList.length === 10) {
                         setIsShow(true)
                     }
                 }
@@ -210,7 +209,7 @@ export default function ContactList() {
                 }}>Not data</div> : data.map((v) => <UserItem data={v} getAll={getAll} key={v?.uid} tab={activeTab}/>)
         }
         {
-            !isShow && <p style={{
+            isShow && <p style={{
                 color: 'white',
                 fontSize: '18px',
                 display: 'flex',
