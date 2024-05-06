@@ -6,7 +6,6 @@ import {CountContext} from "../../../Layout.tsx";
 import {throttle} from "lodash";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
-
 function Right() {
     const swiperRef: any = useRef();
     const topRef: any = useRef();
@@ -64,6 +63,7 @@ function Right() {
                                     )}
                                     style={{
                                         width: "100%",
+                                        maxHeight: '200px',
                                         borderRadius: "20px",
                                         cursor: "pointer",
                                         display: "block",
@@ -77,7 +77,7 @@ function Right() {
             </div>
             <div
                 className={"rightBoxTweet"}
-                style={{height: browser ? hei + 15 + "px" : "50vh"}}
+                style={{height: browser ? hei + 25 + "px" : "50vh"}}
             >
                 <div ref={topRef} className={"rightBoxTweetTop"}>
                     <div
@@ -99,7 +99,7 @@ function Right() {
                         {t("Common.Lastest")}
                     </div>
                 </div>
-                <TweetHome hei={`${hei - 53}px`}/>
+                <TweetHome hei={`${hei - 30}px`}/>
             </div>
         </div>
     );

@@ -75,12 +75,10 @@ function Layout() {
     }, [search.get('change')]);
     const clear = async () => {
         history('/?change=1')
-        cookie.remove('username')
         cookie.remove('token')
         cookie.remove('jwt')
         setUserPar(null)
     }
-
     const getUser = async (id: string, token: string, name: string, jwt: any) => {
         const data: any = await getAll({
             method: 'get',
@@ -91,7 +89,6 @@ function Layout() {
         if (data?.status === 200) {
             const user = data?.data?.data
             setUserPar(user)
-            cookie.set('username', JSON.stringify(user))
             cookie.set('token', token)
             if (jwt) {
                 cookie.set('jwt', JSON.stringify(jwt))

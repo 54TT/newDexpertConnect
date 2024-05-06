@@ -16,9 +16,7 @@ import {useTranslation} from "react-i18next";
 import {MessageAll} from '../../components/message.ts'
 import {useNavigate} from "react-router-dom";
 import {simplify} from '../../../utils/change.ts';
-
 const {Countdown} = Statistic;
-
 function Index() {
     const {getAll,} = Request()
     const {t} = useTranslation();
@@ -28,8 +26,8 @@ function Index() {
         languageChange,
         isLogin,
         changeLan,
-        setChangeLan,
-        setIsLogin
+        setChangeLan, setUserPar,
+        setIsLogin, user
     }: any = useContext(CountContext);
     const history = useNavigate()
     const [loading, setLoading] = useState(false)
@@ -69,6 +67,7 @@ function Index() {
             setZhData(res?.data?.campaignHomeCN)
             setEnData(res?.data?.campaignHome)
             setPoint(res?.data?.totalPoint)
+            setUserPar({...user, rewardPointCnt: res?.data?.totalPoint})
             setLoad(true)
         } else {
             setLoad(true)

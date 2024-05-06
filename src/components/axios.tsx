@@ -32,7 +32,6 @@ const Request = () => {
     const history = useNavigate()
     const clear = () => {
         history('/?change=1')
-        cookie.remove('username')
         cookie.remove('token')
         cookie.remove('jwt')
     }

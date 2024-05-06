@@ -9,6 +9,7 @@ import {CountContext} from "../Layout.tsx";
 
 interface TweetHomePropsType {
     uid?: string
+
     [key: string]: any
 }
 
@@ -20,7 +21,7 @@ function TweetHome({
                        style = {},
                        uid = ''
                    }: TweetHomePropsType) {
-    const { browser,isLogin, setIsLogin}: any = useContext(CountContext)
+    const {browser, isLogin, setIsLogin}: any = useContext(CountContext)
     const {getAll,} = Request()
     const [tableData, setData] = useState([])
     const [bol, setBol] = useState(false)
@@ -34,17 +35,17 @@ function TweetHome({
             setIconLoad(true)
         }
     }
-    const tweetPar = (res: any) => {
-       if (res && res?.status === 200) {
+    const tweetPar = (res: any, page: number) => {
+        if (res && res?.status === 200) {
             const {data} = res
             const r: any = data && data?.posts?.length > 0 ? data.posts : []
             if (page !== 1) {
+                setIconLoad(false)
                 if (r.length !== 10) {
                     setStatus(true)
                 }
                 const a = tableData.concat(r)
                 setData(a)
-                setIconLoad(false)
             } else {
                 if (r.length !== 10) {
                     setStatus(true)
@@ -52,11 +53,10 @@ function TweetHome({
                 if (refresh) {
                     changeRefresh?.(false)
                 }
-                // @ts-ignore
-                setData([...r])
+                setData(r)
             }
             setBol(true)
-           setIsLogin(false)
+            setIsLogin(false)
         }
     }
     const getTweet = async (page: number) => {
@@ -71,10 +71,10 @@ function TweetHome({
             }
         }
         const at = await getAll({method: 'post', url, data, token: token ? token : ''})
-        tweetPar(at)
+        tweetPar(at, page)
     }
     useEffect(() => {
-        if(isLogin){
+        if (isLogin) {
             setBol(false)
             getTweet(1)
         }
@@ -102,7 +102,7 @@ function TweetHome({
                                 loader={null}
                                 dataLength={tableData.length}>
                                 {tableData.map((post: any, index: number) => {
-                                    return <Tweets key={index}  name={post}/>
+                                    return <Tweets key={index} name={post}/>
                                 })}
                             </InfiniteScroll>
                             {

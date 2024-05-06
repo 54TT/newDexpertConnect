@@ -9,7 +9,6 @@ import {CaretDownOutlined, CopyOutlined, LoadingOutlined} from "@ant-design/icon
 import {CountContext} from "../../Layout";
 import {MessageAll} from '../../components/message.ts'
 import {useNavigate} from "react-router-dom";
-
 function Dpass() {
     const token = Cookies.get("token");
     const {getAll} = Request();
@@ -182,9 +181,6 @@ function Dpass() {
 
     return (
         <div className="dpass-background">
-            <p style={{display: 'none'}} onClick={() => {
-                setPage(1)
-            }}>你好</p>
             <div className="dpass-content">
                 <div className="dpass-content-left">
                     <img className="dapss-card" src="/dpassCard.png" alt=""/>
@@ -208,7 +204,6 @@ function Dpass() {
                             <input
                                 value={redeemCount}
                                 className="dpass-content-right-action-input_number"
-                                defaultValue={1}
                                 onChange={handleOnInput}
                             />
                             <span id="plus" onClick={clickPlusOrReduce}>
@@ -253,7 +248,7 @@ function Dpass() {
                         <span>{t("Dpass.Key")}</span>
                     </div>
                     {dPassList.map(({createdAt, key, passId, status}: any) => (
-                        <div className="dpass-redeem-table-td">
+                        <div className="dpass-redeem-table-td" key={key}>
                             <span>{dayjs.unix(createdAt).format("DD/MM/YYYY HH:mm")}</span>
                             {isMobile ? <></> : <span>{passId}</span>}
                             <span>{<Status status={status}/>}</span>
