@@ -15,16 +15,16 @@ import dayjs from "dayjs";
 import {useTranslation} from "react-i18next";
 import {MessageAll} from '../../components/message.ts'
 import {useNavigate} from "react-router-dom";
-import {simplify} from '../../../utils/change.ts'
+import {simplify} from '../../../utils/change.ts';
 
 const {Countdown} = Statistic;
 
 function Index() {
     const {getAll,} = Request()
     const {t} = useTranslation();
-    const {browser,}: any = useContext(CountContext);
     const {
         setIsModalOpen,
+        browser,
         languageChange,
         isLogin,
         changeLan,
@@ -51,6 +51,8 @@ function Index() {
     const [isRankList, setIsRankList] = useState(true)
     // const [todayPoint, setTodayPoint] = useState(0)
     // const [isTodayPoint, setIsTodayPoint] = useState(false)
+
+
     const getParams = async () => {
         const token = cookie.get('token')
         const res = await getAll({
@@ -94,6 +96,7 @@ function Index() {
             setDPassCount(res?.data?.dPassCount)
         }
     }
+
     // const contrast = (name: string) => {
     //     const at = dayjs(name).unix()
     //     const aaa = dayjs.unix(at).format('YYYY-MM-DD')
@@ -127,6 +130,7 @@ function Index() {
     //         }
     //     }
     // }
+
 
     // 是否登录
     useEffect(() => {
@@ -316,14 +320,13 @@ function Index() {
             }
         },
     ];
-
     return (
         <>
             {
                 load ? <div className={'activityBox'} style={{marginBottom: '50px', overflow: 'hidden'}}>
                         <div className={'activeBack'}>
-                            <div style={{marginTop: '5.5%'}}
-                                 className={`activeSwiper ${browser ? 'activeSwiperWeb' : 'activeSwiperActive'}`}>
+                            <div
+                                className={`activeSwiper ${browser ? 'activeSwiperWeb' : 'activeSwiperActive'}`}>
                                 <Swiper
                                     effect={'coverflow'}
                                     grabCursor={true}
@@ -332,7 +335,7 @@ function Index() {
                                     coverflowEffect={{
                                         rotate: 50,
                                         stretch: 0,
-                                        depth: 100,
+                                        // depth: 50,
                                         modifier: 1,
                                         slideShadows: true,
                                     }}
@@ -345,13 +348,20 @@ function Index() {
                                     {
                                         data.length > 0 && data[0]?.campaign?.noticeUrl?.length > 0 ?
                                             data[0]?.campaign?.noticeUrl.concat(data[0]?.campaign?.noticeUrl).map((i: string, ind: number) => {
-                                                return <SwiperSlide key={ind}><img loading={'lazy'}
-                                                                                   className={'activeImgHover'}
-                                                                                   src={i} onClick={
+                                                return <SwiperSlide key={ind}
+                                                                    style={{
+                                                                        height: browser ? '315px' : '215px',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'center'
+                                                                    }}><img
+                                                    loading={'lazy'}
+                                                    className={'activeImgHover'}
+                                                    src={i} onClick={
                                                     throttle(function () {
 
                                                     }, 1500, {'trailing': false})
-                                                } style={{borderRadius: '15px', width: '100%'}} alt=""/></SwiperSlide>
+                                                } alt=""/></SwiperSlide>
                                             }) : ''
                                     }
                                 </Swiper>
@@ -367,28 +377,28 @@ function Index() {
                                         /> :
                                         <p className={'pTime'}>{time}</p>
                                 }
-                                <p className={'ac'}>{t('Active.title')}</p>
-                                <p className={'ac'}>{t('Active.title1')}</p>
-                                <p className={'ac'}>{t('Active.title2')}</p>
+                                <p className={'ac'} style={{width: browser ? '32%' : "70%"}}>* {t('Active.title')}</p>
+                                <p className={'ac'} style={{width: browser ? '32%' : "70%"}}> * {t('Active.title1')}</p>
+                                <p className={'ac'} style={{width: browser ? '32%' : "70%"}}> * {t('Active.title2')}</p>
                             </div>
                             <div className={'allTime'} style={{marginTop: '6%'}}>
                                 <p className={'pTime'} style={{marginBottom: '0'}}>{t('Active.task')}</p>
                             </div>
                         </div>
-                        <div className={`point`}>
+                        <div className={`point`} style={{width: browser ? '66%' : '90%'}}>
                             {
-                                !show && <div className={'connect'}>
+                                !show && <div className={'connect'} style={{padding: browser ? "17px 15%" : "10px"}}>
                                     <p>{t('Active.ye')}</p>
                                     <p onClick={() => {
                                         setIsModalOpen(true)
-                                    }}>{t('Common.Connect Wallet')}</p>
+                                    }} style={{marginTop: browser ? "25px" : '10px'}}>{t('Common.Connect Wallet')}</p>
                                 </div>
                             }
                             <div className={`youPoint ${show ? '' : 'frosted'}`}>
                                 <div>
-                                    <span>{t('Active.point')}</span>
+                                    <span style={{fontSize: browser ? '18px' : '16px'}}>{t('Active.point')}</span>
                                     <p>
-                                        <span>{point || '0'}</span>
+                                        <span style={{fontSize: browser ? '25px' : '20px'}}>{point || '0'}</span>
                                         <img onClick={() => {
                                             history('/Dpass')
                                         }} src="/change.svg" alt=""/>
@@ -397,16 +407,17 @@ function Index() {
                                 <div onClick={() => {
                                     history('/Dpass')
                                 }} style={{cursor: 'pointer'}}>
-                                    <span>{t('Active.pass')}</span>
+                                    <span style={{fontSize: browser ? '18px' : '16px'}}>{t('Active.pass')}</span>
                                     {
-                                        isDPassCount ? <span>{dPassCount || '0'}</span> :
+                                        isDPassCount ?
+                                            <span style={{fontSize: browser ? '25px' : '20px'}}>{dPassCount || '0'}</span> :
                                             <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
                                                 <LoadingOutlined style={{color: 'gray'}}/>
                                             </div>
                                     }
                                 </div>
                                 <div>
-                                    <span>{t('Active.today')}</span>
+                                    <span style={{fontSize: browser ? '18px' : '16px'}}>{t('Active.today')}</span>
                                     {/*{*/}
                                     {/*    isTodayPoint ? <span>{todayPoint}</span> :*/}
                                     {/*        <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>*/}
@@ -424,12 +435,14 @@ function Index() {
                                 </div>
                             </div>
                         </div>
-                        <div className={'activeOptions'}>
+                        <div className={'activeOptions'}
+                             style={{width: browser ? '60%' : '90%', margin: browser ? '35px auto 45px' : '20px auto'}}>
                             {
                                 [t('Active.Daily'), t('Active.First'), t('Active.Ranking')].map((i: string, ind: number) => {
                                     return <div style={{
                                         backgroundColor: show ? option === ind ? 'rgb(134,240,151)' : '' : '',
-                                        color: show ? ind === 0 ? 'gray' : option === ind ? 'black' : 'white' : 'white'
+                                        color: show ? ind === 0 ? 'gray' : option === ind ? 'black' : 'white' : 'white',
+                                        width: browser ? '28%' : '32%'
                                     }} onClick={() => {
                                         if (show) {
                                             if (ind !== option && ind !== 0) {
@@ -443,12 +456,14 @@ function Index() {
                                         } else {
                                             MessageAll('warning', 'Please log in first')
                                         }
-                                    }}>{i}{ind === 0 && <p>{t('Common.Coming soon')}</p>}</div>
+                                    }} key={ind}>{i}
+                                        {browser && ind === 0 && <p>{t('Common.Coming soon')}</p>}
+                                    </div>
                                 })
                             }
                         </div>
                         {
-                            show && <div className={'activeAll'}>
+                            show && <div className={'activeAll'} style={{padding: browser ? '0 17%' : '0 5%'}}>
                                 {
                                     option === 2 ? <Table
                                         columns={columns}
@@ -493,22 +508,25 @@ function Index() {
                                                                     <p style={{color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white'}}>+{it?.score}</p>
                                                                     {
                                                                         Number(it?.isCompleted) !== 3 ? <p onClick={() => {
-                                                                            param(it?.isCompleted, it?.taskId, index)
-                                                                            setSelect(index)
-                                                                        }} style={{
-                                                                            color: 'black',
-                                                                            padding: '5px'
-                                                                        }}>{operate(it?.isCompleted, it?.title)}
-                                                                            {loading && select === index ?
-                                                                                <LoadingOutlined/> : ''}</p> : <div style={{
-                                                                            width: '75px',
-                                                                            display: 'flex',
-                                                                            justifyContent: 'center'
-                                                                        }}>
-                                                                            <img
-                                                                                src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'}
-                                                                                alt=""/>
-                                                                        </div>
+                                                                                param(it?.isCompleted, it?.taskId, index)
+                                                                                setSelect(index)
+                                                                            }} style={{
+                                                                                color: 'black',
+                                                                                padding: '5px',
+                                                                                boxSizing: 'border-box'
+                                                                            }}>
+                                                                                {loading && select === index ?
+                                                                                    <LoadingOutlined/> : operate(it?.isCompleted, it?.title)}</p> :
+                                                                            <div style={{
+                                                                                width: '75px',
+                                                                                display: 'flex',
+                                                                                justifyContent: 'center',
+                                                                                boxSizing: 'border-box'
+                                                                            }}>
+                                                                                <img
+                                                                                    src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'}
+                                                                                    alt=""/>
+                                                                            </div>
                                                                     }
                                                                 </div>
                                                             </div>

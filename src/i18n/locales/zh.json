@@ -58,6 +58,7 @@
     "please connect your wallet": "请连接你的钱包",
     "Please enter the purchase quantity": "请输入购买数量",
     "success": "成功",
+    "not": "积分不够",
     "no": "没有历史记录",
     "fail": "失败",
     "copy": "复制成功"
@@ -90,12 +91,13 @@
     "Authorize": "授权",
     "Completed": "已完成",
     "Claim": "领取",
-    "no": "暂无活动"
+    "no": "暂无活动",
+    "Next": "下一页"
   },
   "Active": {
-    "title": "*特别活动：连接钱包即可获得1000点D积分",
-    "title1": "*使用DEXpert的机器人服务，6000 D积分可换取一张通行证。",
-    "title2": "*D积分将来可以兑换$DEXP代币。",
+    "title": "特别活动：连接钱包即可获得1000点D积分",
+    "title1": "使用DEXpert的机器人服务，6000 D积分可换取一张通行证。",
+    "title2": "D积分将来可以兑换$DEXP代币。",
     "task": "D点任务",
     "point": "你的D点积分",
     "pass": "你的pass卡",

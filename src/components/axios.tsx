@@ -1,10 +1,9 @@
 import axios from "axios";
 import cookie from "js-cookie";
-import dayjs from 'dayjs'
 import {useNavigate} from "react-router-dom";
 import {MessageAll} from "./message.ts";
 import {useTranslation} from "react-i18next";
-
+import dayjs from 'dayjs'
 const requestA = axios.create({
     baseURL: import.meta.env.MODE === 'development' ? 'http://165.22.51.161:8081' : 'https://dexpert.io'
 })
@@ -21,7 +20,7 @@ requestA.interceptors.response.use(
         return response;
     },
     (e: any) => {
-        if (e?.config?.url === '/api/v1/oauth/twitter/claim' || e?.config?.url === '/api/v1/oauth/discord/claim') {
+        if (e?.config?.url === '/api/v1/oauth/twitter/claim' || e?.config?.url === '/api/v1/oauth/discord/claim' || e?.config?.url === '/api/v1/oauth/telegram/chat/bind') {
             MessageAll('warning', e?.response?.data?.msg)
         } else {
             MessageAll('warning', e?.message)
@@ -52,7 +51,6 @@ const Request = () => {
         if (abc?.status === 200) {
             return abc
         }
-        console.log('2222222222', abc)
     }
 
     const getAll = async (name: any) => {

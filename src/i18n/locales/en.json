@@ -22,7 +22,8 @@
     "Initial Pool Amount": "Initial Pool Amount",
     "Pooled WETH": "Pooled WETH",
     "Pooled bTC": "Pooled bTC",
-    "Fast Trade": "Fast Trade"
+    "Fast Trade": "Fast Trade",
+    "Next": "Next page"
   },
   "Dapps": {
     "Token Creation Bot": "Token Creation Bot",
@@ -57,6 +58,7 @@
   "Alert": {
     "please connect your wallet": "please connect your wallet",
     "Please enter the purchase quantity": "Please enter the purchase quantity",
+    "not": "Not enough points",
     "success": "success",
     "copy": "copy success",
     "no": "no more history",
@@ -93,9 +95,9 @@
     "no": "No activity yet"
   },
   "Active": {
-    "title": "* Special Event: connect wallet to receive 1000 D-Points",
-    "title1": "* 6000 D points can be exchanged for a Pass for one free use of Dexpert's bot service.",
-    "title2": "* D points will be redeemable for $DEXP token in the future.",
+    "title": "Special Event: connect wallet to receive 1000 D-Points",
+    "title1": "6000 D points can be exchanged for a Pass for one free use of Dexpert's bot service.",
+    "title2": " D points will be redeemable for $DEXP token in the future.",
     "task": "D Points Task",
     "point": "Your D points",
     "pass": "Your D pass",

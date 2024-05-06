@@ -8,9 +8,9 @@ import {ethers} from 'ethers';
 import Loading from '../../components/loading.tsx'
 import {CountContext} from "../../Layout.tsx";
 import newPair from '../../components/getNewPair.tsx'
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 function Index() {
-    const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad,getPage} = newPair() as any
+    const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad, getPage} = newPair() as any
     const hei = useRef<any>()
     const {t} = useTranslation();
     const {browser,}: any = useContext(CountContext);
@@ -72,12 +72,14 @@ function Index() {
                                defaultValue={'24h'}/>
                     {
                         browser &&
-                        <Input autoComplete={'off'} suffix={<SearchOutlined style={{fontSize: '16px', color: 'white', display: 'none'}}/>}
+                        <Input autoComplete={'off'}
+                               suffix={<SearchOutlined style={{fontSize: '16px', color: 'white', display: 'none'}}/>}
                                onChange={changeInput}
                                allowClear className={'indexInput'}/>
                     }
                     <div className={`indexRight dis`}>
-                        <p style={{marginRight: '10px'}}><img src="/eth.svg"  loading={'lazy'} alt=""/><span>$:{ethPrice}</span></p>
+                        <p style={{marginRight: '10px'}}><img src="/eth.svg" loading={'lazy'}
+                                                              alt=""/><span>$:{ethPrice}</span></p>
                         <p><img loading={'lazy'} src="/gas.svg" alt=""/><span>{gas}</span></p>
                     </div>
                 </div>
@@ -92,7 +94,8 @@ function Index() {
                                               key={ind}>
                                         {
                                             ind === 0 &&
-                                            <img loading={'lazy'} src="/collect.svg" alt="" style={{marginRight: '5px', display: 'none'}}
+                                            <img loading={'lazy'} src="/collect.svg" alt=""
+                                                 style={{marginRight: '5px', display: 'none'}}
                                                  width={'15px'}/>
                                         }
                                         <span>{i}</span>

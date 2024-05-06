@@ -320,10 +320,14 @@ body::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, rgb(3, 5, 3), rgb(9, 18, 13));
   border-bottom: 1px solid #687c69;
   border-radius: 0 0 10px 10px;
-
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   .headerData {
     display: flex;
     align-items: center;
+
     .headLineP {
       padding: 4px 14px;
       color: rgb(214, 220, 214);
@@ -331,6 +335,7 @@ body::-webkit-scrollbar-thumb {
       border-top: 2px solid rgb(60, 69, 60);
       border-right: 2px solid rgb(60, 69, 60);
     }
+
     .headLine {
       display: flex;
       align-items: center;
@@ -850,11 +855,14 @@ span {
   .swiper-slide {
     background-position: center;
     background-size: cover;
-  }
 
-  .swiper-slide img {
-    display: block;
-    width: 100%;
+    .swiper-slide-shadow-right {
+      background-image: none !important;
+    }
+
+    .swiper-slide-shadow-left {
+      background-image: none !important;
+    }
   }
 }
 
@@ -881,6 +889,12 @@ span {
 
 .activeImgHover {
   transition: all 1s;
+  border-radius: 15px;
+  width: 100%;
+  //position: absolute;
+  //top: 50%;
+  //left: 50%;
+  //transform: translate(-50%, -50%);
 }
 
 .activeImgHover:hover {
@@ -930,8 +944,9 @@ span {
 
               .ant-table-placeholder {
                 background: #363333 !important;
-                .ant-empty-description{
-                  color: rgb(220,220,222);
+
+                .ant-empty-description {
+                  color: rgb(220, 220, 222);
                 }
               }
 

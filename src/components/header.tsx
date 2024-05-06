@@ -286,7 +286,7 @@ function Header() {
                                         items,
                                     }}>
                                     <div className={'headLine'}>
-                                        <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
+                                        <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.png"}
                                              style={{
                                                  width: "28px",
                                                  display: "block",
@@ -306,7 +306,7 @@ function Header() {
                         ) : (
                             <img
                                 loading={"lazy"}
-                                src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.svg"}
+                                src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.png"}
                                 style={{
                                     width: "25px",
                                     display: "block",

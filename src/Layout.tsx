@@ -51,7 +51,6 @@ function Layout() {
     const [languageChange, setLanguageChange] = useState(language);
     const [changeLan, setChangeLan] = useState(false);
 
-
     const createClient = async () => {
         try {
             const _client: any = await Client.init({
@@ -81,6 +80,32 @@ function Layout() {
         cookie.remove('jwt')
         setUserPar(null)
     }
+
+    const getUser = async (id: string, token: string, name: string, jwt: any) => {
+        const data: any = await getAll({
+            method: 'get',
+            url: "/api/v1/userinfo/" + id,
+            data: '',
+            token
+        })
+        if (data?.status === 200) {
+            const user = data?.data?.data
+            setUserPar(user)
+            cookie.set('username', JSON.stringify(user))
+            cookie.set('token', token)
+            if (jwt) {
+                cookie.set('jwt', JSON.stringify(jwt))
+            }
+            if (user?.address === user?.username) {
+                setIsModalSet(true)
+                setIsModalOpen(true)
+            }
+            if (name === 'modal') {
+                web3Modal.closeModal();
+            }
+            setIsLogin(true)
+        }
+    }
     const login = async (sign: string, account: string, message: string, name: string) => {
         try {
             // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
@@ -98,27 +123,7 @@ function Layout() {
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 const decodedToken = JSON.parse(atob(base64));
                 if (decodedToken && decodedToken?.uid) {
-                    const data: any = await getAll({
-                        method: 'get',
-                        url: "/api/v1/userinfo/" + decodedToken.uid,
-                        data: '',
-                        token: res.data?.accessToken
-                    })
-                    if (data?.status === 200) {
-                        const user = data?.data?.data
-                        setUserPar(user)
-                        cookie.set('username', JSON.stringify(user))
-                        cookie.set('token', res.data?.accessToken)
-                        cookie.set('jwt', JSON.stringify(decodedToken))
-                        if (user?.address === user?.username) {
-                            setIsModalSet(true)
-                            setIsModalOpen(true)
-                        }
-                        if (name === 'modal') {
-                            web3Modal.closeModal();
-                        }
-                        setIsLogin(true)
-                    }
+                    getUser(decodedToken.uid, res.data?.accessToken, name, decodedToken)
                 }
             }
         } catch (e) {
@@ -265,14 +270,13 @@ function Layout() {
     const [browser, setBrowser] = useState<any>(false)
     const [big, setBig] = useState<any>(false)
     useEffect(() => {
-        if (cookie.get('username') && cookie.get('username') != undefined) {
-            const abc = JSON.parse(cookie.get('username') as any)
-            setUserPar(abc)
-        } else {
-            setUserPar(null)
+        const jwt = cookie.get('jwt')
+        const token = cookie.get('token')
+        if (jwt && token) {
+            const jwtPar = JSON.parse(jwt)
+            getUser(jwtPar?.uid, token, '', jwtPar)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cookie.get('username')]);
+    }, []);
     useEffect(() => {
         if (!client) {
             createClient();
@@ -307,7 +311,7 @@ function Layout() {
         const handleResize = () => {
             // 更新状态，保存当前窗口高度
             if (window?.innerWidth > 800) {
-                if (router.pathname === '/activity'||router.pathname === '/Dpass') {
+                if (router.pathname === '/activity' || router.pathname === '/Dpass') {
                     body.style.overflow = 'auto'
                 } else {
                     body.style.overflow = 'hidden'
@@ -323,6 +327,10 @@ function Layout() {
                 setBig(false)
             }
         };
+        const chang = search.get('change')
+        if (router.pathname === '/' && chang === '1') {
+            setUserPar(null)
+        }
         // 添加事件监听器
         window.addEventListener('resize', handleResize);
         // 在组件卸载时移除事件监听器
@@ -342,14 +350,20 @@ function Layout() {
         newPairPar,
         setNewPairPar,
         isModalOpen,
-        setIsModalOpen, isModalSet, setIsModalSet, isLogin, setIsLogin, languageChange, setLanguageChange, changeLan, setChangeLan
+        setIsModalOpen,
+        isModalSet,
+        setIsModalSet,
+        isLogin,
+        setIsLogin,
+        languageChange,
+        setLanguageChange,
+        changeLan,
+        setChangeLan, setUserPar
     }
     return (
         <CountContext.Provider value={value}>
-            {
-                router.pathname !== '/oauth/twitter/callback' && <Header/>
-            }
-            <div className={big ? 'bigCen' : ''}>
+            <Header/>
+            <div className={big ? 'bigCen' : ''} style={{marginTop: '45px'}}>
                 <Routes>
                     <Route path="/" element={<Index/>}/>
                     <Route path="/newpairDetails" element={<NewpairDetails/>}/>
