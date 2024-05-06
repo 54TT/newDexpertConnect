@@ -22,10 +22,11 @@ interface TweetsPropsType {
     type?: 'comment' | 'post' | 'reply';
     onPublish?: () => void;
     setDel?: any,
+    status?: any
 }
 
 function Tweets({
-                    name, type = 'post', setDel, onPublish = () => {
+                    name, type = 'post', status, setDel, onPublish = () => {
     }
                 }: TweetsPropsType) {
     const {getAll} = Request()
@@ -176,7 +177,7 @@ function Tweets({
                         </p>
                     </div>
                     {
-                        user?.uid === localData?.user?.uid && <div onClick={(event: any) => {
+                        status !== 'detail' && user?.uid === localData?.user?.uid && <div onClick={(event: any) => {
                             event.stopPropagation()
                         }}>
                             <Popconfirm
@@ -246,13 +247,11 @@ function Tweets({
                         <span>{setMany(Math.ceil(Math.random() * 1000 + Math.random() * 1000))}</span>
                     </p>
                 </div>
-
             </div>
             <PostSendModal type={type === "post" ? "comment" : "reply"} postData={localData}
                            className='comment-send-model' open={openComment}
                            onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()}/>
         </>
-
     );
 }
 
