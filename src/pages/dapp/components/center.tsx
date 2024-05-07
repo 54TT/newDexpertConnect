@@ -16,7 +16,7 @@ function Center() {
     <div className={"center"}>
       {
         <div className={"centerTop"}>
-          <img src="/bot.svg" alt="" loading={"lazy"} />
+          <img  src="/bot.svg" alt="" loading={"lazy"} />
           <div
             className={"centerTopRight"}
             style={{ paddingRight: browser ? "10%" : "2%" }}

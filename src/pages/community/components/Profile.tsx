@@ -339,7 +339,9 @@ function Profie() {
                                                                                     name={'0x3758...5478'}/></p>
                         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                             {data?.twitter &&
-                                <p className={'p'} style={{cursor: 'pointer'}}>
+                                <p className={'p'} style={{cursor: 'pointer'}} onClick={() => {
+                                    window.open(data?.twitter)
+                                }}>
                                     <svg d="1715004243380" className="icon" viewBox="0 0 1024 1024" version="1.1"
                                          xmlns="http://www.w3.org/2000/svg" p-id="4252" width="20" height="20">
                                         <path
@@ -349,7 +351,9 @@ function Profie() {
                                 </p>
                             }
                             {data?.telegram &&
-                                <p className={'p'} style={{cursor: 'pointer'}}>
+                                <p className={'p'} style={{cursor: 'pointer'}} onClick={() => {
+                                    window.open(data?.telegram)
+                                }}>
                                     <svg d="1715004419988" className="icon" viewBox="0 0 1024 1024" version="1.1"
                                          xmlns="http://www.w3.org/2000/svg" p-id="5301" width="22" height="22">
                                         <path
@@ -359,7 +363,9 @@ function Profie() {
                                 </p>
                             }
                             {data?.websiteLink &&
-                                <p className={'p'} style={{cursor: 'pointer'}}>
+                                <p className={'p'} style={{cursor: 'pointer'}} onClick={() => {
+                                    window.open(data?.websiteLink)
+                                }}>
                                     <svg d="1715004488796" className="icon" viewBox="0 0 1024 1024" version="1.1"
                                          xmlns="http://www.w3.org/2000/svg" p-id="7606" width="22" height="22">
                                         <path
@@ -369,7 +375,9 @@ function Profie() {
                                 </p>
                             }
                             {data?.youtube &&
-                                <p className={'p'} style={{cursor: 'pointer'}}>
+                                <p className={'p'} style={{cursor: 'pointer'}} onClick={() => {
+                                    window.open(data?.youtube)
+                                }}>
                                     <svg d="1715004528275" className="icon" viewBox="0 0 1024 1024" version="1.1"
                                          xmlns="http://www.w3.org/2000/svg" p-id="8705" width="22" height="22">
                                         <path

@@ -113,7 +113,6 @@ function TweetHome({
                                 loader={null}
                                 dataLength={tableData.length}>
                                 {tableData.map((post: any) => {
-
                                     return <Tweets
                                         key={post?.postId + (Math.floor(Math.random() * (Math.floor(100) - Math.ceil(1))) + Math.ceil(1))}
                                         name={post} setDel={setDel}/>

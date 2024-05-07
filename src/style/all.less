@@ -404,7 +404,6 @@ body::-webkit-scrollbar-thumb {
   margin-top: 4%;
   padding: 0 3%;
   cursor: pointer;
-
   &:hover {
     background-color: rgb(34, 36, 34);
   }
@@ -418,8 +417,11 @@ body::-webkit-scrollbar-thumb {
   }
 
   .tweetsText {
+    width: 100%;
+
     color: rgb(220, 220, 220);
     word-wrap: break-word;
+    overflow: hidden;
     margin: 12px 0;
     line-height: 1;
   }
