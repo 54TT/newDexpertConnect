@@ -35,10 +35,10 @@ function HeaderModal() {
         if (value) {
             const token = cookie.get('token')
             if (user && token) {
-                const users = {...user, username: value}
-                const result: any = await getAll({method: 'post', url: '/api/v1/userinfo', data: {users}, token});
+                const param = {...user, username: value}
+                const result: any = await getAll({method: 'post', url: '/api/v1/userinfo', data: {user: param}, token});
                 if (result?.status === 200) {
-                    setUserPar(users)
+                    setUserPar(param)
                     MessageAll('success', t('Market.update'))
                     handleCancel()
                 }
