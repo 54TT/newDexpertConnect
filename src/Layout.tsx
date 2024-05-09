@@ -357,7 +357,7 @@ function Layout() {
             <div className={big ? 'bigCen' : ''} style={{marginTop: '45px'}}>
                 <Routes>
                     <Route path="/" element={<Index/>}/>
-                    <Route path="/newpairDetails" element={<NewpairDetails/>}/>
+                    <Route path="/newpairDetails/:id" element={<NewpairDetails/>}/>
                     <Route path='/community/:tab' element={<Community/>}/>
                     <Route path='/app' element={<Dapp/>}/>
                     <Route path='/activity' element={<Active/>}/>

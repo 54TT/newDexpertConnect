@@ -130,11 +130,11 @@ export default function ContactList() {
     const [isNext, setIsNext] = useState(false);
     const [isShow, setIsShow] = useState(false);
     const postTab: FollowTabType[] = [{
-        label: 'Following',
+        label: t('Dpass.Following'),
         key: '1'
     },
         {
-            label: 'Follower',
+            label: t('Dpass.Follower'),
             key: '2'
         }];
     const {uid} = getQueryParams();

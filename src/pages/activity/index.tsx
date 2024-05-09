@@ -16,7 +16,9 @@ import {useTranslation} from "react-i18next";
 import {MessageAll} from '../../components/message.ts'
 import {useNavigate} from "react-router-dom";
 import {simplify} from '../../../utils/change.ts';
+
 const {Countdown} = Statistic;
+
 function Index() {
     const {getAll,} = Request()
     const {t} = useTranslation();
@@ -36,6 +38,7 @@ function Index() {
     const [enData, setEnData] = useState<any>([])
     const [zhData, setZhData] = useState<any>([])
     const [point, setPoint] = useState('0')
+    const [todayoint, setTodayPoint] = useState('0')
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
@@ -65,7 +68,8 @@ function Index() {
             setZhData(res?.data?.campaignHomeCN)
             setEnData(res?.data?.campaignHome)
             setPoint(res?.data?.totalPoint)
-            if(user){
+            setTodayPoint(res?.data?.todayPoint)
+            if (user) {
                 setUserPar({...user, rewardPointCnt: res?.data?.totalPoint})
             }
             setLoad(true)
@@ -348,7 +352,7 @@ function Index() {
                                             data[0]?.campaign?.noticeUrl.concat(data[0]?.campaign?.noticeUrl).map((i: string, ind: number) => {
                                                 return <SwiperSlide key={ind}
                                                                     style={{
-                                                                        height: browser ? '315px' : '215px',
+                                                                        height: browser ? '76vh' : '215px',
                                                                         display: 'flex',
                                                                         alignItems: 'center',
                                                                         justifyContent: 'center'
@@ -416,19 +420,11 @@ function Index() {
                                 </div>
                                 <div>
                                     <span style={{fontSize: browser ? '18px' : '16px'}}>{t('Active.today')}</span>
-                                    {/*{*/}
-                                    {/*    isTodayPoint ? <span>{todayPoint}</span> :*/}
-                                    {/*        <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>*/}
-                                    {/*            <LoadingOutlined style={{color: 'gray'}}/>*/}
-                                    {/*        </div>*/}
-                                    {/*}*/}
                                     <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
-                                        <p style={{
-                                            backgroundColor: 'gray',
-                                            borderRadius: '5px',
-                                            padding: '2px 5px',
-                                            fontSize: '14px'
-                                        }}>{t('Common.Coming soon')}</p>
+                                        <span style={{
+                                            fontSize: browser ? '25px' : '20px',
+                                            color: '#86F097'
+                                        }}>{todayoint || '0'}</span>
                                     </div>
                                 </div>
                             </div>

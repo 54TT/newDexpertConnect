@@ -128,6 +128,10 @@
     "Copy": "Copy",
     "Available": "Available",
     "Expired": "Expired",
-    "Exchange": "Exchange"
+    "Exchange": "Exchange",
+    "Following": "Following",
+    "Follower": "Follower",
+    "Unfollow": "Unfollow",
+    "follow": "Follow"
   }
 }

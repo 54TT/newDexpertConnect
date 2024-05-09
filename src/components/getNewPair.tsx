@@ -33,6 +33,7 @@ function GetNewPair() {
       token0PriceUSD
       token1PriceUSD
     }
+    untrackedVolumeUSD
     token0 {
       id
       name
@@ -53,14 +54,12 @@ function GetNewPair() {
       priceChange
       startUnix
       swapTxns
-      volumeUSD
       buyTxs
       sellTxs
     }
     PairSixHourData(first: 1, orderBy: startUnix, orderDirection: desc) {
       startUnix
       priceChange
-      volumeUSD
       swapTxns
       buyTxs
       sellTxs
@@ -68,7 +67,6 @@ function GetNewPair() {
     liquidity
     pairDayData(first: 1, orderBy: startUnix, orderDirection: desc) {
       priceChange
-      volumeUSD
       startUnix
       swapTxns
       sellTxs
@@ -78,7 +76,6 @@ function GetNewPair() {
       startUnix
       priceChange
       swapTxns
-      volumeUSD
       sellTxs
       buyTxs
     }

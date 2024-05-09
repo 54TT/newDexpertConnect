@@ -6,7 +6,8 @@ import Copy from '../../../components/copy.tsx'
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {throttle} from "lodash";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({par}: any) {
     const h = window.innerHeight - 25 - 54
@@ -42,14 +43,14 @@ function Left({par}: any) {
                     </p>
                 </div>
                 <p onClick={
-                    throttle(    function (){
+                    throttle(function () {
                         if (data?.collect) {
                             setData({...data, collect: false})
                         } else {
                             setData({...data, collect: true})
                         }
                     }, 1500, {'trailing': false})
-               }>
+                }>
                 </p>
             </div>
             {/*address*/}
@@ -83,7 +84,7 @@ function Left({par}: any) {
             </div>
             <div className={'valume'}>
                 {
-                    [{name: t('Common.Volume'), price: data?.pairDayData[0]?.volumeUSD || 0}, {
+                    [{name: t('Common.Volume'), price: setMany(data?.untrackedVolumeUSD) || 0}, {
                         name: t('Common.Liquidity'),
                         price: setMany(data?.liquidity) || 0
                     }, {name: t('Common.Market Cap'), price: market}, {
@@ -106,14 +107,14 @@ function Left({par}: any) {
                 </div>
                 <div className={`dis swapTop`} style={{marginTop: '10px', marginBottom: '-5px'}}>
                     <span>{data?.buyTxs || 0}</span>
-                    <span>{data?.buyTxs || 0}</span>
-                    <span>——</span>
+                    <span>{Number(data?.sellTxs) + Number(data?.buyTxs)}</span>
+                    <span>{data?.sellTxs || 0}</span>
                 </div>
-                <Progress percent={100} showInfo={false} strokeColor={'rgb(0,255,71)'}/>
+                <Progress percent={(Number(data?.buyTxs) / (Number(data?.sellTxs) + Number(data?.buyTxs)))*100} showInfo={false} strokeColor={'rgb(0,255,71)'}/>
                 <div className={`dis swapTop`}>
-                    <span>——</span>
-                    <span>——</span>
-                    <span>——</span>
+                    <span>{((Number(data?.buyTxs) / (Number(data?.sellTxs) + Number(data?.buyTxs)))*100).toFixed(3).replace(/\.?0+$/, "")}%</span>
+                    <span>100%</span>
+                    <span>{((Number(data?.sellTxs) / (Number(data?.sellTxs) + Number(data?.buyTxs)))*100).toFixed(3).replace(/\.?0+$/, "")}%</span>
                 </div>
             </div>
             <div className={'valume'}>

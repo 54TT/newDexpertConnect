@@ -8,15 +8,14 @@ import {throttle} from "lodash"; // 引入相对时间插件
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Date({tableDta, time, setDta}: any) {
     const history = useNavigate();
-    const push = throttle(    function (i: any){
-            history('/newpairDetails')
-            cookie.set('newpair', JSON.stringify(i))
-        }, 1500, {'trailing': false})
+    const push = throttle(function (i: any) {
+        history('/newpairDetails/'+i?.id)
+    }, 1500, {'trailing': false})
     useEffect(() => {
         cookie.remove('newpair')
     }, []);
     const click =
-        throttle(    function (i: any, e: any){
+        throttle(function (i: any, e: any) {
             e.stopPropagation();
             tableDta.map((it: any) => {
                 if (it?.id === i?.id) {
@@ -44,7 +43,10 @@ function Date({tableDta, time, setDta}: any) {
                                      style={{display: 'none'}} alt=""
                                      onClick={(e: any) => click(record, e)}/>
                                 <div>
-                                    <p style={{marginBottom: '4px',fontWeight:'500'}}>{simplify(record?.token0?.symbol)}</p>
+                                    <p style={{
+                                        marginBottom: '4px',
+                                        fontWeight: '500'
+                                    }}>{simplify(record?.token0?.symbol)}</p>
                                     <div style={{
                                         fontSize: '14px',
                                         color: 'rgb(104,124,105)'
@@ -72,17 +74,17 @@ function Date({tableDta, time, setDta}: any) {
                             <div style={{color: 'white'}}>{li}</div>
                             <div className={`dis indexTableLogo`}>
                                 <img loading={'lazy'} src="/ethLogo.svg" alt="" onClick={
-                                    throttle(    function ( e: any){
-                                    e.stopPropagation()
-                                    window.open('https://etherscan.io/token/' + record?.token0?.id)
-                                    }, 1500, {'trailing': false}) }/>
-                                <img loading={'lazy'} onClick={throttle(    function ( e: any){
+                                    throttle(function (e: any) {
+                                        e.stopPropagation()
+                                        window.open('https://etherscan.io/token/' + record?.token0?.id)
+                                    }, 1500, {'trailing': false})}/>
+                                <img loading={'lazy'} onClick={throttle(function (e: any) {
                                     e.stopPropagation()
                                     window.open('https://app.uniswap.org/#/swap?inputCurrency=' + record?.token1?.id + '&outputCurrency=' + record?.token1?.id)
-                                }, 1500, {'trailing': false}) }
+                                }, 1500, {'trailing': false})}
                                      src="/feima.svg" style={{margin: '0 5px'}}
                                      alt=""/>
-                                <img loading={'lazy'} onClick={throttle(    function ( e: any){
+                                <img loading={'lazy'} onClick={throttle(function (e: any) {
                                     e.stopPropagation()
                                     window.open('https://app.uncx.network/amm/uni-v2/pair/' + record?.id)
                                 }, 1500, {'trailing': false})}

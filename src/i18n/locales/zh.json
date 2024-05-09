@@ -128,6 +128,10 @@
     "Copy": "复制",   
     "Available": "可用",
     "Expired": "已失效",
-    "Exchange": "兑换"
+    "Exchange": "兑换",
+    "Following": "关注者",
+    "Follower": "粉丝",
+    "Unfollow": "取消关注",
+    "follow": "关注"
   }
 }
