@@ -12,6 +12,7 @@ dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({par}: any) {
     const h = window.innerHeight - 25 - 54
     const [data, setData] = useState(par)
+    console.log(data)
     const [status, setStatus] = useState(false)
     const [pairStatus, setPairStatus] = useState(false)
     const {t} = useTranslation();
@@ -36,13 +37,15 @@ function Left({par}: any) {
             {/*top*/}
             <div className={`top dis`}>
                 <div>
-                    <img loading={'lazy'} src="/logo1.svg" alt=""/>
+                    {/*<img loading={'lazy'} src="/logo1.svg" alt=""/>*/}
+                    <p><span>{data?.token0?.symbol?.slice(0, 1)}</span></p>
                     <p>
                         <span>{simplify(data?.token0?.symbol)}</span>
                         <span>{simplify(data?.token1?.symbol)}</span>
                     </p>
                 </div>
-                <p onClick={
+                {/*收藏*/}
+                <p style={{display: 'none'}} onClick={
                     throttle(function () {
                         if (data?.collect) {
                             setData({...data, collect: false})
@@ -110,11 +113,12 @@ function Left({par}: any) {
                     <span>{Number(data?.sellTxs) + Number(data?.buyTxs)}</span>
                     <span>{data?.sellTxs || 0}</span>
                 </div>
-                <Progress percent={(Number(data?.buyTxs) / (Number(data?.sellTxs) + Number(data?.buyTxs)))*100} showInfo={false} strokeColor={'rgb(0,255,71)'}/>
+                <Progress percent={(Number(data?.buyTxs) / (Number(data?.sellTxs) + Number(data?.buyTxs))) * 100}
+                          showInfo={false} strokeColor={'rgb(0,255,71)'}/>
                 <div className={`dis swapTop`}>
-                    <span>{((Number(data?.buyTxs) / (Number(data?.sellTxs) + Number(data?.buyTxs)))*100).toFixed(3).replace(/\.?0+$/, "")}%</span>
+                    <span>{((Number(data?.buyTxs) / (Number(data?.sellTxs) + Number(data?.buyTxs))) * 100).toFixed(3).replace(/\.?0+$/, "")}%</span>
                     <span>100%</span>
-                    <span>{((Number(data?.sellTxs) / (Number(data?.sellTxs) + Number(data?.buyTxs)))*100).toFixed(3).replace(/\.?0+$/, "")}%</span>
+                    <span>{((Number(data?.sellTxs) / (Number(data?.sellTxs) + Number(data?.buyTxs))) * 100).toFixed(3).replace(/\.?0+$/, "")}%</span>
                 </div>
             </div>
             <div className={'valume'}>

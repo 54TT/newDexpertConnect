@@ -1,11 +1,14 @@
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
+import {CountContext} from "../../../Layout.tsx";
 
 function Left() {
     const history = useNavigate();
+    const {user,setIsModalOpen}: any = useContext(CountContext);
     const [value, setValue] = useState("Token Creation Bot");
     const {t} = useTranslation();
+
     const LeftTab = [
         [
             {
@@ -57,7 +60,11 @@ function Left() {
                                     className={"list"}
                                     onClick={() => {
                                         if (valueData === 'D Pass') {
-                                            history('/Dpass')
+                                            if(user?.address) {
+                                                history('/Dpass')
+                                            }else {
+                                                setIsModalOpen(true)
+                                            }
                                         } else if (value !== valueData) {
                                             if (ind === 0) {
                                                 if (it !== 2 && it !== 1) {

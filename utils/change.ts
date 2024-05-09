@@ -51,7 +51,11 @@ export const autoConvert = (number: any) => {
     } else if (Number(number) >= 1000) {
         return `${(Number(number) / 1000).toFixed(2).replace(/\.?0*$/, '')}K`;
     } else {
-        return Number(number).toFixed(2).replace(/\.?0*$/, '');
+        if(Number(number)<1){
+            return Number(number).toFixed(6).replace(/\.?0*$/, '');
+        }else {
+            return Number(number).toFixed(2).replace(/\.?0*$/, '');
+        }
     }
 };
 
@@ -68,7 +72,7 @@ export const setMany = (text: any) => {
         data = autoConvert(Number(nu))
     } else {
         if (text && Number(text)) {
-            if (Number(text) < 1 && text.toString().includes('0000')) {
+            if (Number(text) < 1 && text.toString().includes('0.000')) {
                 data = formatDecimal(text.toString(), 3)
                 if (data.length > 10) {
                     data = data.slice(0, 6)

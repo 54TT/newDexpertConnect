@@ -3,7 +3,7 @@ import {Collapse, Drawer, Dropdown} from "antd";
 import {CountContext} from "../Layout.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {LoadingOutlined,} from "@ant-design/icons";
-import {simplify} from "../../utils/change.ts";
+import {setMany, simplify} from "../../utils/change.ts";
 import HeaderModal from "./headerModal.tsx";
 import {throttle} from "lodash";
 import {useTranslation} from "react-i18next";
@@ -298,7 +298,7 @@ function Header() {
                                     </div>
                                 </Dropdown>
                                 <div className={'headLine'}>
-                                    <p className={'headLineP'}>{isBalance ? balance[user?.address] + 'ETH' || '0ETH' :
+                                    <p className={'headLineP'}>{isBalance ? Number(balance[user?.address]) ? setMany(balance[user?.address]) : '0' + 'ETH' || '0ETH' :
                                         <LoadingOutlined style={{fontSize: '15px'}}/>}</p>
                                     <p className={'headLineP'}>{user?.rewardPointCnt + ' D' || '0 D'}</p>
                                 </div>
@@ -325,7 +325,7 @@ function Header() {
                                     <span>{t("Common.Connect Wallet")}</span>
                                     {load ? (
                                         <LoadingOutlined style={{marginLeft: "4px"}}/>
-                                    ) :''}
+                                    ) : ''}
                                 </div>
                             </div>
                         ) : (
@@ -356,7 +356,7 @@ function Header() {
                     />
                 )}
             </div>
-            <HeaderModal />
+            <HeaderModal/>
             <Drawer
                 width={"65vw"}
                 className={"headerDrawerOpen"}

@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 
-function Center({par}: any) {
+function Center({id}: any) {
     // const [more, setMore] = useState('Chart')
     const topRef = useRef<any>()
     const [hei, setHei] = useState<any>('')
@@ -27,7 +27,7 @@ function Center({par}: any) {
             </div>
             <div style={{height: hei + 'px', overflowY: 'auto'}} className={'scrollStyle'}>
                 <iframe
-                    src={`https://dexscreener.com/ethereum/${par?.id}?embed=1&theme=dark&info=0`}
+                    src={`https://dexscreener.com/ethereum/${id}?embed=1&theme=dark&info=0`}
                     style={{width: '100%', height: '97%', overflowY: 'auto'}}></iframe>
             </div>
         </div>

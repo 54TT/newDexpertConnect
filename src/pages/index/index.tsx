@@ -124,7 +124,6 @@ function Index() {
                     </div>
                 </div>
             </div>
-
             <Right/>
         </div>
     );

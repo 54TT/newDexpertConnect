@@ -132,6 +132,11 @@
     "Following": "关注者",
     "Follower": "粉丝",
     "Unfollow": "取消关注",
-    "follow": "关注"
+    "follow": "关注",
+    "plea": "验证失败,请重试一次.",
+    "twi": "关注以下 Twitter 用户.",
+    "tel": "加入以下 Telegram 群组.",
+    "dis": "加入以下 Discord 群组",
+    "ins": "关注以下 Instagram 用户."
   }
 }

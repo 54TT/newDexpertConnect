@@ -38,20 +38,18 @@ function Index() {
     const [enData, setEnData] = useState<any>([])
     const [zhData, setZhData] = useState<any>([])
     const [point, setPoint] = useState('0')
-    const [todayoint, setTodayPoint] = useState('0')
+    const [todayPoint, setTodayPoint] = useState('0')
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
-    const [option, setOption] = useState(1)
+    const [option, setOption] = useState(0)
     const [show, setShow] = useState(false)
     const [selectActive, setSelectActive] = useState('')
-    const [select, setSelect] = useState(0)
+    const [select, setSelect] = useState<any>(null)
     const [dPassCount, setDPassCount] = useState('')
     const [isDPassCount, setIsDPassCount] = useState(false)
     const [rankList, setRankList] = useState<any>([])
     const [isRankList, setIsRankList] = useState(true)
-    // const [todayPoint, setTodayPoint] = useState(0)
-    // const [isTodayPoint, setIsTodayPoint] = useState(false)
     const getParams = async () => {
         const token = cookie.get('token')
         const res = await getAll({
@@ -99,41 +97,6 @@ function Index() {
             setDPassCount(res?.data?.dPassCount)
         }
     }
-
-    // const contrast = (name: string) => {
-    //     const at = dayjs(name).unix()
-    //     const aaa = dayjs.unix(at).format('YYYY-MM-DD')
-    //     const yy = dayjs().format('YYYY-MM-DD')
-    //     return aaa === yy;
-    // }
-
-
-    // const getTodayPoint = async () => {
-    //     const token = cookie.get('token')
-    //     const res = await getAll({
-    //         method: 'post', url: '/api/v1/rewardPoint/history', data: {page: '1'}, token: token || ''
-    //     })
-    //     if (res?.status === 200) {
-    //         if (res?.data?.list?.length > 0) {
-    //             let point = 0
-    //             res?.data?.list.map((i: any) => {
-    //                 if (contrast(i?.timestamp)) {
-    //                     point += Number(i?.score)
-    //                 }
-    //             })
-    //             if (point) {
-    //                 setTodayPoint(point)
-    //                 setIsTodayPoint(true)
-    //             } else {
-    //                 setIsTodayPoint(true)
-    //             }
-    //         }else{
-    //             setIsTodayPoint(true)
-    //
-    //         }
-    //     }
-    // }
-
     // 是否登录
     useEffect(() => {
         if (isLogin) {
@@ -142,12 +105,12 @@ function Index() {
             setShow(true)
         }
     }, [isLogin]);
-    const getT = async (id: string, index: number) => {
+    const getT = async (id: string, index: string) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
-                method: index === 1 ? 'post' : 'get',
-                url: index === 0 ? '/api/v1/oauth/twitter/link' : index === 1 ? '/api/v1/oauth/telegram/chat/link' : '/api/v1/oauth/discord/link',
+                method: index.includes('Telegram') ? 'post' : 'get',
+                url: index.includes('Twitter') ? '/api/v1/oauth/twitter/link' : index.includes('Telegram') ? '/api/v1/oauth/telegram/chat/link' : index.includes('Discord') ? '/api/v1/oauth/discord/link' : '/api/v1/oauth/instagram/link',
                 data: {taskId: id},
                 token
             })
@@ -185,13 +148,13 @@ function Index() {
             return ''
         }
     }
-    const follow = async (id: string, index: number) => {
+    const follow = async (id: string, index: string) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
-                method: index === 1 ? 'post' : 'get',
-                url: index === 0 ? '/api/v1/oauth/twitter/follow' : index === 1 ? '/api/v1/oauth/telegram/chat/follow' : '/api/v1/oauth/discord/follow',
-                data: index === 1 ? {taskId: id} : {taskId: id},
+                method: index.includes('Telegram') ? 'post' : 'get',
+                url: index.includes('Twitter') ? '/api/v1/oauth/twitter/follow' : index.includes('Telegram') ? '/api/v1/oauth/telegram/chat/follow' : index.includes('Discord') ? '/api/v1/oauth/discord/follow' : '/api/v1/oauth/instagram/follow',
+                data: {taskId: id},
                 token
             })
             if (res?.data?.url) {
@@ -203,12 +166,12 @@ function Index() {
             }
         }
     }
-    const verify = async (id: string, index: number) => {
+    const verify = async (id: string, index: string) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
                 method: 'post',
-                url: index === 0 ? '/api/v1/oauth/twitter/verify' : index === 1 ? '/api/v1/oauth/telegram/chat/verify' : '/api/v1/oauth/discord/verify',
+                url: index.includes('Twitter') ? '/api/v1/oauth/twitter/verify' : index.includes('Telegram') ? '/api/v1/oauth/telegram/chat/verify' : index.includes('Discord') ? '/api/v1/oauth/discord/verify' : "/api/v1/oauth/instagram/verify",
                 data: {taskId: id},
                 token
             })
@@ -237,21 +200,22 @@ function Index() {
             return t('Market.Authorize')
         }
     }
-    const param = (isCompleted: string, taskId: string, index: number) => {
+
+    const param = (isCompleted: string, taskId: string, title: string) => {
         const token = cookie.get('token')
         if (token) {
             if (Number(isCompleted)) {
                 if (Number(isCompleted) === 1) {
-                    follow(taskId, index)
+                    follow(taskId, title)
                     setLoading(true)
                 }
                 if (Number(isCompleted) === 2) {
-                    verify(taskId, index)
+                    verify(taskId, title)
                     setLoading(true)
                 }
             } else {
                 setLoading(true)
-                getT(taskId, index)
+                getT(taskId, title)
             }
         } else {
             setIsModalOpen(true)
@@ -322,6 +286,30 @@ function Index() {
             }
         },
     ];
+    const changeImg = (id: string, title: string) => {
+        if (selectActive === id) {
+            if (title.includes('Twitter')) {
+                return "/tuiActive.svg"
+            } else if (title.includes('Telegram')) {
+                return "/telegramsActive.svg"
+            } else if (title.includes('Discord')) {
+                return '/disActive.svg'
+            } else if (title.includes('Instagram')) {
+                return '/instagramActive.svg'
+            }
+        } else {
+            if (title.includes('Twitter')) {
+                return "/tui.svg"
+            } else if (title.includes('Telegram')) {
+                return "/telegrams.svg"
+            } else if (title.includes('Discord')) {
+                return '/dis.svg'
+            } else if (title.includes('Instagram')) {
+                return '/instagram.svg'
+            }
+        }
+    }
+
     return (
         <>
             {
@@ -355,13 +343,12 @@ function Index() {
                                                                         height: browser ? '76vh' : '215px',
                                                                         display: 'flex',
                                                                         alignItems: 'center',
-                                                                        justifyContent: 'center'
+                                                                        justifyContent: 'center',
                                                                     }}><img
                                                     loading={'lazy'}
                                                     className={'activeImgHover'}
                                                     src={i} onClick={
                                                     throttle(function () {
-
                                                     }, 1500, {'trailing': false})
                                                 } alt=""/></SwiperSlide>
                                             }) : ''
@@ -424,7 +411,7 @@ function Index() {
                                         <span style={{
                                             fontSize: browser ? '25px' : '20px',
                                             color: '#86F097'
-                                        }}>{todayoint || '0'}</span>
+                                        }}>{todayPoint || '0'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -435,11 +422,11 @@ function Index() {
                                 [t('Active.Daily'), t('Active.First'), t('Active.Ranking')].map((i: string, ind: number) => {
                                     return <div style={{
                                         backgroundColor: show ? option === ind ? 'rgb(134,240,151)' : '' : '',
-                                        color: show ? ind === 0 ? 'gray' : option === ind ? 'black' : 'white' : 'white',
+                                        color: show ? option === ind ? 'black' : 'white' : 'white',
                                         width: browser ? '28%' : '32%'
                                     }} onClick={() => {
                                         if (show) {
-                                            if (ind !== option && ind !== 0) {
+                                            if (ind !== option) {
                                                 setOption(ind)
                                                 if (ind === 2) {
                                                     if (isRankList) {
@@ -451,7 +438,6 @@ function Index() {
                                             MessageAll('warning', 'Please log in first')
                                         }
                                     }} key={ind}>{i}
-                                        {browser && ind === 0 && <p>{t('Common.Coming soon')}</p>}
                                     </div>
                                 })
                             }
@@ -467,12 +453,18 @@ function Index() {
                                         dataSource={rankList}
                                         loading={isRankList}
                                         bordered
-                                    /> : option === 1 ? <div className={'first'}>
+                                    /> : <div className={'first'}>
                                         {
                                             data.length > 0 ? data.map((i: any) => {
-                                                    if (i?.tasks?.length > 0) {
-                                                        return i?.tasks.map((it: any, index: number) => {
-                                                            return <div key={index} className={'firstLine'}
+                                                    let at: any = []
+                                                    if (option === 1) {
+                                                        at = i?.tasks
+                                                    } else {
+                                                        at = i?.dailTasks
+                                                    }
+                                                    if (at.length > 0) {
+                                                        return at.map((it: any, index: number) => {
+                                                            return <div key={it?.taskId} className={'firstLine'}
                                                                         style={{
                                                                             background: selectActive === it?.taskId ? 'rgb(52,62,53)' : 'linear-gradient(to right, #020c02, rgb(38, 45, 38))',
                                                                             marginBottom: index === i?.tasks.length - 1 ? '' : '35px'
@@ -485,16 +477,7 @@ function Index() {
                                                                             }
                                                                         }}>
                                                                 <div>
-                                                                    {
-                                                                        index === 0 ? <img
-                                                                            src={selectActive === it?.taskId ? "/tuiActive.svg" : "/tui.svg"}
-                                                                            alt=""/> : index === 1 ? <img
-                                                                                src={selectActive === it?.taskId ? "/telegramsActive.svg" : '/telegrams.svg'}
-                                                                                alt=""/> :
-                                                                            <img
-                                                                                src={selectActive === it?.taskId ? '/disActive.svg' : "/dis.svg"}
-                                                                                alt=""/>
-                                                                    }
+                                                                    <img src={changeImg(it?.taskId, it?.title)} alt=""/>
                                                                     <span
                                                                         style={{color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white'}}>{it?.title}</span>
                                                                 </div>
@@ -502,14 +485,14 @@ function Index() {
                                                                     <p style={{color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white'}}>+{it?.score}</p>
                                                                     {
                                                                         Number(it?.isCompleted) !== 3 ? <p onClick={() => {
-                                                                                param(it?.isCompleted, it?.taskId, index)
-                                                                                setSelect(index)
+                                                                                param(it?.isCompleted, it?.taskId, it?.title)
+                                                                                setSelect(it?.title)
                                                                             }} style={{
                                                                                 color: 'black',
                                                                                 padding: '5px',
                                                                                 boxSizing: 'border-box'
                                                                             }}>
-                                                                                {loading && select === index ?
+                                                                                {loading && select === it?.title ?
                                                                                     <LoadingOutlined/> : operate(it?.isCompleted, it?.title)}</p> :
                                                                             <div style={{
                                                                                 width: '75px',
@@ -532,7 +515,6 @@ function Index() {
                                                             color: 'white'
                                                         }}> {t('Market.no')}</p>
                                                     }
-
                                                 }) :
                                                 <p style={{
                                                     textAlign: 'center',
@@ -540,7 +522,7 @@ function Index() {
                                                     color: 'white'
                                                 }}> {t('Market.no')}</p>
                                         }
-                                    </div> : ''
+                                    </div>
                                 }
                             </div>
                         }
@@ -557,29 +539,31 @@ function Index() {
                     <Loading status={'20'}/>
             }
             <Modal
-                title={`Verification failed, please ${select === 0 ? 'follow' : 'join'} again`}
+                title={t('Dpass.plea')}
                 className={'activeModal'} open={isModalOpen}
                 footer={null} onCancel={handleCancel}>
-                <p>{select === 0 ? 'Follow the following Twitter users' : select === 1 ? 'Join the following Telegram group' : 'Join the following Discord group'}:</p>
+                <p>{select?.includes('Twitter') ? t('Dpass.twi') : select?.includes('Telegram') ? t('Dpass.tel') : select?.includes('Discord') ? t('Dpass.dis') : t('Dpass.ins')}:</p>
                 <div>
                     <div>
                         <img src="/img_3.png" alt="" onClick={openLink}/>
                         <div>
                             <p onClick={openLink}>Dexpert</p>
-                            <p>{select === 0 ? '@DexpertOfficial' : select === 1 ? '@DexpertCommunity' : '@Dexpert'}---<span
-                                onClick={openLink}>{select === 0 ? 'Follow' : 'Join'}</span></p>
+                            <p>{select?.includes('Twitter') ? '@DexpertOfficial' : select?.includes('Telegram') ? '@DexpertCommunity' : select?.includes('Discord') ? '@Dexpert' : ''}---<span
+                                onClick={openLink}>{select?.includes('Twitter') || select?.includes('Instagram') ? 'Follow' : 'Join'}</span>
+                            </p>
                         </div>
                     </div>
                     <img
-                        src={select === 0 ? "/x.svg" : select === 1 ? '/telegram1.svg' : '/discord.svg'}
+                        src={select?.includes('Twitter') ? "/x.svg" : select?.includes('Telegram') ? '/telegram1.svg' : select?.includes('Discord') ? '/discord.svg' : '/instagram1.svg'}
                         alt=""
                         onClick={openLink}/>
                 </div>
                 <p onClick={openLink}>
                     <img
-                        src={select === 0 ? "/x.svg" : select === 1 ? '/telegram1.svg' : '/discord.svg'}
+                        src={select?.includes('Twitter') ? "/x.svg" : select?.includes('Telegram') ? '/telegram1.svg' : select?.includes('Discord') ? '/discord.svg' : '/instagram1.svg'}
                         alt=""/>
                     <span>{select === 0 ? 'Follow @Dexpertofficial' : select === 1 ? 'Join @DexpertCommunity' : 'Join @Dexpert'}</span>
+                    {/*<p>{select?.includes('Twitter') ? '@DexpertOfficial' : select?.includes('Telegram') ? '@DexpertCommunity' : select?.includes('Discord') ? '@Dexpert' : ''}</p>*/}
                 </p>
             </Modal>
         </>

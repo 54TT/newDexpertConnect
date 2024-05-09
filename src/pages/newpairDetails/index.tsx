@@ -89,15 +89,14 @@ function Index() {
     }, [data])
     return (
         <>
-            {
-                load ? <div className={'NewpairDetails'} style={{flexDirection: browser ? 'row' : 'column'}}>
-                    <Left par={par}/>
-                    <Center par={par}/>
-                    <Right/>
-                </div> : ''
-            }
+            <div className={'NewpairDetails'} style={{flexDirection: browser ? 'row' : 'column'}}>
+                {
+                    load ? <Left par={par}/> : ''
+                }
+                <Center id={id}/>
+                <Right/>
+            </div>
         </>
-
     );
 }
 

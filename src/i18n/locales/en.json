@@ -132,6 +132,11 @@
     "Following": "Following",
     "Follower": "Follower",
     "Unfollow": "Unfollow",
-    "follow": "Follow"
+    "follow": "Follow",
+    "plea": "Verification failed. Please try again.",
+    "twi": "Follow the following Twitter users",
+    "tel": "Join the following Telegram group",
+    "dis": "Join the following Discord group",
+    "ins": "Follow the following Instagram users"
   }
 }
