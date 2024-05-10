@@ -1,11 +1,7 @@
 import Header, {I18N_Key} from './components/header.tsx'
 import {Route, Routes, useLocation, useNavigate, useSearchParams,} from "react-router-dom";
-import Index from './pages/index/index.tsx'
-import NewpairDetails from './pages/newpairDetails/index.tsx'
 import './style/all.less';
-import Active from './pages/activity/index.tsx'
-import Oauth from './pages/activity/components/oauth.tsx'
-import {createContext, useCallback, useEffect, useRef, useState} from 'react'
+import React, {createContext, Suspense, useCallback, useEffect, useRef, useState} from 'react'
 import {getAppMetadata, getSdkError} from "@walletconnect/utils";
 import 'swiper/css';
 import 'swiper/css/bundle'
@@ -18,12 +14,17 @@ import Client from "@walletconnect/sign-client";
 import {ethers} from 'ethers';
 import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
 import _ from 'lodash';
-import Dapp from './pages/dapp';
-import Community from './pages/community';
 import {MessageAll} from "./components/message.ts";
 import {useTranslation} from "react-i18next";
-import Dpass from './pages/dpass/index.tsx';
+import {Spin} from "antd";
 
+const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'))
+const NewpairDetails = React.lazy(() => import('./pages/newpairDetails/index.tsx'))
+const Index = React.lazy(() => import('./pages/index/index.tsx'))
+const Dapp = React.lazy(() => import('./pages/dapp/index.tsx'))
+const Community = React.lazy(() => import('./pages/community/index.tsx'))
+const Active = React.lazy(() => import('./pages/activity/index.tsx'))
+const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'))
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -352,21 +353,28 @@ function Layout() {
         setChangeLan, setUserPar
     }
     return (
-        <CountContext.Provider value={value}>
-            <Header/>
-            <div className={big ? 'bigCen' : ''} style={{marginTop: '45px'}}>
-                <Routes>
-                    <Route path="/" element={<Index/>}/>
-                    <Route path="/newpairDetails/:id" element={<NewpairDetails/>}/>
-                    <Route path='/community/:tab' element={<Community/>}/>
-                    <Route path='/app' element={<Dapp/>}/>
-                    <Route path='/activity' element={<Active/>}/>
-                    <Route path='/oauth/:id/callback' element={<Oauth/>}/>
-                    <Route path='/dpass' element={<Dpass/>}/>
-                </Routes>
-            </div>
-            <Bot/>
-        </CountContext.Provider>
+        <Suspense fallback={<Spin size="large" style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%,-50%)'
+        }}/>}>
+            <CountContext.Provider value={value}>
+                <Header/>
+                <div className={big ? 'bigCen' : ''} style={{marginTop: '45px'}}>
+                    <Routes>
+                        <Route path="/" element={<Index/>}/>
+                        <Route path="/newpairDetails/:id" element={<NewpairDetails/>}/>
+                        <Route path='/community/:tab' element={<Community/>}/>
+                        <Route path='/app' element={<Dapp/>}/>
+                        <Route path='/activity' element={<Active/>}/>
+                        <Route path='/oauth/:id/callback' element={<Oauth/>}/>
+                        <Route path='/dpass' element={<Dpass/>}/>
+                    </Routes>
+                </div>
+                <Bot/>
+            </CountContext.Provider>
+        </Suspense>
     );
 }
 

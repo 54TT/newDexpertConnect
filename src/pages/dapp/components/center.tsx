@@ -1,4 +1,4 @@
-import Conyent from "../../community/components/PostContent.tsx";
+// import Conyent from "../../community/components/PostContent.tsx";
 import { useContext } from "react";
 import { CountContext } from "../../../Layout.tsx";
 import { useLocation } from "react-router-dom";
@@ -72,7 +72,7 @@ function Center() {
           </div>
         </div>
       }
-      <Conyent /* name={'dappCenter'} */ />
+      {/*<Conyent  />*/}
     </div>
   );
 }

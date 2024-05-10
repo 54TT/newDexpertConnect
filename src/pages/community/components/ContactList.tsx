@@ -16,23 +16,6 @@ export interface FollowTabType {
     label: 'Following' | 'Follower',
     key: '1' | '2',
 }
-
-export interface PostImteDataType {
-    user?: {
-        address: string
-        avatar: string;
-        uid: string;
-        username: string;
-    }
-    CreatedAt: string;
-    commentNum: string;
-    content: string;
-    imageList: string[];
-    likeNum: string;
-    likeStatus: boolean;
-    postId: string;
-}
-
 interface PostImtePropsType {
     data: any
     tab: string;

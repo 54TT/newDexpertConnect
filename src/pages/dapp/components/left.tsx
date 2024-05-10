@@ -8,7 +8,6 @@ function Left() {
     const {user,setIsModalOpen}: any = useContext(CountContext);
     const [value, setValue] = useState("Token Creation Bot");
     const {t} = useTranslation();
-
     const LeftTab = [
         [
             {

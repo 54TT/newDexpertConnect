@@ -290,7 +290,7 @@ function Header() {
                                              style={{
                                                  width: "28px",
                                                  display: "block",
-                                                 marginRight: "-12px",
+                                                 marginRight: "-5px",
                                                  zIndex: '10',
                                                  borderRadius: "100%",
                                              }} alt="" loading={"lazy"}/>

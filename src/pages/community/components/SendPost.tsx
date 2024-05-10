@@ -195,11 +195,11 @@ function SendPost({
         <Picker
             data={emojiData}
             previewPosition={"none"}
-            emojiButtonSize={"30"}
+            emojiButtonSize={"33"}
             searchPosition={"none"}
             maxFrequentRows={"0"}
             perLine={"5"}
-            emojiSize={"17"}
+            emojiSize={"16"}
             onEmojiSelect={change}
         />
     );
@@ -252,7 +252,6 @@ function SendPost({
                                         loading={"lazy"}
                                         alt={""}
                                         src={data.img}
-                                        onClick={data.onClick}
                                     />
                                 </Popover>
                             );

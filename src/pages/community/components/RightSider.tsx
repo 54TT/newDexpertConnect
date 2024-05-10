@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ApolloClient, InMemoryCache, gql, useQuery } from "@apollo/client";
 import { useTranslation } from "react-i18next";
 const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2",
+  uri: "https://api.thegraph.com/subgraphs/id/Qmdxr4hqsky9SDjMqKuQnMNvLGQMFk3AeoA7v7t3sMHBaP",
   cache: new InMemoryCache(),
 });
 function CommunityRight() {

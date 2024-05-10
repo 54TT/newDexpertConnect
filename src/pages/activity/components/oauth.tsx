@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {useNavigate, useSearchParams,} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams,} from "react-router-dom";
 import Loading from '../../../components/loading.tsx'
 import Request from "../../../components/axios.tsx";
 import cookie from "js-cookie";
@@ -8,16 +8,17 @@ function Oauth() {
     const {getAll,} = Request()
     const [search] = useSearchParams();
     const history = useNavigate()
-    const claim = async (name: string, da: string, nu: number) => {
+    const params: any = useParams()
+    const claim = async (name: string, da: string, nu: string) => {
         const token = cookie.get('token')
-        if (token) {
+        if (token&&params?.id&&nu) {
             const res = await getAll({
                 method: 'post',
-                url: nu === 1 ? '/api/v1/oauth/twitter/claim' : nu === 2 ? '/api/v1/oauth/telegram/chat/bind' : '/api/v1/oauth/discord/claim',
-                data: nu === 1 ? {OAuthToken: name, OAuthVerifier: da, taskId: '1'} : nu === 2 ? {
+                url: params?.id === 'twitter' ? '/api/v1/oauth/twitter/claim' : params?.id === 'telegram' ? '/api/v1/oauth/telegram/chat/bind' : params?.id === 'discord' ? '/api/v1/oauth/discord/claim' : '',
+                data:  params?.id === 'twitter' ? {OAuthToken: name, OAuthVerifier: da, taskId: nu} :  params?.id === 'telegram' ? {
                     tgAuthResult: name,
-                    taskId: '2'
-                } : {code: name, taskId: '3'},
+                    taskId: nu
+                } : {code: name, taskId: nu},
                 token
             })
             if (res?.data?.message === 'ok') {
@@ -27,8 +28,8 @@ function Oauth() {
             }
         }
     }
-
     useEffect(() => {
+        const id: any = cookie.get('taskId')
         const token = search.get('oauth_token')
         const verifier = search.get('oauth_verifier')
         const denied = search.get('denied')
@@ -39,15 +40,15 @@ function Oauth() {
             history('/activity')
         } else if (error_description && error) {
             history('/activity')
-        } else if (token && verifier) {
-            claim(token, verifier, 1)
-        } else if (code) {
-            claim(code, '', 3)
+        } else if (token && verifier && id) {
+            claim(token, verifier, id)
+        } else if (code && id) {
+            claim(code, '', id)
         } else {
             const at = window.location.href
             if (at.length > 0 && at.includes('#tgAuthResult=')) {
                 const abc = at.split('#tgAuthResult=')
-                claim(abc[1], '', 2)
+                claim(abc[1], '', id)
             }
         }
     }, []);

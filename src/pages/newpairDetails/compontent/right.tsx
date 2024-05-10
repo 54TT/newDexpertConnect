@@ -49,7 +49,8 @@ function Right() {
                         },
                         {
                             value: 'fast',
-                            label: <p className={'rightSelectRow'}><span>{t("Common.Fast Trade")}</span> <CaretDownOutlined/></p>,
+                            label: <p className={'rightSelectRow'}><span>{t("Common.Fast Trade")}</span>  <span style={{color:'gray',fontSize:'12px',padding:'2px 3px',borderRadius:'5px',backgroundColor:'rgb(100,100,100)'}}>{t('Common.Coming soon')}</span> <CaretDownOutlined/></p>,
+                            disabled:true
                         },
                     ]}
                 />

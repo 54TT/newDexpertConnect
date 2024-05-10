@@ -1,8 +1,11 @@
-import {ApolloClient, InMemoryCache,gql, useQuery} from "@apollo/client";
+import {ApolloClient, gql, InMemoryCache, useQuery} from "@apollo/client";
 import {useEffect, useState} from "react";
 import {cloneDeep, differenceBy} from "lodash";
+import {judgeStablecoin} from '../../utils/judgeStablecoin.ts'
+
 const client = new ApolloClient({
-    uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
+    uri: 'https://api.thegraph.com/subgraphs/id/Qmdxr4hqsky9SDjMqKuQnMNvLGQMFk3AeoA7v7t3sMHBaP',
+    cache: new InMemoryCache(),
 });
 
 function GetNewPair() {
@@ -81,13 +84,21 @@ function GetNewPair() {
     }
     buyTxs
     priceUSD
+     FDV
+    MKTCAP
+    initialReserve0
+    initialReserve1
+    initialReserve
+    tokenTotalSupply
+    buyVolumeUSD
+    sellVolumeUSD
   }
   uniswapFactories {
     pairCount
     id
   }
 }`
-    const {loading, data, refetch} = useQuery( GET_DATA, {client}) as any
+    const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any
     useEffect(() => {
         const interval = setInterval(async () => {
             setPolling(true)
@@ -104,27 +115,15 @@ function GetNewPair() {
         }
     }, [page]);
     const getParams = (par: any) => {
-        const dataLi = []
         const a = cloneDeep(par)
-        const STABLECOINS = [
-            '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', 'WETH',
-            '0x6b175474e89094c44da98b954eedeac495271d0f', 'DAI',
-            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', 'USDC',
-            '0xdac17f958d2ee523a2206206994597c13d831ec7', 'USDT',
-        ]
         const p = a.map((i: any) => {
-            if (STABLECOINS.includes(i?.token0?.id.toLowerCase()) && !STABLECOINS.includes(i?.token1?.id.toLowerCase())) {
+            const value = judgeStablecoin(i?.token0?.id, i?.token1?.id)
+            if (value === 1) {
                 const token0 = i.token0
                 i.token0 = i.token1
                 i.token1 = token0
-                i.sure = true
             }
             return i
-        })
-        p.map((i: any) => {
-            if (!STABLECOINS.includes(i?.token0?.id.toLowerCase())) {
-                dataLi.push(i?.token0?.id)
-            }
         })
         if (polling) {
             const abcd: any = differenceBy(p, tableDta, 'id')

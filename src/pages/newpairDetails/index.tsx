@@ -8,7 +8,8 @@ import {CountContext} from "../../Layout.tsx";
 import {ApolloClient, gql, InMemoryCache, useQuery} from "@apollo/client";
 
 const client = new ApolloClient({
-    uri: 'https://api.thegraph.com/subgraphs/name/levi-dexpert/uniswap-v2', cache: new InMemoryCache(),
+    uri: 'https://api.thegraph.com/subgraphs/id/Qmdxr4hqsky9SDjMqKuQnMNvLGQMFk3AeoA7v7t3sMHBaP',
+    cache: new InMemoryCache(),
 });
 
 function Index() {
@@ -42,34 +43,23 @@ function Index() {
     }
     reserve0
     reserve1
-    PairFiveMinutesData(first: 1, orderBy: startUnix, orderDirection: desc) {
-      priceChange
-      startUnix
-      swapTxns
-    }
-    PairSixHourData(first: 1, orderBy: startUnix, orderDirection: desc) {
-      startUnix
-      priceChange
-      swapTxns
-    }
     liquidity
     pairDayData(first: 1, orderBy: startUnix, orderDirection: desc) {
       priceChange
       startUnix
       swapTxns
     }
-    pairHourData(orderBy: startUnix, first: 1, orderDirection: desc) {
-      startUnix
-      priceChange
-      swapTxns
-    }
     buyTxs
     sellTxs
     priceUSD
-  }
-  uniswapFactories {
-    pairCount
-    id
+         FDV
+    MKTCAP
+    initialReserve0
+    initialReserve1
+     initialReserve
+    tokenTotalSupply
+    buyVolumeUSD
+    sellVolumeUSD
   }
 }`
     const {data, refetch} = useQuery(GET_DATA, {client}) as any

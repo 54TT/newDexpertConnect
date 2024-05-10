@@ -2,18 +2,15 @@ import {setMany, simplify} from "../../../../utils/change.ts";
 import {useNavigate} from "react-router-dom";
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
-import cookie from "js-cookie";
-import {useEffect} from "react";
 import {throttle} from "lodash"; // 引入相对时间插件
+import {judgeStablecoin} from '../../../../utils/judgeStablecoin.ts'
+
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Date({tableDta, time, setDta}: any) {
     const history = useNavigate();
     const push = throttle(function (i: any) {
-        history('/newpairDetails/'+i?.id)
+        history('/newpairDetails/' + i?.id)
     }, 1500, {'trailing': false})
-    useEffect(() => {
-        cookie.remove('newpair')
-    }, []);
     const click =
         throttle(function (i: any, e: any) {
             e.stopPropagation();
@@ -26,13 +23,13 @@ function Date({tableDta, time, setDta}: any) {
             setDta([...tableDta])
         }, 1500, {'trailing': false})
     return (
+
         <>
             {
                 tableDta.map((record: any, ind: number) => {
                     const data = time === '24h' ? record?.pairDayData : time === '6h' ? record?.PairSixHourData : time === '1h' ? record?.pairHourData : record?.PairFiveMinutesData
                     const a: any = data && data.length > 0 ? Number(data[0]?.priceChange) ? data[0]?.priceChange.includes('.000') ? 0 : Number(data[0]?.priceChange).toFixed(3) : 0 : 0
                     const b = a ? setMany(a) : 0
-                    const ab = record?.token0?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' && record?.token1?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 1 : record.sure ? 2 : 3
                     const dateTime = time === '24h' ? record?.pairDayData : time === '6h' ? record?.PairSixHourData : time === '1h' ? record?.pairHourData : record?.PairFiveMinutesData
                     const li: any = record?.liquidity && Number(record.liquidity) ? setMany(record.liquidity) : 0
                     const create = record?.createdAtTimestamp.toString().length > 10 ? Number(record.createdAtTimestamp.toString().slice(0, 10)) : Number(record.createdAtTimestamp)
@@ -46,11 +43,11 @@ function Date({tableDta, time, setDta}: any) {
                                     <p style={{
                                         marginBottom: '4px',
                                         fontWeight: '500'
-                                    }}>{simplify(record?.token0?.symbol)}</p>
+                                    }}>{simplify(record?.token0?.symbol?.replace(/^\s*|\s*$/g, ""))}</p>
                                     <div style={{
                                         fontSize: '14px',
                                         color: 'rgb(104,124,105)'
-                                    }}>{simplify(record?.token1?.symbol)}</div>
+                                    }}>{simplify(record?.token1?.symbol?.replace(/^\s*|\s*$/g, ""))}</div>
                                 </div>
                             </div>
                             <div
@@ -64,10 +61,11 @@ function Date({tableDta, time, setDta}: any) {
                                     lineHeight: '1.2'
                                 }}>{dayjs.unix(create).fromNow()}</div>
                             {
-                                ab === 1 ? <div style={{color: 'white'}}>-</div> : ab === 2 ? <div
-                                        style={{color: 'white'}}>{Number(setMany(record?.reserve0.toString())) ? parseFloat(Number(setMany(record?.reserve0.toString())).toFixed(2)) + '  ' : setMany(record?.reserve0.toString()) + '  '}ETH</div> :
+                                judgeStablecoin(record?.token0?.id, record?.token1?.id) === 0 ? <div
+                                    style={{color: 'white'}}>{Number(setMany(record?.reserve0.toString())) ? parseFloat(Number(setMany(record?.reserve0.toString())).toFixed(2)) + '  ' : setMany(record?.reserve0.toString()) + '  '}ETH</div> : judgeStablecoin(record?.token0?.id, record?.token1?.id) === 1 ?
                                     <div
-                                        style={{color: 'white'}}>{Number(setMany(record?.reserve1.toString())) ? parseFloat(Number(setMany(record?.reserve1.toString())).toFixed(2)) + '  ' : setMany(record?.reserve1.toString()) + '  '}ETH</div>
+                                        style={{color: 'white'}}>{Number(setMany(record?.reserve1.toString())) ? parseFloat(Number(setMany(record?.reserve1.toString())).toFixed(2)) + '  ' : setMany(record?.reserve1.toString()) + '  '}ETH</div> :
+                                    <div style={{color: 'white'}}>-</div>
                             }
                             <div
                                 style={{color: 'white'}}>{dateTime && dateTime.length > 0 ? Number(dateTime[0]?.swapTxns) : 0}</div>

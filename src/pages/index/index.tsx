@@ -1,5 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-import {Input, Segmented, Select} from 'antd'
+import {Input, Segmented, Select,} from 'antd'
 import {useContext, useEffect, useRef, useState} from "react";
 import {SearchOutlined} from '@ant-design/icons'
 import Right from "./components/right.tsx";

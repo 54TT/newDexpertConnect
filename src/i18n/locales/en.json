@@ -18,10 +18,12 @@
     "Total": "Total",
     "Sells": "Sells",
     "Created Time": "Created Time",
+    "buy": "Buys",
+    "sell": "Sells",
+    "total": "Total",
     "Total Supply": "Total Supply",
     "Initial Pool Amount": "Initial Pool Amount",
-    "Pooled WETH": "Pooled WETH",
-    "Pooled bTC": "Pooled bTC",
+    "Pooled": "Pooled",
     "Fast Trade": "Fast Trade",
     "Next": "Next page",
     "new": "Welcome new user",
@@ -86,7 +88,7 @@
     "succ": "success follow",
     "unSucc": "success unfollow",
     "inst": "Please install MetaMask! And refresh",
-    "log": "Please log in or connect to your account!",
+    "log": "Please connect to your account!",
     "fail": "Upload failed, please upload again!",
     "pub": "Publish failed",
     "POINTS": "POINTS",
@@ -107,12 +109,15 @@
     "pass": "Your D pass",
     "today": "Today's points",
     "ye": "To commemorate the introduction of Dexpert, simply link your wallet to receive 1000 D-Points.",
+    "ye1": "To commemorate the introduction of Dexpert, simply link your wallet to receive 1000 D-Points. \nAlso, you can gain extra points by connecting with us on Twitter, Discord, and Telegram; each social media platform awards 500 points.\nWe also provide daily mission.Per wallet can participate once a day, can get up to 600 points.",
     "Daily": "Daily Mission",
+    "Special": "Special Mission",
     "First": "First Mission",
     "Ranking": "Ranking List",
     "po": "POINT",
     "us": "USER",
     "ra": "RANK",
+    "Each": "Each account is limited to receiving 5 airdrops. Completing all task nodes will result in a blind box reward at each task node. The reward for completing tasks multiple times is invalid. The final interpretation of this activity rule belongs to the company. Each account is limited to receiving 5 airdrops. Completing all task nodes will result in a blind box reward at each task node. The reward for completing tasks multiple times is invalid. The final interpretation of this activity rule belongs to the company.",
     "bot": "To commemorate the introduction of Dexpert, simply link your wallet to receive 1000 D-Points. Also, you can gain extra points by connecting with us on Twitter, Discord, and Telegram; each social media platform awards 500 points."
   },
   "Dpass": {
@@ -137,6 +142,7 @@
     "twi": "Follow the following Twitter users",
     "tel": "Join the following Telegram group",
     "dis": "Join the following Discord group",
-    "ins": "Follow the following Instagram users"
+    "ins": "Follow the following Instagram users",
+    "how": "How to Verify?"
   }
 }
