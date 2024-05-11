@@ -478,8 +478,17 @@ function Index() {
                                             </div>
                                     }
                                 </div>
-                                <div>
+                                <div style={{borderRight: '2px solid #3c453c'}}>
                                     <span style={{fontSize: browser ? '18px' : '16px'}}>{t('Active.today')}</span>
+                                    <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
+                                        <span style={{
+                                            fontSize: browser ? '25px' : '20px',
+                                            color: '#86F097'
+                                        }}>{todayPoint || '0'}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style={{fontSize: browser ? '18px' : '16px'}}>{t('Active.Multiplier')}</span>
                                     <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
                                         <span style={{
                                             fontSize: browser ? '25px' : '20px',

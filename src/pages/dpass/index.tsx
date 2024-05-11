@@ -9,6 +9,7 @@ import {CaretDownOutlined, CopyOutlined, LoadingOutlined} from "@ant-design/icon
 import {CountContext} from "../../Layout";
 import {MessageAll} from '../../components/message.ts'
 import {useNavigate} from "react-router-dom";
+
 function Dpass() {
     const token = Cookies.get("token");
     const {getAll} = Request();
@@ -21,6 +22,7 @@ function Dpass() {
     const [isMobile, setIsMobile] = useState(false);
     const [isNext, setIsNext] = useState(false);
     const [isShow, setIsShow] = useState(false);
+    const [imgSta, setImgSta] = useState(false);
     const {user, setUserPar}: any = useContext(CountContext);
     // 创建一个MutationObserver实例
     const observer = new MutationObserver(function (mutationsList: any,) {
@@ -46,33 +48,35 @@ function Dpass() {
     };
 
     const redeemDpass = async () => {
-        if (Number(user?.rewardPointCnt) && Number(user?.rewardPointCnt) > 6000) {
-            if (redeemCount === 0) {
-                MessageAll('warning', t("Alert.Please enter the purchase quantity"))
-            } else {
-                const point = redeemCount * 6000
-                if (Number(user?.rewardPointCnt) >= point) {
-                    const res: any = await getAll({
-                        method: "post",
-                        url: "/api/v1/d_pass/redeem",
-                        data: {
-                            count: redeemCount,
-                        },
-                        token,
-                    });
-                    if (res?.data?.code === '200') {
-                        setRedeemCount(0)
-                        setUserPar({...user, rewardPointCnt: Number(user?.rewardPointCnt) - point})
-                        getDpassCount();
-                        getDpassList(1);
-                        MessageAll('success', t("Alert.success"));
-                    }
+        if (!imgSta) {
+            if (Number(user?.rewardPointCnt) && Number(user?.rewardPointCnt) > 6000) {
+                if (redeemCount === 0) {
+                    MessageAll('warning', t("Alert.Please enter the purchase quantity"))
                 } else {
-                    MessageAll('warning', t("Alert.not"))
+                    const point = redeemCount * 6000
+                    if (Number(user?.rewardPointCnt) >= point) {
+                        const res: any = await getAll({
+                            method: "post",
+                            url: "/api/v1/d_pass/redeem",
+                            data: {
+                                count: redeemCount,
+                            },
+                            token,
+                        });
+                        if (res?.data?.code === '200') {
+                            setRedeemCount(0)
+                            setUserPar({...user, rewardPointCnt: Number(user?.rewardPointCnt) - point})
+                            getDpassCount();
+                            getDpassList(1);
+                            MessageAll('success', t("Alert.success"));
+                        }
+                    } else {
+                        MessageAll('warning', t("Alert.not"))
+                    }
                 }
+            } else {
+                MessageAll('warning', t("Alert.not"))
             }
-        } else {
-            MessageAll('warning', t("Alert.not"))
         }
     };
     const getDpassList = async (page: number) => {
@@ -85,24 +89,22 @@ function Dpass() {
             token,
         });
         if (res?.status === 200) {
+            if (res?.data?.list?.length !== 10) {
+                setIsShow(true)
+            }
             if (page === 1) {
                 if (res?.data?.list?.length > 0) {
                     setDPassList(res?.data.list);
                     setIsNext(false)
-                    if (res?.data?.list?.length !== 10) {
-                        setIsShow(true)
-                    }
+                } else {
+                    setIsNext(false)
                 }
             } else {
                 if (res?.data?.list?.length > 0) {
-                    if (res?.data?.list?.length !== 10) {
-                        setIsShow(true)
-                    }
                     const at = dPassList.concat(res?.data?.list)
                     setDPassList([...at])
                     setIsNext(false)
                 } else {
-                    setIsShow(true)
                     setIsNext(false)
                 }
             }
@@ -172,29 +174,48 @@ function Dpass() {
         document.body.removeChild(textarea);
         MessageAll('success', t('Alert.copy'));
     }
+
     const nextPass = () => {
         setPage(page + 1)
         getDpassList(page + 1)
         setIsNext(true)
     }
-
+    const setImg = () => {
+        setImgSta(!imgSta)
+    }
     return (
         <div className="dpass-background">
             <div className="dpass-content">
                 <div className="dpass-content-left">
-                    <img className="dapss-card" src="/dpassCard.png" alt=""/>
-                    <img className="dpass-light" src="/light.png" alt=""/>
-                    <img className="dpass-cap" src="/bottomCap.png" alt=""/>
+                    <div style={{position: 'relative', zIndex: '10'}}>
+                        <img src="/Rectangle1.svg" alt="" onClick={setImg} style={{
+                            position: 'absolute',
+                            left: '-60px',
+                            top: '50%',
+                            display: 'block',
+                            transform: 'translate(0,-50%)', cursor: 'pointer'
+                        }}/>
+                        <img className="dapss-card" src={imgSta ? "/dpassCard1.svg" : '/dpassCard.png'} alt=""/>
+                        <img src="/Rectangle.svg" alt="" onClick={setImg} style={{
+                            position: 'absolute',
+                            right: '-60px',
+                            top: '50%',
+                            display: 'block',
+                            transform: 'translate(0,-50%)', cursor: 'pointer'
+                        }}/>
+                    </div>
+                    <img className="dpass-light" src={imgSta ? "/light1.svg" : '/light.png'} alt=""/>
+                    <img className="dpass-cap" src={imgSta ? "/bottomCap1.svg" : '/bottomCap.png'} alt=""/>
                 </div>
                 <div className="dpass-content-right">
-                    <p className="dpass-content-right-title">D PASS</p>
+                    <p className="dpass-content-right-title"> {imgSta ? 'Golden Pass' : 'D PASS'}  </p>
                     <p className="dpass-content-right-content">
-                        {t("Dpass.desc1")}
+                        {imgSta ? 'Golden Pass,' + t("Dpass.desc4") : t("Dpass.desc1")}
                     </p>
                     <p className="dpass-content-right-content">
-                        {t("Dpass.desc2")}
+                        {imgSta ? t("Dpass.desc5") : t("Dpass.desc2")}
                     </p>
-                    <p className="dpass-content-right-content">{t("Dpass.desc3")}</p>
+                    <p className="dpass-content-right-content">{imgSta ? '' : t("Dpass.desc3")}</p>
                     <div className="dpass-content-right-action">
                         <div className="dpass-content-right-action-input">
               <span id="reduce" onClick={clickPlusOrReduce}>
@@ -211,10 +232,12 @@ function Dpass() {
                         </div>
                         <div
                             className="dpass-content-right-action-button"
-                            onClick={() => redeemDpass()}
-                            style={{background: Number(user?.rewardPointCnt) && Number(user?.rewardPointCnt) > 6000 ? '#86f097' : 'gray'}}
-                        >
-                            {t("Dpass.Exchange")}
+                            onClick={redeemDpass}
+                            style={{
+                                background: Number(user?.rewardPointCnt) && Number(user?.rewardPointCnt) > 6000 ? '#86f097' : 'gray',
+                                cursor: 'not-allowed'
+                            }}>
+                            {imgSta ? t("Dpass.Inconvertible") : t("Dpass.Exchange")}
                         </div>
                     </div>
                     <div className="dpass-content-right-info">

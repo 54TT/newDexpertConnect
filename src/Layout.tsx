@@ -51,7 +51,6 @@ function Layout() {
     const language = (localStorage.getItem("language") || "en_US") as I18N_Key;
     const [languageChange, setLanguageChange] = useState(language);
     const [changeLan, setChangeLan] = useState(false);
-
     const createClient = async () => {
         try {
             const _client: any = await Client.init({
