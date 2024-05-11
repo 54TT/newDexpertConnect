@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ApolloClient, InMemoryCache, gql, useQuery } from "@apollo/client";
 import { useTranslation } from "react-i18next";
 const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/id/Qmdxr4hqsky9SDjMqKuQnMNvLGQMFk3AeoA7v7t3sMHBaP",
+  uri: "http://165.232.163.158:8000/subgraphs/name/levi/uniswapv2",
   cache: new InMemoryCache(),
 });
 function CommunityRight() {
@@ -16,11 +16,7 @@ function CommunityRight() {
       pairs(
         where: {
           id_in: [
-            "0x7d225c4cc612e61d26523b099b0718d03152edef",
-            "0x7dd9c5cba05e151c895fde1cf355c9a1d5da6429",
-            "0x80ee5c641a8ffc607545219a3856562f56427fe9",
-            "0x3a67067efb1aad7facb49b8a59aab0ed974c15b5",
-            "0xaf777c52344cb6eaf9a0f683a021f95b77d27a5b",
+            "0x04b6326d8305faaab96f3b4be467dcdaff34d0e1",
           ]
         }
       ) {
@@ -66,6 +62,8 @@ function CommunityRight() {
     if (!loading) {
       if (data && data?.pairs.length > 0) {
         setPar(data?.pairs);
+        setLoad(false);
+      }else {
         setLoad(false);
       }
     }

@@ -4,10 +4,10 @@ import {cloneDeep, differenceBy} from "lodash";
 import {judgeStablecoin} from '../../utils/judgeStablecoin.ts'
 
 const client = new ApolloClient({
-    uri: 'https://api.thegraph.com/subgraphs/id/Qmdxr4hqsky9SDjMqKuQnMNvLGQMFk3AeoA7v7t3sMHBaP',
+    // uri: 'https://api.thegraph.com/subgraphs/id/Qmdxr4hqsky9SDjMqKuQnMNvLGQMFk3AeoA7v7t3sMHBaP',
+    uri: 'http://165.232.163.158:8000/subgraphs/name/levi/uniswapv2',
     cache: new InMemoryCache(),
 });
-
 function GetNewPair() {
     const [current, setCurrent] = useState(1);
     const [ethPrice, setEthprice] = useState<string>('')

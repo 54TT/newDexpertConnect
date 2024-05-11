@@ -8,7 +8,7 @@ import {CountContext} from "../../Layout.tsx";
 import {ApolloClient, gql, InMemoryCache, useQuery} from "@apollo/client";
 
 const client = new ApolloClient({
-    uri: 'https://api.thegraph.com/subgraphs/id/Qmdxr4hqsky9SDjMqKuQnMNvLGQMFk3AeoA7v7t3sMHBaP',
+    uri: 'http://165.232.163.158:8000/subgraphs/name/levi/uniswapv2',
     cache: new InMemoryCache(),
 });
 

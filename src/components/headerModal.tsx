@@ -78,13 +78,13 @@ function HeaderModal() {
                         browser &&
                         <button onClick={connectWallet} className={'walletButton'} style={{margin: '10px 0'}}>
                             <img loading={'lazy'}
-                                 src="/metamask.svg" style={{width: '25px'}}
+                                 src="/metamask.svg" style={{width: '25px', height: '25px'}}
                                  alt=""/><span>MetaMask</span></button>
                     }
                     <button onClick={onConnect} className={'walletButton'}><img
                         src="/webAll.svg" loading={'lazy'}
                         style={{
-                            width: '25px',
+                            width: '25px', height: '25px'
                         }}
                         alt=""/><span>WalletConnect</span>
                     </button>

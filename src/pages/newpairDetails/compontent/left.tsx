@@ -13,7 +13,6 @@ dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({par}: any) {
     const h = window.innerHeight - 25 - 54
     const [data, setData] = useState(par)
-    console.log(data)
     const [status, setStatus] = useState(false)
     const [pairStatus, setPairStatus] = useState(false)
     const {t} = useTranslation();
@@ -63,7 +62,8 @@ function Left({par}: any) {
             <div className={`address dis`}>
                 <p>
                     <span>CA:</span><span>{value === 0 ? simplify(data?.token0?.id) : value === 1 ? simplify(data?.token1?.id) : simplify(data?.token1?.id)}</span>
-                    <Copy status={status} setStatus={setStatus} name={value === 0 ? data?.token0?.id : value === 1 ? data?.token1?.id: data?.token1?.id}/>
+                    <Copy status={status} setStatus={setStatus}
+                          name={value === 0 ? data?.token0?.id : value === 1 ? data?.token1?.id : data?.token1?.id}/>
                 </p>
                 <p><span>Pair:</span><span>{simplify(data?.id)}</span>
                     <Copy status={pairStatus} setStatus={setPairStatus} name={data?.id}/>
@@ -121,7 +121,7 @@ function Left({par}: any) {
                           showInfo={false} strokeColor={'rgb(0,255,71)'} trailColor={'gray'}/>
                 <div className={`dis swapTop`}>
                     <span>{setMany(data?.buyVolumeUSD) || 0}</span>
-                    <span>100%</span>
+                    <span>{setMany(data?.untrackedVolumeUSD) || 0}</span>
                     <span>{setMany(data?.sellVolumeUSD) || 0}</span>
                 </div>
             </div>

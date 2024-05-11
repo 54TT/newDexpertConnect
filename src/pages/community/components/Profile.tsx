@@ -25,7 +25,6 @@ function Profie() {
     const [hei, setHei] = useState<any>(null)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [data, setData] = useState<any>({});
-    console.log(data)
     const inputRef = useRef<HTMLInputElement>(null);
     const [inputType, setInputType] = useState<'avatar' | 'background'>('avatar');
     const [previewAvatar, setPreviewAvatar] = useState('');

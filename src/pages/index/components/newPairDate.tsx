@@ -3,8 +3,6 @@ import {useNavigate} from "react-router-dom";
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {throttle} from "lodash"; // 引入相对时间插件
-import {judgeStablecoin} from '../../../../utils/judgeStablecoin.ts'
-
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Date({tableDta, time, setDta}: any) {
     const history = useNavigate();
@@ -23,7 +21,6 @@ function Date({tableDta, time, setDta}: any) {
             setDta([...tableDta])
         }, 1500, {'trailing': false})
     return (
-
         <>
             {
                 tableDta.map((record: any, ind: number) => {
@@ -60,13 +57,7 @@ function Date({tableDta, time, setDta}: any) {
                                     letterSpacing: '-1px',
                                     lineHeight: '1.2'
                                 }}>{dayjs.unix(create).fromNow()}</div>
-                            {
-                                judgeStablecoin(record?.token0?.id, record?.token1?.id) === 0 ? <div
-                                    style={{color: 'white'}}>{Number(setMany(record?.reserve0.toString())) ? parseFloat(Number(setMany(record?.reserve0.toString())).toFixed(2)) + '  ' : setMany(record?.reserve0.toString()) + '  '}ETH</div> : judgeStablecoin(record?.token0?.id, record?.token1?.id) === 1 ?
-                                    <div
-                                        style={{color: 'white'}}>{Number(setMany(record?.reserve1.toString())) ? parseFloat(Number(setMany(record?.reserve1.toString())).toFixed(2)) + '  ' : setMany(record?.reserve1.toString()) + '  '}ETH</div> :
-                                    <div style={{color: 'white'}}>-</div>
-                            }
+                          <div style={{color: 'white'}}>{setMany(record?.initialReserve)} ETH</div>
                             <div
                                 style={{color: 'white'}}>{dateTime && dateTime.length > 0 ? Number(dateTime[0]?.swapTxns) : 0}</div>
                             <div style={{color: 'white'}}>{li}</div>

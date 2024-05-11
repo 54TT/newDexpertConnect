@@ -129,8 +129,17 @@ function Layout() {
             MessageAll('warning', t('Market.inst'))
         }
     }, 800)
+    useEffect(() => {
+        // const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
+        // provider.on("network", (newNetwork: any, oldNetwork: any) => {
+        //     console.log(newNetwork, oldNetwork)
+        //     if (oldNetwork) {
+        //     }
+        // });
+    }, []);
     const handleLogin = async () => {
         try {
+
             const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
             // provider._isProvider   判断是否还有请求没有结束
             // 请求用户授权连接钱包

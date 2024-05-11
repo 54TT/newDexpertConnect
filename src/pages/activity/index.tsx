@@ -44,7 +44,7 @@ function Index() {
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [link, setLink] = useState('');
     const [load, setLoad] = useState(false)
-    const [option, setOption] = useState(0)
+    const [option, setOption] = useState(1)
     const [show, setShow] = useState(false)
     const [selectActive, setSelectActive] = useState('')
     const [select, setSelect] = useState<any>(null)
@@ -152,6 +152,7 @@ function Index() {
             return ''
         }
     }
+
     const follow = async (id: string, index: string) => {
         const token = cookie.get('token')
         if (token) {
@@ -192,16 +193,33 @@ function Index() {
         }
     }
     const operate = (isCompleted: string, title: string) => {
-        if (Number(isCompleted)) {
-            if (Number(isCompleted) === 1) {
-                return change(title)
-            } else if (Number(isCompleted) === 2) {
-                return t('Market.Claim')
-            } else {
-                return t('Market.Completed')
-            }
+        if (option === 1) {
+            return t('Market.start')
         } else {
-            return t('Market.Authorize')
+
+            if (Number(isCompleted)) {
+                if (Number(isCompleted) === 1) {
+                    return change(title)
+                } else if (Number(isCompleted) === 2) {
+                    return t('Market.Claim')
+                } else {
+                    return t('Market.Completed')
+                }
+            } else {
+                return t('Market.Authorize')
+            }
+        }
+    }
+    const signIn = async (token: string, url: string) => {
+        const res = await getAll({
+            method: 'get',
+            url: url,
+            data: {},
+            token
+        })
+        if (res?.status === 200 && res?.data?.url) {
+            window.open(res?.data?.url)
+            setLoading(false)
         }
     }
 
@@ -210,16 +228,10 @@ function Index() {
         if (token) {
             if (option === 1) {
                 if (title.includes('Telegram')) {
-                    const res = await getAll({
-                        method: 'get',
-                        url: '/api/v1/telegram/signInChannelLink',
-                        // data: {taskId: taskId},
-                        data: {},
-                        token
-                    })
-                    console.log(res)
-                } else if (title.includes('Discord')) {
+                    signIn(token, '/api/v1/telegram/signInChannelLink')
 
+                } else if (title.includes('Discord')) {
+                    signIn(token, '/api/v1/discord/signInChannelLink')
                 } else if (title.includes('Twitter')) {
                     // 获取链接
                     const res: any = await getAll({
@@ -349,7 +361,20 @@ function Index() {
             }
         }
     }
-
+    const verification = async (id: string) => {
+        const token = cookie.get('token')
+        if (id && token) {
+            const res: any = await getAll({
+                method: 'post',
+                url: '/api/v1/airdrop/task/twitter/daily/verify',
+                data: {taskId: id,},
+                token
+            })
+            if (res?.data?.message === 'success' && res?.status === 200) {
+                getParams()
+            }
+        }
+    }
     return (
         <>
             {
@@ -470,12 +495,12 @@ function Index() {
                                 [t('Active.Special'), t('Active.Daily'), t('Active.First'), t('Active.Ranking')].map((i: string, ind: number) => {
                                     return <div style={{
                                         backgroundColor: show ? option === ind ? 'rgb(134,240,151)' : '' : '',
-                                        color: show ? option === ind ? 'black' : 'white' : 'white',
+                                        color: show ? ind === 0 ? 'gray' : option === ind ? 'black' : 'white' : 'white',
                                         width: '22%',
                                         fontSize: browser ? '18px' : '14px'
                                     }} onClick={() => {
                                         if (show) {
-                                            if (ind !== option) {
+                                            if (ind !== option && ind !== 0) {
                                                 setOption(ind)
                                                 if (ind === 3) {
                                                     if (isRankList) {
@@ -538,16 +563,25 @@ function Index() {
                                                                                 cookie.set('taskId', it?.taskId)
                                                                                 setSelect(it)
                                                                                 setLoading(true)
-                                                                            }} style={{
-                                                                                color: 'black',
-                                                                                padding: '5px',
-                                                                                boxSizing: 'border-box'
-                                                                            }}>
+                                                                            }} className={'start'}>
                                                                                 {loading && select?.title === it?.title ?
                                                                                     <LoadingOutlined/> : operate(it?.isCompleted, it?.title)}</p> :
-                                                                            <div style={{width: '75px', display: 'flex', justifyContent: 'center', boxSizing: 'border-box'}}>
-                                                                                <img src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'} alt=""/>
+                                                                            <div className={'success'}>
+                                                                                <img
+                                                                                    src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'}
+                                                                                    alt=""/>
                                                                             </div>
+                                                                    }
+                                                                    {
+                                                                        option === 1 && Number(it?.isCompleted) !== 3 &&
+                                                                        <p className={'verify'}
+                                                                           onClick={() => {
+                                                                               if (it?.title.includes('Twitter')) {
+                                                                                   verification(it?.taskId)
+                                                                               } else {
+                                                                                   getParams()
+                                                                               }
+                                                                           }}>verify</p>
                                                                     }
                                                                 </div>
                                                             </div>

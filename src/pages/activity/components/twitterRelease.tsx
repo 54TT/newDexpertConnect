@@ -13,7 +13,7 @@ function TwitterRelease({openLink, setValue, Confirm,handleCancel}: any) {
             <p className={'title1'}>After posting the tweet, pleae click the 'Share' button. Then, click 'Copy link',
                 and paste
                 the link below to verify.</p>
-            <p>Paste the link here:</p>
+            <p className={'Paste'}>Paste the link here:</p>
             <input onChange={change}/>
             <img src="/tweet2.png" alt="" style={{width: '70%', display: 'block'}}/>
             <div className={'bot'}>

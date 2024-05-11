@@ -21,10 +21,10 @@ requestA.interceptors.response.use(
         return response;
     },
     (e: any) => {
-        if (e?.config?.url === '/api/v1/oauth/twitter/claim' || e?.config?.url === '/api/v1/oauth/discord/claim' || e?.config?.url === '/api/v1/oauth/telegram/chat/bind') {
+        if (e?.config?.url === '/api/v1/oauth/twitter/claim' || e?.config?.url === '/api/v1/discord/signInChannelLink' || e?.config?.url === '/api/v1/telegram/signInChannelLink' || e?.config?.url === '/api/v1/oauth/discord/claim' || e?.config?.url === '/api/v1/oauth/telegram/chat/bind') {
             MessageAll('warning', e?.response?.data?.msg)
         } else {
-            MessageAll('warning', e?.message)
+            MessageAll('warning', e?.response?.data?.msg)
         }
     }
 );

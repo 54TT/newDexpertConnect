@@ -244,7 +244,8 @@ function Tweets({
                     </p>
                     <p className={'tweetsIn look-icon'}>
                         <img loading={'lazy'} src="/look.svg" alt=""/>
-                        <span>{setMany(Math.ceil(Math.random() * 1000 + Math.random() * 1000))}</span>
+                        <span
+                            style={{whiteSpace: 'nowrap'}}>{setMany(Math.ceil(Math.random() * 1000 + Math.random() * 1000))}</span>
                     </p>
                 </div>
             </div>
