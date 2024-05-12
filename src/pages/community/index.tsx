@@ -16,7 +16,7 @@ function Community() {
     const {t} = useTranslation();
     // 左侧选中的Tab
     const [activeUserTab, setActiveUserTab] = useState<string>("lastest");
-    const {browser,user} = useContext(CountContext) as any;
+    const {browser,user} = useContext(CountContext || {}) as any;
     const history = useNavigate();
     const onActiveUserTabChange = (tab: string) => {
         const token = cookie.get('token')

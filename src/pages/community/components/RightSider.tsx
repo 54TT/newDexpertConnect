@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { ApolloClient, InMemoryCache, gql, useQuery } from "@apollo/client";
 import { useTranslation } from "react-i18next";
 const client = new ApolloClient({
-  uri: "http://165.232.163.158:8000/subgraphs/name/levi/uniswapv2",
+  // uri: "http://165.232.163.158:8000/subgraphs/name/levi/uniswapv2",
+  uri: 'https://api.thegraph.com/subgraphs/id/QmZXJ7oEnjq9vv5kAQ2G3aXK5ZVCxjG9gZsk3Evo45Q1xy',
   cache: new InMemoryCache(),
 });
 function CommunityRight() {
@@ -58,7 +59,7 @@ function CommunityRight() {
       clearInterval(interval);
     };
   }, []);
-  useEffect(() => {
+  useEffect(() => {    
     if (!loading) {
       if (data && data?.pairs.length > 0) {
         setPar(data?.pairs);

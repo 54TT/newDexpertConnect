@@ -5,7 +5,7 @@ import {judgeStablecoin} from '../../utils/judgeStablecoin.ts'
 
 const client = new ApolloClient({
     // uri: 'https://api.thegraph.com/subgraphs/id/Qmdxr4hqsky9SDjMqKuQnMNvLGQMFk3AeoA7v7t3sMHBaP',
-    uri: 'http://165.232.163.158:8000/subgraphs/name/levi/uniswapv2',
+    uri: 'https://api.thegraph.com/subgraphs/id/QmZXJ7oEnjq9vv5kAQ2G3aXK5ZVCxjG9gZsk3Evo45Q1xy',
     cache: new InMemoryCache(),
 });
 function GetNewPair() {
