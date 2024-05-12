@@ -17,7 +17,10 @@ function CommunityRight() {
       pairs(
         where: {
           id_in: [
-            "0x04b6326d8305faaab96f3b4be467dcdaff34d0e1",
+            "0x62fcd2c0a3c7271ccc6b9697878cf551e7b3ab75",
+            "0x8fb8fdab60e86d274fa4a24ac292977d1dd3739e",
+            "0xd588401166a749097877d720777096cdc3b1047a",
+            "0x1b820b20a7183587475506f66dd83cfcaf4c5796",
           ]
         }
       ) {
@@ -60,9 +63,12 @@ function CommunityRight() {
     };
   }, []);
   useEffect(() => {    
+    console.log(data);
     if (!loading) {
       if (data && data?.pairs.length > 0) {
         setPar(data?.pairs);
+
+        
         setLoad(false);
       }else {
         setLoad(false);
