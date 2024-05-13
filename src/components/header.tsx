@@ -256,6 +256,10 @@ function Header() {
                     <img src="/gift.svg" alt="" style={{width: '25px', cursor: 'pointer'}}/>
                     <p style={{color: 'rgb(134,240,151)', marginLeft: '5px'}}>Airdrop</p>
                 </div>
+                {/*<div style={{display:'flex'}}>*/}
+                {/*    <img src="/EthereumCoin.svg" alt="" style={{width:'30px'}}/>*/}
+                {/*    <p className={'headLineP'}>111111</p>*/}
+                {/*</div>*/}
             </div>
             {browser && (
                 <p className={`headerCenter dis`}>
@@ -336,7 +340,7 @@ function Header() {
                                 loading={"lazy"}
                                 src="/wallet.svg"
                                 onClick={loginModal}
-                                style={{width: "13%"}}
+                                style={{width: "40%"}}
                                 alt=""
                             />
                         )}

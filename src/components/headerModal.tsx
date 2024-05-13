@@ -63,7 +63,7 @@ function HeaderModal() {
         setIsModalOpen(false)
     }, 1500, {'trailing': false})
     return (
-        <Modal destroyOnClose={true} centered title={null} footer={null} className={'walletModal'}
+        <Modal destroyOnClose={true} centered title={null} footer={null} className={`walletModal ${browser?'walletModalBig':'walletModalSmall'}`}
                maskClosable={false} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
             {
                 isModalSet ? <div className={'headerModalSetName'}>
@@ -72,7 +72,7 @@ function HeaderModal() {
                     <Input autoComplete={'off'} allowClear onChange={changeName} className={'input'}/>
                     <p onClick={pushSet}>OK</p>
                 </div> : <div className={'headerModal'}>
-                    <img src="/logo1.svg" loading={'lazy'} alt=""/>
+                    <img src="/logo1.svg" loading={'lazy'} alt="" style={{width:'120px'}}/>
                     <p>{t("Common.Connect to Dexpert")}</p>
                     {
                         browser &&
