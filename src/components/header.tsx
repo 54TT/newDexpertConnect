@@ -246,7 +246,7 @@ function Header() {
                     },
                     1500,
                     {trailing: false})} style={{width: browser ? "100px" : "80px", display: "block"}}/>
-                <img src="/gift.svg" alt="" style={{width: '25px', marginLeft: '10px', cursor: 'pointer'}}
+                <img src="/gift.svg" alt="" style={{width: '25px', marginLeft: '20px', cursor: 'pointer'}}
                      onClick={throttle(
                          function () {
                              history('/activity')
@@ -290,7 +290,7 @@ function Header() {
                                              style={{
                                                  width: "28px",
                                                  display: "block",
-                                                 marginRight: "-5px",
+                                                 marginRight: "-8px",
                                                  zIndex: '10',
                                                  borderRadius: "100%",
                                              }} alt="" loading={"lazy"}/>
