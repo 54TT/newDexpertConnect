@@ -199,7 +199,7 @@ function Index() {
         }
     }
     const operate = (isCompleted: string, title: string) => {
-        if (option === 1) {
+        if (option === 2) {
             return t('Market.start')
         } else {
 
@@ -234,7 +234,7 @@ function Index() {
     const param = async (isCompleted: string, taskId: string, title: string) => {
         const token = cookie.get('token')
         if (token) {
-            if (option === 1) {
+            if (option === 2) {
                 if (title.includes('Telegram')) {
                     signIn(token, '/api/v1/telegram/signInChannelLink')
                 } else if (title.includes('Discord')) {
@@ -251,9 +251,11 @@ function Index() {
                         setLoading(false)
                         setLink(res?.data?.intent)
                         setIsModalOpe(true)
+                    }else {
+                        setLoading(false)
                     }
                 }
-            } else if (option === 2) {
+            } else if (option === 1) {
                 if (Number(isCompleted)) {
                     if (Number(isCompleted) === 1) {
                         follow(taskId, title)
@@ -275,7 +277,6 @@ function Index() {
             window.open(link)
         }
     }
-
     const countdownNow = (t1: string, t2: string) => {
         if (t1 && t2) {
             // 判断有几个月
@@ -504,7 +505,7 @@ function Index() {
                         <div className={'activeOptions'}
                              style={{width: browser ? '72%' : '92%', margin: browser ? '35px auto 42px' : '20px auto'}}>
                             {
-                                [t('Active.Special'), t('Active.Daily'), t('Active.First'), t('Active.Ranking')].map((i: string, ind: number) => {
+                                [t('Active.Special'), t('Active.First'),t('Active.Daily'),  t('Active.Ranking')].map((i: string, ind: number) => {
                                     return <div style={{
                                         backgroundColor: show ? option === ind ? 'rgb(134,240,151)' : '' : '',
                                         color: show ? ind === 0 ? 'gray' : option === ind ? 'black' : 'white' : 'white',

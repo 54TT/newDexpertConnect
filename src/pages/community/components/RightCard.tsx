@@ -6,7 +6,6 @@ import {DownOutlined, LoadingOutlined} from "@ant-design/icons";
 import {useState} from "react";
 import {throttle} from "lodash";
 import {useTranslation} from "react-i18next";
-
 function RightCard({data, par, load}: any) {
     const {moreLoad, tableDta, changePage, tableDtaLoad} = newPair() as any;
     const {title, value: titleValue} = data;
@@ -16,8 +15,8 @@ function RightCard({data, par, load}: any) {
         <Card
             title={title}
             bordered={false}
-            style={{width: "90%", maxWidth: "400px", marginTop: "24px"}}
-            className={'RightCard'}
+            style={{width: "90%", maxWidth: "400px", marginTop: "20px"}}
+            className={'RightCardAll'}
         >
             <div className="card-pair-info">
                 <p style={{color: "#eebfe4f5"}}>{t("Slider.Name")}</p>
@@ -91,7 +90,7 @@ function RightCard({data, par, load}: any) {
                         return change && change.includes("T") && change.length > 10 ? (
                             ""
                         ) : (
-                            <div className="card-pair-info" key={ind}>
+                            <div className="card-pair-info" style={{marginBottom:'0'}} key={ind}>
                                 <p>
                                     {i?.token0?.symbol && i?.token0?.symbol === "WETH"
                                         ? simplify(i?.token1?.symbol)

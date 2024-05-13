@@ -5,8 +5,9 @@ import {ApolloClient, gql, InMemoryCache, useQuery} from "@apollo/client";
 import {useTranslation} from "react-i18next";
 
 const client = new ApolloClient({
-    uri: "https://api.thegraph.com/subgraphs/id/QmZXJ7oEnjq9vv5kAQ2G3aXK5ZVCxjG9gZsk3Evo45Q1xy",
-    cache: new InMemoryCache(),
+  // uri: "http://165.232.163.158:8000/subgraphs/name/levi/uniswapv2",
+  uri: 'https://api.thegraph.com/subgraphs/id/QmZXJ7oEnjq9vv5kAQ2G3aXK5ZVCxjG9gZsk3Evo45Q1xy',
+  cache: new InMemoryCache(),
 });
 
 function CommunityRight() {
@@ -18,7 +19,10 @@ function CommunityRight() {
       pairs(
         where: {
           id_in: [
-            "0x04b6326d8305faaab96f3b4be467dcdaff34d0e1",
+            "0x62fcd2c0a3c7271ccc6b9697878cf551e7b3ab75",
+            "0x8fb8fdab60e86d274fa4a24ac292977d1dd3739e",
+            "0xd588401166a749097877d720777096cdc3b1047a",
+            "0x1b820b20a7183587475506f66dd83cfcaf4c5796",
           ]
         }
       ) {
@@ -61,41 +65,44 @@ function CommunityRight() {
         };
     }, []);
     useEffect(() => {
-        if (!loading) {
-            if (data && data?.pairs.length > 0) {
-                setPar(data?.pairs);
-                setLoad(false);
-            } else {
-                setLoad(false);
-            }
-        }
-    }, [data]);
-    useEffect(() => {
         getPage(5);
     }, []);
-    const newPairs = {
-        title: t("Slider.New Pairs"),
-        value: "New Pairs",
-    };
-    const trending = {
-        title: t("Slider.Trending"),
-        value: "Trending",
-    };
-    return (
-        <div
-            style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-            }}
-        >
-            {/*<RightCard  title={'Watch List'}/>*/}
-            <RightCard data={newPairs}/>
-            <RightCard data={trending} par={par} load={load}/>
-            {/*<RightCard title={'Trending'}/>*/}
-        </div>
-    );
+  useEffect(() => {
+    if (!loading) {
+      if (data && data?.pairs.length > 0) {
+        setPar(data?.pairs);
+        setLoad(false);
+      }else {
+        setLoad(false);
+      }
+    }
+  }, [data]);
+  useEffect(() => {
+    getPage(5);
+  }, []);
+  const newPairs = {
+    title: t("Slider.New Pairs"),
+    value: "New Pairs",
+  };
+  const trending = {
+    title: t("Slider.Trending"),
+    value: "Trending",
+  };
+  return (
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      {/*<RightCard  title={'Watch List'}/>*/}
+      <RightCard data={newPairs} />
+      <RightCard data={trending} par={par} load={load} />
+      {/*<RightCard title={'Trending'}/>*/}
+    </div>
+  );
 }
 
 export default CommunityRight;

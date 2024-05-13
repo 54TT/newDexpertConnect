@@ -51,6 +51,14 @@ function Layout() {
     const language = (localStorage.getItem("language") || "en_US") as I18N_Key;
     const [languageChange, setLanguageChange] = useState(language);
     const [changeLan, setChangeLan] = useState(false);
+    const [newAccount, setNewAccount] = useState('');
+    useEffect(() => {
+        if (newAccount && user?.address) {
+            if (newAccount !== user?.address) {
+                handleLogin()
+            }
+        }
+    }, [newAccount]);
     const createClient = async () => {
         try {
             const _client: any = await Client.init({
@@ -112,6 +120,7 @@ function Layout() {
                 const base64Url = res.data?.accessToken.split('.')[1];
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 const decodedToken = JSON.parse(atob(base64));
+                setNewAccount('')
                 if (decodedToken && decodedToken?.uid) {
                     getUser(decodedToken.uid, res.data?.accessToken, name, decodedToken)
                 }
@@ -138,12 +147,12 @@ function Layout() {
     }, []);
     const handleLogin = async () => {
         try {
-
             const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
             // provider._isProvider   判断是否还有请求没有结束
             // 请求用户授权连接钱包
             await (window as any).ethereum.request({method: 'eth_requestAccounts'});
             const account = await provider.send("eth_requestAccounts", []);
+            console.log(account)
             // 连接的网络和链信息。
             // const chain = await provider.getNetwork();
             // 获取签名
@@ -239,33 +248,29 @@ function Layout() {
                 return null
             }
         },
-        []
-    )
-    const connect = useCallback(
-        async () => {
-            try {
-                const requiredNamespaces = getRequiredNamespaces(['eip155:1']);
-                const optionalNamespaces = getOptionalNamespaces(['eip155:1']);
-                const {uri, approval} = await client.connect({
-                    requiredNamespaces,
-                    optionalNamespaces,
-                });
-                if (uri) {
-                    const standaloneChains = Object.values(requiredNamespaces)
-                        .map((namespace) => namespace.chains)
-                        .flat()
-                    await web3Modal.openModal({uri, standaloneChains});
-                }
-                const ab = await approval();
-                await onSessionConnected(ab, 'yes', client);
-            } catch (e) {
-                return null
-            } finally {
-                web3Modal.closeModal();
+        [])
+    const connect = useCallback(async () => {
+        try {
+            const requiredNamespaces = getRequiredNamespaces(['eip155:1']);
+            const optionalNamespaces = getOptionalNamespaces(['eip155:1']);
+            const {uri, approval} = await client.connect({
+                requiredNamespaces,
+                optionalNamespaces,
+            });
+            if (uri) {
+                const standaloneChains = Object.values(requiredNamespaces)
+                    .map((namespace) => namespace.chains)
+                    .flat()
+                await web3Modal.openModal({uri, standaloneChains});
             }
-        },
-        [chains, client, onSessionConnected]
-    );
+            const ab = await approval();
+            await onSessionConnected(ab, 'yes', client);
+        } catch (e) {
+            return null
+        } finally {
+            web3Modal.closeModal();
+        }
+    }, [chains, client, onSessionConnected]);
     const [browser, setBrowser] = useState<any>(false)
     const [big, setBig] = useState<any>(false)
     useEffect(() => {
@@ -275,6 +280,13 @@ function Layout() {
             const jwtPar = JSON.parse(jwt)
             getUser(jwtPar?.uid, token, '', jwtPar)
         }
+        // 监测钱包切换
+        (window as any).ethereum.on('accountsChanged', function (accounts: any) {
+            setNewAccount(accounts[0])
+        })
+        // 监测链切换
+        // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
+        // })
     }, []);
     useEffect(() => {
         if (!client) {
