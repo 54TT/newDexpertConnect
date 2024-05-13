@@ -246,13 +246,16 @@ function Header() {
                     },
                     1500,
                     {trailing: false})} style={{width: browser ? "100px" : "80px", display: "block"}}/>
-                <img src="/gift.svg" alt="" style={{width: '25px', marginLeft: '20px', cursor: 'pointer'}}
+                <div style={{marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer'}}
                      onClick={throttle(
                          function () {
                              history('/activity')
                          },
                          1500,
-                         {trailing: false})}/>
+                         {trailing: false})}>
+                    <img src="/gift.svg" alt="" style={{width: '25px', cursor: 'pointer'}}/>
+                    <p style={{color: 'rgb(134,240,151)', marginLeft: '5px'}}>Airdrop</p>
+                </div>
             </div>
             {browser && (
                 <p className={`headerCenter dis`}>
