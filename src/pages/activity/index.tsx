@@ -124,6 +124,8 @@ function Index() {
             } else {
                 setLoading(false)
             }
+        } else {
+            setLoading(false)
         }
     }
     useEffect(() => {
@@ -169,6 +171,8 @@ function Index() {
             } else {
                 setLoading(false)
             }
+        } else {
+            setLoading(false)
         }
     }
     const verify = async (id: string, index: string) => {
@@ -190,6 +194,8 @@ function Index() {
                 }
                 setLoading(false)
             }
+        } else {
+            setLoading(false)
         }
     }
     const operate = (isCompleted: string, title: string) => {
@@ -220,6 +226,8 @@ function Index() {
         if (res?.status === 200 && res?.data?.url) {
             window.open(res?.data?.url)
             setLoading(false)
+        } else {
+            setLoading(false)
         }
     }
 
@@ -229,7 +237,6 @@ function Index() {
             if (option === 1) {
                 if (title.includes('Telegram')) {
                     signIn(token, '/api/v1/telegram/signInChannelLink')
-
                 } else if (title.includes('Discord')) {
                     signIn(token, '/api/v1/discord/signInChannelLink')
                 } else if (title.includes('Twitter')) {
@@ -403,19 +410,15 @@ function Index() {
                                     {
                                         data.length > 0 && data[0]?.campaign?.noticeUrl?.length > 0 ?
                                             data[0]?.campaign?.noticeUrl.concat(data[0]?.campaign?.noticeUrl).map((i: string, ind: number) => {
-                                                return <SwiperSlide key={ind}
-                                                                    style={{
-                                                                        height: browser ? '72vh' : '215px',
-                                                                        display: 'flex',
-                                                                        alignItems: 'center',
-                                                                        justifyContent: 'center',
-                                                                    }}><img
-                                                    loading={'lazy'}
-                                                    className={'activeImgHover'}
-                                                    src={i} onClick={
-                                                    throttle(function () {
-                                                    }, 1500, {'trailing': false})
-                                                } alt=""/></SwiperSlide>
+                                                return <SwiperSlide key={ind} style={{
+                                                    height: browser ? '72vh' : '215px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}>
+                                                    <img loading={'lazy'} className={'activeImgHover'} src={i}
+                                                         onClick={throttle(function () {
+                                                         }, 1500, {'trailing': false})} alt=""/></SwiperSlide>
                                             }) : ''
                                     }
                                 </Swiper>
