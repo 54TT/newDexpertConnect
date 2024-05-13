@@ -281,9 +281,11 @@ function Layout() {
             getUser(jwtPar?.uid, token, '', jwtPar)
         }
         // 监测钱包切换
-        (window as any).ethereum.on('accountsChanged', function (accounts: any) {
-            setNewAccount(accounts[0])
-        })
+        if( (window as any).ethereum){
+            (window as any).ethereum.on('accountsChanged', function (accounts: any) {
+                setNewAccount(accounts[0])
+            })
+        }
         // 监测链切换
         // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
         // })
