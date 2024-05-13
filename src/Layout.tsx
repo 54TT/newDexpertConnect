@@ -281,7 +281,7 @@ function Layout() {
             getUser(jwtPar?.uid, token, '', jwtPar)
         }
         // 监测钱包切换
-        if( (window as any).ethereum){
+        if ((window as any).ethereum) {
             (window as any).ethereum.on('accountsChanged', function (accounts: any) {
                 setNewAccount(accounts[0])
             })

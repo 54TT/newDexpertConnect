@@ -245,17 +245,7 @@ function Header() {
                         window.open("https://info.dexpert.io/");
                     },
                     1500,
-                    {trailing: false})} style={{width: browser ? "100px" : "80px", display: "block"}}/>
-                <div style={{marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer'}}
-                     onClick={throttle(
-                         function () {
-                             history('/activity')
-                         },
-                         1500,
-                         {trailing: false})}>
-                    <img src="/gift.svg" alt="" style={{width: '25px', cursor: 'pointer'}}/>
-                    <p style={{color: 'rgb(134,240,151)', marginLeft: '5px'}}>Airdrop</p>
-                </div>
+                    {trailing: false})} style={{width: "100px", display: "block", cursor: 'pointer'}}/>
                 {/*<div style={{display:'flex'}}>*/}
                 {/*    <img src="/EthereumCoin.svg" alt="" style={{width:'30px'}}/>*/}
                 {/*    <p className={'headLineP'}>111111</p>*/}
@@ -283,6 +273,18 @@ function Header() {
                 </p>
             )}
             <div className={'headerData'} style={{justifyContent: browser ? 'center' : 'flex-end'}}>
+                <div style={{marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer'}}
+                     onClick={throttle(
+                         function () {
+                             history('/activity')
+                         },
+                         1500,
+                         {trailing: false})}>
+                    <img src="/gift.svg" alt="" style={{width: '25px', cursor: 'pointer', marginRight: '10px'}}/>
+                    {
+                        browser && <p style={{color: 'rgb(134,240,151)', margin: '0 10px 0 0'}}>Airdrop</p>
+                    }
+                </div>
                 {user?.uid ? (
                     <>
                         {browser ? (
@@ -340,7 +342,7 @@ function Header() {
                                 loading={"lazy"}
                                 src="/wallet.svg"
                                 onClick={loginModal}
-                                style={{width: "40%"}}
+                                style={{width: "25%"}}
                                 alt=""
                             />
                         )}

@@ -49,7 +49,6 @@ function Tweets({
     //     hidden: { y: '100%', opacity: 0 },
     //     visible: { y: '-100%', opacity: 1 },
     // };
-
     const clickLike = throttle(async function (e: any) {
         e.stopPropagation();
         const token = cookie.get('token')

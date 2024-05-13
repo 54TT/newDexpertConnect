@@ -53,7 +53,6 @@ function Index() {
     const [rankList, setRankList] = useState<any>([])
     const [isRankList, setIsRankList] = useState(true)
     const [value, setValue] = useState('')
-
     const getParams = async () => {
         const token = cookie.get('token')
         const res = await getAll({
@@ -251,7 +250,7 @@ function Index() {
                         setLoading(false)
                         setLink(res?.data?.intent)
                         setIsModalOpe(true)
-                    }else {
+                    } else {
                         setLoading(false)
                     }
                 }
@@ -380,6 +379,11 @@ function Index() {
             })
             if (res?.data?.message === 'success' && res?.status === 200) {
                 getParams()
+            } else if (res?.data?.code === '400') {
+                setLoad(true)
+                MessageAll('warning', res?.data?.message)
+            }else {
+                setLoad(true)
             }
         }
     }
@@ -505,7 +509,7 @@ function Index() {
                         <div className={'activeOptions'}
                              style={{width: browser ? '72%' : '92%', margin: browser ? '35px auto 42px' : '20px auto'}}>
                             {
-                                [t('Active.Special'), t('Active.First'),t('Active.Daily'),  t('Active.Ranking')].map((i: string, ind: number) => {
+                                [t('Active.Special'), t('Active.First'), t('Active.Daily'), t('Active.Ranking')].map((i: string, ind: number) => {
                                     return <div style={{
                                         backgroundColor: show ? option === ind ? 'rgb(134,240,151)' : '' : '',
                                         color: show ? ind === 0 ? 'gray' : option === ind ? 'black' : 'white' : 'white',
@@ -545,9 +549,9 @@ function Index() {
                                             data.length > 0 ? data.map((i: any) => {
                                                     let at: any = []
                                                     if (option === 1) {
-                                                        at = i?.dailTasks
-                                                    } else {
                                                         at = i?.tasks
+                                                    } else {
+                                                        at = i?.dailTasks
                                                     }
                                                     if (at.length > 0) {
                                                         return at.map((it: any, index: number) => {
@@ -586,7 +590,7 @@ function Index() {
                                                                             </div>
                                                                     }
                                                                     {
-                                                                        option === 1 && Number(it?.isCompleted) !== 3 &&
+                                                                        option === 2 && Number(it?.isCompleted) !== 3 &&
                                                                         <p className={'verify'}
                                                                            onClick={() => {
                                                                                if (it?.title.includes('Twitter')) {
@@ -630,11 +634,11 @@ function Index() {
                     <Loading status={'20'}/>
             }
             <Modal centered
-                   title={select?.title?.includes('Twitter') && option === 1 ? t('Dpass.how') : t('Dpass.plea')}
+                   title={select?.title?.includes('Twitter') && option === 2 ? t('Dpass.how') : t('Dpass.plea')}
                    className={'activeModal'} open={isModalOpen} maskClosable={false}
                    footer={null} onCancel={handleCancel}>
                 {
-                    select?.title?.includes('Twitter') && option === 1 ?
+                    select?.title?.includes('Twitter') && option === 2 ?
                         <TwitterRelease handleCancel={handleCancel} openLink={openLink} setValue={setValue}
                                         Confirm={Confirm}/> :
                         <Revalidate openLink={openLink} select={select?.title}/>
