@@ -1,18 +1,27 @@
-import { gql,  useQuery} from "@apollo/client";
-import {useEffect, useState,} from "react";
+import {gql, useQuery} from "@apollo/client";
+import {useContext, useEffect, useState} from "react";
 import {cloneDeep, differenceBy} from "lodash";
 import {judgeStablecoin} from '../../utils/judgeStablecoin.ts'
+import {CountContext} from "../Layout.tsx";
+
 function GetNewPair() {
+    const {switchChain,}: any = useContext(CountContext);
     const [current, setCurrent] = useState(1);
     const [ethPrice, setEthprice] = useState<string>('')
     const [moreLoad, setMoreLoad] = useState(false)
     const [polling, setPolling] = useState<boolean>(false)
     const [tableDta, setDta] = useState([])
-    const [tableDtaLoad, setDtaLoad] = useState(true)
+    const [wait, setWait] = useState<boolean>(true)
     const [page, setPage] = useState<any>(5)
     const getPage = (name: number) => {
         setPage(name)
     }
+    useEffect(() => {
+        setEthprice('')
+        setDta([])
+        setWait(true)
+        setCurrent(1)
+    }, [switchChain]);
     const GET_DATA = gql`query LiveNewPair {
   _meta {
     block {
@@ -97,7 +106,7 @@ function GetNewPair() {
         const interval = setInterval(async () => {
             setPolling(true)
             refetch();
-        }, 8000);
+        }, 10000);
         return () => {
             clearInterval(interval);
         }
@@ -135,16 +144,18 @@ function GetNewPair() {
             }
         }
         setMoreLoad(false)
-        setDtaLoad(false)
         setPolling(false)
     }
     useEffect(() => {
         if (!loading) {
+            setWait(false)
             if (data && data?.pairs.length > 0) {
                 getParams(data.pairs)
                 const abc = data.bundles
                 const price = abc[0].ethPrice
                 setEthprice(parseFloat(Number(price).toFixed(1)).toString())
+            } else {
+
             }
         }
     }, [data]);
@@ -153,7 +164,7 @@ function GetNewPair() {
         setMoreLoad(true)
         refetch()
     }
-    return {ethPrice, moreLoad, tableDta, getPage, setDta, changePage, tableDtaLoad}
+    return {ethPrice, moreLoad, wait, tableDta, getPage, setDta, changePage}
 }
 
 export default GetNewPair;

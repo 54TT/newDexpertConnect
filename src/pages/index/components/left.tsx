@@ -8,16 +8,18 @@ import {CountContext} from "../../../Layout.tsx";
 import newPair from "../../../components/getNewPair.tsx";
 import {useTranslation} from "react-i18next";
 import {getGas} from "../../../../utils/getGas.ts";
+import Nodata from '../../../components/Nodata.tsx'
+
 function Left() {
     const hei = useRef<any>()
-    const {ethPrice, moreLoad, tableDta, setDta, changePage, tableDtaLoad, getPage} = newPair() as any
-    const {browser,}: any = useContext(CountContext);
+    const {ethPrice, moreLoad, tableDta, setDta, wait, changePage, getPage} = newPair() as any
+    const {browser}: any = useContext(CountContext);
     const [tableHei, setTableHei] = useState('')
     const [select, setSelect] = useState('newPair')
     const [time, setTime] = useState('24h')
     const [gas, setGas] = useState<string>('')
-    const gasOb=async ()=>{
-        const data:any =await getGas()
+    const gasOb = async () => {
+        const data: any = await getGas()
         setGas(data)
     }
     useEffect(() => {
@@ -37,9 +39,6 @@ function Left() {
     };
     const changSeg = (e: string) => {
         setTime(e)
-    }
-    const changeInput = (e: any) => {
-        console.log(e)
     }
     const {t} = useTranslation();
 
@@ -65,7 +64,6 @@ function Left() {
                     browser &&
                     <Input autoComplete={'off'}
                            suffix={<SearchOutlined style={{fontSize: '16px', color: 'white', display: 'none'}}/>}
-                           onChange={changeInput}
                            allowClear className={'indexInput'}/>
                 }
                 <div className={`indexRight dis`}>
@@ -104,8 +102,9 @@ function Left() {
                             loader={null}
                             dataLength={tableDta.length}>
                             {
-                                tableDtaLoad ? <Loading status={'20'}/> : tableDta.length > 0 ?
-                                    <NewPair tableDta={tableDta} time={time} setDta={setDta}/> : <p>no Data</p>
+                                wait ? <Loading status={'20'}/> : tableDta.length > 0 ?
+                                    <NewPair tableDta={tableDta} time={time} setDta={setDta}/> :<Nodata/>
+
                             }
                         </InfiniteScroll>
                     </div>

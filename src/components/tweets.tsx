@@ -20,14 +20,13 @@ interface TweetsPropsType {
     user?: any;
     name: any;
     type?: 'comment' | 'post' | 'reply';
-    onPublish?: () => void;
+    onPublish?: any;
     setDel?: any,
     status?: any
 }
 
 function Tweets({
-                    name, type = 'post', status, setDel, onPublish = () => {
-    }
+                    name, type = 'post', status, setDel, onPublish
                 }: TweetsPropsType) {
     const {getAll} = Request()
     const {t} = useTranslation();
@@ -103,7 +102,9 @@ function Tweets({
     const handleAddComment = () => {
         // 设置评论数量
         setLocalData({...localData, commentNum: localData?.commentNum ? Number(localData?.commentNum) + 1 : 1});
-        onPublish?.()
+        if (onPublish) {
+            onPublish?.()
+        }
         setOpenComment(false);
     }
     const handleToDetail = throttle(function () {
@@ -248,7 +249,7 @@ function Tweets({
             </div>
             <PostSendModal type={type === "post" ? "comment" : "reply"} postData={localData}
                            className='comment-send-model' open={openComment}
-                           onClose={() => setOpenComment(false)} onPublish={() => handleAddComment()}/>
+                           onClose={() => setOpenComment(false)} onPublish={handleAddComment}/>
         </>
     );
 }

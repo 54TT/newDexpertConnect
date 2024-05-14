@@ -18,14 +18,15 @@ function ChooseChain() {
     }, {value: 'Celo', icon: '/Celo.svg'},]
     const [value, setValue] = useState<any>({value: 'Ethereum', icon: '/EthereumChain.svg'})
     const [open, setOpen] = useState<any>(false)
-    const click =      throttle( function (i: any) {
+    const click = throttle(function (i: any) {
         if (value !== i) {
-            setValue(i)
-            setSwitchChain(i?.value)
-            setOpen(false)
+            if (i?.value === 'Ethereum' || i?.value === 'BASE' || i?.value === 'Arbitrum') {
+                setValue(i)
+                setSwitchChain(i?.value)
+                setOpen(false)
+            }
         }
     }, 1500, {'trailing': false})
-
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
     };
@@ -34,7 +35,9 @@ function ChooseChain() {
             data.map((i: any, ind: number) => {
                 return <div key={ind} className={'chain'} onClick={() => click(i)}>
                     <img src={i?.icon} alt="" style={{width: i?.value === 'Arbitrum' ? '20px' : '18px'}}/>
-                    <span>{i?.value}</span></div>
+                    <span
+                        style={{color: i?.value === 'Ethereum' || i?.value === 'BASE' || i?.value === 'Arbitrum' ? 'white' : 'gray'}}>{i?.value}</span>
+                </div>
             })
         }
     </div>

@@ -1,5 +1,5 @@
 import Header, {I18N_Key} from './components/header.tsx'
-import {Route, Routes, useLocation, useNavigate, useSearchParams,} from "react-router-dom";
+import {Route, Routes, useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import './style/all.less';
 import React, {createContext, Suspense, useCallback, useEffect, useRef, useState} from 'react'
 import {getAppMetadata, getSdkError} from "@walletconnect/utils";
@@ -137,16 +137,9 @@ function Layout() {
             handleLogin()
         } else {
             MessageAll('warning', t('Market.inst'))
+            setLoad(false)
         }
     }, 800)
-    useEffect(() => {
-        // const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
-        // provider.on("network", (newNetwork: any, oldNetwork: any) => {
-        //     console.log(newNetwork, oldNetwork)
-        //     if (oldNetwork) {
-        //     }
-        // });
-    }, []);
     const handleLogin = async () => {
         try {
             const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
@@ -171,6 +164,8 @@ function Layout() {
                         const message = token?.data?.nonce
                         const sign = await signer.signMessage(message)
                         login(sign, account[0], message, 'more')
+                    } else {
+                        setLoad(false)
                     }
                 } catch (err) {
                     setLoad(false)
@@ -178,6 +173,7 @@ function Layout() {
                 }
             } else {
                 MessageAll('warning', t('Market.log'))
+                setLoad(false)
             }
             setLoad(false)
         } catch (err) {
@@ -376,15 +372,14 @@ function Layout() {
         changeLan,
         setChangeLan, setUserPar, switchChain, setSwitchChain
     }
-
     const chain: any = {
         Ethereum: 'https://dexpertpairs.lol/subgraphs/name/ethereum/uniswapv2',
         Arbitrum: "https://dexpertpairs.lol/subgraphs/name/arbitrum/uniswapv2",
         BASE: 'https://dexpertpairs.lol/subgraphs/name/base/uniswapv2'
     }
-    const li = chain[switchChain]
+    const nowChain = chain[switchChain]
     const clients = new ApolloClient({
-        uri: li,
+        uri: nowChain,
         cache: new InMemoryCache(),
     });
     return (
@@ -397,7 +392,7 @@ function Layout() {
             }}/>}>
                 <CountContext.Provider value={value}>
                     <Header/>
-                    <div className={big ? 'bigCen' : ''} style={{marginTop: '45px'}}>
+                    <div className={big ? 'bigCen' : ''} style={{marginTop: '50px'}}>
                         <Routes>
                             <Route path="/" element={<Index/>}/>
                             <Route path="/newpairDetails/:id" element={<NewpairDetails/>}/>

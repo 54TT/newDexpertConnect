@@ -39,8 +39,7 @@ const RenderCommentTweet = ({data = {}, type}: any) => {
     /*  useEffect(() => {
        getCommentReply();
      }, []) */
-    return data ? <Tweets name={renderData} type={type} onPublish={() => console.log('123123')
-    }/> : <></>
+    return data ? <Tweets name={renderData} type={type}/> : <></>
 }
 const PostDetail = () => {
     const {getAll} = Request()
@@ -90,8 +89,7 @@ const PostDetail = () => {
 
     }, [reply])
     const CommentTweets = useCallback(() => reply ?
-        <Tweets type={reply ? 'reply' : 'comment'} name={localReplyDetail} onPublish={() => getCommentOrReplyData()
-        }/> : <></>, [localReplyDetail, reply])
+        <Tweets type={reply ? 'reply' : 'comment'} name={localReplyDetail} onPublish={getCommentOrReplyData}/> : <></>, [localReplyDetail, reply])
     return <div id='scrollabelDetail' style={{height: 'calc(100vh - 54px )', overflow: 'auto'}}>
         <p style={{padding: '20px 20px 0'}}><ArrowLeftOutlined
             style={{fontSize: '20px', color: 'white', cursor: 'pointer'}} onClick={

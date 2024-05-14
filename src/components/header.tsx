@@ -236,9 +236,6 @@ function Header() {
             }
         },
         1500, {trailing: false});
-
-
-
     return (
         <div className={"headerBox"}>
             <div style={{display: "flex", alignItems: "center",}}>
