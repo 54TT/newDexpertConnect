@@ -18,6 +18,7 @@ import _ from 'lodash';
 import {MessageAll} from "./components/message.ts";
 import {useTranslation} from "react-i18next";
 import {Spin} from "antd";
+import {chain} from '../utils/judgeStablecoin.ts'
 
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'))
 const NewpairDetails = React.lazy(() => import('./pages/newpairDetails/index.tsx'))
@@ -147,7 +148,6 @@ function Layout() {
             // 请求用户授权连接钱包
             await (window as any).ethereum.request({method: 'eth_requestAccounts'});
             const account = await provider.send("eth_requestAccounts", []);
-            console.log(account)
             // 连接的网络和链信息。
             // const chain = await provider.getNetwork();
             // 获取签名
@@ -372,14 +372,8 @@ function Layout() {
         changeLan,
         setChangeLan, setUserPar, switchChain, setSwitchChain
     }
-    const chain: any = {
-        Ethereum: 'https://dexpertpairs.lol/subgraphs/name/ethereum/uniswapv2',
-        Arbitrum: "https://dexpertpairs.lol/subgraphs/name/arbitrum/uniswapv2",
-        BASE: 'https://dexpertpairs.lol/subgraphs/name/base/uniswapv2'
-    }
-    const nowChain = chain[switchChain]
     const clients = new ApolloClient({
-        uri: nowChain,
+        uri: chain[switchChain],
         cache: new InMemoryCache(),
     });
     return (

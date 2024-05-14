@@ -1,11 +1,11 @@
 import {ethers} from "ethers";
-
-export const getGas = async () => {
-    const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.g.alchemy.com/v2/BhTc3g2lt1Qj3IagsyOJsH5065ueK1Aw')
+import {rpcLink} from './judgeStablecoin.ts'
+export const getGas = async (chain:string) => {
+    const provider = new ethers.providers.JsonRpcProvider(rpcLink[chain])
     const gasAVGPrice = await provider.send('eth_gasPrice', [])
     const gasAVGPriceInWei = parseInt(gasAVGPrice, 16)
     if (gasAVGPriceInWei) {
         const abc = Number(gasAVGPriceInWei) / (10 ** 9)
-        return parseFloat(abc.toFixed(1)).toString()
+        return abc.toFixed(2).replace(/\.?0*$/, '')
     }
 }

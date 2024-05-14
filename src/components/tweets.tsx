@@ -117,7 +117,7 @@ function Tweets({
         if (type === 'reply' || type === 'comment') {
             if (type === 'reply' && user?.uid === localData.user.uid) return;
             localStorage.setItem('reply-detail', JSON.stringify(localData))
-            history(`/community/comment?reply=${localData.id}`, {replace: true})
+            history(`/community/comment?reply=${localData.id}`)
             return;
         }
         localStorage.setItem('post-detail', JSON.stringify(localData))

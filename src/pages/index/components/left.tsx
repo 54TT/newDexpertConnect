@@ -1,5 +1,5 @@
 import {Input, Segmented, Select} from "antd";
-import {SearchOutlined} from "@ant-design/icons";
+import {LoadingOutlined, SearchOutlined} from "@ant-design/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "../../../components/loading.tsx";
 import NewPair from "./newPairDate.tsx";
@@ -8,19 +8,22 @@ import {CountContext} from "../../../Layout.tsx";
 import newPair from "../../../components/getNewPair.tsx";
 import {useTranslation} from "react-i18next";
 import {getGas} from "../../../../utils/getGas.ts";
-import Nodata from '../../../components/Nodata.tsx'
-
+import Nodata from '../../../components/Nodata.tsx';
 function Left() {
     const hei = useRef<any>()
     const {ethPrice, moreLoad, tableDta, setDta, wait, changePage, getPage} = newPair() as any
-    const {browser}: any = useContext(CountContext);
+    const {browser, switchChain}: any = useContext(CountContext);
     const [tableHei, setTableHei] = useState('')
     const [select, setSelect] = useState('newPair')
     const [time, setTime] = useState('24h')
     const [gas, setGas] = useState<string>('')
+    const [gasLoad, setGasLoad] = useState(true)
     const gasOb = async () => {
-        const data: any = await getGas()
-        setGas(data)
+        const data: any = await getGas(switchChain)
+        if (data) {
+            setGasLoad(false)
+            setGas(data)
+        }
     }
     useEffect(() => {
         if (hei && hei.current) {
@@ -29,11 +32,12 @@ function Left() {
             const o: any = w - h - 50 - 90
             setTableHei(o)
         }
-        gasOb()
         getPage(25)
     }, [])
-
-
+    useEffect(() => {
+        gasOb()
+        setGasLoad(true)
+    }, [switchChain]);
     const handleChange = (value: string) => {
         setSelect(value)
     };
@@ -41,7 +45,6 @@ function Left() {
         setTime(e)
     }
     const {t} = useTranslation();
-
     return (
         <div className={'indexBox'} style={{width: browser ? '74%' : 'auto'}}>
             {/* top*/}
@@ -69,7 +72,11 @@ function Left() {
                 <div className={`indexRight dis`}>
                     <p style={{marginRight: '10px'}}><img src="/eth.svg" loading={'lazy'}
                                                           alt=""/><span>$:{ethPrice}</span></p>
-                    <p><img loading={'lazy'} src="/gas.svg" alt=""/><span>{gas}</span></p>
+                    <p><img loading={'lazy'} src="/gas.svg" alt=""/>
+                        {
+                            gasLoad ? <LoadingOutlined/> : <span>{gas}</span>
+                        }
+                    </p>
                 </div>
             </div>
             <div style={{width: '100%', overflow: browser ? 'hidden' : 'auto'}}>
@@ -103,7 +110,7 @@ function Left() {
                             dataLength={tableDta.length}>
                             {
                                 wait ? <Loading status={'20'}/> : tableDta.length > 0 ?
-                                    <NewPair tableDta={tableDta} time={time} setDta={setDta}/> :<Nodata/>
+                                    <NewPair tableDta={tableDta} time={time} setDta={setDta}/> : <Nodata/>
 
                             }
                         </InfiniteScroll>

@@ -1,6 +1,6 @@
 import {CaretDownOutlined, CaretUpOutlined,} from '@ant-design/icons';
 import {Progress} from 'antd';
-import {useEffect, useState} from "react";
+import {useEffect, useState,useContext} from "react";
 import {setMany, simplify} from '../../../../utils/change.ts';
 import Copy from '../../../components/copy.tsx';
 import dayjs from "dayjs";
@@ -8,9 +8,11 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import {throttle} from "lodash";
 import {useTranslation} from 'react-i18next';
 import {judgeStablecoin} from '../../../../utils/judgeStablecoin.ts'
+import {CountContext} from "../../../Layout.tsx";
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({par}: any) {
     const h = window.innerHeight - 25 - 54
+    const {switchChain,}: any = useContext(CountContext);
     const [status, setStatus] = useState(false)
     const [pairStatus, setPairStatus] = useState(false)
     const {t} = useTranslation();
@@ -26,7 +28,7 @@ function Left({par}: any) {
             }, 4000);
         }
     }, [status, pairStatus]);
-    const value = judgeStablecoin(par?.token0?.id, par?.token1?.id)
+    const value = judgeStablecoin(par?.token0?.id, par?.token1?.id,switchChain)
     const float = par?.pairDayData[0]?.priceChange && Number(par?.pairDayData[0]?.priceChange) > 0 ? 1 : Number(par?.pairDayData[0]?.priceChange) < 0 ? -1 : 0
     const market = Number(par?.MKTCAP) ? setMany(Number(par?.MKTCAP)) : 0
     const fdv = Number(par?.FDV) ? setMany(Number(par?.FDV)) : 0

@@ -7,7 +7,7 @@ import {CountContext} from "../Layout.tsx";
 function GetNewPair() {
     const {switchChain,}: any = useContext(CountContext);
     const [current, setCurrent] = useState(1);
-    const [ethPrice, setEthprice] = useState<string>('')
+    const [ethPrice, setEthprice] = useState<string>('0')
     const [moreLoad, setMoreLoad] = useState(false)
     const [polling, setPolling] = useState<boolean>(false)
     const [tableDta, setDta] = useState([])
@@ -17,7 +17,7 @@ function GetNewPair() {
         setPage(name)
     }
     useEffect(() => {
-        setEthprice('')
+        setEthprice('0')
         setDta([])
         setWait(true)
         setCurrent(1)
@@ -30,7 +30,7 @@ function GetNewPair() {
     }
   }
   bundles {
-    ethPrice
+    ${switchChain === 'Polygon' ? 'maticPrice' : switchChain === 'BNB' ? 'bnbPrice' : 'ethPrice'}
   }
   pairs(first: ${page}, orderBy: createdAtTimestamp,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
     createdAtTimestamp
@@ -120,7 +120,7 @@ function GetNewPair() {
     const getParams = (par: any) => {
         const a = cloneDeep(par)
         const p = a.map((i: any) => {
-            const value = judgeStablecoin(i?.token0?.id, i?.token1?.id)
+            const value = judgeStablecoin(i?.token0?.id, i?.token1?.id, switchChain)
             if (value === 1) {
                 const token0 = i.token0
                 i.token0 = i.token1
@@ -153,7 +153,11 @@ function GetNewPair() {
                 getParams(data.pairs)
                 const abc = data.bundles
                 const price = abc[0].ethPrice
-                setEthprice(parseFloat(Number(price).toFixed(1)).toString())
+                if (price) {
+                    setEthprice(Number(price).toFixed(1).replace(/\.?0*$/, ''))
+                } else {
+                    setEthprice('0')
+                }
             } else {
 
             }

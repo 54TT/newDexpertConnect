@@ -57,27 +57,29 @@ function Date({tableDta, time, setDta}: any) {
                                     letterSpacing: '-1px',
                                     lineHeight: '1.2'
                                 }}>{dayjs.unix(create).fromNow()}</div>
-                          <div style={{color: 'white'}}>{setMany(record?.initialReserve)} ETH</div>
+                            <div style={{color: 'white'}}>{setMany(record?.initialReserve)} ETH</div>
                             <div
                                 style={{color: 'white'}}>{dateTime && dateTime.length > 0 ? Number(dateTime[0]?.swapTxns) : 0}</div>
                             <div style={{color: 'white'}}>{li}</div>
-                            <div className={`dis indexTableLogo`}>
-                                <img loading={'lazy'} src="/ethLogo.svg" alt="" onClick={
-                                    throttle(function (e: any) {
-                                        e.stopPropagation()
-                                        window.open('https://etherscan.io/token/' + record?.token0?.id)
-                                    }, 1500, {'trailing': false})}/>
-                                <img loading={'lazy'} onClick={throttle(function (e: any) {
-                                    e.stopPropagation()
-                                    window.open('https://app.uniswap.org/#/swap?inputCurrency=' + record?.token1?.id + '&outputCurrency=' + record?.token1?.id)
-                                }, 1500, {'trailing': false})}
-                                     src="/feima.svg" style={{margin: '0 5px'}}
-                                     alt=""/>
-                                <img loading={'lazy'} onClick={throttle(function (e: any) {
-                                    e.stopPropagation()
-                                    window.open('https://app.uncx.network/amm/uni-v2/pair/' + record?.id)
-                                }, 1500, {'trailing': false})}
-                                     src="/uncx.svg" alt=""/></div>
+                            <div className={`dis indexTableLogo logoSet`}>
+                                {
+                                    ['/ethLogo.svg', '/feima.svg', '/uncx.svg'].map((i: string, index: number) => {
+                                        return <div className={'imgBox'} key={index}>
+                                            <img loading={'lazy'} src={i} alt="" onClick={
+                                                throttle(function (e: any) {
+                                                    e.stopPropagation()
+                                                    if (ind === 0) {
+                                                        window.open('https://etherscan.io/token/' + record?.token0?.id)
+                                                    } else if (ind === 1) {
+                                                        window.open('https://app.uniswap.org/#/swap?inputCurrency=' + record?.token1?.id + '&outputCurrency=' + record?.token1?.id)
+                                                    } else if (ind === 2) {
+                                                        window.open('https://app.uncx.network/amm/uni-v2/pair/' + record?.id)
+                                                    }
+                                                }, 1500, {'trailing': false})}/>
+                                        </div>
+                                    })
+                                }
+                            </div>
                         </div>
                 })
             }
