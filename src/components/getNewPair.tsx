@@ -93,7 +93,6 @@ function GetNewPair() {
   }
 }`
     const {loading, data, refetch} = useQuery(GET_DATA) as any
-    console.log(data)
     useEffect(() => {
         const interval = setInterval(async () => {
             setPolling(true)

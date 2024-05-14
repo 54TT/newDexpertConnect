@@ -272,16 +272,16 @@ function Header() {
                 </p>
             )}
             <div className={'headerData'} style={{justifyContent: browser ? 'center' : 'flex-end'}}>
-                <div style={{marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer'}}
+                <div style={{marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer',marginRight: '13px'}}
                      onClick={throttle(
                          function () {
                              history('/activity')
                          },
                          1500,
                          {trailing: false})}>
-                    <img src="/gift.svg" alt="" style={{width: '25px', cursor: 'pointer', marginRight: '10px'}}/>
+                    <img src="/gift.svg" alt="" style={{width: '25px', cursor: 'pointer'}}/>
                     {
-                        browser && <p style={{color: 'rgb(134,240,151)', margin: '0 10px 0 0'}}>Airdrop</p>
+                        browser && <p style={{color: 'rgb(134,240,151)'}}>Airdrop</p>
                     }
                 </div>
                 {user?.uid ? (
