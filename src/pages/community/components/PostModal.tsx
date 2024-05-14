@@ -16,7 +16,7 @@ interface PostSendModaltypeProps extends React.PropsWithChildren {
 function PostSendModal({ open, modalProps, className = "", onClose, content, onPublish, ...props }: PostSendModaltypeProps) {
   const ModalTitle = () => {
     return <>
-      <Button icon={<CloseOutlined />} shape="circle" type="text" onClick={() => onClose()} />
+      <Button icon={<CloseOutlined />} shape="circle" type="text" onClick={ onClose} />
     </>
   }
   return <Modal destroyOnClose centered  width='600px' maskClosable={false} title={<ModalTitle />} className={classNames(className, 'post-send-modal')} open={open} {...modalProps} footer={null} closeIcon={null}>

@@ -1,14 +1,8 @@
 import RightCard from "./RightCard";
 import newPair from "../../../components/getNewPair.tsx";
 import {useEffect, useState} from "react";
-import {ApolloClient, gql, InMemoryCache, useQuery} from "@apollo/client";
+import { gql,  useQuery} from "@apollo/client";
 import {useTranslation} from "react-i18next";
-
-const client = new ApolloClient({
-  // uri: "http://165.232.163.158:8000/subgraphs/name/levi/uniswapv2",
-  uri: 'https://api.thegraph.com/subgraphs/id/QmZXJ7oEnjq9vv5kAQ2G3aXK5ZVCxjG9gZsk3Evo45Q1xy',
-  cache: new InMemoryCache(),
-});
 
 function CommunityRight() {
     const [par, setPar] = useState([]);
@@ -54,7 +48,7 @@ function CommunityRight() {
       }
     }
   `;
-    const {loading, data, refetch} = useQuery(GET_DATA, {client}) as any;
+    const {loading, data, refetch} = useQuery(GET_DATA) as any;
     const {getPage} = newPair() as any;
     useEffect(() => {
         const interval = setInterval(async () => {

@@ -168,9 +168,10 @@ export default function ContactList() {
                 {
                     postTab.map((tab: FollowTabType, ind: number) => <div key={ind}
                                                                           className={classNames("community-content-post-tab-item", {"post-tab-item-active": activeTab === tab.key})}
-                                                                          onClick={() => {
+                                                                          onClick={
+                                                                              throttle( function () {
                                                                               setActiveTab(tab.key)
-                                                                          }}>
+                                                                              }, 1500, {'trailing': false})}>
                         <span>{tab.label}</span></div>)
                 }
             </div>
@@ -198,11 +199,12 @@ export default function ContactList() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
-            }} onClick={() => {
+            }} onClick={
+                throttle( function () {
                 getContactList(page + 1)
                 setPage(page + 1)
                 setIsNext(true)
-            }}><span style={{cursor: 'pointer'}}>{t('Common.Next')}</span>
+                }, 1500, {'trailing': false})}><span style={{cursor: 'pointer'}}>{t('Common.Next')}</span>
                 {
                     isNext ? <LoadingOutlined/> : <CaretDownOutlined/>
                 }

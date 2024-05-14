@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from "react";
-import {Collapse, Drawer, Dropdown} from "antd";
+import {Collapse, Drawer, Dropdown, } from "antd";
 import {CountContext} from "../Layout.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {LoadingOutlined,} from "@ant-design/icons";
@@ -8,7 +8,7 @@ import HeaderModal from "./headerModal.tsx";
 import {throttle} from "lodash";
 import {useTranslation} from "react-i18next";
 import getBalance from '../../utils/getBalance.ts'
-
+import ChooseChain from './chooseChain.tsx'
 export type I18N_Key = "zh_CN" | "en_US";
 
 function Header() {
@@ -27,7 +27,6 @@ function Header() {
             setIsBalance(true)
         }
     }
-
     useEffect(() => {
         if (user?.address) {
             get(user?.address)
@@ -237,6 +236,9 @@ function Header() {
             }
         },
         1500, {trailing: false});
+
+
+
     return (
         <div className={"headerBox"}>
             <div style={{display: "flex", alignItems: "center",}}>
@@ -245,11 +247,8 @@ function Header() {
                         window.open("https://info.dexpert.io/");
                     },
                     1500,
-                    {trailing: false})} style={{width: "100px", display: "block", cursor: 'pointer'}}/>
-                {/*<div style={{display:'flex'}}>*/}
-                {/*    <img src="/EthereumCoin.svg" alt="" style={{width:'30px'}}/>*/}
-                {/*    <p className={'headLineP'}>111111</p>*/}
-                {/*</div>*/}
+                    {trailing: false})} style={{width: "100px", display: "block", cursor: 'pointer',marginRight:'10px'}}/>
+                <ChooseChain/>
             </div>
             {browser && (
                 <p className={`headerCenter dis`}>
@@ -359,9 +358,7 @@ function Header() {
                         loading={"lazy"}
                         alt=""
                         style={{cursor: "pointer", width: "28px", marginLeft: "8px"}}
-                        onClick={() => {
-                            showDrawer();
-                        }}
+                        onClick={showDrawer}
                     />
                 )}
             </div>

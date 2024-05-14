@@ -2,6 +2,7 @@ import {useContext, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
 import {CountContext} from "../../../Layout.tsx";
+import {throttle} from "lodash";
 
 function Left() {
     const history = useNavigate();
@@ -57,7 +58,8 @@ function Left() {
                                 <p
                                     key={it}
                                     className={"list"}
-                                    onClick={() => {
+                                    onClick={
+                                        throttle( function () {
                                         if (valueData === 'D Pass') {
                                             if(user?.address) {
                                                 history('/Dpass')
@@ -71,7 +73,7 @@ function Left() {
                                                 }
                                             }
                                         }
-                                    }}
+                                        }, 1500, {'trailing': false})}
                                     style={{
                                         color:
                                             valueData === "Token Creation Bot"

@@ -5,13 +5,7 @@ import './compontent/all.less'
 import {useContext, useEffect, useState} from "react";
 import {useParams} from 'react-router-dom'
 import {CountContext} from "../../Layout.tsx";
-import {ApolloClient, gql, InMemoryCache, useQuery} from "@apollo/client";
-const client = new ApolloClient({
-    // uri: 'http://165.232.163.158:8000/subgraphs/name/levi/uniswapv2',
-    uri: 'https://api.thegraph.com/subgraphs/id/QmZXJ7oEnjq9vv5kAQ2G3aXK5ZVCxjG9gZsk3Evo45Q1xy',
-    cache: new InMemoryCache(),
-});
-
+import {gql, useQuery} from "@apollo/client";
 function Index() {
     const {browser}: any = useContext(CountContext)
     const params: any = useParams()
@@ -62,7 +56,7 @@ function Index() {
     sellVolumeUSD
   }
 }`
-    const {data, refetch} = useQuery(GET_DATA, {client}) as any
+    const {data, refetch} = useQuery(GET_DATA) as any
     useEffect(() => {
         const interval = setInterval(async () => {
             refetch()

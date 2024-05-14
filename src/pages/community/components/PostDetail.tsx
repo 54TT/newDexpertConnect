@@ -8,6 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import {getQueryParams} from '../../../../utils/utils'
 import {ArrowLeftOutlined} from '@ant-design/icons'
 import {useNavigate} from "react-router-dom";
+import {throttle} from "lodash";
 
 // 渲染单条评论
 const RenderCommentTweet = ({data = {}, type}: any) => {
@@ -93,9 +94,10 @@ const PostDetail = () => {
         }/> : <></>, [localReplyDetail, reply])
     return <div id='scrollabelDetail' style={{height: 'calc(100vh - 54px )', overflow: 'auto'}}>
         <p style={{padding: '20px 20px 0'}}><ArrowLeftOutlined
-            style={{fontSize: '20px', color: 'white', cursor: 'pointer'}} onClick={() => {
+            style={{fontSize: '20px', color: 'white', cursor: 'pointer'}} onClick={
+            throttle( function () {
             history(-1)
-        }}/></p>
+            }, 1500, {'trailing': false})}/></p>
         <InfiniteScroll style={{overflow: 'unset'}} dataLength={data?.length || 0} hasMore={true}
                         scrollableTarget='scrollabelDetail' next={() => {
             getCommentOrReplyData(page + 1);

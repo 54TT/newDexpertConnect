@@ -270,7 +270,7 @@ function SendPost({
                 </div>
                 <div className="post-send-tools-button">
                     <Button
-                        onClick={() => handlePostSend()}
+                        onClick={handlePostSend}
                         disabled={sendDisable}
                         loading={publishing}
                     >

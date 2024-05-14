@@ -11,6 +11,7 @@ import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
 import Request from './components/axios.tsx';
 import Client from "@walletconnect/sign-client";
+import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client'
 import {ethers} from 'ethers';
 import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
 import _ from 'lodash';
@@ -52,6 +53,7 @@ function Layout() {
     const [languageChange, setLanguageChange] = useState(language);
     const [changeLan, setChangeLan] = useState(false);
     const [newAccount, setNewAccount] = useState('');
+    const [switchChain, setSwitchChain] = useState('Ethereum');
     useEffect(() => {
         if (newAccount && user?.address) {
             if (newAccount !== user?.address) {
@@ -372,31 +374,44 @@ function Layout() {
         languageChange,
         setLanguageChange,
         changeLan,
-        setChangeLan, setUserPar
+        setChangeLan, setUserPar, switchChain, setSwitchChain
     }
+
+    const chain: any = {
+        Ethereum: 'https://dexpertpairs.lol/subgraphs/name/ethereum/uniswapv2',
+        Arbitrum: "https://dexpertpairs.lol/subgraphs/name/arbitrum/uniswapv2",
+        BASE: 'https://dexpertpairs.lol/subgraphs/name/base/uniswapv2'
+    }
+    const li = chain[switchChain]
+    const clients = new ApolloClient({
+        uri: li,
+        cache: new InMemoryCache(),
+    });
     return (
-        <Suspense fallback={<Spin size="large" style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%,-50%)'
-        }}/>}>
-            <CountContext.Provider value={value}>
-                <Header/>
-                <div className={big ? 'bigCen' : ''} style={{marginTop: '45px'}}>
-                    <Routes>
-                        <Route path="/" element={<Index/>}/>
-                        <Route path="/newpairDetails/:id" element={<NewpairDetails/>}/>
-                        <Route path='/community/:tab' element={<Community/>}/>
-                        <Route path='/app' element={<Dapp/>}/>
-                        <Route path='/activity' element={<Active/>}/>
-                        <Route path='/oauth/:id/callback' element={<Oauth/>}/>
-                        <Route path='/dpass' element={<Dpass/>}/>
-                    </Routes>
-                </div>
-                <Bot/>
-            </CountContext.Provider>
-        </Suspense>
+        <ApolloProvider client={clients}>
+            <Suspense fallback={<Spin size="large" style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%,-50%)'
+            }}/>}>
+                <CountContext.Provider value={value}>
+                    <Header/>
+                    <div className={big ? 'bigCen' : ''} style={{marginTop: '45px'}}>
+                        <Routes>
+                            <Route path="/" element={<Index/>}/>
+                            <Route path="/newpairDetails/:id" element={<NewpairDetails/>}/>
+                            <Route path='/community/:tab' element={<Community/>}/>
+                            <Route path='/app' element={<Dapp/>}/>
+                            <Route path='/activity' element={<Active/>}/>
+                            <Route path='/oauth/:id/callback' element={<Oauth/>}/>
+                            <Route path='/dpass' element={<Dpass/>}/>
+                        </Routes>
+                    </div>
+                    <Bot/>
+                </CountContext.Provider>
+            </Suspense>
+        </ApolloProvider>
     );
 }
 

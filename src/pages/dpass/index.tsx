@@ -9,6 +9,7 @@ import {CaretDownOutlined, CopyOutlined, LoadingOutlined} from "@ant-design/icon
 import {CountContext} from "../../Layout";
 import {MessageAll} from '../../components/message.ts'
 import {useNavigate} from "react-router-dom";
+import {throttle} from "lodash";
 
 function Dpass() {
     const token = Cookies.get("token");
@@ -47,7 +48,7 @@ function Dpass() {
         setDpassCount(data?.dPassCount || 0);
     };
 
-    const redeemDpass = async () => {
+    const redeemDpass = throttle(async function () {
         if (!imgSta) {
             if (Number(user?.rewardPointCnt) && Number(user?.rewardPointCnt) > 6000) {
                 if (redeemCount === 0) {
@@ -78,7 +79,7 @@ function Dpass() {
                 MessageAll('warning', t("Alert.not"))
             }
         }
-    };
+        }, 1500, {'trailing': false})
     const getDpassList = async (page: number) => {
         const res: any = await getAll({
             method: "get",
@@ -125,7 +126,7 @@ function Dpass() {
         return () => observer.disconnect();
     }, []);
 
-    const clickPlusOrReduce = (e: any) => {
+    const clickPlusOrReduce = throttle( function (e: any) {
         const {id} = e.target;
         if (id === "plus") {
             setRedeemCount(redeemCount + 1);
@@ -134,7 +135,7 @@ function Dpass() {
             if (redeemCount === 0) return;
             setRedeemCount(redeemCount - 1);
         }
-    };
+        }, 1500, {'trailing': false})
 
     const handleOnInput = (e: any) => {
         const {value} = e.target;
@@ -163,8 +164,7 @@ function Dpass() {
                 )}
             </>
         );
-
-    function copyToClipboard(text: string) {
+    const copyToClipboard=  throttle( function (text: string) {
         const textarea = document.createElement("textarea");
         textarea.value = text;
         textarea.style.position = "fixed";
@@ -173,16 +173,16 @@ function Dpass() {
         document.execCommand("copy");
         document.body.removeChild(textarea);
         MessageAll('success', t('Alert.copy'));
-    }
+    }, 1500, {'trailing': false})
 
-    const nextPass = () => {
+    const nextPass = throttle( function () {
         setPage(page + 1)
         getDpassList(page + 1)
         setIsNext(true)
-    }
-    const setImg = () => {
+        }, 1500, {'trailing': false})
+    const setImg = throttle( function () {
         setImgSta(!imgSta)
-    }
+    }, 1500, {'trailing': false})
     return (
         <div className="dpass-background">
             <div className="dpass-content">

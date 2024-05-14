@@ -469,14 +469,15 @@ function Index() {
                                     <span style={{fontSize: browser ? '18px' : '16px'}}>{t('Active.point')}</span>
                                     <p>
                                         <span style={{fontSize: browser ? '25px' : '20px'}}>{point || '0'}</span>
-                                        <img onClick={() => {
-                                            history('/Dpass')
-                                        }} src="/change.svg" alt=""/>
+                                        <img onClick={
+                                            throttle( function () {
+                                                history('/Dpass')
+                                            }, 1500, {'trailing': false})} src="/change.svg" alt=""/>
                                     </p>
                                 </div>
-                                <div onClick={() => {
+                                <div onClick={throttle( function () {
                                     history('/Dpass')
-                                }} style={{cursor: 'pointer'}}>
+                                }, 1500, {'trailing': false})} style={{cursor: 'pointer'}}>
                                     <span style={{fontSize: browser ? '18px' : '16px'}}>{t('Active.pass')}</span>
                                     {
                                         isDPassCount ?
@@ -515,7 +516,8 @@ function Index() {
                                         color: show ? ind === 0 ? 'gray' : option === ind ? 'black' : 'white' : 'white',
                                         width: '22%',
                                         fontSize: browser ? '18px' : '14px'
-                                    }} onClick={() => {
+                                    }} onClick={
+                                        throttle( function () {
                                         if (show) {
                                             if (ind !== option && ind !== 0) {
                                                 setOption(ind)
@@ -528,7 +530,7 @@ function Index() {
                                         } else {
                                             MessageAll('warning', t('Market.line'))
                                         }
-                                    }} key={ind}>{i}
+                                      }, 1500, {'trailing': false})} key={ind}>{i}
                                     </div>
                                 })
                             }
@@ -560,13 +562,14 @@ function Index() {
                                                                             background: selectActive === it?.taskId ? 'rgb(52,62,53)' : 'linear-gradient(to right, #020c02, rgb(38, 45, 38))',
                                                                             marginBottom: index === i?.tasks.length - 1 ? '' : '35px'
                                                                         }}
-                                                                        onClick={() => {
+                                                                        onClick={
+                                                                            throttle( function () {
                                                                             if (selectActive !== it?.taskId) {
                                                                                 setSelectActive(it?.taskId)
                                                                             } else {
                                                                                 setSelectActive('')
                                                                             }
-                                                                        }}>
+                                                                            }, 1500, {'trailing': false})}>
                                                                 <div>
                                                                     <img src={changeImg(it?.taskId, it?.title)} alt=""/>
                                                                     <span
@@ -575,12 +578,13 @@ function Index() {
                                                                 <div>
                                                                     <p style={{color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white'}}>+{it?.score}</p>
                                                                     {
-                                                                        Number(it?.isCompleted) !== 3 ? <p onClick={() => {
+                                                                        Number(it?.isCompleted) !== 3 ? <p onClick={
+                                                                                throttle( function () {
                                                                                 param(it?.isCompleted, it?.taskId, it?.title)
                                                                                 cookie.set('taskId', it?.taskId)
                                                                                 setSelect(it)
                                                                                 setLoading(true)
-                                                                            }} className={'start'}>
+                                                                                }, 1500, {'trailing': false})} className={'start'}>
                                                                                 {loading && select?.title === it?.title ?
                                                                                     <LoadingOutlined/> : operate(it?.isCompleted, it?.title)}</p> :
                                                                             <div className={'success'}>
@@ -592,13 +596,14 @@ function Index() {
                                                                     {
                                                                         option === 2 && Number(it?.isCompleted) !== 3 &&
                                                                         <p className={'verify'}
-                                                                           onClick={() => {
+                                                                           onClick={
+                                                                               throttle( function () {
                                                                                if (it?.title.includes('Twitter')) {
                                                                                    verification(it?.taskId)
                                                                                } else {
                                                                                    getParams()
                                                                                }
-                                                                           }}>verify</p>
+                                                                               }, 1500, {'trailing': false})}>verify</p>
                                                                     }
                                                                 </div>
                                                             </div>

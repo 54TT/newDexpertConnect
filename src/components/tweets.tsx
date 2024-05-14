@@ -149,9 +149,7 @@ function Tweets({
     }
     return (
         <>
-            <div className={classNames('tweetsBox', {'tweets-comment': type === 'comment'})} onClick={() => {
-                handleToDetail()
-            }}>
+            <div className={classNames('tweetsBox', {'tweets-comment': type === 'comment'})} onClick={handleToDetail}>
                 {/*  top*/}
                 <div className={`dis`}>
                     {/* left*/}

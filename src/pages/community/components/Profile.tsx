@@ -322,8 +322,8 @@ function Profie() {
                             }
                             {
                                 pathname.includes('/community/user') && (isFollowed ?
-                                    <span className="unfollow-icon" onClick={() => handleUnfollow()}>Unfollow</span> :
-                                    <span className="follow-icon" onClick={() => handleFollow()}>Follow</span>)
+                                    <span className="unfollow-icon" onClick={handleUnfollow}>Unfollow</span> :
+                                    <span className="follow-icon" onClick={handleFollow}>Follow</span>)
                             }
                         </div>
                     </div>
