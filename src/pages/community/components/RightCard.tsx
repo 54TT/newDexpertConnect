@@ -1,37 +1,43 @@
-import {Card} from "antd";
-import {setMany, simplify} from "../../../../utils/change.ts";
+import { Card } from "antd";
+import { setMany, simplify } from "../../../../utils/change.ts";
 import newPair from "../../../components/getNewPair.tsx";
 import Loading from "../../../components/loading.tsx";
-import {DownOutlined, LoadingOutlined} from "@ant-design/icons";
-import {useState} from "react";
-import {throttle} from "lodash";
+import { DownOutlined, } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { throttle } from "lodash";
 import Nodata from '../../../components/Nodata.tsx'
-import {useTranslation} from "react-i18next";
-
-function RightCard({data, par, load}: any) {
-    const {moreLoad, tableDta, changePage, wait} = newPair() as any;
-    const {title, value: titleValue} = data;
-    const {t} = useTranslation();
+import { useTranslation } from "react-i18next";
+function RightCard({ data, par, load }: any) {
+    const { tableDta, wait } = newPair() as any;
+    const { title, value: titleValue } = data;
+    const { t } = useTranslation();
     const [page, setPage] = useState(1);
+    const [newPage, setNewPage] = useState(1);
+    const [params, setData] = useState([]);
+    useEffect(() => {
+        if (tableDta.length > 0) {
+            setData(tableDta)
+        }
+    }, [tableDta])
     return (
         <Card
             title={title}
             bordered={false}
-            style={{width: "90%", maxWidth: "400px", marginTop: "20px"}}
+            style={{ width: "90%", maxWidth: "400px", marginTop: "20px" }}
             className={'RightCardAll'}
         >
             <div className="card-pair-info">
-                <p style={{color: "#eebfe4f5"}}>{t("Slider.Name")}</p>
-                <p style={{color: "#eebfe4f5"}}>{t("Slider.Price")}</p>
-                <p style={{color: "#eebfe4f5"}}>24h(%)</p>
+                <p style={{ color: "#eebfe4f5" }}>{t("Slider.Name")}</p>
+                <p style={{ color: "#eebfe4f5" }}>{t("Slider.Price")}</p>
+                <p style={{ color: "#eebfe4f5" }}>24h(%)</p>
             </div>
             {titleValue === "New Pairs" ?
-                wait ? <Loading status={"20"}/> : tableDta.length > 0 ? <>
-                    {tableDta.map((i: any, ind: number) => {
+                wait ? <Loading status={"20"} /> : params.length > 0 ? <>
+                    {params.slice(0, newPage * 5).map((i: any, ind: number) => {
                         const change = setMany(i?.pairDayData[0]?.priceChange || 0);
                         const float =
                             i?.pairDayData[0]?.priceChange &&
-                            Number(i?.pairDayData[0]?.priceChange) > 0
+                                Number(i?.pairDayData[0]?.priceChange) > 0
                                 ? 1
                                 : Number(i?.pairDayData[0]?.priceChange) < 0
                                     ? -1
@@ -57,25 +63,29 @@ function RightCard({data, par, load}: any) {
                             </div>
                         );
                     })}
-                    <p
-                        style={{
-                            color: "rgb(135,145,136)",
-                            textAlign: "center",
-                            margin: "6px 0",
-                            cursor: "pointer",
-                        }}
-                        onClick={changePage}
-                    >
-                        <span style={{marginRight: "4px"}}>{t("Slider.More")}</span>
-                        {moreLoad ? <LoadingOutlined/> : <DownOutlined/>}
-                    </p>
-                </> : <p style={{textAlign: "center", marginTop: "15px"}}>No data</p>
-                : load ? <Loading status={"20"}/> : par.length > 0 ? <div>
+                    {
+                        params.length > 0 && newPage < 5 && <p
+                            style={{
+                                color: "rgb(135,145,136)",
+                                textAlign: "center",
+                                margin: "6px 0",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => {
+                                setNewPage(newPage + 1)
+                            }}
+                        >
+                            <span style={{ marginRight: "4px" }}>{t("Slider.More")}</span>
+                            <DownOutlined />
+                        </p>
+                    }
+                </> : <Nodata />
+                : load ? <Loading status={"20"} /> : par.length > 0 ? <div>
                     {par.slice(0, 5 * page).map((i: any, ind: number) => {
                         const change = setMany(i?.pairDayData[0]?.priceChange || 0);
                         const float =
                             i?.pairDayData[0]?.priceChange &&
-                            Number(i?.pairDayData[0]?.priceChange) > 0
+                                Number(i?.pairDayData[0]?.priceChange) > 0
                                 ? 1
                                 : Number(i?.pairDayData[0]?.priceChange) < 0
                                     ? -1
@@ -83,7 +93,7 @@ function RightCard({data, par, load}: any) {
                         return change && change.includes("T") && change.length > 10 ? (
                             ""
                         ) : (
-                            <div className="card-pair-info" style={{marginBottom: '0'}} key={ind}>
+                            <div className="card-pair-info" style={{ marginBottom: '0' }} key={ind}>
                                 <p>
                                     {i?.token0?.symbol && i?.token0?.symbol === "WETH"
                                         ? simplify(i?.token1?.symbol)
@@ -118,14 +128,14 @@ function RightCard({data, par, load}: any) {
                                     setPage((res) => res + 1);
                                 },
                                 1500,
-                                {trailing: false}
+                                { trailing: false }
                             )}
                         >
-                            <span style={{marginRight: "4px"}}>{t("Slider.More")}</span>
-                            <DownOutlined/>
+                            <span style={{ marginRight: "4px" }}>{t("Slider.More")}</span>
+                            <DownOutlined />
                         </p>
                     )}
-                </div> : <Nodata/>}
+                </div> : <Nodata />}
         </Card>
     );
 }

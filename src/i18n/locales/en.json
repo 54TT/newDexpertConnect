@@ -33,6 +33,10 @@
   },
   "Dapps": {
     "Token Creation Bot": "Token Creation Bot",
+    "sniper": "Sniper Bot",
+    "c": "Sniper - Token sniping with multi-wallet capability. Simply enter the token contract address and your order information to snipe a token before or after Liquidity Pool creation.",
+    "b": "Fast trade - supports any pairs with liquidity pool, and speeds up the trading process with our user-friendly interface.",
+    "a": "Introducing Odin, an ERC20 token sniper bot that simplifies the decentralized exchange trading experience with fast trades and a powerful sniper function.",
     "Sniper Bot": "Sniper Bot",
     "Air drop Bot": "Air drop Bot",
     "Market maker": "Market maker",

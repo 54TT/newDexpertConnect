@@ -1,5 +1,5 @@
-import {Input, Segmented, Select} from "antd";
-import {LoadingOutlined, SearchOutlined} from "@ant-design/icons";
+import { Segmented, Select} from "antd";
+import {LoadingOutlined, } from "@ant-design/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "../../../components/loading.tsx";
 import NewPair from "./newPairDate.tsx";
@@ -11,7 +11,7 @@ import {getGas} from "../../../../utils/getGas.ts";
 import Nodata from '../../../components/Nodata.tsx';
 function Left() {
     const hei = useRef<any>()
-    const {ethPrice, moreLoad, tableDta, setDta, wait, changePage, getPage} = newPair() as any
+    const {ethPrice, moreLoad, tableDta, setDta, wait, changePage, } = newPair() as any
     const {browser, switchChain}: any = useContext(CountContext);
     const [tableHei, setTableHei] = useState('')
     const [select, setSelect] = useState('newPair')
@@ -32,7 +32,6 @@ function Left() {
             const o: any = w - h - 50 - 90
             setTableHei(o)
         }
-        getPage(25)
     }, [])
     useEffect(() => {
         gasOb()
@@ -63,15 +62,19 @@ function Left() {
                 />
                 <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'}
                            defaultValue={'24h'}/>
-                {
+                {/* {
                     browser &&
                     <Input autoComplete={'off'}
                            suffix={<SearchOutlined style={{fontSize: '16px', color: 'white', display: 'none'}}/>}
                            allowClear className={'indexInput'}/>
-                }
+                } */}
                 <div className={`indexRight dis`}>
-                    <p style={{marginRight: '10px'}}><img src="/eth.svg" loading={'lazy'}
-                                                          alt=""/><span>$:{ethPrice}</span></p>
+                    <p style={{marginRight: '10px'}}>
+                        <img
+                            src={switchChain === 'Polygon' ? '/PolygonCoin.svg' : switchChain === 'BSC' ? '/BNBChain.svg' : "/EthereumChain.svg"}
+                            loading={'lazy'}
+                            alt=""/>{wait ? <LoadingOutlined/> :
+                        <span>$:{ethPrice}</span>}</p>
                     <p><img loading={'lazy'} src="/gas.svg" alt=""/>
                         {
                             gasLoad ? <LoadingOutlined/> : <span>{gas}</span>

@@ -4,6 +4,11 @@
   justify-content: space-between;
 }
 
+@font-face {
+  font-family: 'tt'; // --自定义名字就好
+  src: url("../../public/MiSans1.ttf"); // --下载的字体文件路径
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -15,6 +20,7 @@ p {
 
 body {
   background-color: rgb(10, 21, 17);
+  font-family: "tt", "Microsoft YaHei", serif;
 }
 
 body::-webkit-scrollbar {
@@ -141,7 +147,7 @@ body::-webkit-scrollbar-thumb {
       justify-content: space-between;
       border-bottom: 5px solid;
 
-      & > p {
+      &>p {
         flex: 1;
       }
 
@@ -178,17 +184,20 @@ body::-webkit-scrollbar-thumb {
         border-bottom: 5px solid;
         padding: 4px 0;
 
-        & > div {
+        &>div:not(:first-child) {
+          font-weight: 300;
+        }
+
+        &>div {
           line-height: 1;
           display: flex;
           font-size: 14px;
           justify-content: center;
           flex: 1;
           overflow: hidden;
-          letter-spacing: -1px;
           box-sizing: border-box;
           white-space: nowrap;
-          padding: 0 3.3%;
+          padding: 0 3%;
         }
 
         .indexNewPairBone {
@@ -204,8 +213,7 @@ body::-webkit-scrollbar-thumb {
           .imgBox {
             width: 20px;
             cursor: pointer;
-            height: 18px;
-
+            height: 20px;
             img {
               width: 100%;
               height: 100%;
@@ -459,7 +467,7 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
   justify-content: flex-end;
 
-  & > p:first-child {
+  &>p:first-child {
     width: 10px;
     height: 10px;
     background-color: rgb(134, 240, 151);
@@ -467,7 +475,7 @@ body::-webkit-scrollbar-thumb {
     margin-right: 6px;
   }
 
-  & > p:last-child {
+  &>p:last-child {
     cursor: pointer;
     color: white;
     font-size: 15px;
@@ -485,8 +493,8 @@ body::-webkit-scrollbar-thumb {
   .ant-select-item-option-selected {
     color: white !important;
     background: linear-gradient(to right,
-    rgb(9, 21, 17),
-    rgb(37, 70, 59)) !important;
+        rgb(9, 21, 17),
+        rgb(37, 70, 59)) !important;
   }
 }
 
@@ -532,7 +540,7 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
   flex-direction: column;
 
-  & > p:nth-child(2) {
+  &>p:nth-child(2) {
     color: #f3f3f3;
     text-align: center;
     margin: 13px 0;
@@ -629,8 +637,10 @@ span {
 
 .scroll-style-mixin() {
   &::-webkit-scrollbar {
-    width: 8px !important; /* 滚动条宽度 */
+    width: 8px !important;
+    /* 滚动条宽度 */
   }
+
   /* WebKit 浏览器的滚动条滑块样式 */
   &::-webkit-scrollbar-thumb {
     background: rgb(24, 30, 29) !important;
@@ -751,7 +761,7 @@ span {
   max-width: 1800px;
   margin: 0 auto;
 
-  & > div {
+  &>div {
     width: 100%;
   }
 }
@@ -778,10 +788,6 @@ span {
       background-color: gray !important;
     }
   }
-}
-
-.RightCardAll {
-
 }
 
 .activeSwiper {
@@ -870,7 +876,7 @@ span {
     .ant-statistic-content-value {
       font-size: 26px;
       background: linear-gradient(90deg, rgb(133, 240, 150) 0%, rgb(1, 255, 72) 100%);
-      -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
   }

@@ -9,7 +9,7 @@ import {getQueryParams} from '../../../../utils/utils'
 import {ArrowLeftOutlined} from '@ant-design/icons'
 import {useNavigate} from "react-router-dom";
 import {throttle} from "lodash";
-
+import Nodata from "../../../components/Nodata.tsx";
 // 渲染单条评论
 const RenderCommentTweet = ({data = {}, type}: any) => {
     const renderData = {
@@ -111,9 +111,7 @@ const PostDetail = () => {
                             <Spin size='large'/>
                         </div> : data.length > 0 ? data?.map?.((data, ind) =>
                             <RenderCommentTweet data={data} key={ind} type={reply ? 'reply' : "comment"}/>
-                        ) : <p style={{marginTop: '48px', color: '#d6dfd7', textAlign: 'center'}}>
-                            No Data
-                        </p>
+                        ) :<Nodata/>
                 }
             </div>
         </InfiniteScroll>

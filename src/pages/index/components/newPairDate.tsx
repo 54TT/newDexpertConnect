@@ -1,25 +1,27 @@
 import {setMany, simplify} from "../../../../utils/change.ts";
 import {useNavigate} from "react-router-dom";
 import dayjs from "dayjs";
+import {useContext} from 'react'
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {throttle} from "lodash"; // 引入相对时间插件
+import {throttle} from "lodash";
+import {CountContext} from "../../../Layout.tsx"; // 引入相对时间插件
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Date({tableDta, time, setDta}: any) {
+    const {switchChain}: any = useContext(CountContext);
     const history = useNavigate();
     const push = throttle(function (i: any) {
         history('/newpairDetails/' + i?.id)
     }, 1500, {'trailing': false})
-    const click =
-        throttle(function (i: any, e: any) {
-            e.stopPropagation();
-            tableDta.map((it: any) => {
-                if (it?.id === i?.id) {
-                    it.collect = !i.collect
-                }
-                return it
-            })
-            setDta([...tableDta])
-        }, 1500, {'trailing': false})
+    const click = throttle(function (i: any, e: any) {
+        e.stopPropagation();
+        tableDta.map((it: any) => {
+            if (it?.id === i?.id) {
+                it.collect = !i.collect
+            }
+            return it
+        })
+        setDta([...tableDta])
+    }, 1500, {'trailing': false})
     return (
         <>
             {
@@ -54,10 +56,10 @@ function Date({tableDta, time, setDta}: any) {
                             <div
                                 style={{
                                     color: "white",
-                                    letterSpacing: '-1px',
                                     lineHeight: '1.2'
                                 }}>{dayjs.unix(create).fromNow()}</div>
-                            <div style={{color: 'white'}}>{setMany(record?.initialReserve)} ETH</div>
+                            <div
+                                style={{color: 'white'}}>{setMany(record?.initialReserve)} {switchChain === 'Polygon' ? 'matic' : switchChain === 'BSC' ? 'BNB' : "ETH"}</div>
                             <div
                                 style={{color: 'white'}}>{dateTime && dateTime.length > 0 ? Number(dateTime[0]?.swapTxns) : 0}</div>
                             <div style={{color: 'white'}}>{li}</div>

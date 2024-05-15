@@ -391,7 +391,7 @@ function Layout() {
                             <Route path="/" element={<Index/>}/>
                             <Route path="/newpairDetails/:id" element={<NewpairDetails/>}/>
                             <Route path='/community/:tab' element={<Community/>}/>
-                            <Route path='/app' element={<Dapp/>}/>
+                            <Route path='/app/:id' element={<Dapp/>}/>
                             <Route path='/activity' element={<Active/>}/>
                             <Route path='/oauth/:id/callback' element={<Oauth/>}/>
                             <Route path='/dpass' element={<Dpass/>}/>

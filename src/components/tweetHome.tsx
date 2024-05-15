@@ -7,6 +7,7 @@ import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
 import {CountContext} from "../Layout.tsx";
 import {unionBy} from 'lodash'
+import Nodata from '../components/Nodata.tsx'
 
 interface TweetHomePropsType {
     uid?: string
@@ -124,7 +125,7 @@ function TweetHome({
                                 </p>
                             }
                         </div> :
-                        <p style={{textAlign: 'center', color: 'white', marginTop: '20px'}}>No data</p> :
+                        <Nodata/> :
                     <Loading status={'20'}/>
             }
         </>

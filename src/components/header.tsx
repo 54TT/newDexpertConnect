@@ -54,7 +54,7 @@ function Header() {
                     history("/");
                     break;
                 case 1:
-                    history("/app");
+                    history("/app/create");
                     break;
             }
         },
@@ -120,7 +120,7 @@ function Header() {
                                 onClick={throttle(
                                     function () {
                                         if (ind === 0) {
-                                            history("/app");
+                                            history("/app/create");
                                             onClose();
                                         }
                                     },
@@ -195,7 +195,7 @@ function Header() {
             } else {
                 return "rgb(214,223,215)";
             }
-        } else if (router.pathname === "/app") {
+        } else if (router.pathname.includes("/app/")) {
             if (ind === 1) {
                 return "rgb(134,240,151)";
             } else {
@@ -346,7 +346,7 @@ function Header() {
                 )}
                 {
                     browser && <img src="/earth.svg" alt=""
-                                    style={{cursor: 'pointer', display: 'block', marginLeft: "5px", width: '20px'}}
+                                    style={{cursor: 'pointer', display: 'block', marginLeft: "10px", width: '22px'}}
                                     onClick={changeLanguage}/>
                 }
                 {!browser && (

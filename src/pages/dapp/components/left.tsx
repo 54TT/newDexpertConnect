@@ -1,126 +1,155 @@
-import {useContext, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {useNavigate} from "react-router-dom";
-import {CountContext} from "../../../Layout.tsx";
-import {throttle} from "lodash";
+import { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+import { CountContext } from "../../../Layout.tsx";
+import { throttle } from "lodash";
 
 function Left() {
     const history = useNavigate();
-    const {user,setIsModalOpen}: any = useContext(CountContext);
-    const [value, setValue] = useState("Token Creation Bot");
-    const {t} = useTranslation();
+    const params: any = useParams()
+    const { user, setIsModalOpen }: any = useContext(CountContext);
+    const [value, setValue] = useState('');
+    useEffect(() => {
+        if (params?.id) {
+            setValue(params?.id)
+        }
+    }, [params])
+    const { t } = useTranslation();
     const LeftTab = [
         [
             {
                 label: t("Dapps.Token Creation Bot"),
-                value: "Token Creation Bot",
+                key: 'create'
             },
             {
-                label: t("Dapps.Sniper Bot"),
-                value: "Sniper Bot",
+                label: t("Dapps.sniper"),
+                key: 'sniper'
             },
             {
                 label: t("Dapps.Air drop Bot"),
-                value: "Air drop Bot",
+                key: 'Air'
             },
             {
                 label: t("Dapps.Market maker"),
-                value: "Market maker",
+                key: 'Market'
             },
             {
                 label: 'D Pass',
-                value: "D Pass",
+                key: 'D'
             },
         ],
         [
             {
                 label: t("Dapps.New Buy Notification"),
-                value: "New Buy Notification",
+                key: 'New'
             },
             {
                 label: t("Dapps.Token Checker"),
-                value: "Token Checker",
+                key: 'Checker'
             },
             {
                 label: t("Dapps.Trending"),
-                value: "Trending",
+                key: 'Trending'
             },
         ],
     ];
+    const changeImg = (ind: number, it: string) => {
+        if (ind === 0) {
+            if (it === 'create') {
+                if (it === value) {
+                    return "/tokenActive.svg"
+                } else {
+                    return "/tokenWhite.svg"
+                }
+            } else if (it === 'sniper') {
+                if (it === value) {
+                    return "/sniperActive.svg"
+                } else {
+                    return "/sniperWhite.svg"
+                }
+            } else if (it === 'Air') {
+                return "/dropBot.svg"
+                // dropBotActive
+            } else if (it === 'Market') {
+                return "/money.svg"
+                // moneyActive
+            } else if (it === 'D') {
+                return '/padds.svg'
+            }
+        } else {
+            if (it === 'New') {
+                return "/news.svg"
+                // newsActive
+            } else if (it === 'Checker') {
+                return "/checker.svg"
+                // checkerActive.svg
+            } else if (it === 'Trending') {
+                return "/trending.svg"
+                // trendingActive
+            }
+        }
+    }
+
     return (
         <div className={"left"}>
             {LeftTab.map((i: any, ind: number) => {
                 return (
                     <div className={"top"} key={ind}>
                         {ind === 0 ? <p>DApps</p> : <p>{t("Dapps.Telegram Suite")}</p>}
-                        {i.map(({label, value: valueData}: any, it: number) => {
+                        {i.map(({ label, key: valueData }: any, it: number) => {
                             return (
                                 <p
                                     key={it}
                                     className={"list"}
                                     onClick={
-                                        throttle( function () {
-                                        if (valueData === 'D Pass') {
-                                            if(user?.address) {
-                                                history('/Dpass')
-                                            }else {
-                                                setIsModalOpen(true)
-                                            }
-                                        } else if (value !== valueData) {
-                                            if (ind === 0) {
-                                                if (it !== 2 && it !== 1) {
-                                                    setValue(valueData);
+                                        throttle(function () {
+                                            if (valueData === 'D') {
+                                                if (user?.address) {
+                                                    history('/Dpass')
+                                                } else {
+                                                    setIsModalOpen(true)
+                                                }
+                                            } else if (valueData === 'sniper') {
+                                                history('/app/sniper')
+                                            } else if (valueData === 'create') {
+                                                history('/app/create')
+                                            } else if (value !== valueData) {
+                                                if (ind === 0) {
+                                                    if (it !== 2 && it !== 3) {
+                                                        setValue(valueData);
+                                                    }
                                                 }
                                             }
-                                        }
-                                        }, 1500, {'trailing': false})}
+                                        }, 1500, { 'trailing': false })}
                                     style={{
                                         color:
-                                            valueData === "Token Creation Bot"
-                                                ? "rgb(134,240,151)" : valueData === 'D Pass' ? 'white'
+                                            valueData === value
+                                                ? "rgb(134,240,151)" : valueData === 'D' || valueData === 'create' || valueData === 'sniper' ? 'white'
                                                     : "rgb(104,124,105)",
                                     }}
                                 >
                                     <img
                                         loading={"lazy"}
-                                        src={
-                                            ind === 0
-                                                ? it === 0
-                                                    ? "/token.svg"
-                                                    : it === 1
-                                                        ? "/sniper.svg"
-                                                        : it === 2
-                                                            ? "/dropBot.svg" : it === 4 ? '/padds.svg' :
-                                                                "/money.svg"
-                                                : it === 0
-                                                    ? "/news.svg"
-                                                    : it === 1
-                                                        ? "/checker.svg"
-                                                        : "/trending.svg"
-                                        }
+                                        src={changeImg(ind, valueData)}
                                         alt=""
                                     />
                                     <span>{label}</span>
-                                    {(valueData === "Token Checker" ||
-                                        valueData === "New Buy Notification" ||
-                                        valueData === "Trending" ||
-                                        valueData === "Sniper Bot" ||
-                                        valueData === "Air drop Bot" ||
-                                        valueData === "Market maker") && (
-                                        <span
-                                            style={{
-                                                fontSize: "10px",
-                                                marginLeft: "5px",
-                                                backgroundColor: "rgb(40,40,40)",
-                                                padding: "4px",
-                                                display: "block",
-                                                borderRadius: "6px",
-                                                whiteSpace: "nowrap",
-                                            }}
-                                        >
-                                  {t("Common.Coming soon")}
-                    </span>
-                                    )}
+                                    {(valueData === "Air" || valueData === "New" || valueData === "Checker" || valueData === "Trending" ||
+                                        valueData === "Market") && (
+                                            <span
+                                                style={{
+                                                    fontSize: "10px",
+                                                    marginLeft: "5px",
+                                                    backgroundColor: "rgb(40,40,40)",
+                                                    padding: "4px",
+                                                    display: "block",
+                                                    borderRadius: "6px",
+                                                    whiteSpace: "nowrap",
+                                                }}
+                                            >
+                                                {t("Common.Coming soon")}
+                                            </span>
+                                        )}
                                 </p>
                             );
                         })}

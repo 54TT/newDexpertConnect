@@ -1,9 +1,7 @@
 import RightCard from "./RightCard";
-import newPair from "../../../components/getNewPair.tsx";
 import {useEffect, useState} from "react";
 import { gql,  useQuery} from "@apollo/client";
 import {useTranslation} from "react-i18next";
-
 function CommunityRight() {
     const [par, setPar] = useState([]);
     const [load, setLoad] = useState(true);
@@ -49,7 +47,6 @@ function CommunityRight() {
     }
   `;
     const {loading, data, refetch} = useQuery(GET_DATA) as any;
-    const {getPage} = newPair() as any;
     useEffect(() => {
         const interval = setInterval(async () => {
             refetch();
@@ -57,9 +54,6 @@ function CommunityRight() {
         return () => {
             clearInterval(interval);
         };
-    }, []);
-    useEffect(() => {
-        getPage(5);
     }, []);
   useEffect(() => {
     if (!loading) {
@@ -71,9 +65,6 @@ function CommunityRight() {
       }
     }
   }, [data]);
-  useEffect(() => {
-    getPage(5);
-  }, []);
   const newPairs = {
     title: t("Slider.New Pairs"),
     value: "New Pairs",
@@ -91,10 +82,8 @@ function CommunityRight() {
         alignItems: "center",
       }}
     >
-      {/*<RightCard  title={'Watch List'}/>*/}
       <RightCard data={newPairs} />
       <RightCard data={trending} par={par} load={load} />
-      {/*<RightCard title={'Trending'}/>*/}
     </div>
   );
 }

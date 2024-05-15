@@ -1,34 +1,42 @@
 // import Conyent from "../../community/components/PostContent.tsx";
 import { useContext } from "react";
 import { CountContext } from "../../../Layout.tsx";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-const LINK_BUTTON = [
+const LINK_CREATE = [
   "https://drive.google.com/file/d/1ED7qadkVJMKJazvnqlgVARGR4-RYMCbc/view?usp=sharing",
   "https://t.me/DexpertThorBot",
-  "",
+
 ];
+const LINK_sniper = ['', "https://t.me/DexpertOdinBot",]
 function Center() {
   const { browser }: any = useContext(CountContext);
   const router = useLocation();
+  const params: any = useParams()
   const { t } = useTranslation();
   return (
     <div className={"center"}>
       {
         <div className={"centerTop"}>
-          <img  src="/bot.svg" alt="" loading={"lazy"} />
+          <img src="/bot.svg" alt="" loading={"lazy"} />
           <div
             className={"centerTopRight"}
             style={{ paddingRight: browser ? "10%" : "2%" }}
           >
             <p style={{ fontSize: browser ? "30px" : "22px" }}>
-              {t("Dapps.Token Creation Bot")} (Thor)
+              {params?.id === 'create' ? t("Dapps.Token Creation Bot") + '(Thor)' : t("Dapps.sniper")}
             </p>
-            <p>
-              {router.pathname === "/app"
-                ? t("Dapps.Thor Desc")
-                : t("Dapps.Run Tips")}
-            </p>
+            {
+              params?.id === 'create' ? <p className={'pp'}>
+                {router.pathname === "/app"
+                  ? t("Dapps.Thor Desc")
+                  : t("Dapps.Run Tips")}
+              </p> : <>
+                <p className={'pp'}>{t("Dapps.a")}</p>
+                <p className={'pp'}>{t("Dapps.b")}</p>
+                <p className={'pp'}>{t("Dapps.c")}</p>
+              </>
+            }
             <div className={"dis"}>
               {[
                 t("Dapps.Video Guide"),
@@ -37,8 +45,13 @@ function Center() {
               ].map((i: string, ind: number) => {
                 return (
                   <div
-                    onClick={() =>
-                      LINK_BUTTON[ind] ? window.open(LINK_BUTTON[ind]) : null
+                    onClick={() => {
+                      if (params?.id === 'create') {
+                        LINK_CREATE[ind] ? window.open(LINK_CREATE[ind]) : null
+                      } else {
+                        LINK_sniper[ind] ? window.open(LINK_sniper[ind]) : null
+                      }
+                    }
                     }
                     style={{
                       width: browser ? "28%" : "30%",
@@ -60,7 +73,7 @@ function Center() {
                           padding: "4px",
                         }}
                       >
-                                    {t("Common.Coming soon")}
+                        {t("Common.Coming soon")}
                       </span>
                     ) : (
                       ""
@@ -73,7 +86,7 @@ function Center() {
         </div>
       }
       {/*<Conyent  />*/}
-    </div>
+    </div >
   );
 }
 
