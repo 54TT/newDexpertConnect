@@ -1,38 +1,20 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useState} from "react";
 import {Collapse, Drawer, Dropdown, } from "antd";
 import {CountContext} from "../Layout.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {LoadingOutlined,} from "@ant-design/icons";
-import {setMany, simplify} from "../../utils/change.ts";
+import { simplify} from "../../utils/change.ts";
 import HeaderModal from "./headerModal.tsx";
 import {throttle} from "lodash";
 import {useTranslation} from "react-i18next";
-import getBalance from '../../utils/getBalance.ts'
-import ChooseChain from './chooseChain.tsx'
 export type I18N_Key = "zh_CN" | "en_US";
-
 function Header() {
     const router = useLocation();
-    const {user, load, clear, browser, setIsModalOpen, languageChange, setChangeLan, setLanguageChange}: any =
+    const {user, load, clear, browser, setIsModalOpen, languageChange, setLanguageChange}: any =
         useContext(CountContext);
     const {t, i18n} = useTranslation();
     const history = useNavigate();
     const [open, setOpen] = useState(false);
-    const [balance, setBalance] = useState<any>(null);
-    const [isBalance, setIsBalance] = useState(false);
-    const get = async (address: string) => {
-        const at = await getBalance(address)
-        if (at && at[address]) {
-            setBalance(at)
-            setIsBalance(true)
-        }
-    }
-    useEffect(() => {
-        if (user?.address) {
-            get(user?.address)
-        }
-    }, [user]);
-
     const showDrawer = throttle(
         function () {
             setOpen(true);
@@ -226,12 +208,10 @@ function Header() {
             if (languageChange === "zh_CN") {
                 localStorage.setItem("language", 'en_US');
                 setLanguageChange('en_US');
-                setChangeLan(true)
                 i18n.changeLanguage('en_US');
             } else {
                 localStorage.setItem("language", 'zh_CN');
                 setLanguageChange('zh_CN');
-                setChangeLan(true)
                 i18n.changeLanguage('zh_CN');
             }
         },
@@ -244,8 +224,8 @@ function Header() {
                         window.open("https://info.dexpert.io/");
                     },
                     1500,
-                    {trailing: false})} style={{width: "100px", display: "block", cursor: 'pointer',marginRight:'10px'}}/>
-                <ChooseChain/>
+                    {trailing: false})} style={{width: "100px", display: "block", cursor: 'pointer'}}/>
+    
             </div>
             {browser && (
                 <p className={`headerCenter dis`}>
@@ -278,7 +258,7 @@ function Header() {
                          {trailing: false})}>
                     <img src="/gift.svg" alt="" style={{width: '25px', cursor: 'pointer'}}/>
                     {
-                        browser && <p style={{color: 'rgb(134,240,151)'}}>Airdrop</p>
+                        browser && <p style={{color: 'rgb(134,240,151)'}}>{t("Common.Events")}</p> 
                     }
                 </div>
                 {user?.uid ? (
@@ -303,8 +283,8 @@ function Header() {
                                     </div>
                                 </Dropdown>
                                 <div className={'headLine'}>
-                                    <p className={'headLineP'}>{isBalance ? Number(balance[user?.address]) ? setMany(balance[user?.address]) : '0' + 'ETH' || '0ETH' :
-                                        <LoadingOutlined style={{fontSize: '15px'}}/>}</p>
+                                    {/* <p className={'headLineP'}>{isBalance ? Number(balance[user?.address]) ? setMany(balance[user?.address]) : '0' + 'ETH' || '0ETH' :
+                                        <LoadingOutlined style={{fontSize: '15px'}}/>}</p> */}
                                     <p className={'headLineP'}>{user?.rewardPointCnt + ' D' || '0 D'}</p>
                                 </div>
                             </div>

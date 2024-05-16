@@ -1,30 +1,31 @@
-import {Button, Tag,} from "antd";
+import { Button, Tag, } from "antd";
 import Cookies from "js-cookie";
 import "./index.less";
 import Request from "../../components/axios";
-import {useContext, useEffect, useLayoutEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
-import {CaretDownOutlined, CopyOutlined, LoadingOutlined} from "@ant-design/icons";
-import {CountContext} from "../../Layout";
-import {MessageAll} from '../../components/message.ts'
-import {useNavigate} from "react-router-dom";
-import {throttle} from "lodash";
-
+import { CaretDownOutlined, CopyOutlined, LoadingOutlined } from "@ant-design/icons";
+import { CountContext } from "../../Layout";
+import { MessageAll } from '../../components/message.ts'
+import { useNavigate, useParams } from "react-router-dom";
+import { throttle } from "lodash";
 function Dpass() {
     const token = Cookies.get("token");
-    const {getAll} = Request();
+    const params: any = useParams()
+    console.log(params?.id)
+    const { getAll } = Request();
     const history = useNavigate()
     const [dPassCount, setDpassCount] = useState(0);
     const [redeemCount, setRedeemCount] = useState(0);
     const [page, setPage] = useState(1);
     const [dPassList, setDPassList] = useState([]);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [isMobile, setIsMobile] = useState(false);
     const [isNext, setIsNext] = useState(false);
     const [isShow, setIsShow] = useState(false);
     const [imgSta, setImgSta] = useState(false);
-    const {user, setUserPar}: any = useContext(CountContext);
+    const { user, setUserPar }: any = useContext(CountContext);
     // 创建一个MutationObserver实例
     const observer = new MutationObserver(function (mutationsList: any,) {
         if (mutationsList[0].target.offsetWidth <= 900) {
@@ -39,7 +40,7 @@ function Dpass() {
         attributes: true, // 监听属性变化
     };
     const getDpassCount = async () => {
-        const {data}: any = await getAll({
+        const { data }: any = await getAll({
             method: "get",
             url: "/api/v1/d_pass",
             data: {},
@@ -66,7 +67,7 @@ function Dpass() {
                         });
                         if (res?.data?.code === '200') {
                             setRedeemCount(0)
-                            setUserPar({...user, rewardPointCnt: Number(user?.rewardPointCnt) - point})
+                            setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) - point })
                             getDpassCount();
                             getDpassList(1);
                             MessageAll('success', t("Alert.success"));
@@ -79,7 +80,7 @@ function Dpass() {
                 MessageAll('warning', t("Alert.not"))
             }
         }
-        }, 1500, {'trailing': false})
+    }, 1500, { 'trailing': false })
     const getDpassList = async (page: number) => {
         const res: any = await getAll({
             method: "get",
@@ -126,8 +127,8 @@ function Dpass() {
         return () => observer.disconnect();
     }, []);
 
-    const clickPlusOrReduce = throttle( function (e: any) {
-        const {id} = e.target;
+    const clickPlusOrReduce = throttle(function (e: any) {
+        const { id } = e.target;
         if (id === "plus") {
             setRedeemCount(redeemCount + 1);
         }
@@ -135,10 +136,10 @@ function Dpass() {
             if (redeemCount === 0) return;
             setRedeemCount(redeemCount - 1);
         }
-        }, 1500, {'trailing': false})
+    }, 1500, { 'trailing': false })
 
     const handleOnInput = (e: any) => {
-        const {value} = e.target;
+        const { value } = e.target;
 
         const count = Number(value);
         if (Number.isNaN(count)) {
@@ -154,17 +155,17 @@ function Dpass() {
         }
     };
 
-    const Status = ({status}: any) =>
-        (
-            <>
-                {status === "0" ? (
-                    <Tag color="rgb(113, 173, 86)">{t("Dpass.Available")}</Tag>
-                ) : (
-                    <Tag color="#f50">{t("Dpass.Expired")}</Tag>
-                )}
-            </>
-        );
-    const copyToClipboard=  throttle( function (text: string) {
+    const Status = ({ status }: any) =>
+    (
+        <>
+            {status === "0" ? (
+                <Tag color="rgb(113, 173, 86)">{t("Dpass.Available")}</Tag>
+            ) : (
+                <Tag color="#f50">{t("Dpass.Expired")}</Tag>
+            )}
+        </>
+    );
+    const copyToClipboard = throttle(function (text: string) {
         const textarea = document.createElement("textarea");
         textarea.value = text;
         textarea.style.position = "fixed";
@@ -173,39 +174,39 @@ function Dpass() {
         document.execCommand("copy");
         document.body.removeChild(textarea);
         MessageAll('success', t('Alert.copy'));
-    }, 1500, {'trailing': false})
+    }, 1500, { 'trailing': false })
 
-    const nextPass = throttle( function () {
+    const nextPass = throttle(function () {
         setPage(page + 1)
         getDpassList(page + 1)
         setIsNext(true)
-        }, 1500, {'trailing': false})
-    const setImg = throttle( function () {
+    }, 1500, { 'trailing': false })
+    const setImg = throttle(function () {
         setImgSta(!imgSta)
-    }, 1500, {'trailing': false})
+    }, 1500, { 'trailing': false })
     return (
         <div className="dpass-background">
             <div className="dpass-content">
                 <div className="dpass-content-left">
-                    <div style={{position: 'relative', zIndex: '10'}}>
+                    <div style={{ position: 'relative', zIndex: '10' }}>
                         <img src="/Rectangle1.svg" alt="" onClick={setImg} style={{
                             position: 'absolute',
                             left: '-60px',
                             top: '50%',
                             display: 'block',
                             transform: 'translate(0,-50%)', cursor: 'pointer'
-                        }}/>
-                        <img className="dapss-card" src={imgSta ? "/dpassCard1.svg" : '/dpassCard.png'} alt=""/>
-                        <img src="/Rectangle.svg" alt="" onClick={setImg} style={{
+                        }} />
+                        <img className="dapss-card" src={imgSta ? "/dpassCard1.svg" : '/dpassCard.png'} alt="" />
+                        <img src="/Rectangle111.svg" alt="" onClick={setImg} style={{
                             position: 'absolute',
                             right: '-60px',
                             top: '50%',
                             display: 'block',
                             transform: 'translate(0,-50%)', cursor: 'pointer'
-                        }}/>
+                        }} />
                     </div>
-                    <img className="dpass-light" src={imgSta ? "/light1.svg" : '/light.png'} alt=""/>
-                    <img className="dpass-cap" src={imgSta ? "/bottomCap1.svg" : '/bottomCap.png'} alt=""/>
+                    <img className="dpass-light" src={imgSta ? "/light1.svg" : '/light.png'} alt="" />
+                    <img className="dpass-cap" src={imgSta ? "/bottomCap1.svg" : '/bottomCap.png'} alt="" />
                 </div>
                 <div className="dpass-content-right">
                     <p className="dpass-content-right-title"> {imgSta ? 'Golden Pass' : 'D PASS'}  </p>
@@ -218,17 +219,17 @@ function Dpass() {
                     <p className="dpass-content-right-content">{imgSta ? '' : t("Dpass.desc3")}</p>
                     <div className="dpass-content-right-action">
                         <div className="dpass-content-right-action-input">
-              <span id="reduce" onClick={clickPlusOrReduce}>
-                -
-              </span>
+                            <span id="reduce" onClick={clickPlusOrReduce}>
+                                -
+                            </span>
                             <input
                                 value={redeemCount}
                                 className="dpass-content-right-action-input_number"
                                 onChange={handleOnInput}
                             />
                             <span id="plus" onClick={clickPlusOrReduce}>
-                +
-              </span>
+                                +
+                            </span>
                         </div>
                         <div
                             className="dpass-content-right-action-button"
@@ -243,7 +244,7 @@ function Dpass() {
                     <div className="dpass-content-right-info">
                         <div
                             className="dpass-content-right-info-points"
-                            style={{borderRight: "1px solid #999", cursor: 'pointer'}}
+                            style={{ borderRight: "1px solid #999", cursor: 'pointer' }}
                             onClick={() => {
                                 history('/activity')
                             }}>
@@ -269,32 +270,32 @@ function Dpass() {
                         <span> {t("Dpass.Status")}</span>
                         <span>{t("Dpass.Key")}</span>
                     </div>
-                    {dPassList.map(({createdAt, key, passId, status}: any) => (
+                    {dPassList.map(({ createdAt, key, passId, status }: any) => (
                         <div className="dpass-redeem-table-td" key={key}>
                             <span>{dayjs.unix(createdAt).format("DD/MM/YYYY HH:mm")}</span>
                             {isMobile ? <></> : <span>{passId}</span>}
-                            <span>{<Status status={status}/>}</span>
+                            <span>{<Status status={status} />}</span>
                             <span>
-                  {status === "0" ? (
-                      isMobile ? (
-                          <Button
-                              onClick={() => copyToClipboard(key)}
-                              className="copy-dpass-key"
-                              icon={<CopyOutlined/>}
-                          />
-                      ) : (
-                          <Button
-                              onClick={() => copyToClipboard(key)}
-                              className="copy-dpass-key"
-                              icon={<CopyOutlined/>}
-                          >
-                              {t("Dpass.Copy")}
-                          </Button>
-                      )
-                  ) : (
-                      key
-                  )}
-                </span>
+                                {status === "0" ? (
+                                    isMobile ? (
+                                        <Button
+                                            onClick={() => copyToClipboard(key)}
+                                            className="copy-dpass-key"
+                                            icon={<CopyOutlined />}
+                                        />
+                                    ) : (
+                                        <Button
+                                            onClick={() => copyToClipboard(key)}
+                                            className="copy-dpass-key"
+                                            icon={<CopyOutlined />}
+                                        >
+                                            {t("Dpass.Copy")}
+                                        </Button>
+                                    )
+                                ) : (
+                                    key
+                                )}
+                            </span>
                         </div>
                     ))}
 
@@ -306,8 +307,8 @@ function Dpass() {
                             alignItems: 'center',
                             justifyContent: 'center'
                         }}><span onClick={nextPass}
-                                 style={{cursor: 'pointer'}}>{t('Common.Next')}</span>{isNext ?
-                            <LoadingOutlined/> : <CaretDownOutlined/>}</p>
+                            style={{ cursor: 'pointer' }}>{t('Common.Next')}</span>{isNext ?
+                                <LoadingOutlined /> : <CaretDownOutlined />}</p>
                     }
                 </div>
             </div>

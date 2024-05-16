@@ -56,8 +56,7 @@ function RightCard({ data, par, load }: any) {
                                                 : float < 0
                                                     ? "rgb(213,9,58)"
                                                     : "#d6dfd7",
-                                    }}
-                                >
+                                    }}>
                                     {change || 0}
                                 </p>
                             </div>

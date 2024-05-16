@@ -70,17 +70,17 @@
 }
 
 .revalidate {
-  & > p:first-child {
+  &>p:first-child {
     margin-top: 20px;
     font-size: 18px;
     color: rgb(200, 200, 200);
   }
 
-  & > p:last-child:hover {
+  &>p:last-child:hover {
     transform: scale(0.9);
   }
 
-  & > p:last-child {
+  &>p:last-child {
     border-radius: 10px;
     background-color: rgb(220, 220, 220);
     display: flex;
@@ -102,7 +102,7 @@
     }
   }
 
-  & > div {
+  &>div {
     margin: 35px 0 15px;
     background-color: rgb(220, 240, 220);
     border-radius: 10px;
@@ -112,17 +112,17 @@
     align-items: flex-start;
     justify-content: space-between;
 
-    & > img {
+    &>img {
       width: 20px;
       display: block;
       cursor: pointer;
     }
 
-    & > div {
+    &>div {
       display: flex;
       align-items: center;
 
-      & > div {
+      &>div {
         p:first-child {
           font-weight: bold;
           font-size: 18px;
@@ -153,7 +153,7 @@
         }
       }
 
-      & > img {
+      &>img {
         width: 45px;
         cursor: pointer;
         margin-right: 10px;
@@ -161,5 +161,38 @@
         border-radius: 50%;
       }
     }
+  }
+}
+
+
+.specialActive {
+  width: 70%;
+  margin: 0 auto;
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+
+    img {
+      width: 46%;
+    }
+    div {
+      display: flex;
+      padding: 1.5% 0;
+      box-sizing: border-box;
+      justify-content: space-between;
+      flex-direction: column;
+      width: 46%;
+      p {
+        line-height: 1.2;
+        color: rgb(214, 223, 215);
+      }
+
+      p:first-child {
+        font-size: 30px;
+        color: white;
+      }
+    }
+
   }
 }

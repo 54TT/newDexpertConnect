@@ -8,7 +8,6 @@ import 'swiper/css/effect-coverflow';
 function SwiperNow({data}:any) {
     const {browser,}: any = useContext(CountContext);
 
-
     return (
         <div className={`activeSwiper ${browser ? 'activeSwiperWeb' : 'activeSwiperActive'}`}>
             <Swiper

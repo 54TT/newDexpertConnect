@@ -79,3 +79,6 @@ export const chainParams = [{ value: 'Ethereum', icon: '/EthereumChain.svg' }, {
     icon: '/BASE.png'
 }, { value: 'Celo', icon: '/Celo.svg' },]
 
+
+
+

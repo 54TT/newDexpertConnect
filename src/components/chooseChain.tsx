@@ -36,13 +36,7 @@ function ChooseChain() {
             overlayClassName={'headerPopoverShow'}>
             <div className={'boxPopover'}>
                 <img src={value?.icon} alt="" style={{ width: '22px' }} />
-                <span style={{
-                    color: 'white',
-                    marginLeft: "4px",
-                    fontSize: '14px',
-                    margin: '0 4px 0 2px'
-                }}>{value?.value}</span>
-                <img src="/down.svg" alt="" style={{ width: '10px' }} />
+                <img src="/down.svg" alt="" style={{ width: '10px', marginLeft: "4px", }} />
             </div>
         </Popover>)
 }

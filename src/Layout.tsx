@@ -1,24 +1,24 @@
-import Header, {I18N_Key} from './components/header.tsx'
-import {Route, Routes, useLocation, useNavigate, useSearchParams} from "react-router-dom";
+import Header, { I18N_Key } from './components/header.tsx'
+import { Route, Routes, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import './style/all.less';
-import React, {createContext, Suspense, useCallback, useEffect, useRef, useState} from 'react'
-import {getAppMetadata, getSdkError} from "@walletconnect/utils";
+import React, { createContext, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { getAppMetadata, getSdkError } from "@walletconnect/utils";
 import 'swiper/css';
 import 'swiper/css/bundle'
 import Bot from './components/bottom.tsx';
-import {Web3Modal} from "@web3modal/standalone";
+import { Web3Modal } from "@web3modal/standalone";
 import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
 import Request from './components/axios.tsx';
 import Client from "@walletconnect/sign-client";
-import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client'
-import {ethers} from 'ethers';
-import {DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces} from "../utils/default";
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+import { ethers } from 'ethers';
+import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces } from "../utils/default";
 import _ from 'lodash';
-import {MessageAll} from "./components/message.ts";
-import {useTranslation} from "react-i18next";
-import {Spin} from "antd";
-import {chain} from '../utils/judgeStablecoin.ts'
+import { MessageAll } from "./components/message.ts";
+import { useTranslation } from "react-i18next";
+import { Spin } from "antd";
+import { chain } from '../utils/judgeStablecoin.ts'
 
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'))
 const NewpairDetails = React.lazy(() => import('./pages/newpairDetails/index.tsx'))
@@ -27,34 +27,37 @@ const Dapp = React.lazy(() => import('./pages/dapp/index.tsx'))
 const Community = React.lazy(() => import('./pages/community/index.tsx'))
 const Active = React.lazy(() => import('./pages/activity/index.tsx'))
 const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'))
+const SpecialActive = React.lazy(() => import('./pages/activity/components/specialDetail.tsx'))
+
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
     walletConnectVersion: 1,
 });
 export const CountContext = createContext(null);
-
 function Layout() {
     const router = useLocation()
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [search] = useSearchParams();
-    const {getAll,} = Request()
+    const { getAll, } = Request()
     const history = useNavigate()
     const [chains, setChains] = useState<any>([]);
     const [client, setClient] = useState<any>(null);
     const [session, setSession] = useState<any>(null);
     const prevRelayerValue = useRef<any>();
     const [user, setUserPar] = useState<any>(null)
+    const [isLogin, setIsLogin] = useState(false)
     const [load, setLoad] = useState<boolean>(false)
     const [newPairPar, setNewPairPar] = useState<any>([])
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalSet, setIsModalSet] = useState(false);
-    const [isLogin, setIsLogin] = useState(false);
     const language = (localStorage.getItem("language") || "en_US") as I18N_Key;
     const [languageChange, setLanguageChange] = useState(language);
-    const [changeLan, setChangeLan] = useState(false);
     const [newAccount, setNewAccount] = useState('');
     const [switchChain, setSwitchChain] = useState('Ethereum');
+    const [browser, setBrowser] = useState<any>(false)
+    const [big, setBig] = useState<any>(false)
+    const [activityOptions, setActivityOptions] = useState('')
     useEffect(() => {
         if (newAccount && user?.address) {
             if (newAccount !== user?.address) {
@@ -82,6 +85,7 @@ function Layout() {
         cookie.remove('token')
         cookie.remove('jwt')
         setUserPar(null)
+        setIsLogin(false)
     }
     const getUser = async (id: string, token: string, name: string, jwt: any) => {
         const data: any = await getAll({
@@ -93,6 +97,7 @@ function Layout() {
         if (data?.status === 200) {
             const user = data?.data?.data
             setUserPar(user)
+            setIsLogin(true)
             cookie.set('token', token)
             if (jwt) {
                 cookie.set('jwt', JSON.stringify(jwt))
@@ -104,7 +109,6 @@ function Layout() {
             if (name === 'modal') {
                 web3Modal.closeModal();
             }
-            setIsLogin(true)
         }
     }
     const login = async (sign: string, account: string, message: string, name: string) => {
@@ -146,7 +150,7 @@ function Layout() {
             const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
             // provider._isProvider   判断是否还有请求没有结束
             // 请求用户授权连接钱包
-            await (window as any).ethereum.request({method: 'eth_requestAccounts'});
+            await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
             const account = await provider.send("eth_requestAccounts", []);
             // 连接的网络和链信息。
             // const chain = await provider.getNetwork();
@@ -157,7 +161,7 @@ function Layout() {
                 // 判断是否是eth
                 // if (chain && chain.name === 'homestead' && chain.chainId === 1) {
                 try {
-                    const at = {method: 'post', url: '/api/v1/token', data: {address: account[0]}, token: ''}
+                    const at = { method: 'post', url: '/api/v1/token', data: { address: account[0] }, token: '' }
                     const token: any = await getAll(at)
                     if (token?.data && token?.status === 200) {
                         // 签名消息
@@ -222,7 +226,7 @@ function Layout() {
         try {
             const [namespace, reference, address] = acount[0].split(":");
             const chainId = `${namespace}:${reference}`;
-            const token: any = await getAll({method: 'post', url: '/api/v1/token', data: {address: address}, token: ''})
+            const token: any = await getAll({ method: 'post', url: '/api/v1/token', data: { address: address }, token: '' })
             if (token && token?.data && token?.status === 200) {
                 await loginMore(chainId, address, client, session, token?.data?.nonce);
             } else {
@@ -251,7 +255,7 @@ function Layout() {
         try {
             const requiredNamespaces = getRequiredNamespaces(['eip155:1']);
             const optionalNamespaces = getOptionalNamespaces(['eip155:1']);
-            const {uri, approval} = await client.connect({
+            const { uri, approval } = await client.connect({
                 requiredNamespaces,
                 optionalNamespaces,
             });
@@ -259,7 +263,7 @@ function Layout() {
                 const standaloneChains = Object.values(requiredNamespaces)
                     .map((namespace) => namespace.chains)
                     .flat()
-                await web3Modal.openModal({uri, standaloneChains});
+                await web3Modal.openModal({ uri, standaloneChains });
             }
             const ab = await approval();
             await onSessionConnected(ab, 'yes', client);
@@ -269,8 +273,6 @@ function Layout() {
             web3Modal.closeModal();
         }
     }, [chains, client, onSessionConnected]);
-    const [browser, setBrowser] = useState<any>(false)
-    const [big, setBig] = useState<any>(false)
     useEffect(() => {
         const jwt = cookie.get('jwt')
         const token = cookie.get('token')
@@ -303,7 +305,7 @@ function Layout() {
         const body = document.getElementsByTagName('body')[0]
         if (window && window?.innerWidth) {
             if (window?.innerWidth > 800) {
-                if (router.pathname === '/activity' || router.pathname === '/Dpass') {
+                if (router.pathname === '/activity' || router.pathname.includes('/Dpass/')) {
                     body.style.overflow = 'auto'
                 } else {
                     body.style.overflow = 'hidden'
@@ -322,7 +324,7 @@ function Layout() {
         const handleResize = () => {
             // 更新状态，保存当前窗口高度
             if (window?.innerWidth > 800) {
-                if (router.pathname === '/activity' || router.pathname === '/Dpass') {
+                if (router.pathname === '/activity' || router.pathname.includes('/Dpass/')) {
                     body.style.overflow = 'auto'
                 } else {
                     body.style.overflow = 'hidden'
@@ -341,7 +343,7 @@ function Layout() {
         const chang = search.get('change')
         if (router.pathname === '/' && chang === '1') {
             setUserPar(null)
-            setIsLogin(true)
+            setIsLogin(false)
         }
         // 添加事件监听器
         window.addEventListener('resize', handleResize);
@@ -365,12 +367,9 @@ function Layout() {
         setIsModalOpen,
         isModalSet,
         setIsModalSet,
-        isLogin,
-        setIsLogin,
         languageChange,
         setLanguageChange,
-        changeLan,
-        setChangeLan, setUserPar, switchChain, setSwitchChain
+        setUserPar, switchChain, setSwitchChain, isLogin,activityOptions, setActivityOptions
     }
     const clients = new ApolloClient({
         uri: chain[switchChain],
@@ -383,21 +382,22 @@ function Layout() {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%,-50%)'
-            }}/>}>
+            }} />}>
                 <CountContext.Provider value={value}>
-                    <Header/>
-                    <div className={big ? 'bigCen' : ''} style={{marginTop: '50px'}}>
+                    <Header />
+                    <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
                         <Routes>
-                            <Route path="/" element={<Index/>}/>
-                            <Route path="/newpairDetails/:id" element={<NewpairDetails/>}/>
-                            <Route path='/community/:tab' element={<Community/>}/>
-                            <Route path='/app/:id' element={<Dapp/>}/>
-                            <Route path='/activity' element={<Active/>}/>
-                            <Route path='/oauth/:id/callback' element={<Oauth/>}/>
-                            <Route path='/dpass' element={<Dpass/>}/>
+                            <Route path="/" element={<Index />} />
+                            <Route path="/specialActive/:id" element={<SpecialActive />} />
+                            <Route path="/newpairDetails/:id" element={<NewpairDetails />} />
+                            <Route path='/community/:tab' element={<Community />} />
+                            <Route path='/app/:id' element={<Dapp />} />
+                            <Route path='/activity' element={<Active />} />
+                            <Route path='/oauth/:id/callback' element={<Oauth />} />
+                            <Route path='/dpass/:id' element={<Dpass />} />
                         </Routes>
                     </div>
-                    <Bot/>
+                    <Bot />
                 </CountContext.Provider>
             </Suspense>
         </ApolloProvider>

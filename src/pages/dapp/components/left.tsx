@@ -7,7 +7,7 @@ import { throttle } from "lodash";
 function Left() {
     const history = useNavigate();
     const params: any = useParams()
-    const { user, setIsModalOpen }: any = useContext(CountContext);
+    const { user, setIsModalOpen, setActivityOptions }: any = useContext(CountContext);
     const [value, setValue] = useState('');
     useEffect(() => {
         if (params?.id) {
@@ -105,7 +105,8 @@ function Left() {
                                         throttle(function () {
                                             if (valueData === 'D') {
                                                 if (user?.address) {
-                                                    history('/Dpass')
+                                                    setActivityOptions('d')
+                                                    history('/activity')
                                                 } else {
                                                     setIsModalOpen(true)
                                                 }
