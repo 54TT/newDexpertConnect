@@ -305,7 +305,7 @@ function Layout() {
         const body = document.getElementsByTagName('body')[0]
         if (window && window?.innerWidth) {
             if (window?.innerWidth > 800) {
-                if (router.pathname === '/activity' || router.pathname.includes('/Dpass/')) {
+                if (router.pathname === '/activity' || router.pathname.includes('/Dpass/')||router.pathname.includes('/specialActive/')   ) {
                     body.style.overflow = 'auto'
                 } else {
                     body.style.overflow = 'hidden'
@@ -324,7 +324,7 @@ function Layout() {
         const handleResize = () => {
             // 更新状态，保存当前窗口高度
             if (window?.innerWidth > 800) {
-                if (router.pathname === '/activity' || router.pathname.includes('/Dpass/')) {
+                if (router.pathname === '/activity' || router.pathname.includes('/Dpass/') ||router.pathname.includes('/specialActive/') ) {
                     body.style.overflow = 'auto'
                 } else {
                     body.style.overflow = 'hidden'

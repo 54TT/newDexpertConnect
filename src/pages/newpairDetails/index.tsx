@@ -21,6 +21,7 @@ function Index() {
       token1PriceUSD
     }
     untrackedVolumeUSD
+    volumeUSD
     token0 {
       id
       name

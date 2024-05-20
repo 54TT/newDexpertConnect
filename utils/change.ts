@@ -36,10 +36,14 @@ export const formatDecimal = (number: any, count: any) => {
     let newNumber = numberStr.slice(count0, numberStr.length);
     if (count0 >= count) {
         const subscript = getSubscript(count0);
-        newNumber = `0.0${subscript}${newNumber}`;
+        newNumber = `0.0${subscript}${Number(newNumber) ? newNumber.slice(0, 4) : newNumber}`;
         return newNumber
     } else {
-        return number;
+        if (Number(number) > 0) {
+            return number.slice(0,8);
+        }else{
+            return number;
+        }
     }
 }
 
@@ -102,9 +106,6 @@ export const setMany = (text: any, countdown?: string, languageChange?: string) 
             if (text && Number(text)) {
                 if (Number(text) < 1 && text.toString().includes('0.000')) {
                     data = formatDecimal(text.toString(), 3)
-                    if (data.length > 10) {
-                        data = data.slice(0, 6)
-                    }
                 } else {
                     data = autoConvert(Number(text))
                 }

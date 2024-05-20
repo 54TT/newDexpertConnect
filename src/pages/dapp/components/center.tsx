@@ -8,7 +8,7 @@ const LINK_CREATE = [
   "https://t.me/DexpertThorBot",
 
 ];
-const LINK_sniper = ['', "https://t.me/DexpertOdinBot",]
+const LINK_sniper = ['https://youtu.be/vkKD4GD_awY', "https://t.me/DexpertOdinBot"]
 function Center() {
   const { browser }: any = useContext(CountContext);
   const router = useLocation();
@@ -18,7 +18,7 @@ function Center() {
     <div className={"center"}>
       {
         <div className={"centerTop"}>
-          <img src="/bot.svg" alt="" loading={"lazy"} />
+          <img src={params?.id === 'create' ? "/bot11.png" : '/bot.png'} alt="" loading={"lazy"} />
           <div
             className={"centerTopRight"}
             style={{ paddingRight: browser ? "10%" : "2%" }}
@@ -37,6 +37,7 @@ function Center() {
                 <p className={'pp'}>{t("Dapps.c")}</p>
               </>
             }
+            <p style={{ color: "rgb(130,230,150)", marginBottom: '5px' }}><span>{t("Dapps.fee")}</span><span style={{ marginLeft: "10px" }}>{params?.id === 'create' ? '0.08eth' : 'Swap 0.2%, Sniper 0.5%'}</span></p>
             <div className={"dis"}>
               {[
                 t("Dapps.Video Guide"),

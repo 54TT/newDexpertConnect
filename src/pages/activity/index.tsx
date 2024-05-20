@@ -7,7 +7,7 @@ import Loading from '../../components/loading.tsx'
 import { LoadingOutlined } from '@ant-design/icons'
 import { CountContext } from "../../Layout.tsx";
 import { useTranslation } from "react-i18next";
-import Task from './components/task.tsx'
+import EventsList from './components/eventsList.tsx'
 function Index() {
     const { getAll, } = Request()
     const { t } = useTranslation();
@@ -51,7 +51,6 @@ function Index() {
             setDPassCount(res?.data?.dPassCount)
         }
     }
-
     // 是否登录
     useEffect(() => {
         if (isLogin) {
@@ -61,7 +60,6 @@ function Index() {
             getParams()
         }
     }, [isLogin]);
-
     return (
         <>
             {
@@ -124,7 +122,7 @@ function Index() {
                                         <img style={{ marginLeft: '7px' }} src="/jian.svg" alt="" />
                                     </div>
                                 </div>
-                                <div style={{ borderRight: '2px solid #3c453c' }}>
+                                <div>
                                     <span style={{ fontSize: browser ? '18px' : '16px' }}>{t('Active.today')}</span>
                                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                                         <span style={{
@@ -133,7 +131,7 @@ function Index() {
                                         }}>{todayPoint || '0'}</span>
                                     </div>
                                 </div>
-                                <div>
+                                {/* <div>
                                     <span style={{ fontSize: browser ? '18px' : '16px' }}>{t('Active.Multiplier')}</span>
                                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', cursor: 'pointer' }} >
                                         <span style={{
@@ -142,10 +140,10 @@ function Index() {
                                         }}>{'1'}</span>
                                         <img style={{ marginLeft: '7px' }} src="/jian.svg" alt="" />
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
-                        <Task getParams={getParams} select={select} setSelect={setSelect} data={data} />
+                        <EventsList getParams={getParams} select={select} setSelect={setSelect} params={['special', 'ranking', 'd']} data={data} />
                         <p style={{
                             width: '72%',
                             margin: '0 auto',

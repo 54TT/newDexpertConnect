@@ -1,19 +1,20 @@
-import './task.less'
+import './eventsList.less'   
 import cookie from "js-cookie";
 import { useTranslation } from "react-i18next";
-import { CountContext } from "../../../Layout";
+import { CountContext } from "../../../Layout.tsx";
 import { useContext, useEffect, useState } from "react";
-import Request from "../../../components/axios";
+import Request from "../../../components/axios.tsx";
 import { MessageAll } from '../../../components/message.ts'
 import EachActivity from './eachActivity.tsx'
-import { throttle } from "lodash";
-function task({ getParams, data, select, setSelect }: any) {
+import { throttle, } from "lodash";
+function task({ getParams, data, select, setSelect, params }: any) {
+    console.log('aaaaa-------------',data)
     const { getAll, } = Request()
     const [rankList, setRankList] = useState<any>([])
     const {
         browser, isLogin, languageChange, activityOptions, setActivityOptions
     }: any = useContext(CountContext);
-    const [option, setOption] = useState(activityOptions ? activityOptions : 'special')
+    const [option, setOption] = useState(activityOptions ? activityOptions : params[0])
     const [isRankList, setIsRankList] = useState(true)
     const { t } = useTranslation();
     const getRank = async () => {
@@ -34,14 +35,14 @@ function task({ getParams, data, select, setSelect }: any) {
             setSelect('')
         }
     }, [select])
-    const list: any = [{ name: 'special', value: t('Active.Special') }, { name: 'first', value: t('Active.First') }, { name: 'daily', value: t('Active.Daily') }, { name: "ranking", value: t('Active.Ranking') }, { name: "d", value: 'D Pass' }]
-
+    const list: any = [{ name: 'special', value: t('Active.Special') }, { name: "d", value: 'D Pass' }, { name: "ranking", value: t('Active.Ranking') } ,{ name: 'first', value: t('Active.First') }, { name: 'daily', value: t('Active.Daily') },]
+    const now = list.filter((item: any) => params.indexOf(item.name) !== -1) || []
     return (
         <>
             <div className={'activeOptions'}
                 style={{ width: browser ? '72%' : '92%', margin: browser ? '35px auto 42px' : '20px auto' }}>
                 {
-                    list.map((i: any, ind: number) => {
+                    now.map((i: any, ind: number) => {
                         return <div style={{
                             backgroundColor: isLogin ? option === i.name ? 'rgb(134,240,151)' : '' : '',
                             color: isLogin ? option === i.name ? 'black' : 'white' : 'white',

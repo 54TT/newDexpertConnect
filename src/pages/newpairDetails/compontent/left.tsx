@@ -91,7 +91,7 @@ function Left({par}: any) {
             </div>
             <div className={'valume'}>
                 {
-                    [{name: t('Common.Volume'), price: setMany(par?.untrackedVolumeUSD) || 0}, {
+                    [{name: t('Common.Volume'), price: setMany(par?.volumeUSD) || 0}, {
                         name: t('Common.Liquidity'),
                         price: setMany(par?.liquidity) || 0
                     }, {name: t('Common.Market Cap'), price: market}, {
@@ -121,7 +121,7 @@ function Left({par}: any) {
                           showInfo={false} strokeColor={'rgb(0,255,71)'} trailColor={'gray'}/>
                 <div className={`dis swapTop`}>
                     <span>{setMany(par?.buyVolumeUSD) || 0}</span>
-                    <span>{setMany(par?.untrackedVolumeUSD) || 0}</span>
+                    <span>{setMany(par?.volumeUSD) || 0}</span>
                     <span>{setMany(par?.sellVolumeUSD) || 0}</span>
                 </div>
             </div>

@@ -1,18 +1,18 @@
-import {useContext, useState} from "react";
-import {Collapse, Drawer, Dropdown, } from "antd";
-import {CountContext} from "../Layout.tsx";
-import {useLocation, useNavigate} from "react-router-dom";
-import {LoadingOutlined,} from "@ant-design/icons";
-import { simplify} from "../../utils/change.ts";
+import { useContext, useState } from "react";
+import { Collapse, Drawer, Dropdown, } from "antd";
+import { CountContext } from "../Layout.tsx";
+import { useLocation, useNavigate } from "react-router-dom";
+import { LoadingOutlined, } from "@ant-design/icons";
+import { simplify } from "../../utils/change.ts";
 import HeaderModal from "./headerModal.tsx";
-import {throttle} from "lodash";
-import {useTranslation} from "react-i18next";
+import { throttle } from "lodash";
+import { useTranslation } from "react-i18next";
 export type I18N_Key = "zh_CN" | "en_US";
 function Header() {
     const router = useLocation();
-    const {user, load, clear, browser, setIsModalOpen, languageChange, setLanguageChange}: any =
+    const { user, load, clear, browser, setIsModalOpen, languageChange, setLanguageChange }: any =
         useContext(CountContext);
-    const {t, i18n} = useTranslation();
+    const { t, i18n } = useTranslation();
     const history = useNavigate();
     const [open, setOpen] = useState(false);
     const showDrawer = throttle(
@@ -20,35 +20,35 @@ function Header() {
             setOpen(true);
         },
         1500,
-        {trailing: false}
+        { trailing: false }
     );
     const onClose = () => {
         setOpen(false);
     };
     // 改变路由方法
     const historyChange = throttle(
-        function (i: number) {
+        function (i: string) {
             switch (i) {
-                case 2:
+                case 'Community':
                     history("/community/lastest");
                     break;
-                case 0:
+                case 'Market':
                     history("/");
                     break;
-                case 1:
+                case 'DApps':
                     history("/app/create");
                     break;
             }
         },
         1500,
-        {trailing: false}
+        { trailing: false }
     );
     const logout = throttle(
         function () {
             clear();
         },
         1500,
-        {trailing: false}
+        { trailing: false }
     );
     const items: any = [
         {
@@ -65,7 +65,7 @@ function Header() {
             }
         },
         1500,
-        {trailing: false}
+        { trailing: false }
     );
 
     const collapseItems: any = [
@@ -79,22 +79,22 @@ function Header() {
             children: (
                 <div className={"collapseChildeen"}>
                     {[
-                        {name: t("Dapps.Token Creation Bot"), img: "/token.svg"},
+                        { name: t("Dapps.Token Creation Bot"), img: "/token.svg" },
                         {
                             name: t("Dapps.Sniper Bot"),
                             img: "/sniper.svg",
                         },
-                        {name: t("Dapps.Air drop Bot"), img: "/dropBot.svg"},
+                        { name: t("Dapps.Air drop Bot"), img: "/dropBot.svg" },
                         {
                             name: t("Dapps.Market maker"),
                             img: "/money.svg",
                         },
-                        {name: t("Dapps.New Buy Notification"), img: "/news.svg"},
+                        { name: t("Dapps.New Buy Notification"), img: "/news.svg" },
                         {
                             name: t("Dapps.Token Checker"),
                             img: "/checker.svg",
                         },
-                        {name: "Trending", img: "/trending.svg"},
+                        { name: "Trending", img: "/trending.svg" },
                     ].map((i: any, ind: number) => {
                         return (
                             <p
@@ -107,13 +107,13 @@ function Header() {
                                         }
                                     },
                                     1500,
-                                    {trailing: false}
+                                    { trailing: false }
                                 )}
                             >
-                                <img src={i.img} alt="" loading={"lazy"}/>
-                                <span style={{color: ind > 0 ? "gray" : "rgb(200,200,200)"}}>
-                  {i.name}
-                </span>
+                                <img src={i.img} alt="" loading={"lazy"} />
+                                <span style={{ color: ind > 0 ? "gray" : "rgb(200,200,200)" }}>
+                                    {i.name}
+                                </span>
                             </p>
                         );
                     })}
@@ -126,12 +126,12 @@ function Header() {
             children: (
                 <div className={"collapseChildeen"}>
                     {[
-                        {name: "Lastest", img: "/community/latest.svg"},
+                        { name: "Lastest", img: "/community/latest.svg" },
                         {
                             name: "Profile",
                             img: "/community/profile.svg",
                         },
-                        {name: "Following", img: "/community/follow.svg"},
+                        { name: "Following", img: "/community/follow.svg" },
                     ].map((i: any, ind: number) => {
                         return (
                             <p
@@ -142,10 +142,10 @@ function Header() {
                                         onClose();
                                     },
                                     1500,
-                                    {trailing: false}
+                                    { trailing: false }
                                 )}
                             >
-                                <img src={i.img} alt="" loading={"lazy"}/>
+                                <img src={i.img} alt="" loading={"lazy"} />
                                 <span>{i.name}</span>
                             </p>
                         );
@@ -160,9 +160,9 @@ function Header() {
             onClose();
         }
     };
-    const change = (ind: number) => {
+    const change = (ind: string) => {
         if (router.pathname === "/" || router.pathname === "/newpairDetails") {
-            if (ind === 0) {
+            if (ind === 'Market') {
                 return "rgb(134,240,151)";
             } else {
                 return "rgb(214,223,215)";
@@ -172,13 +172,13 @@ function Header() {
             router.pathname === "/community/profile" ||
             router.pathname === "/community/following"
         ) {
-            if (ind === 2) {
+            if (ind === 'Community') {
                 return "rgb(134,240,151)";
             } else {
                 return "rgb(214,223,215)";
             }
         } else if (router.pathname.includes("/app/")) {
-            if (ind === 1) {
+            if (ind === 'DApps') {
                 return "rgb(134,240,151)";
             } else {
                 return "rgb(214,223,215)";
@@ -192,14 +192,17 @@ function Header() {
         {
             label: t("Common.Market"),
             value: "Market",
+            key: 'Market'
         },
         {
             label: t("Common.DApps & Tools"),
             value: "DApps & Tools",
+            key: 'DApps'
         },
         {
             label: t("Common.Community"),
             value: "Community",
+            key: 'Community'
         },
     ];
 
@@ -215,56 +218,56 @@ function Header() {
                 i18n.changeLanguage('zh_CN');
             }
         },
-        1500, {trailing: false});
+        1500, { trailing: false });
     return (
         <div className={"headerBox"}>
-            <div style={{display: "flex", alignItems: "center",}}>
+            <div style={{ display: "flex", alignItems: "center", }}>
                 <img src="/logo1111.svg" alt="" onClick={throttle(
                     function () {
                         window.open("https://info.dexpert.io/");
                     },
                     1500,
-                    {trailing: false})} style={{width: "100px", display: "block", cursor: 'pointer'}}/>
-    
+                    { trailing: false })} style={{ width: "100px", display: "block", cursor: 'pointer' }} />
+
             </div>
             {browser && (
                 <p className={`headerCenter dis`}>
-                    {HeaderList.map(({label}, ind) => {
+                    {HeaderList.map(({ label, key }, ind) => {
                         return (
                             <span
                                 key={ind}
-                                style={{color: change(ind)}}
+                                style={{ color: change(key) }}
                                 onClick={throttle(
                                     function () {
-                                        historyChange(ind);
+                                        historyChange(key);
                                     },
                                     1500,
-                                    {trailing: false}
+                                    { trailing: false }
                                 )}
                             >
-                {label}
-              </span>
+                                {label}
+                            </span>
                         );
                     })}
                 </p>
             )}
-            <div className={'headerData'} style={{justifyContent: browser ? 'center' : 'flex-end'}}>
-                <div style={{marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer',marginRight: '13px'}}
-                     onClick={throttle(
-                         function () {
-                             history('/activity')
-                         },
-                         1500,
-                         {trailing: false})}>
-                    <img src="/gift.svg" alt="" style={{width: '25px', cursor: 'pointer'}}/>
+            <div className={'headerData'} style={{ justifyContent: browser ? 'center' : 'flex-end' }}>
+                <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: '13px' }}
+                    onClick={throttle(
+                        function () {
+                            history('/activity')
+                        },
+                        1500,
+                        { trailing: false })}>
+                    <img src={router.pathname === '/activity' ? "/gift.svg" : "/giftWhite.svg"} alt="" style={{ width: '25px', cursor: 'pointer' }} />
                     {
-                        browser && <p style={{color: 'rgb(134,240,151)'}}>{t("Common.Events")}</p> 
+                        browser && <p style={{ color: router.pathname === '/activity' ? 'rgb(134,240,151)' : 'rgb(214, 223, 215)' }}>{t("Common.Events")}</p>
                     }
                 </div>
                 {user?.uid ? (
                     <>
                         {browser ? (
-                            <div className={"disCen"} style={{cursor: "pointer"}}>
+                            <div className={"disCen"} style={{ cursor: "pointer" }}>
                                 <Dropdown
                                     overlayClassName={'headerDropdownClass'}
                                     menu={{
@@ -272,13 +275,13 @@ function Header() {
                                     }}>
                                     <div className={'headLine'}>
                                         <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.png"}
-                                             style={{
-                                                 width: "28px",
-                                                 display: "block",
-                                                 marginRight: "-8px",
-                                                 zIndex: '10',
-                                                 borderRadius: "100%",
-                                             }} alt="" loading={"lazy"}/>
+                                            style={{
+                                                width: "28px",
+                                                display: "block",
+                                                marginRight: "-8px",
+                                                zIndex: '10',
+                                                borderRadius: "100%",
+                                            }} alt="" loading={"lazy"} />
                                         <p className={'headLineP'}>{simplify(user?.username)}</p>
                                     </div>
                                 </Dropdown>
@@ -309,7 +312,7 @@ function Header() {
                                 <div className={"disCen"}>
                                     <span>{t("Common.Connect Wallet")}</span>
                                     {load ? (
-                                        <LoadingOutlined style={{marginLeft: "4px"}}/>
+                                        <LoadingOutlined style={{ marginLeft: "4px" }} />
                                     ) : ''}
                                 </div>
                             </div>
@@ -318,7 +321,7 @@ function Header() {
                                 loading={"lazy"}
                                 src="/wallet.svg"
                                 onClick={loginModal}
-                                style={{width: "25%"}}
+                                style={{ width: "25%" }}
                                 alt=""
                             />
                         )}
@@ -326,20 +329,20 @@ function Header() {
                 )}
                 {
                     browser && <img src="/earth.svg" alt=""
-                                    style={{cursor: 'pointer', display: 'block', marginLeft: "10px", width: '22px'}}
-                                    onClick={changeLanguage}/>
+                        style={{ cursor: 'pointer', display: 'block', marginLeft: "10px", width: '22px' }}
+                        onClick={changeLanguage} />
                 }
                 {!browser && (
                     <img
                         src="/side.svg"
                         loading={"lazy"}
                         alt=""
-                        style={{cursor: "pointer", width: "28px", marginLeft: "8px"}}
+                        style={{ cursor: "pointer", width: "28px", marginLeft: "8px" }}
                         onClick={showDrawer}
                     />
                 )}
             </div>
-            <HeaderModal/>
+            <HeaderModal />
             <Drawer
                 width={"65vw"}
                 className={"headerDrawerOpen"}

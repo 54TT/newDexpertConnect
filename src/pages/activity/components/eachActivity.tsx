@@ -11,8 +11,9 @@ import { LoadingOutlined } from '@ant-design/icons'
 import Nodata from '../../../components/Nodata.tsx';
 import { MessageAll } from "../../../components/message.ts";
 import Request from "../../../components/axios.tsx";
-import SpecialOrPass from '../components/specialOrPass.tsx'
+import SpecialOrPass from '../components/specialOrPass.tsx';
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
+    const par = data.length > 0 ? data : data?.campaign ? [data] : []
     const { browser, languageChange, isLogin }: any = useContext(CountContext);
     const { getAll, } = Request()
     const [loading, setLoading] = useState(false)
@@ -194,7 +195,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             return ''
         }
     }
-
     const operate = (isCompleted: string, title: string) => {
         if (option === 'daily') {
             return t('Market.start')
@@ -265,7 +265,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                         bordered
                     /> : option === 'daily' || option === 'first' ? <div className={'first'}>
                         {
-                            data.length > 0 ? data.map((i: any) => {
+                            par.length > 0 ? par.map((i: any) => {
                                 let at: any = []
                                 if (option === 'first') {
                                     at = i?.tasks
@@ -332,9 +332,9 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                         color: 'white'
                                     }}> {t('Market.no')}</p>
                                 }
-                            }) : <Nodata  />
+                            }) : <Nodata />
                         }
-                    </div> : <SpecialOrPass option={option}/>
+                    </div> : <SpecialOrPass option={option} data={par} />
                 }
             </div>
         }

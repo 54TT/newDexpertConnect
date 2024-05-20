@@ -6,7 +6,7 @@ function Loading({status}: any) {
     const {browser}: any = useContext(CountContext);
     return (
         <div className={'disCen'} style={{
-            marginTop: status === 'none' ? '0' : status === '20' ? '20%' : '50%',
+            marginTop: status === 'none' ? '0' : status === '20' ? '10%' : '50%',
             width: status === 'none' ? browser ? 'auto' : window.innerWidth + 'px':'auto'
         }}>
             <Spin size="large"/>

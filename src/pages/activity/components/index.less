@@ -164,10 +164,23 @@
   }
 }
 
+.activityPerson {
+  width: 70%;
+  margin: 50px auto;
+
+}
 
 .specialActive {
   width: 70%;
-  margin: 0 auto;
+  margin: 7% auto 60px;
+
+  .setCountdown {
+    .ant-statistic-content {
+      .ant-statistic-content-value {
+        color: #d6dfd7;
+      }
+    }
+  }
 
   .top {
     display: flex;
@@ -175,14 +188,18 @@
 
     img {
       width: 46%;
+      display: block;
+      border-radius: 15px;
     }
-    div {
+
+    .right {
       display: flex;
       padding: 1.5% 0;
       box-sizing: border-box;
       justify-content: space-between;
       flex-direction: column;
       width: 46%;
+
       p {
         line-height: 1.2;
         color: rgb(214, 223, 215);
@@ -194,5 +211,16 @@
       }
     }
 
+  }
+
+  .bot {
+    width: 90%;
+    margin: 7% auto 0;
+
+    p {
+      line-height: 1.1;
+      margin-bottom: 13px;
+      color: rgb(214, 223, 215);
+    }
   }
 }
