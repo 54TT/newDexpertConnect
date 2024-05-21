@@ -2,6 +2,7 @@ import './index.less';
 import { useContext, useEffect, useState } from "react";
 import { throttle } from "lodash";
 import Request from "../../components/axios.tsx";
+import { useNavigate, } from "react-router-dom";
 import cookie from "js-cookie";
 import Loading from '../../components/loading.tsx'
 import { LoadingOutlined } from '@ant-design/icons'
@@ -9,6 +10,7 @@ import { CountContext } from "../../Layout.tsx";
 import { useTranslation } from "react-i18next";
 import EventsList from './components/eventsList.tsx'
 function Index() {
+    const history = useNavigate()
     const { getAll, } = Request()
     const { t } = useTranslation();
     const {
@@ -64,29 +66,23 @@ function Index() {
         <>
             {
                 load ? <div className={'activityBox'} style={{ marginBottom: '50px', overflow: 'hidden' }}>
-                    <p className='topTitle'><span style={{ color: 'rgb(134,240,151)' }}>{t('Active.task')}</span><span style={{ color: 'white' }}>{t('Active.task1')}</span></p>
-                    <div className={'activeBack'}>
-                        {/* // <Swiper data={data}/> */}
-                        {/*时间*/}
-                        {/* <div className={'allTime'}>
-                                {
-                                    Number(time) ?
-                                        <Countdown title=""
-                                                   className={'avtiveCountdown'}
-                                                   value={time}
-                                                   format="D[D] H[H] m[M] s[S]"
-                                        /> :
-                                        <p className={'pTime'}>{time}</p>
-                                } */}
-                        {/* </div> */}
-                        <div className={'allTime'} >
-                            <img src="/coin.svg" alt="" />
+                    <p className='topTitle' style={{ margin: browser ? ' 3% 0 2%' : '50px 0 20px' }}><span style={{ color: 'rgb(134,240,151)' }}>{t('Active.task')}</span><span style={{ color: 'white' }}>{t('Active.task1')}</span></p>
+                    <div className={'activeBack'} style={{ backgroundSize: browser ? "100% 120vh" : '100%' }}>
+                        <div className={'allTime'} style={{ flexDirection: browser ? "row" : 'column', width: browser ? '65%' : '80%' }}>
+                            {
+                                browser && <img src="/coin.svg" alt="" />
+                            }
                             <div className='allTimeText'>
                                 <p>{t('Active.ye1')}</p>
                                 <p>{t('Active.ye2')}</p>
                                 <p>{t('Active.ye3')}</p>
                             </div>
-                            <img src="/pass.svg" alt="" />
+                            <div className={browser ? 'setImg' : 'showImg'}>
+                                {
+                                    !browser && <img src="/coin.svg" alt="" />
+                                }
+                                <img src="/pass.svg" alt="" />
+                            </div>
                         </div>
                         <div className={`point`} style={{ width: browser ? '66%' : '90%' }}>
                             {
@@ -97,14 +93,13 @@ function Index() {
                                 </div>
                             }
                             <div className={`youPoint ${isLogin ? '' : 'frosted'}`}>
-                                <div>
+                                <div style={{ cursor: 'pointer' }} onClick={
+                                    throttle(function () {
+                                        history('/activityPerson')
+                                    }, 1500, { 'trailing': false })}>
                                     <span style={{ fontSize: browser ? '18px' : '16px' }}>{t('Active.point')}</span>
                                     <p>
                                         <span style={{ fontSize: browser ? '25px' : '20px' }}>{point || '0'}</span>
-                                        <img onClick={
-                                            throttle(function () {
-                                                setSelect('d')
-                                            }, 1500, { 'trailing': false })} src="/change.svg" alt="" />
                                     </p>
                                 </div>
                                 <div>
@@ -131,16 +126,6 @@ function Index() {
                                         }}>{todayPoint || '0'}</span>
                                     </div>
                                 </div>
-                                {/* <div>
-                                    <span style={{ fontSize: browser ? '18px' : '16px' }}>{t('Active.Multiplier')}</span>
-                                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', cursor: 'pointer' }} >
-                                        <span style={{
-                                            fontSize: browser ? '25px' : '20px',
-                                            color: '#86F097'
-                                        }}>{'1'}</span>
-                                        <img style={{ marginLeft: '7px' }} src="/jian.svg" alt="" />
-                                    </div>
-                                </div> */}
                             </div>
                         </div>
                         <EventsList getParams={getParams} select={select} setSelect={setSelect} params={['special', 'ranking', 'd']} data={data} />
@@ -154,6 +139,10 @@ function Index() {
                             {t('Active.Each')}
                         </p>
                     </div>
+                    <div className='background' style={{ top: '15vh', background: '#86F097', left: "0" }}></div>
+                    <div className='background' style={{ top: '10vh', background: '#0FF', right: '0' }}></div>
+                    <div className='background' style={{ top: '170vh', background: '#86F097', left: "0" }}></div>
+                    <div className='background' style={{ top: '170vh', background: '#0FF', right: '0' }}></div>
                 </div> :
                     <Loading status={'20'} />
             }

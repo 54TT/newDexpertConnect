@@ -5,8 +5,11 @@ import Nodata from '../../../components/Nodata'
 import cookie from "js-cookie";
 import Loading from '../../../components/loading.tsx';
 import Request from "../../../components/axios.tsx";
-import { useEffect, useState } from 'react';
+import { CountContext } from "../../../Layout.tsx";
+import { useEffect, useState, useContext } from 'react';
+import dayjs from 'dayjs'
 export default function specialOrPass({ option, data }: any) {
+  const { browser }: any = useContext(CountContext);
   const { t } = useTranslation();
   const { getAll, } = Request()
   const [passPar, setPassPar] = useState([])
@@ -27,15 +30,15 @@ export default function specialOrPass({ option, data }: any) {
       getDpass(token)
     }
   }, [option])
-  const changeImg = (id: string) => {
-    if (id === '1') {
-      return '/launchPass.svg'
-    } else if (id === '2') {
-      return '/sniperPass.svg'
-    } else if (id === '3') {
-      return '/swapPass.svg'
-    } else if (id === '4') {
+  const changeImg = (name: string) => {
+    if (name.includes('Golden')) {
       return '/goldenPass.svg'
+    } else if (name.includes('Creation')) {
+      return '/launchPass.png'
+    } else if (name.includes('Trade')) {
+      return '/trade.png'
+    } else if (name.includes('Sniper')) {
+      return '/sniper.png'
     }
   }
   return (
@@ -44,24 +47,30 @@ export default function specialOrPass({ option, data }: any) {
         option === 'special' ? data.length > 0 ? data.map((i: any, ind: number) => {
           return <div className='special' key={ind}>
             <p>{i?.campaign?.title}</p>
-            <div className='img'>
-              <img src={i?.campaign?.noticeUrl?.[0]} alt="" style={{ display: 'block', borderRadius: '10px' }} />
-              <img src="/Recta.svg" alt="" onClick={() => {
+            <div className='img' style={{ width: browser ? '50%' : '100%' }}>
+              <img src={i?.campaign?.noticeUrl?.[0]} alt="" style={{ display: 'block', borderRadius: '10px', cursor: 'pointer' }} onClick={() => {
                 history('/specialActive/' + i?.campaign?.campaignId)
               }} />
+              {
+                browser && <img src="/Recta.svg" alt="" className='positionImg' onClick={() => {
+                  history('/specialActive/' + i?.campaign?.campaignId)
+                }} />
+              }
             </div>
           </div>
         }) : <Nodata />
-          : <div className='pass'>
+          : <div className='pass' style={{ flexDirection: browser ? 'row' : 'column' }}>
             {
               !load ? <Loading status={'20'} /> : passPar.length > 0 ? passPar.map((i: any, ind: number) => {
-                return <div className='it' key={ind}>
-                  <img src={changeImg(i?.passId)} alt="" onClick={() => {
+                return <div className='it' style={{ width: browser ? "46%" : '100%' }} key={ind}>
+                  <img src={changeImg(i?.name)} alt="" onClick={() => {
                     history('/Dpass/' + i?.passId)
                   }} />
                   <div>
                     <span>{i?.name}</span>
-                    <span>{t('Active.Balance')}: {i?.balance || 0}</span>
+                    {
+                      i?.balance ? <span>{t('Active.Balance')}: {i?.balance}</span> : <span> {Number(i?.stopAt) ? dayjs(i?.stopAt).format('YYYY-MM-DD') : 'Not owned'}</span>
+                    }
                   </div>
                 </div>
               }) : <Nodata />

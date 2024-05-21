@@ -1,16 +1,26 @@
 .activityBox {
+  position: relative;
+
   .activeBack {
     background-image: url("/badsada.svg");
-    padding: 4% 0 7%;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 100% 128%;
+    padding: 3.3% 0 6.5%;
+    background-repeat: space;
+  }
+
+  .background {
+    position: absolute;
+    border-radius: 384px;
+    opacity: 0.3;
+    mix-blend-mode: plus-lighter;
+    filter: blur(250px);
+    width: 384px;
+    height: 384px;
+    flex-shrink: 0;
   }
 
   .topTitle {
     text-align: center;
     font-size: 30px;
-    margin: 3% 0 2%;
   }
 
   .pTime {
@@ -61,11 +71,30 @@
   }
 
   .allTime {
-    width: 65%;
     margin: 0 auto 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    .showImg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .setImg {
+      width: 30%;
+
+      img {
+        width: 100%;
+        display: block;
+      }
+    }
+
+    img {
+      display: block;
+      width: 30%;
+    }
 
     .allTimeText {
       width: 100%;

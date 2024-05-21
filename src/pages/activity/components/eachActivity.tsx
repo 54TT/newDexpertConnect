@@ -1,7 +1,6 @@
 import { Modal, Table } from 'antd'
 import { CountContext } from "../../../Layout.tsx";
 import { useContext, useState } from 'react'
-import { simplify } from "../../../../utils/change.ts";
 import { useTranslation } from "react-i18next";
 import { throttle } from "lodash";
 import TwitterRelease from "./twitterRelease.tsx";
@@ -12,6 +11,7 @@ import Nodata from '../../../components/Nodata.tsx';
 import { MessageAll } from "../../../components/message.ts";
 import Request from "../../../components/axios.tsx";
 import SpecialOrPass from '../components/specialOrPass.tsx';
+import { simplify } from '../../../../utils/change.ts'
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const par = data.length > 0 ? data : data?.campaign ? [data] : []
     const { browser, languageChange, isLogin }: any = useContext(CountContext);
@@ -23,20 +23,26 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const columns = [
         {
             title: t('Active.ra'),
-            render: () => {
-                return <span>UNRANKED</span>
+            render: (_: null, record: any) => {
+                return <span>{record?.rank}</span>
             }
         },
         {
             title: t('Active.us'),
             render: (_: any, record: any) => {
-                return <span>{record?.user?.username ? simplify(record?.user?.username) : simplify(record?.user?.address)}</span>
+                return <span>{browser ? record?.userName : simplify(record?.userName)}</span>
             }
         },
+        // {
+        //     title: t('Active.tw'),
+        //     render: (_: any, record: any) => {
+        //         return <span>{record?.tweets}</span>
+        //     }
+        // },
         {
             title: t('Active.po'),
             render: (_: any, record: any) => {
-                return <span>{record?.score || '0'}</span>
+                return <span>{record?.views || '0'}</span>
             }
         },
     ];
@@ -257,7 +263,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 {
                     option === 'ranking' ? <Table
                         columns={columns}
-                        rowKey={(record: any) => record?.user?.uid}
+                        rowKey={(record: any) => record?.userName}
                         className={'activeTable'}
                         pagination={false}
                         dataSource={rankList}

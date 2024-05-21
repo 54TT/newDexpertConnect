@@ -20,7 +20,6 @@ function Profie() {
     const history = useNavigate();
     const {user, setUserPar} = useContext(CountContext) as any;
     const topRef = useRef<any>()
-    const [status, setStatus] = useState(false)
     const [options, setOptions] = useState('Community')
     const [hei, setHei] = useState<any>(null)
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,13 +35,6 @@ function Profie() {
     const loginId = user?.uid || ''
     const {pathname} = useLocation();
     const [isFollowed, setIsFollowed] = useState(false);
-    useEffect(() => {
-        if (status) {
-            setTimeout(() => {
-                setStatus(false)
-            }, 4000);
-        }
-    }, [status]);
     useEffect(() => {
         if (topRef && topRef.current) {
             const h = topRef.current.scrollHeight
@@ -333,9 +325,7 @@ function Profie() {
                         <p className={'p'}><span>{data?.username ? formatAddress(data.username) : ''}</span><img
                             loading={'lazy'}
                             src="/certification.svg" alt=""/></p>
-                        <p>{data?.address ? formatAddress(data.address) : ''} <Copy status={status}
-                                                                                    setStatus={setStatus}
-                                                                                    name={'0x3758...5478'}/></p>
+                        <p>{data?.address ? formatAddress(data.address) : ''} <Copy name={'0x3758...5478'}/></p>
                         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                             {data?.twitter &&
                                 <p className={'p'} style={{cursor: 'pointer'}} onClick={() => {

@@ -8,7 +8,6 @@ import { MessageAll } from '../../../components/message.ts'
 import EachActivity from './eachActivity.tsx'
 import { throttle, } from "lodash";
 function task({ getParams, data, select, setSelect, params }: any) {
-    console.log('aaaaa-------------',data)
     const { getAll, } = Request()
     const [rankList, setRankList] = useState<any>([])
     const {
@@ -20,10 +19,10 @@ function task({ getParams, data, select, setSelect, params }: any) {
     const getRank = async () => {
         const token = cookie.get('token')
         const res = await getAll({
-            method: 'get', url: '/api/v1/reward_point/rank', data: {}, token: token || ''
+            method: 'get', url: '/api/v1/campaign/point/rank', data: {}, token: token 
         })
         if (res?.status === 200) {
-            setRankList(res?.data?.list)
+            setRankList(res?.data?.campaignTaskPointRankInfos)
             setIsRankList(false)
         } else {
             setIsRankList(false)
@@ -40,7 +39,7 @@ function task({ getParams, data, select, setSelect, params }: any) {
     return (
         <>
             <div className={'activeOptions'}
-                style={{ width: browser ? '72%' : '92%', margin: browser ? '35px auto 42px' : '20px auto' }}>
+                style={{ width: browser ? '72%' : '92%', margin: browser ? '35px auto 42px' : '15px auto' }}>
                 {
                     now.map((i: any, ind: number) => {
                         return <div style={{

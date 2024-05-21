@@ -259,7 +259,7 @@ function Header() {
                         },
                         1500,
                         { trailing: false })}>
-                    <img src={router.pathname === '/activity' ? "/gift.svg" : "/giftWhite.svg"} alt="" style={{ width: '25px', cursor: 'pointer' }} />
+                    <img src={router.pathname === '/activity' ? "/gift.svg" : "/giftWhite1.svg"} alt="" style={{ width: '23px', cursor: 'pointer' }} />
                     {
                         browser && <p style={{ color: router.pathname === '/activity' ? 'rgb(134,240,151)' : 'rgb(214, 223, 215)' }}>{t("Common.Events")}</p>
                     }
@@ -276,7 +276,7 @@ function Header() {
                                     <div className={'headLine'}>
                                         <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.png"}
                                             style={{
-                                                width: "28px",
+                                                width: "26px",
                                                 display: "block",
                                                 marginRight: "-8px",
                                                 zIndex: '10',

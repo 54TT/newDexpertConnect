@@ -12,7 +12,7 @@
     border: 2px solid rgb(60, 69, 60);
     text-align: center;
     padding: 10px 0;
-    width: 22%;
+    flex: 1;
     margin: 0 10px;
     cursor: pointer;
 
@@ -107,7 +107,6 @@
     flex-wrap: wrap;
 
     .it {
-      width: 46%;
       margin-bottom: 25px;
 
       img {
@@ -127,7 +126,9 @@
   }
 
   .special {
+    width: 100%;
     margin-bottom: 50px;
+
     &>p:first-child {
       color: white;
       font-size: 20px;
@@ -136,11 +137,10 @@
     }
 
     .img {
-      width: 50%;
       margin: 0 auto;
       position: relative;
 
-      img:last-child {
+      .positionImg {
         cursor: pointer;
         position: absolute;
         top: 50%;

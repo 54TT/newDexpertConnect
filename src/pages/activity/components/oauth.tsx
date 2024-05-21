@@ -1,30 +1,31 @@
-import {useEffect} from "react";
-import {useNavigate, useParams, useSearchParams,} from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useParams, useSearchParams, } from "react-router-dom";
 import Loading from '../../../components/loading.tsx'
 import Request from "../../../components/axios.tsx";
 import cookie from "js-cookie";
 
 function Oauth() {
-    const {getAll,} = Request()
+    const { getAll, } = Request()
     const [search] = useSearchParams();
     const history = useNavigate()
+    const activeId = cookie.get('activeId')
     const params: any = useParams()
     const claim = async (name: string, da: string, nu: string) => {
         const token = cookie.get('token')
-        if (token&&params?.id&&nu) {
+        if (token && params?.id && nu) {
             const res = await getAll({
                 method: 'post',
                 url: params?.id === 'twitter' ? '/api/v1/oauth/twitter/claim' : params?.id === 'telegram' ? '/api/v1/oauth/telegram/chat/bind' : params?.id === 'discord' ? '/api/v1/oauth/discord/claim' : '',
-                data:  params?.id === 'twitter' ? {OAuthToken: name, OAuthVerifier: da, taskId: nu} :  params?.id === 'telegram' ? {
+                data: params?.id === 'twitter' ? { OAuthToken: name, OAuthVerifier: da, taskId: nu } : params?.id === 'telegram' ? {
                     tgAuthResult: name,
                     taskId: nu
-                } : {code: name, taskId: nu},
+                } : { code: name, taskId: nu },
                 token
             })
             if (res?.data?.message === 'ok') {
-                history('/activity')
+                history('/specialActive/' + activeId)
             } else {
-                history('/activity')
+                history('/specialActive/' + activeId)
             }
         }
     }
@@ -37,9 +38,9 @@ function Oauth() {
         const error_description = search.get('error_description')
         const error = search.get('error')
         if (denied) {
-            history('/activity')
+            history('/specialActive/' + activeId)
         } else if (error_description && error) {
-            history('/activity')
+            history('/specialActive/' + activeId)
         } else if (token && verifier && id) {
             claim(token, verifier, id)
         } else if (code && id) {
@@ -53,7 +54,7 @@ function Oauth() {
         }
     }, []);
     return (
-        <Loading status={'20'}/>
+        <Loading status={'20'} />
     );
 }
 

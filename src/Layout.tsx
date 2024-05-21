@@ -21,6 +21,7 @@ import { Spin } from "antd";
 import { chain } from '../utils/judgeStablecoin.ts'
 
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'))
+const ActivePerson = React.lazy(() => import('./pages/activity/components/person.tsx'))
 const NewpairDetails = React.lazy(() => import('./pages/newpairDetails/index.tsx'))
 const Index = React.lazy(() => import('./pages/index/index.tsx'))
 const Dapp = React.lazy(() => import('./pages/dapp/index.tsx'))
@@ -58,6 +59,8 @@ function Layout() {
     const [browser, setBrowser] = useState<any>(false)
     const [big, setBig] = useState<any>(false)
     const [activityOptions, setActivityOptions] = useState('')
+    // copy
+    const [isCopy, setIsCopy] = useState(false)
     useEffect(() => {
         if (newAccount && user?.address) {
             if (newAccount !== user?.address) {
@@ -109,6 +112,7 @@ function Layout() {
             if (name === 'modal') {
                 web3Modal.closeModal();
             }
+            setLoad(false)
         }
     }
     const login = async (sign: string, account: string, message: string, name: string) => {
@@ -179,7 +183,6 @@ function Layout() {
                 MessageAll('warning', t('Market.log'))
                 setLoad(false)
             }
-            setLoad(false)
         } catch (err) {
             setLoad(false)
             return null
@@ -301,11 +304,13 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
-    useEffect(() => {
+
+
+    const changeBody = () => {
         const body = document.getElementsByTagName('body')[0]
         if (window && window?.innerWidth) {
             if (window?.innerWidth > 800) {
-                if (router.pathname === '/activity' || router.pathname.includes('/Dpass/')||router.pathname.includes('/specialActive/')   ) {
+                if (router.pathname === '/activity' || router.pathname === '/activityPerson' || router.pathname.includes('/Dpass/') || router.pathname.includes('/specialActive/')) {
                     body.style.overflow = 'auto'
                 } else {
                     body.style.overflow = 'hidden'
@@ -321,24 +326,11 @@ function Layout() {
                 setBig(false)
             }
         }
+    }
+    useEffect(() => {
+        changeBody()
         const handleResize = () => {
-            // 更新状态，保存当前窗口高度
-            if (window?.innerWidth > 800) {
-                if (router.pathname === '/activity' || router.pathname.includes('/Dpass/') ||router.pathname.includes('/specialActive/') ) {
-                    body.style.overflow = 'auto'
-                } else {
-                    body.style.overflow = 'hidden'
-                }
-                setBrowser(true)
-            } else {
-                body.style.overflow = 'auto'
-                setBrowser(false)
-            }
-            if (window?.innerWidth > 2000) {
-                setBig(true)
-            } else {
-                setBig(false)
-            }
+            changeBody()
         };
         const chang = search.get('change')
         if (router.pathname === '/' && chang === '1') {
@@ -369,7 +361,7 @@ function Layout() {
         setIsModalSet,
         languageChange,
         setLanguageChange,
-        setUserPar, switchChain, setSwitchChain, isLogin,activityOptions, setActivityOptions
+        setUserPar, switchChain, setSwitchChain, isLogin, activityOptions, setActivityOptions, isCopy, setIsCopy
     }
     const clients = new ApolloClient({
         uri: chain[switchChain],
@@ -395,6 +387,7 @@ function Layout() {
                             <Route path='/activity' element={<Active />} />
                             <Route path='/oauth/:id/callback' element={<Oauth />} />
                             <Route path='/dpass/:id' element={<Dpass />} />
+                            <Route path='/activityPerson' element={<ActivePerson />} />
                         </Routes>
                     </div>
                     <Bot />

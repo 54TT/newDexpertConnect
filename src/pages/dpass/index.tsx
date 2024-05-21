@@ -1,16 +1,16 @@
 import Cookies from "js-cookie";
 import "./index.less";
 import Request from "../../components/axios";
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import dayjs from "dayjs";
 import { CaretDownOutlined, LoadingOutlined } from "@ant-design/icons";
 import { CountContext } from "../../Layout";
 import { MessageAll } from '../../components/message.ts'
 import { useParams } from "react-router-dom";
 import Loading from "../../components/loading.tsx";
 import Nodata from '../../components/Nodata.tsx'
-import { throttle, } from "lodash";
+import { throttle, find } from "lodash";
+
 function Dpass() {
     const token = Cookies.get("token");
     const params: any = useParams()
@@ -20,51 +20,44 @@ function Dpass() {
     const [dPassHistory, setDPassHistory] = useState<any>([]);
     const [isHistory, setIsHistory] = useState(false);
     const { t } = useTranslation();
-    const [isMobile, setIsMobile] = useState(false);
-    const par = ['1', '2', '3', '4']
     const [isNext, setIsNext] = useState(false);
-    // const [passList, setPassList] = useState([]);
-    // const [isPass, setIsPass] = useState(false);
+    const [isExchange, setIsExchange] = useState(false);
+    const [passList, setPassList] = useState<any>([]);
+    const [isPass, setIsPass] = useState(false);
     const [isShow, setIsShow] = useState(false);
-    const [imgSta, setImgSta] = useState(params?.id);
-    // const getDpass = async () => {
-    //     const token = Cookies.get("token");
-    //     if (token) {
-    //         const res: any = await getAll({
-    //             method: 'get', url: '/api/v1/d_pass/list', data: { page: 1 }, token
-    //         })
-    //         if (res?.status === 200 && res?.data?.list) {
-    //             setPassList(res?.data?.list)
-    //             setIsPass(true)
-    //         }
-    //     }
-    // }
-    const { user, setUserPar }: any = useContext(CountContext);
-    // 创建一个MutationObserver实例
-    const observer = new MutationObserver(function (mutationsList: any,) {
-        if (mutationsList[0].target.offsetWidth <= 900) {
-            setIsMobile(true);
-        } else {
-            setIsMobile(false);
+    const [imgSta, setImgSta] = useState<any>(null);
+    const getDpass = async () => {
+        const token = Cookies.get("token");
+        if (token) {
+            const res: any = await getAll({
+                method: 'get', url: '/api/v1/d_pass/list', data: { page: 1 }, token
+            })
+            if (res?.status === 200 && res?.data?.list) {
+                setPassList(res?.data?.list)
+                const at = find(res?.data?.list, (i: any) => i?.passId === params?.id)
+                if (at?.name) {
+                    setImgSta(at)
+                }
+                setIsPass(true)
+            }
         }
-    });
+    }
 
-    // 配置观察器选项
-    var observerOptions = {
-        attributes: true, // 监听属性变化
-    };
-
+    const { user, setUserPar, browser }: any = useContext(CountContext);
     const redeemDpass = throttle(async function () {
-        if (imgSta !== '4') {
+        const at = find(passList, (i: any) => i?.name === imgSta?.name)
+        if (!at?.name?.includes('Golden')) {
+            setIsExchange(true)
             if (redeemCount === 0) {
+                setIsExchange(false)
                 MessageAll('warning', t("Alert.Please enter the purchase quantity"))
             } else {
                 let point: any = null
-                if (imgSta === '1') {
+                if (at?.name?.includes('Creation')) {
                     point = redeemCount * 6000
-                } else if (imgSta === '2') {
+                } else if (at?.name?.includes('Trade')) {
                     point = redeemCount * 480
-                } else if (imgSta === '3') {
+                } else if (at?.name?.includes('Sniper')) {
                     point = redeemCount * 1200
                 }
                 if (point && Number(user?.rewardPointCnt) >= point) {
@@ -73,21 +66,26 @@ function Dpass() {
                         url: "/api/v1/d_pass/redeem",
                         data: {
                             count: redeemCount,
-                            passId: imgSta
+                            passId: at?.passId
                         },
                         token,
                     });
                     if (res?.data?.code === '200') {
                         setRedeemCount(0)
                         setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) - point })
-                        getDpassList(1, imgSta);
+                        getDpassList(1, at?.pasId);
                         MessageAll('success', t("Alert.success"));
+                        setIsExchange(false)
+                    } else {
+                        setIsExchange(false)
                     }
                 } else {
                     MessageAll('warning', t("Alert.not"))
+                    setIsExchange(false)
                 }
             }
         }
+
     }, 1500, { 'trailing': false })
     const getDpassList = async (page: number, id: string) => {
         const res: any = await getAll({
@@ -105,7 +103,6 @@ function Dpass() {
             if (res?.data?.list?.length !== 10) {
                 setIsShow(true)
             }
-
             if (page === 1) {
                 if (res?.data?.list?.length > 0) {
                     setDPassHistory(res?.data.list);
@@ -120,19 +117,11 @@ function Dpass() {
             }
         }
     };
-    useLayoutEffect(() => {
-        if (document.body.offsetWidth < 900) {
-            setIsMobile(true);
-        }
-    }, []);
     useEffect(() => {
         if (params?.id) {
             getDpassList(1, params?.id);
-            // getDpass()
+            getDpass()
         }
-        // 启动观察器
-        observer.observe(document.body, observerOptions);
-        return () => observer.disconnect();
     }, []);
     const clickPlusOrReduce = throttle(function (e: any) {
         const { id } = e.target;
@@ -161,62 +150,71 @@ function Dpass() {
         }
     };
     const nextPass = throttle(function () {
-        setPage(page + 1)
-        getDpassList(page + 1, imgSta)
-        setIsNext(true)
+        const at = find(passList, (i: any) => i?.name === imgSta?.name)
+        if (at?.passId) {
+            setPage(page + 1)
+            getDpassList(page + 1, at?.passId)
+            setIsNext(true)
+        }
     }, 1500, { 'trailing': false })
     const setImg = throttle(function (ind: number) {
         setPage(1)
         setIsHistory(false)
         setDPassHistory([])
-        const index = par.indexOf(imgSta)
+        const index = passList.findIndex((res: any) => res?.name === imgSta?.name)
         if (index > -1) {
             const at = index + ind
             if (at > 3) {
-                setImgSta(par[0])
-                getDpassList(1, par[0])
+                setImgSta(passList[0])
+                getDpassList(1, passList?.[0]?.passId)
             } else if (at < 0) {
-                setImgSta(par[par.length - 1])
-                getDpassList(1, par[par.length - 1])
+                setImgSta(passList[passList.length - 1])
+                getDpassList(1, passList[passList.length - 1]?.passId)
             } else {
-                setImgSta(par[at])
-                getDpassList(1, par[at])
+                setImgSta(passList[at])
+                getDpassList(1, passList[at]?.passId)
             }
         } else {
-            getDpassList(1, par[0])
-            setImgSta(par[0])
+            getDpassList(1, passList[0]?.passId)
+            setImgSta(passList[0])
         }
     }, 1500, { 'trailing': false })
 
     const changeImg = (name: string) => {
-        if (name === 'img') {
-            return imgSta === '1' ? '/launchPass.svg' : imgSta === '2' ? '/sniperPass.svg' : imgSta === '3' ? '/swapPass.svg' : '/goldenPass.svg'
-        } else if (name === 'text') {
-            return imgSta === '1' ? t("Dpass.laun") : imgSta === '2' ? t("Dpass.Swap") : imgSta === '3' ? t("Dpass.Snipert") : t("Dpass.jin")
-        } else if (name === 'point') {
-            return imgSta === '1' ? '6000' : imgSta === '2' ? '480' : imgSta === '3' ? '1200' : 'mission accomplished'
-        } else {
-            return imgSta === '1' ? t("Dpass.Creation") : imgSta === '2' ? t("Dpass.Fast") : imgSta === '3' ? t("Dpass.Pass") : t("Active.Golden")
+        if (imgSta?.name) {
+            const at = imgSta?.name
+            if (name === 'img') {
+                return at.includes('Creation') ? '/launchPass.png' : at.includes('Trade') ? '/trade.png' : at.includes('Sniper') ? '/sniper.png' : '/goldenPass.svg'
+            } else if (name === 'text') {
+                return at.includes('Creation') ? t("Dpass.laun") : at.includes('Trade') ? t("Dpass.Swap") : at.includes('Sniper') ? t("Dpass.Snipert") : t("Dpass.jin")
+            } else if (name === 'point') {
+                return at.includes('Creation') ? '6000' : at.includes('Trade') ? '480' : at.includes('Sniper') ? '1200' : 'mission accomplished'
+            } else {
+                return at.includes('Creation') ? t("Dpass.Creation") : at.includes('Trade') ? t("Dpass.Fast") : at.includes('Sniper') ? t("Dpass.Pass") : t("Active.Golden")
+            }
         }
     }
     const show = (back: string) => {
-        if (imgSta === '4') {
-            if (back === 'back') {
-                return 'gray'
+        if (imgSta?.name) {
+            const at = imgSta?.name
+            if (at?.includes('Golden')) {
+                if (back === 'back') {
+                    return 'gray'
+                } else {
+                    return 'not-allowed'
+                }
+            } else if ((at.includes('Creation') && Number(user?.rewardPointCnt) > 6000) || (at.includes('Trade') && Number(user?.rewardPointCnt) > 480) || (at.includes('Sniper') && Number(user?.rewardPointCnt) > 1200)) {
+                if (back === 'back') {
+                    return '#86f097'
+                } else {
+                    return 'pointer'
+                }
             } else {
-                return 'not-allowed'
-            }
-        } else if ((imgSta === '1' && Number(user?.rewardPointCnt) > 6000) || (imgSta === '2' && Number(user?.rewardPointCnt) > 480) || (imgSta === '3' && Number(user?.rewardPointCnt) > 1200)) {
-            if (back === 'back') {
-                return '#86f097'
-            } else {
-                return 'pointer'
-            }
-        } else {
-            if (back === 'back') {
-                return 'gray'
-            } else {
-                return 'not-allowed'
+                if (back === 'back') {
+                    return 'gray'
+                } else {
+                    return 'not-allowed'
+                }
             }
         }
     }
@@ -224,7 +222,7 @@ function Dpass() {
     return (
         <>
             {
-                <div className="dpass-background">
+                !isPass ? <Loading status={'20'} /> : <div className="dpass-background">
                     <div className="dpass-content">
                         <div className="dpass-content-left">
                             <div style={{ position: 'relative', zIndex: '10' }}>
@@ -271,7 +269,8 @@ function Dpass() {
                                         background: show('back'),
                                         cursor: show('current')
                                     }}>
-                                    {imgSta === '4' ? t("Dpass.Inconvertible") : t("Dpass.Exchange")}
+                                    {imgSta?.name?.includes('Golden') ? t("Dpass.Inconvertible") : t("Dpass.Exchange")}
+                                    {isExchange ? <LoadingOutlined /> : ''}
                                 </div>
                             </div>
                             <div className="dpass-content-right-info">
@@ -293,14 +292,14 @@ function Dpass() {
                         <div className="dpass-redeem-table">
                             <div className="dpass-redeem-table-th">
                                 <span>   {t("Dpass.Time")}</span>
-                                {!isMobile && <span>   {t("Dpass.Pass Id")}</span>}
+                                {browser && <span>  {t("Dpass.Pass Id")}</span>}
                                 <span> {t("Dpass.Status")}</span>
                                 <span>{t("Dpass.Key")}</span>
                             </div>
                             {isHistory ? dPassHistory.length > 0 ? dPassHistory.map(({ createdAt, cnt, passId, cost }: any) => (
                                 <div className="dpass-redeem-table-td" key={passId}>
-                                    <span>{dayjs.unix(createdAt).format("DD/MM/YYYY HH:mm")}</span>
-                                    {isMobile ? <></> : <span>{passId}</span>}
+                                    <span>{createdAt}</span>
+                                    {!browser ? <></> : <span>{passId}</span>}
                                     <span>{cost}</span>
                                     <span>{cnt}</span>
                                 </div>
@@ -319,6 +318,8 @@ function Dpass() {
                             }
                         </div>
                     </div>
+                    <div className='background' style={{ top: '18vh', background: '#86F097', left: "0" }}></div>
+                    <div className='background' style={{ top: '17vh', background: '#0FF', right: "0" }}></div>
                 </div>
             }
         </>

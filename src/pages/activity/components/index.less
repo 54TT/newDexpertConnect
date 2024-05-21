@@ -165,62 +165,252 @@
 }
 
 .activityPerson {
-  width: 70%;
-  margin: 50px auto;
+  overflow: hidden;
+  background-image: url("/badsada.svg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%;
+  position: relative;
 
-}
-
-.specialActive {
-  width: 70%;
-  margin: 7% auto 60px;
-
-  .setCountdown {
-    .ant-statistic-content {
-      .ant-statistic-content-value {
-        color: #d6dfd7;
-      }
-    }
+  .background {
+    position: absolute;
+    border-radius: 384px;
+    opacity: 0.3;
+    mix-blend-mode: plus-lighter;
+    filter: blur(250px);
+    width: 384px;
+    height: 384px;
+    flex-shrink: 0;
   }
 
-  .top {
-    display: flex;
-    justify-content: space-between;
+  .boxLeft {
+    box-sizing: border-box;
+    overflow: hidden;
 
-    img {
-      width: 46%;
-      display: block;
-      border-radius: 15px;
+    .tittle {
+      display: flex;
+      margin-bottom: 15px;
+      justify-content: space-around;
+
+      &>img {
+        width: 30%;
+        border-radius: 50%;
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+
+        p:first-child {
+          color: rgb(134, 240, 151);
+          font-size: 35px;
+        }
+
+        p:last-child {
+          color: rgb(214, 223, 215);
+          display: flex;
+          align-items: center;
+        }
+      }
     }
 
-    .right {
+    .point {
       display: flex;
-      padding: 1.5% 0;
-      box-sizing: border-box;
+      align-items: center;
       justify-content: space-between;
-      flex-direction: column;
-      width: 46%;
+      padding: 15px;
+      border: 1px solid rgb(104, 124, 105);
+      border-radius: 10px;
 
-      p {
-        line-height: 1.2;
+      span:first-child {
         color: rgb(214, 223, 215);
       }
 
-      p:first-child {
-        font-size: 30px;
-        color: white;
+      span:last-child {
+        color: rgb(134, 240, 151);
+      }
+    }
+  }
+
+  .boxRight {
+    border: 1px solid rgb(104, 124, 105);
+    border-radius: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 0 8%;
+    box-sizing: border-box;
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      span:first-child {
+        color: rgb(214, 223, 215);
+      }
+
+      span:last-child {
+        color: rgb(134, 240, 151)
+      }
+    }
+  }
+
+  .boxRightSpacing {
+    margin-top: 40px;
+    padding-top: 20px;
+
+    div {
+      margin-bottom: 20px;
+    }
+  }
+
+  .person {
+    position: relative;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid rgb(104, 124, 105);
+    border-radius: 10px;
+
+    img {
+      display: block;
+    }
+
+    .passCard {
+      top: 0;
+      right: 0;
+      position: absolute;
+    }
+
+    .coinPass {
+      bottom: 0;
+      left: 0;
+      position: absolute;
+    }
+  }
+
+  .list {
+    position: relative;
+    border: 1px solid rgb(104, 124, 105);
+    border-radius: 10px;
+
+    .next {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: rgb(134, 240, 181);
+    }
+
+    .data {
+      display: flex;
+      margin-bottom: 18px;
+      align-items: center;
+      justify-content: space-between;
+
+      span {
+        flex: 1;
+        box-sizing: border-box;
       }
     }
 
+    .top {
+      color: rgb(134, 240, 151);
+    }
+
+    .bot {
+      color: rgb(214, 223, 215)
+    }
+
+    .passCard {
+      top: 0;
+      left: 0;
+      position: absolute;
+    }
+
+    .coinPass {
+      top: 0;
+      right: 0;
+      position: absolute;
+    }
+  }
+}
+
+.specialActiveBox {
+  position: relative;
+  background-image: url("/badsada.svg");
+  padding: 0 6.5% 4%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+
+  .specialActive {
+    .setCountdown {
+      .ant-statistic-content {
+        .ant-statistic-content-value {
+          color: #d6dfd7;
+        }
+      }
+    }
+
+    .smallCountdown {
+      .ant-statistic-content {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+
+      img {
+        display: block;
+        border-radius: 15px;
+      }
+
+      .right {
+        display: flex;
+        padding: 1.5% 0;
+        box-sizing: border-box;
+        justify-content: space-between;
+        flex-direction: column;
+
+        p {
+          line-height: 1.2;
+          color: rgb(214, 223, 215);
+        }
+
+        p:first-child {
+          font-size: 30px;
+          color: white;
+        }
+      }
+
+    }
+
+    .bot {
+      width: 90%;
+      margin: 7% auto 0;
+
+      p {
+        line-height: 1.1;
+        margin-bottom: 13px;
+        color: rgb(214, 223, 215);
+      }
+    }
   }
 
-  .bot {
-    width: 90%;
-    margin: 7% auto 0;
-
-    p {
-      line-height: 1.1;
-      margin-bottom: 13px;
-      color: rgb(214, 223, 215);
-    }
+  .background {
+    position: absolute;
+    border-radius: 384px;
+    opacity: 0.3;
+    mix-blend-mode: plus-lighter;
+    filter: blur(250px);
+    width: 384px;
+    height: 384px;
+    flex-shrink: 0;
   }
 }

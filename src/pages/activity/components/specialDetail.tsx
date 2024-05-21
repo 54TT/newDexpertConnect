@@ -13,11 +13,9 @@ const { Countdown } = Statistic;
 function SpecialActive() {
     const { getAll, } = Request()
     const { t } = useTranslation();
-    const { languageChange, }: any = useContext(CountContext);
+    const { languageChange, browser }: any = useContext(CountContext);
     const params: any = useParams()
-    // campaignHome    campaignHomeCN  
     const [data, setData] = useState<any>(null)
-    console.log('66666666666666666',data)
     const [load, setLoad] = useState(false)
     const [time, setTime] = useState('')
     const getParams = async () => {
@@ -41,6 +39,7 @@ function SpecialActive() {
         const token = cookie.get('token')
         if (params?.id && token) {
             getParams()
+            cookie.set('activeId', params?.id)
         }
     }, [])
     const changeTime = () => {
@@ -52,38 +51,42 @@ function SpecialActive() {
             changeTime()
         }
     }, [languageChange, data])
+
     return (
         <>
             {
-                load ? <div className="specialActive">
-                    <div className='top'>
-                        <img src={languageChange === 'zh_CN' ? data?.campaignHomeCN?.campaign?.noticeUrl?.[0] : data?.campaignHome?.campaign?.noticeUrl?.[0]} alt="" />
-                        <div className='right'>
-                            <p>{languageChange === 'zh_CN' ? data?.campaignHomeCN?.campaign?.title : data?.campaignHome?.campaign?.title}</p>
-                            <p>{languageChange === 'zh_CN' ? data?.campaignHomeCN?.campaign?.description : data?.campaignHome?.campaign?.description}</p>
-                            {
-                                Number(time) ?
-                                    <Countdown title=""
-                                        className='setCountdown'
-                                        value={time}
-                                        format="D[D] H[H] m[M] s[S]"
-                                    /> :
-                                    <p className={'pTime'}>{time}</p>
-                            }
+                load ? <div className='specialActiveBox'>
+                    <div className="specialActive" style={{ width: browser ? "70%" : '100%', margin: browser ? '7% auto 60px' : "30px auto 60px" }}>
+                        <div className='top' style={{ flexDirection: browser ? 'row' : 'column' }}>
+                            <img style={{ width: browser ? '46%' : '100%' }} src={languageChange === 'zh_CN' ? data?.campaignHomeCN?.campaign?.noticeUrl?.[0] : data?.campaignHome?.campaign?.noticeUrl?.[0]} alt="" />
+                            <div style={{ width: browser ? '46%' : '100%' }} className='right'>
+                                <p style={{ textAlign: browser ? 'left' : 'center' }}>{languageChange === 'zh_CN' ? data?.campaignHomeCN?.campaign?.title : data?.campaignHome?.campaign?.title}</p>
+                                <p style={{ textAlign: browser ? 'left' : 'center', margin: browser ? '0' : '20px 0' }}>{languageChange === 'zh_CN' ? data?.campaignHomeCN?.campaign?.description : data?.campaignHome?.campaign?.description}</p>
+                                {
+                                    Number(time) ?
+                                        <Countdown title=""
+                                            className={`setCountdown ${browser ? '' : 'smallCountdown'}`}
+                                            value={time}
+                                            format="D[D] H[H] m[M] s[S]"
+                                        /> :
+                                        <p style={{ textAlign: browser ? 'left' : 'center' }}>{time}</p>
+                                }
+                            </div>
+                        </div>
+                        <Task getParams={getParams} params={['first', 'daily']} data={data} />
+                        <div className='bot'>
+                            <p>{t('Active.Earn')}</p>
+                            <p>{t('Active.users')}</p>
+                            <p>{t('Active.holders')}</p>
+                            <p>{t('Active.NFT')}</p>
+                            <p>{t('Active.missions')}</p>
                         </div>
                     </div>
-                    <Task getParams={getParams} params={['first', 'daily']} data={data} />
-                    <div className='bot'>
-                        <p>{t('Active.Earn')}</p>
-                        <p>{t('Active.users')}</p>
-                        <p>{t('Active.holders')}</p>
-                        <p>{t('Active.NFT')}</p>
-                        <p>{t('Active.missions')}</p>
-                    </div>
+                    <div className='background' style={{ top: '18vh', background: '#86F097', left: "0" }}></div>
+                    <div className='background' style={{ top: '17vh', background: '#0FF', right: "0" }}></div>
                 </div> : <Loading status={'20'} />
             }
         </>
-
     )
 }
 

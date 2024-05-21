@@ -47,7 +47,6 @@ const UserInfo = ({activeTab, onChange}: UserInfoPropsType) => {
             key: "following",
         },
     };
-
     const onPublish = async () => {
         try {
             const event = new CustomEvent("publish-post");
