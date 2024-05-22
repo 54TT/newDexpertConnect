@@ -10,6 +10,7 @@ import Loading from '../../../components/loading.tsx';
 import Request from "../../../components/axios.tsx";
 import { setMany } from '../../../../utils/change.ts'
 const { Countdown } = Statistic;
+
 function SpecialActive() {
     const { getAll, } = Request()
     const { t } = useTranslation();
@@ -50,6 +51,7 @@ function SpecialActive() {
             changeTime()
         }
     }, [languageChange, data])
+
     return (
         <>
             {
