@@ -347,7 +347,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     }
     const changeTitle = (title: string, extra: any) => {
         if (extra) {
-            const aaa: any = data?.split('|')
+            const aaa: any = extra?.split('|')
             if (aaa.length > 0) {
                 return aaa[0]
             } else {
