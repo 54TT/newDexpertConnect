@@ -5,7 +5,7 @@ import React, { createContext, Suspense, useCallback, useEffect, useRef, useStat
 import { getAppMetadata, getSdkError } from "@walletconnect/utils";
 import 'swiper/css';
 import 'swiper/css/bundle'
-import Bot from './components/bottom.tsx';
+// import Bot from './components/bottom.tsx';
 import { Web3Modal } from "@web3modal/standalone";
 import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
@@ -390,7 +390,7 @@ function Layout() {
                             <Route path='/activityPerson' element={<ActivePerson />} />
                         </Routes>
                     </div>
-                    <Bot />
+                    {/* <Bot /> */}
                 </CountContext.Provider>
             </Suspense>
         </ApolloProvider>
