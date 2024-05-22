@@ -1,4 +1,5 @@
 import { Modal, Table } from 'antd'
+import { useLocation } from 'react-router-dom'
 import { CountContext } from "../../../Layout.tsx";
 import { useContext, useState } from 'react'
 import { useTranslation } from "react-i18next";
@@ -14,8 +15,10 @@ import SpecialOrPass from '../components/specialOrPass.tsx';
 import { simplify } from '../../../../utils/change.ts'
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const par = data.length > 0 ? data : data?.campaign ? [data] : []
-    const { browser, languageChange, isLogin }: any = useContext(CountContext);
+    const { browser, languageChange, isLogin, }: any = useContext(CountContext);
     const { getAll, } = Request()
+    const router = useLocation()
+
     const [loading, setLoading] = useState(false)
     const { t } = useTranslation();
     const [value, setValue] = useState('')
@@ -93,6 +96,8 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 return '/disActive.svg'
             } else if (title.includes('Instagram')) {
                 return '/instagramActive.svg'
+            } else {
+                return '/abc.png'
             }
         } else {
             if (title.includes('Twitter')) {
@@ -103,6 +108,8 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 return '/dis.svg'
             } else if (title.includes('Instagram')) {
                 return '/instagram.svg'
+            } else {
+                return '/abcd.png'
             }
         }
     }
@@ -151,40 +158,83 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const handleCancel = () => {
         setIsModalOpe(false);
     }
+
+    const verifyJointActivities = async (token: string, taskId: string) => {
+        const res = await getAll({
+            method: 'post',
+            url: '/api/v1/campaign/yuliverse/verify',
+            data: { taskId },
+            token
+        })
+        if (res?.status === 200) {
+            setLoading(false)
+            getParams()
+        } else {
+            setLoading(false)
+        }
+    }
+
+    const claimJointActivities = async (token: string, taskId: string) => {
+        const res = await getAll({
+            method: 'post',
+            url: '/api/v1/campaign/yuliverse/claim',
+            data: { taskId },
+            token
+        })
+        if (res?.status === 200) {
+            getParams()
+            setLoading(false)
+        } else {
+            setLoading(false)
+        }
+    }
+
     const param = async (isCompleted: string, taskId: string, title: string) => {
         const token = cookie.get('token')
         if (token) {
-            if (option === 'daily') {
-                if (title.includes('Telegram')) {
-                    signIn(token, '/api/v1/telegram/signInChannelLink')
-                } else if (title.includes('Discord')) {
-                    signIn(token, '/api/v1/discord/signInChannelLink')
-                } else if (title.includes('Twitter')) {
-                    // 获取链接
-                    const res: any = await getAll({
-                        method: 'get',
-                        url: '/api/v1/airdrop/task/twitter/daily/intent',
-                        data: { taskId: taskId },
-                        token
-                    })
-                    if (res?.status === 200 && res?.data?.intent) {
-                        setLoading(false)
-                        setLink(res?.data?.intent)
-                        setIsModalOpe(true)
+            if (router.pathname === '/specialActive/1') {
+                if (option === 'daily') {
+                    if (title.includes('Telegram')) {
+                        signIn(token, '/api/v1/telegram/signInChannelLink')
+                    } else if (title.includes('Discord')) {
+                        signIn(token, '/api/v1/discord/signInChannelLink')
+                    } else if (title.includes('Twitter')) {
+                        // 获取链接
+                        const res: any = await getAll({
+                            method: 'get',
+                            url: '/api/v1/airdrop/task/twitter/daily/intent',
+                            data: { taskId: taskId },
+                            token
+                        })
+                        if (res?.status === 200 && res?.data?.intent) {
+                            setLoading(false)
+                            setLink(res?.data?.intent)
+                            setIsModalOpe(true)
+                        } else {
+                            setLoading(false)
+                        }
+                    }
+                } else if (option === 'first') {
+                    if (Number(isCompleted)) {
+                        if (Number(isCompleted) === 1) {
+                            follow(taskId, title)
+                        }
+                        if (Number(isCompleted) === 2) {
+                            verify(taskId, title)
+                        }
                     } else {
-                        setLoading(false)
+                        getT(taskId, title)
                     }
                 }
-            } else if (option === 'first') {
+            } else {
                 if (Number(isCompleted)) {
-                    if (Number(isCompleted) === 1) {
-                        follow(taskId, title)
-                    }
-                    if (Number(isCompleted) === 2) {
-                        verify(taskId, title)
+                    if (data?.campaign?.title?.includes('Yuliverse')) {
+                        claimJointActivities(token, taskId)
                     }
                 } else {
-                    getT(taskId, title)
+                    if (data?.campaign?.title?.includes('Yuliverse')) {
+                        verifyJointActivities(token, taskId)
+                    }
                 }
             }
         }
@@ -203,18 +253,34 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     }
     const operate = (isCompleted: string, title: string) => {
         if (option === 'daily') {
-            return t('Market.start')
-        } else if (option === 'first') {
-            if (Number(isCompleted)) {
+            if (router.pathname === '/specialActive/1') {
+                return t('Market.start')
+            } else {
                 if (Number(isCompleted) === 1) {
-                    return change(title)
-                } else if (Number(isCompleted) === 2) {
                     return t('Market.Claim')
                 } else {
-                    return t('Market.Completed')
+                    return t('Dpass.verify')
+                }
+            }
+        } else if (option === 'first') {
+            if (router.pathname === '/specialActive/1') {
+                if (Number(isCompleted)) {
+                    if (Number(isCompleted) === 1) {
+                        return change(title)
+                    } else if (Number(isCompleted) === 2) {
+                        return t('Market.Claim')
+                    } else {
+                        return t('Market.Completed')
+                    }
+                } else {
+                    return t('Market.Authorize')
                 }
             } else {
-                return t('Market.Authorize')
+                if (Number(isCompleted) === 1) {
+                    return t('Market.Claim')
+                } else {
+                    return t('Dpass.verify')
+                }
             }
         }
     }
@@ -257,6 +323,27 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             }
         }
     }
+
+    const showScore = (score: string, id: string) => {
+        if (router.pathname === '/specialActive/1') {
+            if (Number(score)) {
+                return '+' + score
+            } else {
+                return score
+            }
+        } else {
+            if (Number(id)) {
+                if (Number(score)) {
+                    return '+' + score
+                } else {
+                    return score
+                }
+            } else {
+                return ''
+            }
+        }
+    }
+
     return <>
         {
             isLogin && <div className={'activeAll'} style={{ padding: browser ? '0 17%' : '0 5%' }}>
@@ -299,7 +386,10 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                     style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>{it?.title}</span>
                                             </div>
                                             <div>
-                                                <p style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>+{it?.score}</p>
+
+                                                <p style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>
+                                                    {showScore(it?.score, it?.isCompleted)}
+                                                </p>
                                                 {
                                                     Number(it?.isCompleted) !== 3 ? <p onClick={
                                                         throttle(function () {
@@ -311,13 +401,11 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                         {loading && select?.title === it?.title ?
                                                             <LoadingOutlined /> : operate(it?.isCompleted, it?.title)}</p> :
                                                         <div className={'success'}>
-                                                            <img
-                                                                src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'}
-                                                                alt="" />
+                                                            <img src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'} alt="" />
                                                         </div>
                                                 }
                                                 {
-                                                    option === 'daily' && Number(it?.isCompleted) !== 3 &&
+                                                    option === 'daily' && Number(it?.isCompleted) !== 3 && router.pathname === '/specialActive/1' &&
                                                     <p className={'verify'}
                                                         onClick={
                                                             throttle(function () {
@@ -326,7 +414,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                                 } else {
                                                                     getParams()
                                                                 }
-                                                            }, 1500, { 'trailing': false })}>verify</p>
+                                                            }, 1500, { 'trailing': false })}>{t('Dpass.verify')}</p>
                                                 }
                                             </div>
                                         </div>

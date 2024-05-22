@@ -8,7 +8,6 @@ function Oauth() {
     const { getAll, } = Request()
     const [search] = useSearchParams();
     const history = useNavigate()
-    const activeId = cookie.get('activeId')
     const params: any = useParams()
     const claim = async (name: string, da: string, nu: string) => {
         const token = cookie.get('token')
@@ -23,9 +22,9 @@ function Oauth() {
                 token
             })
             if (res?.data?.message === 'ok') {
-                history('/specialActive/' + activeId)
+                history('/specialActive/1')
             } else {
-                history('/specialActive/' + activeId)
+                history('/specialActive/1')
             }
         }
     }
@@ -38,9 +37,9 @@ function Oauth() {
         const error_description = search.get('error_description')
         const error = search.get('error')
         if (denied) {
-            history('/specialActive/' + activeId)
+            history('/specialActive/1')
         } else if (error_description && error) {
-            history('/specialActive/' + activeId)
+            history('/specialActive/1')
         } else if (token && verifier && id) {
             claim(token, verifier, id)
         } else if (code && id) {

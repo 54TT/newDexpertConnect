@@ -252,14 +252,14 @@ function Header() {
                 </p>
             )}
             <div className={'headerData'} style={{ justifyContent: browser ? 'center' : 'flex-end' }}>
-                <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: '13px' }}
+                <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer' }}
                     onClick={throttle(
                         function () {
                             history('/activity')
                         },
                         1500,
                         { trailing: false })}>
-                    <img src={router.pathname === '/activity' ? "/gift.svg" : "/giftWhite1.svg"} alt="" style={{ width: '23px', cursor: 'pointer' }} />
+                    <img src={router.pathname === '/activity' ? "/gift.svg" : "/giftWhite1.svg"} alt="" style={{ width: '23px', cursor: 'pointer', marginRight: '6px' }} />
                     {
                         browser && <p style={{ color: router.pathname === '/activity' ? 'rgb(134,240,151)' : 'rgb(214, 223, 215)' }}>{t("Common.Events")}</p>
                     }
@@ -267,7 +267,7 @@ function Header() {
                 {user?.uid ? (
                     <>
                         {browser ? (
-                            <div className={"disCen"} style={{ cursor: "pointer" }}>
+                            <div className={"disCen"} style={{ cursor: "pointer" ,margin: '0 15px'}}>
                                 <Dropdown
                                     overlayClassName={'headerDropdownClass'}
                                     menu={{
@@ -297,6 +297,7 @@ function Header() {
                                 src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.png"}
                                 style={{
                                     width: "25px",
+                                    margin: '0 15px',
                                     display: "block",
                                     cursor: "pointer",
                                     borderRadius: "100%",
@@ -308,7 +309,7 @@ function Header() {
                 ) : (
                     <>
                         {browser ? (
-                            <div className={"headerConnect"} onClick={loginModal}>
+                            <div className={"headerConnect"} style={{ margin: '0 15px' }} onClick={loginModal}>
                                 <div className={"disCen"}>
                                     <span>{t("Common.Connect Wallet")}</span>
                                     {load ? (
@@ -321,7 +322,7 @@ function Header() {
                                 loading={"lazy"}
                                 src="/wallet.svg"
                                 onClick={loginModal}
-                                style={{ width: "25%" }}
+                                style={{ width: "25%", margin: '0 15px' }}
                                 alt=""
                             />
                         )}
@@ -329,7 +330,7 @@ function Header() {
                 )}
                 {
                     browser && <img src="/earth.svg" alt=""
-                        style={{ cursor: 'pointer', display: 'block', marginLeft: "10px", width: '22px' }}
+                        style={{ cursor: 'pointer', display: 'block', width: '22px' }}
                         onClick={changeLanguage} />
                 }
                 {!browser && (

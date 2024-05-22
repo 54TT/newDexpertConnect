@@ -1,4 +1,4 @@
-import './eventsList.less'   
+import './eventsList.less'
 import cookie from "js-cookie";
 import { useTranslation } from "react-i18next";
 import { CountContext } from "../../../Layout.tsx";
@@ -7,7 +7,7 @@ import Request from "../../../components/axios.tsx";
 import { MessageAll } from '../../../components/message.ts'
 import EachActivity from './eachActivity.tsx'
 import { throttle, } from "lodash";
-function task({ getParams, data, select, setSelect, params }: any) {
+function task({ getParams, data, select, setSelect, params,}: any) {
     const { getAll, } = Request()
     const [rankList, setRankList] = useState<any>([])
     const {
@@ -19,7 +19,7 @@ function task({ getParams, data, select, setSelect, params }: any) {
     const getRank = async () => {
         const token = cookie.get('token')
         const res = await getAll({
-            method: 'get', url: '/api/v1/campaign/point/rank', data: {}, token: token 
+            method: 'get', url: '/api/v1/campaign/point/rank', data: {}, token: token
         })
         if (res?.status === 200) {
             setRankList(res?.data?.campaignTaskPointRankInfos)
@@ -34,7 +34,7 @@ function task({ getParams, data, select, setSelect, params }: any) {
             setSelect('')
         }
     }, [select])
-    const list: any = [{ name: 'special', value: t('Active.Special') }, { name: "d", value: 'D Pass' }, { name: "ranking", value: t('Active.Ranking') } ,{ name: 'first', value: t('Active.First') }, { name: 'daily', value: t('Active.Daily') },]
+    const list: any = [{ name: 'special', value: t('Active.Special') }, { name: "d", value: 'D Pass' }, { name: "ranking", value: t('Active.Ranking') }, { name: 'first', value: t('Active.First') }, { name: 'daily', value: t('Active.Daily') },]
     const now = list.filter((item: any) => params.indexOf(item.name) !== -1) || []
     return (
         <>

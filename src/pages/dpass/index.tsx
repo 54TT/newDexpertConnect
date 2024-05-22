@@ -50,7 +50,6 @@ function Dpass() {
             setIsExchange(true)
             if (redeemCount === 0) {
                 setIsExchange(false)
-                MessageAll('warning', t("Alert.Please enter the purchase quantity"))
             } else {
                 let point: any = null
                 if (at?.name?.includes('Creation')) {
@@ -73,7 +72,7 @@ function Dpass() {
                     if (res?.data?.code === '200') {
                         setRedeemCount(0)
                         setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) - point })
-                        getDpassList(1, at?.pasId);
+                        getDpassList(1, at?.passId);
                         MessageAll('success', t("Alert.success"));
                         setIsExchange(false)
                     } else {
@@ -85,7 +84,6 @@ function Dpass() {
                 }
             }
         }
-
     }, 1500, { 'trailing': false })
     const getDpassList = async (page: number, id: string) => {
         const res: any = await getAll({
@@ -199,7 +197,7 @@ function Dpass() {
             const at = imgSta?.name
             if (at?.includes('Golden')) {
                 if (back === 'back') {
-                    return 'gray'
+                    return '#D6DFD7'
                 } else {
                     return 'not-allowed'
                 }
@@ -211,7 +209,7 @@ function Dpass() {
                 }
             } else {
                 if (back === 'back') {
-                    return 'gray'
+                    return '#D6DFD7'
                 } else {
                     return 'not-allowed'
                 }
@@ -246,7 +244,7 @@ function Dpass() {
                             <img className="dpass-cap" src={'/bottomCap.png'} alt="" />
                         </div>
                         <div className="dpass-content-right">
-                            <p className="dpass-content-right-title"> {changeImg('')}</p>
+                            <p className="dpass-content-right-title"> <span style={{ color: 'rgb(134,240,151)' }}>{changeImg('')}</span> <span>Pass</span></p>
                             <p className="dpass-content-right-content">{changeImg('text')}</p>
                             <div className="dpass-content-right-action">
                                 <div className="dpass-content-right-action-input">
