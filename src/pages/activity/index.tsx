@@ -104,13 +104,13 @@ function Index() {
                                 </div>
                                 <div>
                                     <span style={{ fontSize: browser ? '18px' : '16px' }}>{t('Active.pass')}</span>
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px', cursor: 'pointer' }} onClick={throttle(function () {
+                                    <div style={{ display: 'flex', justifyContent: 'center',alignItems:'center', marginTop: '20px', cursor: 'pointer' }} onClick={throttle(function () {
                                         setSelect('d')
                                     }, 1500, { 'trailing': false })}>
                                         {
                                             isDPassCount ?
                                                 <span style={{ fontSize: browser ? '25px' : '20px', color: '#86f097' }}>{dPassCount || '0'}</span> :
-                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'center',alignItems:'center' }}>
                                                     <LoadingOutlined style={{ color: 'gray' }} />
                                                 </div>
                                         }
