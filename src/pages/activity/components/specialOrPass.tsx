@@ -7,7 +7,6 @@ import Loading from '../../../components/loading.tsx';
 import Request from "../../../components/axios.tsx";
 import { CountContext } from "../../../Layout.tsx";
 import { useEffect, useState, useContext } from 'react';
-import dayjs from 'dayjs'
 export default function specialOrPass({ option, data }: any) {
   const { browser }: any = useContext(CountContext);
   const { t } = useTranslation();
