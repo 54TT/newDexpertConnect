@@ -259,7 +259,7 @@ function Header() {
                         },
                         1500,
                         { trailing: false })}>
-                    <img src={router.pathname === '/activity' ? "/gift.svg" : "/giftWhite1.svg"} alt="" style={{ width: '23px', cursor: 'pointer', marginRight: '6px' }} />
+                    <img src={router.pathname === '/activity' ? "/gift1.svg" : "/giftWhite1.svg"} alt="" style={{ width: '23px', cursor: 'pointer', marginRight: '6px' }} />
                     {
                         browser && <p style={{ color: router.pathname === '/activity' ? 'rgb(134,240,151)' : 'rgb(214, 223, 215)' }}>{t("Common.Events")}</p>
                     }

@@ -7,7 +7,7 @@ import Request from "../../../components/axios.tsx";
 import { MessageAll } from '../../../components/message.ts'
 import EachActivity from './eachActivity.tsx'
 import { throttle, } from "lodash";
-function task({ getParams, data, select, setSelect, params,}: any) {
+function task({ getParams, data, select, setSelect, params, }: any) {
     const { getAll, } = Request()
     const [rankList, setRankList] = useState<any>([])
     const {
@@ -45,7 +45,8 @@ function task({ getParams, data, select, setSelect, params,}: any) {
                         return <div style={{
                             backgroundColor: isLogin ? option === i.name ? 'rgb(134,240,151)' : '' : '',
                             color: isLogin ? option === i.name ? 'black' : 'white' : 'white',
-                            fontSize: browser ? '18px' : '14px'
+                            fontSize: browser ? '18px' : '14px',
+                            zIndex: '100'
                         }} onClick={
                             throttle(function () {
                                 if (isLogin) {

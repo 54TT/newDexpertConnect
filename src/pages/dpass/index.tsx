@@ -15,7 +15,7 @@ function Dpass() {
     const token = Cookies.get("token");
     const params: any = useParams()
     const { getAll } = Request();
-    const [redeemCount, setRedeemCount] = useState(0);
+    const [redeemCount, setRedeemCount] = useState(1);
     const [page, setPage] = useState(1);
     const [dPassHistory, setDPassHistory] = useState<any>([]);
     const [isHistory, setIsHistory] = useState(false);
@@ -48,40 +48,37 @@ function Dpass() {
         const at = find(passList, (i: any) => i?.name === imgSta?.name)
         if (!at?.name?.includes('Golden')) {
             setIsExchange(true)
-            if (redeemCount === 0) {
-                setIsExchange(false)
-            } else {
-                let point: any = null
-                if (at?.name?.includes('Creation')) {
-                    point = redeemCount * 6000
-                } else if (at?.name?.includes('Trade')) {
-                    point = redeemCount * 480
-                } else if (at?.name?.includes('Sniper')) {
-                    point = redeemCount * 1200
-                }
-                if (point && Number(user?.rewardPointCnt) >= point) {
-                    const res: any = await getAll({
-                        method: "post",
-                        url: "/api/v1/d_pass/redeem",
-                        data: {
-                            count: redeemCount,
-                            passId: at?.passId
-                        },
-                        token,
-                    });
-                    if (res?.data?.code === '200') {
-                        setRedeemCount(0)
-                        setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) - point })
-                        getDpassList(1, at?.passId);
-                        MessageAll('success', t("Alert.success"));
-                        setIsExchange(false)
-                    } else {
-                        setIsExchange(false)
-                    }
+
+            let point: any = null
+            if (at?.name?.includes('Creation')) {
+                point = redeemCount * 6000
+            } else if (at?.name?.includes('Trade')) {
+                point = redeemCount * 480
+            } else if (at?.name?.includes('Sniper')) {
+                point = redeemCount * 1200
+            }
+            if (point && Number(user?.rewardPointCnt) >= point) {
+                const res: any = await getAll({
+                    method: "post",
+                    url: "/api/v1/d_pass/redeem",
+                    data: {
+                        count: redeemCount,
+                        passId: at?.passId
+                    },
+                    token,
+                });
+                if (res?.data?.code === '200') {
+                    setRedeemCount(0)
+                    setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) - point })
+                    getDpassList(1, at?.passId);
+                    MessageAll('success', t("Alert.success"));
+                    setIsExchange(false)
                 } else {
-                    MessageAll('warning', t("Alert.not"))
                     setIsExchange(false)
                 }
+            } else {
+                MessageAll('warning', t("Alert.not"))
+                setIsExchange(false)
             }
         }
     }, 1500, { 'trailing': false })
@@ -127,7 +124,7 @@ function Dpass() {
             setRedeemCount(redeemCount + 1);
         }
         if (id === "reduce") {
-            if (redeemCount === 0) return;
+            if (redeemCount === 1) return;
             setRedeemCount(redeemCount - 1);
         }
     }, 1500, { 'trailing': false })

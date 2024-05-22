@@ -105,7 +105,7 @@ function Index() {
                                 <div>
                                     <span style={{ fontSize: browser ? '18px' : '16px' }}>{t('Active.pass')}</span>
                                     <div style={{ display: 'flex', justifyContent: 'center',alignItems:'center', marginTop: '20px', cursor: 'pointer' }} onClick={throttle(function () {
-                                        setSelect('d')
+                                        history('/activityPerson')
                                     }, 1500, { 'trailing': false })}>
                                         {
                                             isDPassCount ?

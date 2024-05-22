@@ -14,8 +14,9 @@ import Request from "../../../components/axios.tsx";
 import SpecialOrPass from '../components/specialOrPass.tsx';
 import { simplify } from '../../../../utils/change.ts'
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
+    console.log(data)
     const par = data.length > 0 ? data : data?.campaign ? [data] : []
-    const { browser, languageChange, isLogin, }: any = useContext(CountContext);
+    const { browser, languageChange, isLogin, setUserPar, user }: any = useContext(CountContext);
     const { getAll, } = Request()
     const router = useLocation()
 
@@ -182,6 +183,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             token
         })
         if (res?.status === 200) {
+            setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) + Number(res?.data?.score) })
             getParams()
             setLoading(false)
         } else {
@@ -251,7 +253,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             return ''
         }
     }
-    const operate = (isCompleted: string, title: string) => {
+    const operate = (isCompleted: string, title: string,) => {
         if (option === 'daily') {
             if (router.pathname === '/specialActive/1') {
                 return t('Market.start')
@@ -323,8 +325,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             }
         }
     }
-
-    const showScore = (score: string, id: string) => {
+    const showScore = (score: string, id: string, extra: any) => {
         if (router.pathname === '/specialActive/1') {
             if (Number(score)) {
                 return '+' + score
@@ -333,14 +334,27 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             }
         } else {
             if (Number(id)) {
-                if (Number(score)) {
-                    return '+' + score
+                const aaa: any = extra?.split('|')
+                if (aaa.length > 0) {
+                    return '+' + aaa[1]
                 } else {
-                    return score
+                    return '+0'
                 }
             } else {
                 return ''
             }
+        }
+    }
+    const changeTitle = (title: string, extra: any) => {
+        if (extra) {
+            const aaa: any = data?.split('|')
+            if (aaa.length > 0) {
+                return aaa[0]
+            } else {
+                return title
+            }
+        } else {
+            return title
         }
     }
 
@@ -383,12 +397,11 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                             <div>
                                                 <img src={changeImg(it?.taskId, it?.title)} alt="" />
                                                 <span
-                                                    style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>{it?.title}</span>
+                                                    style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>{changeTitle(it?.title, it?.extra)}</span>
                                             </div>
                                             <div>
-
                                                 <p style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>
-                                                    {showScore(it?.score, it?.isCompleted)}
+                                                    {showScore(it?.score, it?.isCompleted, it?.extra)}
                                                 </p>
                                                 {
                                                     Number(it?.isCompleted) !== 3 ? <p onClick={

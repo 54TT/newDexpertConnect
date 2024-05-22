@@ -30,15 +30,31 @@ export default function specialOrPass({ option, data }: any) {
       getDpass(token)
     }
   }, [option])
-  const changeImg = (name: string) => {
+  const changeImg = (name: string, sta: string) => {
     if (name.includes('Golden')) {
-      return '/goldenPass.svg'
+      if (sta === 'img') {
+        return '/goldenPass.svg'
+      } else if (sta === 'num') {
+        return 'Activity acquisition'
+      }
     } else if (name.includes('Creation')) {
-      return '/launchPass.png'
+      if (sta === 'img') {
+        return '/launchPass.png'
+      } else if (sta === 'num') {
+        return '6000'
+      }
     } else if (name.includes('Trade')) {
-      return '/trade.png'
+      if (sta === 'img') {
+        return '/trade.png'
+      } else if (sta === 'num') {
+        return '480'
+      }
     } else if (name.includes('Sniper')) {
-      return '/sniper.png'
+      if (sta === 'img') {
+        return '/sniper.png'
+      } else if (sta === 'num') {
+        return '1200'
+      }
     }
   }
   return (
@@ -48,11 +64,11 @@ export default function specialOrPass({ option, data }: any) {
           return <div className='special' key={ind}>
             <p>{i?.campaign?.title}</p>
             <div className='img' style={{ width: browser ? '50%' : '100%' }}>
-              <img src={i?.campaign?.noticeUrl?.[0]} alt="" style={{ display: 'block', borderRadius: '10px', cursor: 'pointer' }} onClick={() => {
+              <img src={i?.campaign?.noticeUrl?.[0]} alt="" style={{ display: 'block', borderRadius: '10px', cursor: 'pointer', zIndex: '100' }} onClick={() => {
                 history('/specialActive/' + i?.campaign?.campaignId)
               }} />
               {
-                browser && <img src="/Recta.svg" alt="" className='positionImg' onClick={() => {
+                browser && <img src="/Recta.svg" alt="" style={{ zIndex: '100' }} className='positionImg' onClick={() => {
                   history('/specialActive/' + i?.campaign?.campaignId)
                 }} />
               }
@@ -63,14 +79,12 @@ export default function specialOrPass({ option, data }: any) {
             {
               !load ? <Loading status={'20'} /> : passPar.length > 0 ? passPar.map((i: any, ind: number) => {
                 return <div className='it' style={{ width: browser ? "46%" : '100%' }} key={ind}>
-                  <img src={changeImg(i?.name)} alt="" onClick={() => {
+                  <img src={changeImg(i?.name, 'img')} style={{ zIndex: '100' }} alt="" onClick={() => {
                     history('/Dpass/' + i?.passId)
                   }} />
                   <div>
                     <span>{i?.name}</span>
-                    {
-                      i?.balance ? <span>{t('Active.Balance')}: {i?.balance}</span> : <span> {Number(i?.stopAt) ? dayjs(i?.stopAt).format('YYYY-MM-DD') : 'Not owned'}</span>
-                    }
+                    <span>{changeImg(i?.name, 'num')} {t('Active.points')}</span>
                   </div>
                 </div>
               }) : <Nodata />

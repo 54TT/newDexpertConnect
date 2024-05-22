@@ -53,25 +53,28 @@ function SpecialActive() {
         }
     }, [languageChange, data])
 
+
     return (
         <>
             {
                 load ? <div className='specialActiveBox'>
-                    <div className="specialActive" style={{ width: browser ? "70%" : '100%', margin: browser ? '7% auto 60px' : "30px auto 60px" }}>
+                    <div className="specialActive" style={{ width: browser ? "70%" : '100%', margin: browser ? '3% auto 60px' : "30px auto 60px" }}>
                         <div className='top' style={{ flexDirection: browser ? 'row' : 'column' }}>
                             <img style={{ width: browser ? '46%' : '100%' }} src={languageChange === 'zh_CN' ? data?.campaignHomeCN?.campaign?.noticeUrl?.[0] : data?.campaignHome?.campaign?.noticeUrl?.[0]} alt="" />
                             <div style={{ width: browser ? '46%' : '100%' }} className='right'>
                                 <p style={{ textAlign: browser ? 'left' : 'center' }}>{languageChange === 'zh_CN' ? data?.campaignHomeCN?.campaign?.title : data?.campaignHome?.campaign?.title}</p>
                                 <p style={{ textAlign: browser ? 'left' : 'center', margin: browser ? '0' : '20px 0' }}>{languageChange === 'zh_CN' ? data?.campaignHomeCN?.campaign?.description : data?.campaignHome?.campaign?.description}</p>
-                                {
-                                    Number(time) ?
-                                        <Countdown title=""
-                                            className={`setCountdown ${browser ? '' : 'smallCountdown'}`}
-                                            value={time}
-                                            format="D[D] H[H] m[M] s[S]"
-                                        /> :
-                                        <p style={{ textAlign: browser ? 'left' : 'center' }}>{time}</p>
-                                }
+                                <div style={{ visibility: "hidden" }}>
+                                    {
+                                        Number(time) ?
+                                            <Countdown title=""
+                                                className={`setCountdown ${browser ? '' : 'smallCountdown'}`}
+                                                value={time}
+                                                format="D[D] H[H] m[M] s[S]"
+                                            /> :
+                                            <p style={{ textAlign: browser ? 'left' : 'center' }}>{time}</p>
+                                    }
+                                </div>
                             </div>
                         </div>
                         <Task getParams={getParams} params={['first', 'daily']} data={data} />
