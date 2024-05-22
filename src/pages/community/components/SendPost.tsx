@@ -1,16 +1,16 @@
-import {Button, Input, Popover} from "antd";
+import { Button, Input, Popover } from "antd";
 import Request from "../../../components/axios.tsx";
-import {useContext, useEffect, useRef, useState} from "react";
-import {CloseOutlined} from "@ant-design/icons";
+import { useContext, useEffect, useRef, useState } from "react";
+import { CloseOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
 import Picker from "@emoji-mart/react";
 import emojiData from "@emoji-mart/data";
-import {throttle} from 'lodash'
-import {MessageAll} from "../../../components/message.ts";
-import {useTranslation} from "react-i18next";
-import {CountContext} from "../../../Layout.tsx";
+import { throttle } from 'lodash'
+import { MessageAll } from "../../../components/message.ts";
+import { useTranslation } from "react-i18next";
+import { CountContext } from "../../../Layout.tsx";
 
-const {TextArea} = Input;
+const { TextArea } = Input;
 
 interface SendPostTypeProps {
     type?: "comment" | "post" | "reply";
@@ -20,26 +20,26 @@ interface SendPostTypeProps {
 }
 
 function SendPost({
-                      type = "post",
-                      changeRefresh,
-                      onPublish,
-                      postData,
-                  }: SendPostTypeProps) {
-    const {getAll} = Request();
-    const {user}: any = useContext(CountContext);
+    type = "post",
+    changeRefresh,
+    onPublish,
+    postData,
+}: SendPostTypeProps) {
+    const { getAll } = Request();
+    const { user }: any = useContext(CountContext);
     const [img, setImg] = useState<any>(null);
     const [imgPreview, setImgPreview] = useState<any>(null);
     const [value, setValue] = useState("");
     const [publishing, setPublishing] = useState(false);
     const [sendDisable, setSendDisable] = useState(true);
     const inputRef = useRef<HTMLInputElement>(null);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const clickImage = throttle(
         function () {
             inputRef?.current?.click?.();
         },
         1500,
-        {trailing: false}
+        { trailing: false }
     );
     const handleuploadImage = (e: any) => {
         const file = e.target.files[0];
@@ -91,7 +91,7 @@ function SendPost({
     const handlePostSend = throttle(
         async function () {
             const token = Cookies.get("token");
-            if (token&&user) {
+            if (token && user) {
                 let imgUrl: any = null;
                 try {
                     setPublishing(true);
@@ -159,12 +159,12 @@ function SendPost({
                     MessageAll('error', t('Market.pub'))
                     setPublishing(false);
                 }
-            }else {
-                MessageAll('warning',t('Market.line'))
+            } else {
+                MessageAll('warning', t('Market.line'))
             }
         },
         1500,
-        {trailing: false}
+        { trailing: false }
     );
 
     const handleChangeValue = (value: string, img: unknown) => {
@@ -186,7 +186,7 @@ function SendPost({
             }
         },
         1500,
-        {trailing: false}
+        { trailing: false }
     );
     const change = (e: any) => {
         setValue(value + e.native);
@@ -207,7 +207,7 @@ function SendPost({
         <>
             <div className="community-content-post-send">
                 <div className="community-content-post-send-avatar">
-                    <img loading={"lazy"} src={user?.avatarUrl || "/topLogo.png"} alt=""/>
+                    <img loading={"lazy"} src={user?.avatarUrl || "/topLogo.png"} alt="" />
                 </div>
                 <div className="community-content-post-send-input">
                     <TextArea
@@ -225,10 +225,10 @@ function SendPost({
             <div className="post-send-imgList">
                 {imgPreview ? (
                     <div className="post-send-imgList-delete">
-                        <img loading={"lazy"} src={imgPreview} alt=""/>
+                        <img loading={"lazy"} src={imgPreview} alt="" />
                         <Button
                             size="small"
-                            icon={<CloseOutlined/>}
+                            icon={<CloseOutlined />}
                             shape="circle"
                             onClick={() => clearImg()}
                         />
@@ -284,7 +284,7 @@ function SendPost({
                 name="file"
                 id="img-load"
                 accept="image/*"
-                style={{display: "none"}}
+                style={{ display: "none" }}
             />
         </>
     );

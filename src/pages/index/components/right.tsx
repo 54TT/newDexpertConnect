@@ -18,7 +18,7 @@ function Right() {
         window?.innerHeight -
         swiperRef?.current?.clientHeight -
         topRef?.current?.clientHeight -
-        80;
+        80
     const selectTweet = throttle(
         function (name: string) {
             if (select !== name) {
@@ -76,7 +76,7 @@ function Right() {
                     })}
                 </Swiper>
             </div>
-            <div className={"rightBoxTweet"} style={{ height: browser ? hei + 25 + "px" : "50vh", borderRadius: '15px 15px 0 0' }}>
+            <div className={"rightBoxTweet"} style={{ height: browser ? hei ? hei + 25 + "px" : '70vh' : "50vh", borderRadius: '15px 15px 0 0' }}>
                 <div ref={topRef} className={"rightBoxTweetTop"}>
                     <div
                         style={{

@@ -267,7 +267,7 @@ function Header() {
                 {user?.uid ? (
                     <>
                         {browser ? (
-                            <div className={"disCen"} style={{ cursor: "pointer" ,margin: '0 15px'}}>
+                            <div className={"disCen"} style={{ cursor: "pointer" ,margin: '0 12px'}}>
                                 <Dropdown
                                     overlayClassName={'headerDropdownClass'}
                                     menu={{

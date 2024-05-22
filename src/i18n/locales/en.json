@@ -60,7 +60,7 @@
     "More": "More"
   },
   "Community": {
-    "Share your insights...": "Share your insights...",
+    "Share your insights...": "Please share your opinion here...",
     "Post": "Post",
     "Lastest": "Lastest",
     "Profile": "Profile",
@@ -180,6 +180,6 @@
     "dis": "Join the following Discord group",
     "ins": "Follow the following Instagram users",
     "how": "How to Verify?",
-    "verify":"verify"
+    "verify": "verify"
   }
 }
