@@ -75,8 +75,7 @@ function SpecialActive() {
                         </div>
                         <Task getParams={getParams} params={['first', 'daily']} data={data} />
                         {
-
-                            data?.campaignHome?.campaign?.campaignId !== '1' && <div className='bot'>
+                            params?.id !== '1' && <div className='bot'>
                                 <p>{t('Active.Earn')}</p>
                                 <p>{t('Active.users')}</p>
                                 <p>{t('Active.holders')}</p>
