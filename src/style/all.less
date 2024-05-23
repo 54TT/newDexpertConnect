@@ -39,32 +39,37 @@ body::-webkit-scrollbar-thumb {
   background-color: rgb(66, 64, 61);
 }
 
-.scrollStyle::-webkit-scrollbar {
-  width: 8px !important;
-}
+
 
 .activeModal {
   overflow: hidden;
+  width: 30% !important;
 
   .ant-modal-content {
-    background-color: rgb(10, 15, 34);
+    background-color: rgb(30, 30, 30);
 
     .ant-modal-header {
-      background-color: rgb(10, 15, 34);
+      background-color: rgb(30, 30, 30);
+      border-bottom: 1px solid rgb(93, 182, 110) !important;
 
       .ant-modal-title {
         text-align: center;
-        color: rgb(200, 200, 200);
+        color: rgb(134, 240, 151);
         font-size: 22px;
       }
     }
 
     .ant-modal-close {
-      color: rgb(170, 180, 190);
-      background-color: gray;
+      color: rgb(93, 182, 110);
+      border: 1px solid rgb(93, 182, 110);
       border-radius: 50%;
     }
   }
+}
+
+.scrollStyle::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
 }
 
 .scrollStyle::-webkit-scrollbar-thumb {
@@ -146,6 +151,7 @@ body::-webkit-scrollbar-thumb {
       align-items: center;
       justify-content: space-between;
       border-bottom: 5px solid;
+      padding: 0 2%;
 
       &>p {
         flex: 1;
@@ -160,6 +166,8 @@ body::-webkit-scrollbar-thumb {
     }
 
     .indexNewPairBody {
+      position: relative;
+
       .infinite-scroll-component {
         overflow: hidden !important;
       }
@@ -178,11 +186,17 @@ body::-webkit-scrollbar-thumb {
         }
       }
 
+      .indexNewPairBodyDataSmall {
+        div {
+          padding: 0 !important;
+        }
+      }
+
       .indexNewPairBodyData {
         background-color: rgb(6, 14, 11);
         cursor: pointer;
         border-bottom: 5px solid;
-        padding: 4px 0;
+        padding: 4px 2%;
 
         &>div:not(:first-child) {
           font-weight: 300;
@@ -197,12 +211,11 @@ body::-webkit-scrollbar-thumb {
           overflow: hidden;
           box-sizing: border-box;
           white-space: nowrap;
-          padding: 0 3%;
         }
 
         .indexNewPairBone {
-          display: flex;
-          justify-content: left;
+          justify-content: flex-start !important;
+          box-sizing: border-box !important;
         }
 
         .indexTableLogo {
@@ -239,7 +252,7 @@ body::-webkit-scrollbar-thumb {
 
 .headerBox {
   box-sizing: border-box;
-  padding: 7px 2.5%;
+  padding: 7px 2.2%;
   display: flex;
   position: relative;
   align-items: center;
@@ -274,11 +287,8 @@ body::-webkit-scrollbar-thumb {
   }
 
   .headerCenter {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 32%;
-    transform: translate(-50%, -50%);
+
+    // width: 34%;
     span {
       font-size: 18px;
       cursor: pointer;
@@ -326,7 +336,7 @@ body::-webkit-scrollbar-thumb {
 
       div {
         width: 50%;
-        padding: 2% 0;
+        padding: 10px 0;
         text-align: center;
         cursor: pointer;
       }
@@ -457,6 +467,14 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
   justify-content: center;
 }
+
+
+.disLeft {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 
 .bottomBox {
   width: 100%;

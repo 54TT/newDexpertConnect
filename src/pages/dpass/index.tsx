@@ -133,14 +133,14 @@ function Dpass() {
 
         const count = Number(value);
         if (Number.isNaN(count)) {
-            return setRedeemCount(0);
+            return setRedeemCount(1);
         }
         if (typeof count === "number") {
             return setRedeemCount(count);
         }
         if (typeof value) {
             if (value === "") {
-                setRedeemCount(0);
+                setRedeemCount(1);
             }
         }
     };

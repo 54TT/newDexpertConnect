@@ -30,7 +30,7 @@ function Left() {
         if (hei && hei.current) {
             const h = hei.current.scrollHeight
             const w = window.innerHeight
-            const o: any = w - h - 50 - 90
+            const o: any = w - h - 120
             setTableHei(o)
         }
     }, [])
@@ -76,15 +76,15 @@ function Left() {
                     </p>
                 </div>
             </div>
-            <div style={{ width: '100%', overflow: browser ? 'hidden' : 'auto' }}>
+            <div className="scrollStyle" style={{ width: '100%', overflow: browser ? 'hidden' : 'auto hidden' }}>
                 <div className={`indexNewPair`}
-                    style={{ width: browser ? '100%' : '96vh' }}>
+                    style={{ width: browser ? '100%' : '120vh' }}>
                     {/*tittle*/}
                     <div className={'indexNewPairTitle'}>
                         {
                             [t('Market.Name'), `${t('Market.Price')}($)`, time + ' Change(%)', t('Market.Create Time'), t('Market.Pooled Amt'), t('Market.Swap Count'), t('Market.Liquidity'), t('Market.Links')].map((i: string, ind: number) => {
-                                return <p className={`${ind === 0 ? 'disCen' : 'textAlign'} homeTableTittle`}
-                                    key={ind}>
+                                return <p className={`${ind === 0 ? 'disLeft' : 'textAlign'} homeTableTittle`}
+                                    key={ind} style={{}}>
                                     {
                                         ind === 0 &&
                                         <img loading={'lazy'} src="/collect.svg" alt=""
@@ -93,7 +93,6 @@ function Left() {
                                     }
                                     <span>{i}</span>
                                 </p>
-
                             })
                         }
                     </div>
@@ -112,11 +111,10 @@ function Left() {
                             }
                         </InfiniteScroll>
                     </div>
-                    {
-                        moreLoad && tableDta.length > 0 && <Loading status={'none'} />
-                    }
                 </div>
             </div>
+            <div style={{ visibility: moreLoad && tableDta.length > 0 ? 'initial' : 'hidden' }}>
+                <Loading status={'none'} /></div>
         </div>
     );
 }

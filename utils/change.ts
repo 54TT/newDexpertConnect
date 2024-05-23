@@ -40,8 +40,8 @@ export const formatDecimal = (number: any, count: any) => {
         return newNumber
     } else {
         if (Number(number) > 0) {
-            return number.slice(0,8);
-        }else{
+            return number.slice(0, 8);
+        } else {
             return number;
         }
     }

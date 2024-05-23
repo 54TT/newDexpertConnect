@@ -44,7 +44,7 @@ export default function person() {
       setIsLoad(true)
     }
   }
-  const passCard = [{ name: 'Golden Pass:', data: Number(userPass?.stopTs) ? dayjs(userPass?.stopTs).format('YYYY-MM-DD') : 'Not owned' }, { name: 'Fast Trade Pass:', data: userPass?.sniperBotSwapCnt || 0 }, { name: 'Sniper Bot Pass:', data: userPass?.sniperBotPreswapCnt || 0 }, { name: 'Token Creation Bot Pass:', data: userPass?.launchBotCreationCnt || 0 }]
+  const passCard = [{ name: 'Golden Pass:', data: Number(userPass?.stopTs) ? dayjs.unix(userPass?.stopTs).format('YYYY-MM-DD') : 'Not owned' }, { name: 'Fast Trade Pass:', data: userPass?.sniperBotSwapCnt || 0 }, { name: 'Sniper Bot Pass:', data: userPass?.sniperBotPreswapCnt || 0 }, { name: 'Token Creation Bot Pass:', data: userPass?.launchBotCreationCnt || 0 }]
   useEffect(() => {
     const token = cookie.get('token')
     if (user && token) {
@@ -107,7 +107,7 @@ export default function person() {
               {
                 history.length > 0 ? history.map((i: any, ind: number) => {
                   return <div className='data bot' key={ind}>
-                    <span>{i?.timestamp ? dayjs(i?.timestamp).format('YYYY-MM-DD') : ''}</span>
+                    <span>{i?.timestamp ? dayjs(i?.timestamp).format('YYYY-MM-DD HH:mm:ss') : ''}</span>
                     <span>{i?.description}</span>
                     <span>+{i?.score || 0}</span>
                   </div>

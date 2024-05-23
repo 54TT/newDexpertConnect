@@ -104,13 +104,13 @@ function Index() {
                                 </div>
                                 <div>
                                     <span style={{ fontSize: browser ? '18px' : '16px' }}>{t('Active.pass')}</span>
-                                    <div style={{ display: 'flex', justifyContent: 'center',alignItems:'center', marginTop: '20px', cursor: 'pointer' }} onClick={throttle(function () {
+                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px', cursor: 'pointer' }} onClick={throttle(function () {
                                         history('/activityPerson')
                                     }, 1500, { 'trailing': false })}>
                                         {
                                             isDPassCount ?
                                                 <span style={{ fontSize: browser ? '25px' : '20px', color: '#86f097' }}>{dPassCount || '0'}</span> :
-                                                <div style={{ display: 'flex', justifyContent: 'center',alignItems:'center' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                                     <LoadingOutlined style={{ color: 'gray' }} />
                                                 </div>
                                         }
@@ -135,10 +135,17 @@ function Index() {
                             color: 'rgb(212,223,214)',
                             lineHeight: '1.1',
                             textAlign: 'center',
-                            marginTop: '5%'
+                            marginTop: '5%', marginBottom: '10px'
                         }}>
                             {t('Active.Each')}
                         </p>
+                        <p style={{
+                            width: '72%',
+                            margin: '0 auto',
+                            color: 'rgb(212,223,214)',
+                            lineHeight: '1.1',
+                            textAlign: 'center',
+                        }}>*In order to cooperate with the integration, the golden pass will be issued three working days after the end of the event.</p>
                     </div>
                     <div className='background' style={{ top: '15vh', background: '#86F097', left: "0" }}></div>
                     <div className='background' style={{ top: '10vh', background: '#0FF', right: '0' }}></div>

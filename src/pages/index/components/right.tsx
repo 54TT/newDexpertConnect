@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y, Autoplay, EffectFade, Pagination } from "swiper/modules";
-import { useContext, useRef, useState } from "react";
+import { useContext, useState, useRef, } from "react";
 import TweetHome from "../../../components/tweetHome.tsx";
 import { CountContext } from "../../../Layout.tsx";
 import { throttle } from "lodash";
@@ -8,17 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 function Right() {
-    const swiperRef: any = useRef();
-    const topRef: any = useRef();
     const history = useNavigate();
+    const swiperHei = useRef<any>(null)
     const { browser }: any = useContext(CountContext);
     const [select, setSelect] = useState("one");
     const { t } = useTranslation();
-    const hei =
-        window?.innerHeight -
-        swiperRef?.current?.clientHeight -
-        topRef?.current?.clientHeight -
-        80
+    const hei = window?.innerHeight - swiperHei?.current?.clientHeight - 130
     const selectTweet = throttle(
         function (name: string) {
             if (select !== name) {
@@ -28,7 +23,6 @@ function Right() {
         1500,
         { trailing: false }
     );
-
     return (
         <div
             className={"rightBox"}
@@ -37,10 +31,7 @@ function Right() {
                 marginBottom: browser ? "0" : "40px",
             }}
         >
-            <div
-                ref={swiperRef}
-                style={{ margin: browser ? "0" : "40px 0", width: "100%" }}
-            >
+            <div ref={swiperHei} style={{ margin: browser ? "0" : "40px 0", width: "100%" }}>
                 <Swiper
                     slidesPerView={1}
                     modules={[EffectFade, Autoplay, Pagination, A11y]}
@@ -76,8 +67,8 @@ function Right() {
                     })}
                 </Swiper>
             </div>
-            <div className={"rightBoxTweet"} style={{ height: browser ? hei ? hei + 25 + "px" : '70vh' : "50vh", borderRadius: '15px 15px 0 0' }}>
-                <div ref={topRef} className={"rightBoxTweetTop"}>
+            <div className={"rightBoxTweet"} style={{ height: browser ? hei + 60 + "px" : "50vh", borderRadius: '15px 15px 0 0' }}>
+                <div className={"rightBoxTweetTop"}>
                     <div
                         style={{
                             color: select === "one" ? "rgb(134,240,151)" : "rgb(104,124,105)",
@@ -99,7 +90,7 @@ function Right() {
                         {t("Common.Lastest")}
                     </div>
                 </div>
-                <TweetHome hei={`${hei - 30}px`} />
+                <TweetHome hei={`${hei}px`} />
             </div>
         </div>
     );

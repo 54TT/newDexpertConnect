@@ -1,7 +1,7 @@
 import { Modal, Table } from 'antd'
 import { useLocation } from 'react-router-dom'
 import { CountContext } from "../../../Layout.tsx";
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from "react-i18next";
 import { throttle } from "lodash";
 import TwitterRelease from "./twitterRelease.tsx";
@@ -14,16 +14,19 @@ import Request from "../../../components/axios.tsx";
 import SpecialOrPass from '../components/specialOrPass.tsx';
 import { simplify } from '../../../../utils/change.ts'
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
-    console.log(data)
     const par = data.length > 0 ? data : data?.campaign ? [data] : []
     const { browser, languageChange, isLogin, setUserPar, user }: any = useContext(CountContext);
     const { getAll, } = Request()
     const router = useLocation()
-
     const [loading, setLoading] = useState(false)
+    const [isVerify, setIsVerify] = useState(false)
     const { t } = useTranslation();
     const [value, setValue] = useState('')
     const [link, setLink] = useState('')
+    useEffect(() => {
+        setLoading(false)
+        setIsVerify(false)
+    }, [data])
     const columns = [
         {
             title: t('Active.ra'),
@@ -53,6 +56,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const [selectActive, setSelectActive] = useState('')
     const [select, setSelect] = useState<any>(null)
     const [isModalOpen, setIsModalOpe] = useState(false);
+    const [isConfirm, setIsConfirm] = useState(false);
     const signIn = async (token: string, url: string) => {
         const res = await getAll({
             method: 'get',
@@ -79,7 +83,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             if (res?.data?.url) {
                 window.open(res?.data?.url)
                 getParams()
-                setLoading(false)
             } else {
                 setLoading(false)
             }
@@ -124,7 +127,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 token
             })
             if (res?.status === 200 && res.data?.exist) {
-                setLoading(false)
                 getParams()
             } else {
                 if (res?.data?.url) {
@@ -137,6 +139,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             setLoading(false)
         }
     }
+
     const getT = async (id: string, index: string) => {
         const token = cookie.get('token')
         if (token) {
@@ -168,7 +171,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             token
         })
         if (res?.status === 200) {
-            setLoading(false)
             getParams()
         } else {
             setLoading(false)
@@ -185,7 +187,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         if (res?.status === 200) {
             setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) + Number(res?.data?.score) })
             getParams()
-            setLoading(false)
         } else {
             setLoading(false)
         }
@@ -298,12 +299,9 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             if (res?.data?.message === 'success' && res?.status === 200) {
                 getParams()
             } else if (res?.data?.code === '400') {
-                // setLoad(true)
+                setIsVerify(false)
                 MessageAll('warning', res?.data?.message)
             }
-            // else {
-            //     setLoad(true)
-            // }
         }
     }
     const openLink = () => {
@@ -314,6 +312,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const Confirm = async () => {
         const token = cookie.get('token')
         if (value && token) {
+            setIsConfirm(true)
             const res: any = await getAll({
                 method: 'post',
                 url: '/api/v1/airdrop/task/twitter/daily/confirm',
@@ -322,6 +321,9 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             })
             if (res?.status === 200 && res?.data?.message === 'success') {
                 setIsModalOpe(false)
+                setIsConfirm(false)
+            } else {
+                setIsConfirm(false)
             }
         }
     }
@@ -345,6 +347,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             }
         }
     }
+
     const changeTitle = (title: string, extra: any) => {
         if (extra) {
             const aaa: any = extra?.split('|')
@@ -384,7 +387,8 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                         return <div key={it?.taskId} className={'firstLine'}
                                             style={{
                                                 background: selectActive === it?.taskId ? 'rgb(52,62,53)' : 'linear-gradient(to right, #020c02, rgb(38, 45, 38))',
-                                                marginBottom: index === i?.tasks.length - 1 ? '' : '35px'
+                                                marginBottom: index === i?.tasks.length - 1 ? '' : '35px',
+                                                display: browser ? 'flex' : 'block'
                                             }}
                                             onClick={
                                                 throttle(function () {
@@ -394,22 +398,24 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                         setSelectActive('')
                                                     }
                                                 }, 1500, { 'trailing': false })}>
-                                            <div>
+                                            <div className='left'>
                                                 <img src={changeImg(it?.taskId, it?.title)} alt="" />
                                                 <span
                                                     style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>{changeTitle(it?.title, it?.extra)}</span>
-                                            </div>
-                                            <div>
-                                                <p style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>
+                                                <p className='point' style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>
                                                     {showScore(it?.score, it?.isCompleted, it?.extra)}
                                                 </p>
+                                            </div>
+                                            <div className='right' style={{ marginTop: browser ? '0' : '10px' }}>
                                                 {
                                                     Number(it?.isCompleted) !== 3 ? <p onClick={
                                                         throttle(function () {
-                                                            param(it?.isCompleted, it?.taskId, it?.title)
-                                                            cookie.set('taskId', it?.taskId)
-                                                            setSelect(it)
-                                                            setLoading(true)
+                                                            if (!isVerify && !loading) {
+                                                                param(it?.isCompleted, it?.taskId, it?.title)
+                                                                cookie.set('taskId', it?.taskId)
+                                                                setSelect(it)
+                                                                setLoading(true)
+                                                            }
                                                         }, 1500, { 'trailing': false })} className={'start'}>
                                                         {loading && select?.title === it?.title ?
                                                             <LoadingOutlined /> : operate(it?.isCompleted, it?.title)}</p> :
@@ -418,16 +424,19 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                         </div>
                                                 }
                                                 {
-                                                    option === 'daily' && Number(it?.isCompleted) !== 3 && router.pathname === '/specialActive/1' &&
+                                                    option === 'daily' && Number(it?.isCompleted) !== 3 &&
                                                     <p className={'verify'}
                                                         onClick={
                                                             throttle(function () {
-                                                                if (it?.title.includes('Twitter')) {
-                                                                    verification(it?.taskId)
-                                                                } else {
-                                                                    getParams()
+                                                                if (!isVerify && !loading) {
+                                                                    setIsVerify(true)
+                                                                    if (it?.title.includes('Twitter')) {
+                                                                        verification(it?.taskId)
+                                                                    } else {
+                                                                        getParams()
+                                                                    }
                                                                 }
-                                                            }, 1500, { 'trailing': false })}>{t('Dpass.verify')}</p>
+                                                            }, 1500, { 'trailing': false })}>{t('Dpass.verify')}{isVerify && selectActive === it?.taskId ? <LoadingOutlined /> : ''}</p>
                                                 }
                                             </div>
                                         </div>
@@ -445,6 +454,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 }
             </div>
         }
+
         <Modal centered
             title={select?.title?.includes('Twitter') && option === 'daily' ? t('Dpass.how') : t('Dpass.plea')}
             className={'activeModal'} open={isModalOpen} maskClosable={false}
@@ -452,7 +462,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             {
                 select?.title?.includes('Twitter') && option === 'daily' ?
                     <TwitterRelease handleCancel={handleCancel} openLink={openLink} setValue={setValue}
-                        Confirm={Confirm} /> :
+                        Confirm={Confirm} isConfirm={isConfirm} /> :
                     <Revalidate openLink={openLink} select={select?.title} />
             }
         </Modal>

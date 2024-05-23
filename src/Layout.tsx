@@ -19,7 +19,6 @@ import { MessageAll } from "./components/message.ts";
 import { useTranslation } from "react-i18next";
 import { Spin } from "antd";
 import { chain } from '../utils/judgeStablecoin.ts'
-
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'))
 const ActivePerson = React.lazy(() => import('./pages/activity/components/person.tsx'))
 const NewpairDetails = React.lazy(() => import('./pages/newpairDetails/index.tsx'))

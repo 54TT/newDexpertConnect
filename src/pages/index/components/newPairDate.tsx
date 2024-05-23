@@ -7,7 +7,7 @@ import { throttle } from "lodash";
 import { CountContext } from "../../../Layout.tsx"; // 引入相对时间插件
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Date({ tableDta, time, setDta }: any) {
-    const { switchChain }: any = useContext(CountContext);
+    const { switchChain, browser }: any = useContext(CountContext);
     const history = useNavigate();
     const push = throttle(function (i: any) {
         history('/newpairDetails/' + i?.id)
@@ -28,12 +28,12 @@ function Date({ tableDta, time, setDta }: any) {
                 tableDta.map((record: any, ind: number) => {
                     const data = time === '24h' ? record?.pairDayData : time === '6h' ? record?.PairSixHourData : time === '1h' ? record?.pairHourData : record?.PairFiveMinutesData
                     const a: any = data && data.length > 0 ? Number(data[0]?.priceChange) ? data[0]?.priceChange.includes('.000') ? 0 : Number(data[0]?.priceChange).toFixed(3) : 0 : 0
-                    const b = Number(a) < 0 ? a.replace(/\.?0*$/, '') : a ? setMany(a) : 0
+                    const b = Number(a) !== 0 ? setMany(a) : 0
                     const dateTime = time === '24h' ? record?.pairDayData : time === '6h' ? record?.PairSixHourData : time === '1h' ? record?.pairHourData : record?.PairFiveMinutesData
                     const li: any = record?.liquidity && Number(record.liquidity) ? setMany(record.liquidity) : 0
                     const create = record?.createdAtTimestamp.toString().length > 10 ? Number(record.createdAtTimestamp.toString().slice(0, 10)) : Number(record.createdAtTimestamp)
                     return (b && b.includes('T') && b.length > 10) ? '' :
-                        <div key={ind} className={`indexNewPairBodyData dis`} onClick={() => push(record)}>
+                        <div key={ind} className={`indexNewPairBodyData dis ${browser ? '' : 'indexNewPairBodyDataSmall'}`} onClick={() => push(record)}>
                             <div className={`indexTableLogo indexNewPairBone`}>
                                 <img loading={'lazy'} src={record?.collect ? '/collectSelect.svg' : "/collect.svg"}
                                     style={{ display: 'none' }} alt=""
@@ -49,10 +49,9 @@ function Date({ tableDta, time, setDta }: any) {
                                     }}>{simplify(record?.token1?.symbol?.replace(/^\s*|\s*$/g, ""))}</div>
                                 </div>
                             </div>
+                            <div style={{ color: "white" }}>{Number(record?.priceUSD) ? setMany(record?.priceUSD) : 0}</div>
                             <div
-                                style={{ color: "white" }}>{Number(record?.priceUSD) ? setMany(record?.priceUSD) : 0}</div>
-                            <div
-                                style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,9,58)', }}>{b !== 0 ? Number(b) ? (parseFloat(Number(b).toFixed(2))).toString() : b : '0'}</div>
+                                style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,9,58)', }}>{Number(b) !== 0 ? b : '0'}</div>
                             <div
                                 style={{
                                     color: "white",

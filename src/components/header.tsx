@@ -221,36 +221,35 @@ function Header() {
         1500, { trailing: false });
     return (
         <div className={"headerBox"}>
-            <div style={{ display: "flex", alignItems: "center", }}>
+            <div style={{ display: "flex", alignItems: "center", width: '50%', justifyContent: 'space-between' }}>
                 <img src="/logo1111.svg" alt="" onClick={throttle(
                     function () {
                         window.open("https://info.dexpert.io/");
                     },
                     1500,
-                    { trailing: false })} style={{ width: "100px", display: "block", cursor: 'pointer' }} />
-
+                    { trailing: false })} style={{ width: "100px", display: "block", cursor: 'pointer', marginRight: '20px' }} />
+                {browser && (
+                    <p className={`headerCenter dis`} style={{ width: '60%' }}>
+                        {HeaderList.map(({ label, key }, ind) => {
+                            return (
+                                <span
+                                    key={ind}
+                                    style={{ color: change(key), whiteSpace: 'nowrap' }}
+                                    onClick={throttle(
+                                        function () {
+                                            historyChange(key);
+                                        },
+                                        1500,
+                                        { trailing: false }
+                                    )}
+                                >
+                                    {label}
+                                </span>
+                            );
+                        })}
+                    </p>
+                )}
             </div>
-            {browser && (
-                <p className={`headerCenter dis`}>
-                    {HeaderList.map(({ label, key }, ind) => {
-                        return (
-                            <span
-                                key={ind}
-                                style={{ color: change(key) }}
-                                onClick={throttle(
-                                    function () {
-                                        historyChange(key);
-                                    },
-                                    1500,
-                                    { trailing: false }
-                                )}
-                            >
-                                {label}
-                            </span>
-                        );
-                    })}
-                </p>
-            )}
             <div className={'headerData'} style={{ justifyContent: browser ? 'center' : 'flex-end' }}>
                 <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer' }}
                     onClick={throttle(
@@ -259,52 +258,49 @@ function Header() {
                         },
                         1500,
                         { trailing: false })}>
-                    <img src={router.pathname === '/activity' ? "/gift1.svg" : "/giftWhite1.svg"} alt="" style={{ width: '23px', cursor: 'pointer', marginRight: '6px' }} />
+                    <img src={router.pathname === '/activity' ? "/gift1.svg" : "/giftWhite1.svg"} alt="" style={{ width: '23px', cursor: 'pointer' }} />
                     {
-                        browser && <p style={{ color: router.pathname === '/activity' ? 'rgb(134,240,151)' : 'rgb(214, 223, 215)' }}>{t("Common.Events")}</p>
+                        browser && <p style={{ color: router.pathname === '/activity' ? 'rgb(134,240,151)' : 'rgb(214, 223, 215)', marginLeft: '6px' }}>{t("Common.Events")}</p>
                     }
                 </div>
                 {user?.uid ? (
                     <>
-                        {browser ? (
-                            <div className={"disCen"} style={{ cursor: "pointer" ,margin: '0 12px'}}>
-                                <Dropdown
-                                    overlayClassName={'headerDropdownClass'}
-                                    menu={{
-                                        items,
-                                    }}>
-                                    <div className={'headLine'}>
-                                        <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.png"}
-                                            style={{
-                                                width: "26px",
-                                                display: "block",
-                                                marginRight: "-8px",
-                                                zIndex: '10',
-                                                borderRadius: "100%",
-                                            }} alt="" loading={"lazy"} />
-                                        <p className={'headLineP'}>{simplify(user?.username)}</p>
-                                    </div>
-                                </Dropdown>
-                                <div className={'headLine'}>
-                                    {/* <p className={'headLineP'}>{isBalance ? Number(balance[user?.address]) ? setMany(balance[user?.address]) : '0' + 'ETH' || '0ETH' :
-                                        <LoadingOutlined style={{fontSize: '15px'}}/>}</p> */}
+                        <div className={"disCen"} style={{ cursor: "pointer", margin: browser ? '0 12px' : '' }}>
+                            <Dropdown
+                                overlayClassName={'headerDropdownClass'}
+                                menu={{
+                                    items,
+                                }}>
+                                {browser ? <div className={'headLine'}>
+                                    <img src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.png"}
+                                        style={{
+                                            width: "26px",
+                                            display: "block",
+                                            marginRight: "-8px",
+                                            zIndex: '10',
+                                            borderRadius: "100%",
+                                        }} alt="" loading={"lazy"} />
+                                    <p className={'headLineP'}>{simplify(user?.username)}</p>
+                                </div> : <img
+                                    loading={"lazy"}
+                                    src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.png"}
+                                    style={{
+                                        width: "25px",
+                                        margin: '0 15px',
+                                        display: "block",
+                                        cursor: "pointer",
+                                        borderRadius: "100%",
+                                    }}
+                                    alt=""
+                                />
+                                }
+                            </Dropdown>
+                            {
+                                browser && <div className={'headLine'}>
                                     <p className={'headLineP'}>{user?.rewardPointCnt + ' D' || '0 D'}</p>
                                 </div>
-                            </div>
-                        ) : (
-                            <img
-                                loading={"lazy"}
-                                src={user?.avatarUrl ? user?.avatarUrl : "/topLogo.png"}
-                                style={{
-                                    width: "25px",
-                                    margin: '0 15px',
-                                    display: "block",
-                                    cursor: "pointer",
-                                    borderRadius: "100%",
-                                }}
-                                alt=""
-                            />
-                        )}
+                            }
+                        </div>
                     </>
                 ) : (
                     <>
@@ -322,17 +318,15 @@ function Header() {
                                 loading={"lazy"}
                                 src="/wallet.svg"
                                 onClick={loginModal}
-                                style={{ width: "25%", margin: '0 15px' }}
+                                style={{ width: "26px", margin: '0 15px' }}
                                 alt=""
                             />
                         )}
                     </>
                 )}
-                {
-                    browser && <img src="/earth.svg" alt=""
-                        style={{ cursor: 'pointer', display: 'block', width: '22px' }}
-                        onClick={changeLanguage} />
-                }
+                <img src="/earth.svg" alt=""
+                    style={{ cursor: 'pointer', display: 'block', width: '25px' }}
+                    onClick={changeLanguage} />
                 {!browser && (
                     <img
                         src="/side.svg"

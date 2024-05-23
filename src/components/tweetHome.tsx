@@ -102,7 +102,7 @@ function TweetHome({
         <>
             {
                 bol ? tableData.length > 0 ?
-                    <div id={'scrollableDiv'} style={{ overflowY: 'auto', height: hei, ...style }}
+                    <div id={'scrollableDiv'} style={{ overflow: 'hidden auto', height: hei, ...style }}
                         className={`${browser ? 'rightTweetBox' : 'mobile'} scrollStyle`}>
                         <InfiniteScroll
                             hasMore={true}
