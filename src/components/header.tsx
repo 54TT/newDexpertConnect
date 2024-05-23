@@ -221,20 +221,20 @@ function Header() {
         1500, { trailing: false });
     return (
         <div className={"headerBox"}>
-            <div style={{ display: "flex", alignItems: "center", width: '50%', justifyContent: 'space-between' }}>
+            <div className="dis" style={{ width: '50%' }}>
                 <img src="/logo1111.svg" alt="" onClick={throttle(
                     function () {
                         window.open("https://info.dexpert.io/");
                     },
                     1500,
-                    { trailing: false })} style={{ width: "100px", display: "block", cursor: 'pointer', marginRight: '20px' }} />
+                    { trailing: false })} style={{ width: "100px", display: "block", cursor: 'pointer' }} />
                 {browser && (
                     <p className={`headerCenter dis`} style={{ width: '60%' }}>
                         {HeaderList.map(({ label, key }, ind) => {
                             return (
                                 <span
                                     key={ind}
-                                    style={{ color: change(key), whiteSpace: 'nowrap' }}
+                                    style={{ color: change(key), whiteSpace: 'nowrap', margin: ind === 1 ? '0 10px' : '0' }}
                                     onClick={throttle(
                                         function () {
                                             historyChange(key);
@@ -251,7 +251,7 @@ function Header() {
                 )}
             </div>
             <div className={'headerData'} style={{ justifyContent: browser ? 'center' : 'flex-end' }}>
-                <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                <div className="disDis" style={{ cursor: 'pointer' }}
                     onClick={throttle(
                         function () {
                             history('/activity')

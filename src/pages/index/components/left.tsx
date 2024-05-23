@@ -83,8 +83,8 @@ function Left() {
                     <div className={'indexNewPairTitle'}>
                         {
                             [t('Market.Name'), `${t('Market.Price')}($)`, time + ' Change(%)', t('Market.Create Time'), t('Market.Pooled Amt'), t('Market.Swap Count'), t('Market.Liquidity'), t('Market.Links')].map((i: string, ind: number) => {
-                                return <p className={`${ind === 0 ? 'disLeft' : 'textAlign'} homeTableTittle`}
-                                    key={ind} style={{}}>
+                                return <p className={` homeTableTittle`}
+                                    key={ind}>
                                     {
                                         ind === 0 &&
                                         <img loading={'lazy'} src="/collect.svg" alt=""

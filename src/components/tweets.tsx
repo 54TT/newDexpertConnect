@@ -159,7 +159,7 @@ function Tweets({
                              src={localData?.user?.avatar ? localData?.user?.avatar : '/topLogo.png'} alt=""
                              style={{width: '36px', marginRight: '12px', borderRadius: '50%'}}/>
                         <div>
-                            <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+                            <div className='disDis' style={{flexDirection: 'row'}}>
                                 <span>{simplify(localData?.user?.username) ? simplify(localData?.user?.username) : 'Not yet registor'}</span>
                                 <img style={{marginLeft: '4px'}} src="/certification.svg" alt=""/>
                             </div>

@@ -76,12 +76,12 @@ function HeaderModal() {
                     <p>{t("Common.Connect to Dexpert")}</p>
                     {
                         browser &&
-                        <button onClick={connectWallet} className={'walletButton'} style={{ margin: '10px 0' }}>
+                        <button onClick={connectWallet} className={'walletButton disCen'} style={{ margin: '10px 0' }}>
                             <img loading={'lazy'}
                                 src="/metamask.svg" style={{ width: '25px', height: '25px' }}
                                 alt="" /><span>MetaMask</span></button>
                     }
-                    <button onClick={onConnect} className={'walletButton'}><img
+                    <button onClick={onConnect} className={'walletButton disCen'}><img
                         src="/webAll.svg" loading={'lazy'}
                         style={{
                             width: '25px', height: '25px'

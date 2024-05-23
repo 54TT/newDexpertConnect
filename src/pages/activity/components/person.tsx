@@ -65,7 +65,7 @@ export default function person() {
         <p><span>address:{simplify(user?.address)}</span> <Copy name={user?.address} /></p>
       </div>
     </div>
-    <div className='point'>
+    <div className='point dis'>
       <span>D points:</span>
       <span>{user?.rewardPointCnt || 0}</span>
     </div>
@@ -74,7 +74,7 @@ export default function person() {
   const right = <div className={`boxRight ${browser ? '' : 'boxRightSpacing'}`}>
     {
       passCard.map((i: any, ind: number) => {
-        return <div key={ind}>
+        return <div key={ind} className='dis'>
           <span>{i?.name}</span>
           <span>{i?.data}</span>
         </div>
@@ -99,14 +99,14 @@ export default function person() {
               !browser && right
             }
             <div className='list' style={{ padding: browser ? "3% 6%" : '45px 20px', marginTop: browser ? "10%" : '65px' }}>
-              <div className='data top'>
+              <div className='data dis top'>
                 <span>Time</span>
                 <span>Task</span>
                 <span>Integral</span>
               </div>
               {
                 history.length > 0 ? history.map((i: any, ind: number) => {
-                  return <div className='data bot' key={ind}>
+                  return <div className='data dis bot' key={ind}>
                     <span>{i?.timestamp ? dayjs(i?.timestamp).format('YYYY-MM-DD HH:mm:ss') : ''}</span>
                     <span>{i?.description}</span>
                     <span>+{i?.score || 0}</span>
@@ -114,7 +114,7 @@ export default function person() {
                 }) : <Nodata />
               }
               {
-                history.length > 0 && !(history.length % 10) && <p className='next' onClick={next}><span>下一页</span> {load ? <LoadingOutlined /> : <CaretDownOutlined />}</p>
+                history.length > 0 && !(history.length % 10) && <p className='next disCen' onClick={next}><span>下一页</span> {load ? <LoadingOutlined /> : <CaretDownOutlined />}</p>
               }
               <img src="/GroupPass.svg" alt="" className='passCard' style={{ width: browser ? '10%' : '80px', transform: browser ? 'translate(-50%,-50%)' : 'translate(-10%,-50%)' }} />
               <img src="/coinPass.svg" alt="" className='coinPass' style={{ width: browser ? '8.5%' : '80px', transform: browser ? 'translate(50%,-50%)' : 'translate(13%,-50%)' }} />

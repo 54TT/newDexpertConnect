@@ -38,7 +38,7 @@ function task({ getParams, data, select, setSelect, params, }: any) {
     const now = list.filter((item: any) => params.indexOf(item.name) !== -1) || []
     return (
         <>
-            <div className={'activeOptions'}
+            <div className={'activeOptions disCen'}
                 style={{ width: browser ? '72%' : '92%', margin: browser ? '35px auto 42px' : '15px auto' }}>
                 {
                     now.map((i: any, ind: number) => {
@@ -62,7 +62,7 @@ function task({ getParams, data, select, setSelect, params, }: any) {
                                 } else {
                                     MessageAll('warning', t('Market.line'))
                                 }
-                            }, 1500, { 'trailing': false })} key={ind}>{i.value}
+                            }, 1500, { 'trailing': false })} className='disCen' key={ind}>{i.value}
                         </div>
                     })
                 }

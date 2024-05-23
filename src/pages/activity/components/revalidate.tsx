@@ -19,7 +19,7 @@ function Revalidate({select,openLink}: any) {
                     alt=""
                     onClick={openLink}/>
             </div>
-            <p onClick={openLink}>
+            <p onClick={openLink} className="disCen">
                 <img
                     src={select?.includes('Twitter') ? "/x.svg" : select?.includes('Telegram') ? '/telegram1.svg' : select?.includes('Discord') ? '/discord.svg' : '/instagram1.svg'}
                     alt=""/>

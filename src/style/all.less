@@ -3,6 +3,22 @@
   align-items: center;
   justify-content: space-between;
 }
+.disDis{
+  display: flex;
+  align-items: center;
+}
+.disCen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.disLeft {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 
 @font-face {
   font-family: 'tt'; // --自定义名字就好
@@ -151,7 +167,7 @@ body::-webkit-scrollbar-thumb {
       align-items: center;
       justify-content: space-between;
       border-bottom: 5px solid;
-      padding: 0 2%;
+      padding-left:2%;
 
       &>p {
         flex: 1;
@@ -196,7 +212,7 @@ body::-webkit-scrollbar-thumb {
         background-color: rgb(6, 14, 11);
         cursor: pointer;
         border-bottom: 5px solid;
-        padding: 4px 2%;
+        padding: 4px 0 4px 2%;
 
         &>div:not(:first-child) {
           font-weight: 300;
@@ -206,17 +222,12 @@ body::-webkit-scrollbar-thumb {
           line-height: 1;
           display: flex;
           font-size: 14px;
-          justify-content: center;
           flex: 1;
           overflow: hidden;
           box-sizing: border-box;
           white-space: nowrap;
         }
 
-        .indexNewPairBone {
-          justify-content: flex-start !important;
-          box-sizing: border-box !important;
-        }
 
         .indexTableLogo {
           .imgBox:nth-child(2) {
@@ -462,19 +473,6 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
-.disCen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-
-.disLeft {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
 
 .bottomBox {
   width: 100%;
@@ -575,10 +573,7 @@ body::-webkit-scrollbar-thumb {
     width: 150px;
     background-color: black;
     border: none;
-    display: flex;
-    justify-content: center;
     padding: 10px 0;
-    align-items: center;
     border-radius: 10px;
 
     span {
@@ -733,7 +728,6 @@ span {
               align-items: center;
               font-size: 18px;
               margin-top: 13px;
-
               span {
                 margin-left: 6px;
                 color: rgb(200, 200, 200);
@@ -892,9 +886,10 @@ span {
 .avtiveCountdown {
   .ant-statistic-content {
     display: flex;
-    margin-top: 2%;
     align-items: center;
     justify-content: center;
+    margin-top: 2%;
+
 
     .ant-statistic-content-value {
       font-size: 26px;

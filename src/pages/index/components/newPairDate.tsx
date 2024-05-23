@@ -34,7 +34,7 @@ function Date({ tableDta, time, setDta }: any) {
                     const create = record?.createdAtTimestamp.toString().length > 10 ? Number(record.createdAtTimestamp.toString().slice(0, 10)) : Number(record.createdAtTimestamp)
                     return (b && b.includes('T') && b.length > 10) ? '' :
                         <div key={ind} className={`indexNewPairBodyData dis ${browser ? '' : 'indexNewPairBodyDataSmall'}`} onClick={() => push(record)}>
-                            <div className={`indexTableLogo indexNewPairBone`}>
+                            <div className={`indexTableLogo `}>
                                 <img loading={'lazy'} src={record?.collect ? '/collectSelect.svg' : "/collect.svg"}
                                     style={{ display: 'none' }} alt=""
                                     onClick={(e: any) => click(record, e)} />
@@ -62,7 +62,7 @@ function Date({ tableDta, time, setDta }: any) {
                             <div
                                 style={{ color: 'white' }}>{dateTime && dateTime.length > 0 ? Number(dateTime[0]?.swapTxns) : 0}</div>
                             <div style={{ color: 'white' }}>{li}</div>
-                            <div className={`dis indexTableLogo logoSet`}>
+                            <div className={`disLeft indexTableLogo logoSet`}>
                                 {
                                     ['/ethLogo.svg', '/feima.svg', '/uncx.svg'].map((i: string, index: number) => {
                                         return <div className={'imgBox'} key={index}>

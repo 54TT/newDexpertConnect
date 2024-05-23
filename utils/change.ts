@@ -58,7 +58,7 @@ export const autoConvert = (number: any) => {
         return `${(Number(number) / 1000).toFixed(2).replace(/\.?0*$/, '')} K`;
     } else {
         if (Number(number) < 1) {
-            return Number(number).toFixed(6).replace(/\.?0*$/, '');
+            return Number(number).toFixed(5).replace(/\.?0*$/, '');
         } else {
             return Number(number).toFixed(2).replace(/\.?0*$/, '');
         }

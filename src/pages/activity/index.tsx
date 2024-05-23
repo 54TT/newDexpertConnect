@@ -68,7 +68,7 @@ function Index() {
                 load ? <div className={'activityBox'} style={{ marginBottom: '50px', overflow: 'hidden' }}>
                     <p className='topTitle' style={{ margin: browser ? ' 3% 0 2%' : '50px 0 20px' }}><span style={{ color: 'rgb(134,240,151)' }}>{t('Active.task')}</span><span style={{ color: 'white' }}>{t('Active.task1')}</span></p>
                     <div className={'activeBack'} style={{ backgroundSize: browser ? "100% 120vh" : '100%' }}>
-                        <div className={'allTime'} style={{ flexDirection: browser ? "row" : 'column', width: browser ? '65%' : '80%' }}>
+                        <div className={'allTime dis'} style={{ flexDirection: browser ? "row" : 'column', width: browser ? '65%' : '80%' }}>
                             {
                                 browser && <img src="/coin.svg" alt="" />
                             }
@@ -77,7 +77,7 @@ function Index() {
                                 <p>{t('Active.ye2')}</p>
                                 <p>{t('Active.ye3')}</p>
                             </div>
-                            <div className={browser ? 'setImg' : 'showImg'}>
+                            <div className={browser ? 'setImg' : 'disCen'}>
                                 {
                                     !browser && <img src="/coin.svg" alt="" />
                                 }
@@ -92,7 +92,7 @@ function Index() {
                                     }}>{t('Common.Connect Wallet')}</p>
                                 </div>
                             }
-                            <div className={`youPoint ${isLogin ? '' : 'frosted'}`}>
+                            <div className={`youPoint disDis ${isLogin ? '' : 'frosted'}`}>
                                 <div style={{ cursor: 'pointer' }} onClick={
                                     throttle(function () {
                                         history('/activityPerson')

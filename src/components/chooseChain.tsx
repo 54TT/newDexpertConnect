@@ -21,10 +21,10 @@ function ChooseChain() {
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
     };
-    const chain = <div className={'headerChain'}>
+    const chain = <div className={'headerChain dis'}>
         {
             chainParams.map((i: any, ind: number) => {
-                return <div key={ind} className={'chain'} onClick={() => click(i)}>
+                return <div key={ind} className={'chain disDis'} onClick={() => click(i)}>
                     <img src={i?.icon} alt="" style={{ width: i?.value === 'Arbitrum' ? '20px' : '18px' }} />
                     <span style={{ color: i?.value !== 'Avalanche' && i?.value !== 'Blast' && i?.value !== 'Celo' ? 'white' : 'gray' }}>{i?.value === 'BSC' ? 'BNB Chain' : i?.value}</span>
                 </div>
@@ -34,7 +34,7 @@ function ChooseChain() {
     return (
         <Popover content={chain} title="" onOpenChange={handleOpenChange} open={open} trigger="click"
             overlayClassName={'headerPopoverShow'}>
-            <div className={'boxPopover'}>
+            <div className={'boxPopover disDis'}>
                 <img src={value?.icon} alt="" style={{ width: '22px' }} />
                 <img src="/down.svg" alt="" style={{ width: '10px', marginLeft: "4px", }} />
             </div>

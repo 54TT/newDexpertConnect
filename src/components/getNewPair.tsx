@@ -105,7 +105,7 @@ function GetNewPair() {
     const interval = setInterval(async () => {
       setPolling(true)
       refetch();
-    }, 10000);
+    }, 8000);
     return () => {
       clearInterval(interval);
     }
@@ -154,7 +154,7 @@ function GetNewPair() {
           price = abc[0].ethPrice
         }
         if (price) {
-          setEthprice(Number(price).toFixed(1).replace(/\.?0*$/, ''))
+          setEthprice(Number(price).toFixed(2).replace(/\.?0*$/, ''))
         } else {
           setEthprice('0')
         }
