@@ -120,8 +120,8 @@ export default function person() {
               <img src="/coinPass.svg" alt="" className='coinPass' style={{ width: browser ? '8.5%' : '80px', transform: browser ? 'translate(50%,-50%)' : 'translate(13%,-50%)' }} />
             </div>
           </div>
-          <div className='background' style={{ top: '15vh', background: '#86F097', left: "0" }}></div>
-          <div className='background' style={{ top: '10vh', background: '#0FF', right: '0' }}></div>
+          <div className='backgroundColor' style={{ top: '15vh', background: '#86F097', left: "0" }}></div>
+          <div className='backgroundColor' style={{ top: '10vh', background: '#0FF', right: '0' }}></div>
         </div> : <Loading status={'20'} />
       }
     </>

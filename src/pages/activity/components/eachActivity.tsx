@@ -192,30 +192,36 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         }
     }
 
+
+    const getLink = async (taskId: string, token: string) => {
+        // 获取链接
+        const res: any = await getAll({
+            method: 'get',
+            url: '/api/v1/airdrop/task/twitter/daily/intent',
+            data: { taskId },
+            token
+        })
+        if (res?.status === 200 && res?.data?.intent) {
+            setLoading(false)
+            setLink(res?.data?.intent)
+            setIsModalOpe(true)
+        } else {
+            setLoading(false)
+        }
+    }
+
     const param = async (isCompleted: string, taskId: string, title: string) => {
         const token = cookie.get('token')
         if (token) {
             if (router.pathname === '/specialActive/1') {
+                // yuliverseDailyTwitterTask
                 if (option === 'daily') {
                     if (title.includes('Telegram')) {
                         signIn(token, '/api/v1/telegram/signInChannelLink')
                     } else if (title.includes('Discord')) {
                         signIn(token, '/api/v1/discord/signInChannelLink')
                     } else if (title.includes('Twitter')) {
-                        // 获取链接
-                        const res: any = await getAll({
-                            method: 'get',
-                            url: '/api/v1/airdrop/task/twitter/daily/intent',
-                            data: { taskId: taskId },
-                            token
-                        })
-                        if (res?.status === 200 && res?.data?.intent) {
-                            setLoading(false)
-                            setLink(res?.data?.intent)
-                            setIsModalOpe(true)
-                        } else {
-                            setLoading(false)
-                        }
+                        getLink(taskId, token)
                     }
                 } else if (option === 'first') {
                     if (Number(isCompleted)) {
@@ -230,13 +236,17 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     }
                 }
             } else {
-                if (Number(isCompleted)) {
-                    if (data?.campaign?.title?.includes('Yuliverse')) {
-                        claimJointActivities(token, taskId)
-                    }
+                if (option === 'daily') {
+                    getLink(taskId, token)
                 } else {
-                    if (data?.campaign?.title?.includes('Yuliverse')) {
-                        verifyJointActivities(token, taskId)
+                    if (Number(isCompleted)) {
+                        if (data?.campaign?.title?.includes('Yuliverse')) {
+                            claimJointActivities(token, taskId)
+                        }
+                    } else {
+                        if (data?.campaign?.title?.includes('Yuliverse')) {
+                            verifyJointActivities(token, taskId)
+                        }
                     }
                 }
             }
@@ -256,15 +266,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     }
     const operate = (isCompleted: string, title: string,) => {
         if (option === 'daily') {
-            if (router.pathname === '/specialActive/1') {
-                return t('Market.start')
-            } else {
-                if (Number(isCompleted) === 1) {
-                    return t('Market.Claim')
-                } else {
-                    return t('Dpass.verify')
-                }
-            }
+            return t('Market.start')
         } else if (option === 'first') {
             if (router.pathname === '/specialActive/1') {
                 if (Number(isCompleted)) {
@@ -430,11 +432,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                             throttle(function () {
                                                                 if (!isVerify && !loading) {
                                                                     setIsVerify(true)
-                                                                    if (it?.title.includes('Twitter')) {
-                                                                        verification(it?.taskId)
-                                                                    } else {
-                                                                        getParams()
-                                                                    }
+                                                                    verification(it?.taskId)
                                                                 }
                                                             }, 1500, { 'trailing': false })}>{t('Dpass.verify')}{isVerify && selectActive === it?.taskId ? <LoadingOutlined /> : ''}</p>
                                                 }

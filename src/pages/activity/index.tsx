@@ -147,10 +147,10 @@ function Index() {
                             textAlign: 'center',
                         }}>*In order to cooperate with the integration, the golden pass will be issued three working days after the end of the event.</p>
                     </div>
-                    <div className='background' style={{ top: '15vh', background: '#86F097', left: "0" }}></div>
-                    <div className='background' style={{ top: '10vh', background: '#0FF', right: '0' }}></div>
-                    <div className='background' style={{ top: '170vh', background: '#86F097', left: "0" }}></div>
-                    <div className='background' style={{ top: '170vh', background: '#0FF', right: '0' }}></div>
+                    <div className='backgroundColor' style={{ top: '15vh', background: '#86F097', left: "0" }}></div>
+                    <div className='backgroundColor' style={{ top: '10vh', background: '#0FF', right: '0' }}></div>
+                    <div className='backgroundColor' style={{ top: '170vh', background: '#86F097', left: "0" }}></div>
+                    <div className='backgroundColor' style={{ top: '170vh', background: '#0FF', right: '0' }}></div>
                 </div> :
                     <Loading status={'20'} />
             }
