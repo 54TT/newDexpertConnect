@@ -294,7 +294,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         if (id && token) {
             const res: any = await getAll({
                 method: 'post',
-                url: '/api/v1/airdrop/task/twitter/daily/verify',
+                url: router.pathname === '/specialActive/1' ? '/api/v1/airdrop/task/twitter/daily/verify' : '/api/v1/airdrop/task/twitter/daily/yuliverseVerify',
                 data: { taskId: id, },
                 token
             })
