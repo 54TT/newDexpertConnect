@@ -329,7 +329,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             }
         }
     }
-    const showScore = (score: string, id: string, extra: any) => {
+    const showScore = (score: string, extra: any) => {
         if (router.pathname === '/specialActive/1') {
             if (Number(score)) {
                 return '+' + score
@@ -337,7 +337,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 return score
             }
         } else {
-            if (Number(id)) {
+            if (extra) {
                 const aaa: any = extra?.split('|')
                 if (aaa.length > 0) {
                     return '+' + aaa[1]
@@ -345,7 +345,11 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     return '+0'
                 }
             } else {
-                return ''
+                if (Number(score)) {
+                    return '+' + score
+                } else {
+                    return score
+                }
             }
         }
     }
@@ -405,7 +409,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                 <span
                                                     style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>{changeTitle(it?.title, it?.extra)}</span>
                                                 <p className='point' style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>
-                                                    {showScore(it?.score, it?.isCompleted, it?.extra)}
+                                                    {showScore(it?.score, it?.extra)}
                                                 </p>
                                             </div>
                                             <div className='right' style={{ marginTop: browser ? '0' : '10px' }}>
