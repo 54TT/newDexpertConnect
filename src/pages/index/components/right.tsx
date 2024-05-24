@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y, Autoplay, EffectFade, Pagination } from "swiper/modules";
-import { useContext, useState, useRef, } from "react";
+import { useContext, useState, useRef, useEffect, } from "react";
 import TweetHome from "../../../components/tweetHome.tsx";
 import { CountContext } from "../../../Layout.tsx";
 import { throttle } from "lodash";
@@ -12,8 +12,8 @@ function Right() {
     const swiperHei = useRef<any>(null)
     const { browser }: any = useContext(CountContext);
     const [select, setSelect] = useState("one");
+    const [heigh, setHei] = useState<any>(null);
     const { t } = useTranslation();
-    const hei = window?.innerHeight - swiperHei?.current?.clientHeight - 130
     const selectTweet = throttle(
         function (name: string) {
             if (select !== name) {
@@ -23,6 +23,10 @@ function Right() {
         1500,
         { trailing: false }
     );
+    useEffect(() => {
+        const hei = window?.innerHeight - swiperHei?.current?.clientHeight - 130
+        setHei(hei)
+    }, [swiperHei?.current])
     return (
         <div
             className={"rightBox"}
@@ -67,7 +71,7 @@ function Right() {
                     })}
                 </Swiper>
             </div>
-            <div className={"rightBoxTweet"} style={{ height: browser ? hei + 60 + "px" : "50vh", borderRadius: '15px 15px 0 0' }}>
+            <div className={"rightBoxTweet"} style={{ height: browser ? heigh + 60 + "px" : "50vh", borderRadius: '15px 15px 0 0' }}>
                 <div className={"rightBoxTweetTop"}>
                     <div
                         style={{
@@ -90,7 +94,7 @@ function Right() {
                         {t("Common.Lastest")}
                     </div>
                 </div>
-                <TweetHome hei={`${hei}px`} />
+                <TweetHome hei={`${heigh}px`} />
             </div>
         </div>
     );
