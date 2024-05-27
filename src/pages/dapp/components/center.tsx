@@ -15,10 +15,10 @@ function Center() {
   const params: any = useParams()
   const { t } = useTranslation();
   return (
-    <div className={"center"}>
+    <div className={"center"} style={{ width: browser ? '68%' : '92%' }}>
       {
-        <div className={"centerTop"}>
-          <img src={params?.id === 'create' ? "/bot11.png" : '/bot.png'} alt="" loading={"lazy"} />
+        <div className={"centerTop"} style={{ flexDirection: browser ? 'row' : 'column' }}> 
+          <img src={params?.id === 'create' ? "/bot11.png" : '/bot.png'} alt="" loading={"lazy"} style={{width:browser?'25%':'50%'}}/>
           <div
             className={"centerTopRight"}
             style={{ paddingRight: browser ? "10%" : "2%" }}

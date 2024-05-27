@@ -9,7 +9,8 @@ import newPair from "../../../components/getNewPair.tsx";
 import { useTranslation } from "react-i18next";
 import { getGas } from "../../../../utils/getGas.ts";
 import Nodata from '../../../components/Nodata.tsx';
-import ChooseChain from '../../../components/chooseChain.tsx'
+import ChooseChain from '../../../components/chooseChain.tsx';
+
 function Left() {
     const hei = useRef<any>()
     const { ethPrice, moreLoad, tableDta, setDta, wait, changePage, } = newPair() as any

@@ -34,7 +34,7 @@
           justify-content: space-between;
           margin-top: 12px;
 
-          & > p {
+          &>p {
             flex: 1;
             text-align: center;
           }
@@ -74,16 +74,17 @@
   }
 
   .center {
-    width: 68%;
     overflow: hidden;
+    margin: 0 auto;
 
     .centerTop {
       border-bottom: 1px solid rgb(104, 124, 105);
       display: flex;
       padding: 5px 0;
+
       img {
         display: block;
-        width: 25%;
+        margin: 0 auto;
       }
 
       .centerTopRight {
@@ -92,18 +93,18 @@
         flex-direction: column;
         justify-content: space-between;
 
-        & > p:first-child {
+        &>p:first-child {
           color: white;
         }
 
-        & > .pp {
+        &>.pp {
           color: rgb(200, 200, 200);
           line-height: 1.2;
           margin-bottom: 7px;
         }
 
         div {
-          & > div {
+          &>div {
             padding: 8px 0;
             cursor: pointer;
             border: 1px solid rgb(134, 240, 151);

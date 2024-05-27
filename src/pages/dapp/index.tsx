@@ -5,6 +5,7 @@ import CommunityRight from "../community/components/RightSider.tsx";
 import {useContext,} from "react";
 import {CountContext} from "../../Layout.tsx";
 function Index() {
+    
     const {browser}: any = useContext(CountContext);
     return (
         <div className={'box'}>
