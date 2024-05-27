@@ -47,19 +47,21 @@ function Left() {
         <div className={'indexBox'} style={{ width: browser ? '74%' : 'auto' }}>
             {/* top*/}
             <div ref={hei} className={`indexTop dis`}>
-                <Select
-                    onChange={handleChange}
-                    value={select}
-                    className={'indexSelect'}
-                    popupClassName={'indexSelectPopup'}
-                    style={{ width: '12%', display: 'none' }}
-                    options={[
-                        { value: 'newPair', label: 'New Pairs' },
-                        { value: 'trading', label: 'Trading' },
-                        { value: 'watch', label: 'Watch List' },
-                    ]}
-                />
-                <ChooseChain />
+                <div className="disDis">
+                    <Select
+                        onChange={handleChange}
+                        value={select}
+                        className={'indexSelect'}
+                        popupClassName={'indexSelectPopup'}
+                        style={{ width: '120px' }}
+                        options={[
+                            { value: 'newPair', label: 'New Pairs' },
+                            { value: 'trading', label: 'Trading', disabled: true },
+                            { value: 'watch', label: 'Watch List', disabled: true },
+                        ]}
+                    />
+                    <ChooseChain />
+                </div>
                 {/* <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'}
                     defaultValue={'24h'} /> */}
                 <div className={`indexRight dis`}>

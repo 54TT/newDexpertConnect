@@ -355,15 +355,19 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     }
 
     const changeTitle = (title: string, extra: any) => {
-        if (extra) {
-            const aaa: any = extra?.split('|')
-            if (aaa.length > 0) {
-                return aaa[0]
+        if (router.pathname === '/specialActive/1') {
+            return title
+        } else {
+            if (extra) {
+                const aaa: any = extra?.split('|')
+                if (aaa.length > 0) {
+                    return aaa[0]
+                } else {
+                    return title
+                }
             } else {
                 return title
             }
-        } else {
-            return title
         }
     }
 
@@ -436,7 +440,11 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                             throttle(function () {
                                                                 if (!isVerify && !loading) {
                                                                     setIsVerify(true)
-                                                                    verification(it?.taskId)
+                                                                    if (!it?.title?.includes('Twitter') && router.pathname === '/specialActive/1') {
+                                                                        getParams()
+                                                                    } else {
+                                                                        verification(it?.taskId)
+                                                                    }
                                                                 }
                                                             }, 1500, { 'trailing': false })}>{t('Dpass.verify')}{isVerify && selectActive === it?.taskId ? <LoadingOutlined /> : ''}</p>
                                                 }
