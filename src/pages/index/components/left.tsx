@@ -55,11 +55,11 @@ function Left() {
                         value={select}
                         className={'indexSelect'}
                         popupClassName={'indexSelectPopup'}
-                        style={{ width: '120px', border: "2px solid #3c453c", borderRadius: '7px', marginLeft: '7px' }}
+                        style={{ width: '130px', border: "2px solid #3c453c", borderRadius: '7px', marginLeft: '7px' }}
                         options={[
-                            { value: 'newPair', label: 'New Pairs' },
-                            { value: 'trading', label: 'Trading', disabled: true },
-                            { value: 'watch', label: 'Watch List', disabled: true },
+                            { value: 'newPair', label: t('Market.New') },
+                            { value: 'trading', label: t('Market.Trading'), disabled: true },
+                            { value: 'watch', label: t('Market.Favorites'), disabled: true },
                         ]}
                     />
                 </div>

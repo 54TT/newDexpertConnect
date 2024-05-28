@@ -76,6 +76,9 @@
     "fail": "fail"
   },
   "Market": {
+    "Favorites":"Favorites List",
+    "Trading":"Popular Trading",
+    "New":"New Pairs",
     "Name": "Name",
     "Price": "Price",
     "24h Change": "24h Change",

@@ -73,6 +73,9 @@
     "copy": "复制成功"
   },
   "Market": {
+    "Favorites":"收藏列表",
+    "Trading":"热门交易",
+    "New":"新交易对",
     "Name": "名称",
     "Price": "价格",
     "24h Change": "24h 变化",
