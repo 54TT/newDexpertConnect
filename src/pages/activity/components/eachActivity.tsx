@@ -1,5 +1,5 @@
 import { Modal, Table } from 'antd'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { CountContext } from "../../../Layout.tsx";
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const { browser, languageChange, isLogin, setUserPar, user }: any = useContext(CountContext);
     const { getAll, } = Request()
     const router = useLocation()
+    const params: any = useParams()
     const [loading, setLoading] = useState(false)
     const [isVerify, setIsVerify] = useState(false)
     const { t } = useTranslation();
@@ -54,7 +55,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         },
     ];
     const [selectActive, setSelectActive] = useState('')
-    const [select, setSelect] = useState<any>(null)
+    const [select, setSelect] = useState('')
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [isConfirm, setIsConfirm] = useState(false);
     const signIn = async (token: string, url: string) => {
@@ -71,12 +72,12 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             setLoading(false)
         }
     }
-    const follow = async (id: string, index: string) => {
+    const follow = async (id: String) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
-                method: index.includes('Telegram') ? 'post' : 'get',
-                url: index.includes('Twitter') ? '/api/v1/oauth/twitter/follow' : index.includes('Telegram') ? '/api/v1/oauth/telegram/chat/follow' : index.includes('Discord') ? '/api/v1/oauth/discord/follow' : '/api/v1/oauth/instagram/follow',
+                method: id === '2' ? 'post' : 'get',
+                url: id === '1' ? '/api/v1/oauth/twitter/follow' : id === '2' ? '/api/v1/oauth/telegram/chat/follow' : id === '3' ? '/api/v1/oauth/discord/follow' : id === '5' ? '/api/v1/oauth/instagram/follow' : '',
                 data: { taskId: id },
                 token
             })
@@ -91,38 +92,24 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         }
     }
     const changeImg = (id: string, title: string) => {
-        if (selectActive === id) {
-            if (title.includes('Twitter')) {
-                return "/tuiActive.svg"
-            } else if (title.includes('Telegram')) {
-                return "/telegramsActive.svg"
-            } else if (title.includes('Discord')) {
-                return '/disActive.svg'
-            } else if (title.includes('Instagram')) {
-                return '/instagramActive.svg'
-            } else {
-                return '/abc.png'
-            }
+        if (title.includes('Twitter')) {
+            return selectActive === id ? "/tuiActive.svg" : "/tui.svg"
+        } else if (title.includes('Telegram')) {
+            return selectActive === id ? "/telegramsActive.svg" : "/telegrams.svg"
+        } else if (title.includes('Discord')) {
+            return selectActive === id ? '/disActive.svg' : '/dis.svg'
+        } else if (title.includes('Instagram')) {
+            return selectActive === id ? '/instagramActive.svg' : '/instagram.svg'
         } else {
-            if (title.includes('Twitter')) {
-                return "/tui.svg"
-            } else if (title.includes('Telegram')) {
-                return "/telegrams.svg"
-            } else if (title.includes('Discord')) {
-                return '/dis.svg'
-            } else if (title.includes('Instagram')) {
-                return '/instagram.svg'
-            } else {
-                return '/abcd.png'
-            }
+            return selectActive === id ? '/abc.png' : '/abcd.png'
         }
     }
-    const verify = async (id: string, index: string) => {
+    const verify = async (id: string) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
                 method: 'post',
-                url: index.includes('Twitter') ? '/api/v1/oauth/twitter/verify' : index.includes('Telegram') ? '/api/v1/oauth/telegram/chat/verify' : index.includes('Discord') ? '/api/v1/oauth/discord/verify' : "/api/v1/oauth/instagram/verify",
+                url: id === '1' ? '/api/v1/oauth/twitter/verify' : id === '2' ? '/api/v1/oauth/telegram/chat/verify' : id === '3' ? '/api/v1/oauth/discord/verify' : "/api/v1/oauth/instagram/verify",
                 data: { taskId: id },
                 token
             })
@@ -140,12 +127,12 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         }
     }
 
-    const getT = async (id: string, index: string) => {
+    const getT = async (id: string) => {
         const token = cookie.get('token')
         if (token) {
             const res = await getAll({
-                method: index.includes('Telegram') ? 'post' : 'get',
-                url: index.includes('Twitter') ? '/api/v1/oauth/twitter/link' : index.includes('Telegram') ? '/api/v1/oauth/telegram/chat/link' : index.includes('Discord') ? '/api/v1/oauth/discord/link' : '/api/v1/oauth/instagram/link',
+                method: id === '2' ? 'post' : 'get',
+                url: id === '1' ? '/api/v1/oauth/twitter/link' : id === '2' ? '/api/v1/oauth/telegram/chat/link' : id === '3' ? '/api/v1/oauth/discord/link' : '/api/v1/oauth/instagram/link',
                 data: { taskId: id },
                 token
             })
@@ -210,29 +197,27 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         }
     }
 
-    const param = async (isCompleted: string, taskId: string, title: string) => {
+    const param = async (isCompleted: string, taskId: string) => {
         const token = cookie.get('token')
         if (token) {
-            if (router.pathname === '/specialActive/1') {
-                // yuliverseDailyTwitterTask
+            if (params?.id === '1') {
                 if (option === 'daily') {
-                    if (title.includes('Telegram')) {
-                        signIn(token, '/api/v1/telegram/signInChannelLink')
-                    } else if (title.includes('Discord')) {
-                        signIn(token, '/api/v1/discord/signInChannelLink')
-                    } else if (title.includes('Twitter')) {
+                    //   id为8的  是twitter
+                    if (taskId !== '8') {
+                        signIn(token, taskId === '6' ? '/api/v1/telegram/signInChannelLink' : '/api/v1/discord/signInChannelLink')
+                    } else {
                         getLink(taskId, token)
                     }
                 } else if (option === 'first') {
                     if (Number(isCompleted)) {
                         if (Number(isCompleted) === 1) {
-                            follow(taskId, title)
+                            follow(taskId)
                         }
                         if (Number(isCompleted) === 2) {
-                            verify(taskId, title)
+                            verify(taskId)
                         }
                     } else {
-                        getT(taskId, title)
+                        getT(taskId)
                     }
                 }
             } else {
@@ -313,12 +298,12 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     }
     const Confirm = async () => {
         const token = cookie.get('token')
-        if (value && token) {
+        if (value && token && select) {
             setIsConfirm(true)
             const res: any = await getAll({
                 method: 'post',
                 url: '/api/v1/airdrop/task/twitter/daily/confirm',
-                data: { taskId: select?.taskId, url: value },
+                data: { taskId: select, url: value },
                 token
             })
             if (res?.status === 200 && res?.data?.message === 'success') {
@@ -330,7 +315,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         }
     }
     const showScore = (score: string, extra: any) => {
-        if (router.pathname === '/specialActive/1') {
+        if (params?.id === '1') {
             if (Number(score)) {
                 return '+' + score
             } else {
@@ -338,14 +323,14 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             }
         } else {
             if (extra) {
-                const aaa: any = extra?.split('|')
-                if (aaa.length > 0) {
-                    return '+' + aaa[1]
+                const par: any = extra?.split('|')
+                if (par.length > 0) {
+                    return '+' + par[1]
                 } else {
                     return '+0'
                 }
             } else {
-                if (Number(score)) {
+                if (Number(score) || Number(score) === 0) {
                     return '+' + score
                 } else {
                     return score
@@ -355,7 +340,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     }
 
     const changeTitle = (title: string, extra: any) => {
-        if (router.pathname === '/specialActive/1') {
+        if (params?.id === '1') {
             return title
         } else {
             if (extra) {
@@ -421,13 +406,13 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                     Number(it?.isCompleted) !== 3 ? <p onClick={
                                                         throttle(function () {
                                                             if (!isVerify && !loading) {
-                                                                param(it?.isCompleted, it?.taskId, it?.title)
+                                                                param(it?.isCompleted, it?.taskId)
                                                                 cookie.set('taskId', it?.taskId)
-                                                                setSelect(it)
+                                                                setSelect(it?.taskId)
                                                                 setLoading(true)
                                                             }
                                                         }, 1500, { 'trailing': false })} className={'start'}>
-                                                        {loading && select?.title === it?.title ?
+                                                        {loading && select === it?.taskId ?
                                                             <LoadingOutlined /> : operate(it?.isCompleted, it?.title)}</p> :
                                                         <div className={'success'}>
                                                             <img src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'} alt="" />
@@ -465,15 +450,15 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             </div>
         }
 
-        <Modal centered
-            title={select?.title?.includes('Twitter') && option === 'daily' ? t('Dpass.how') : t('Dpass.plea')}
+        <Modal centered style={{ width: browser ? '30%' : '90%' }}
+            title={(select==='8'||select==='10') && option === 'daily' ? t('Dpass.how') : t('Dpass.plea')}
             className={'activeModal'} open={isModalOpen} maskClosable={false}
             footer={null} onCancel={handleCancel}>
             {
-                select?.title?.includes('Twitter') && option === 'daily' ?
+                (select==='8'||select==='10') && option === 'daily' ?
                     <TwitterRelease handleCancel={handleCancel} openLink={openLink} setValue={setValue}
                         Confirm={Confirm} isConfirm={isConfirm} /> :
-                    <Revalidate openLink={openLink} select={select?.title} />
+                    <Revalidate openLink={openLink} select={select} />
             }
         </Modal>
     </>

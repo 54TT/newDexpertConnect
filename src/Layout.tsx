@@ -1,5 +1,5 @@
 import Header, { I18N_Key } from './components/header.tsx'
-import { Route, Routes, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import './style/all.less';
 import React, { createContext, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { getAppMetadata, getSdkError } from "@walletconnect/utils";
@@ -28,7 +28,6 @@ const Community = React.lazy(() => import('./pages/community/index.tsx'))
 const Active = React.lazy(() => import('./pages/activity/index.tsx'))
 const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'))
 const SpecialActive = React.lazy(() => import('./pages/activity/components/specialDetail.tsx'))
-
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -38,7 +37,6 @@ export const CountContext = createContext(null);
 function Layout() {
     const router = useLocation()
     const { t } = useTranslation();
-    const [search] = useSearchParams();
     const { getAll, } = Request()
     const history = useNavigate()
     const [chains, setChains] = useState<any>([]);
@@ -83,7 +81,7 @@ function Layout() {
         }
     }
     const clear = async () => {
-        history('/?change=1')
+        history('/re-register')
         cookie.remove('token')
         cookie.remove('jwt')
         setUserPar(null)
@@ -331,8 +329,7 @@ function Layout() {
         const handleResize = () => {
             changeBody()
         };
-        const chang = search.get('change')
-        if (router.pathname === '/' && chang === '1') {
+        if (router.pathname === '/re-register') {
             setUserPar(null)
             setIsLogin(false)
         }
@@ -379,6 +376,7 @@ function Layout() {
                     <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
                         <Routes>
                             <Route path="/" element={<Index />} />
+                            <Route path="/re-register" element={<Index />} />
                             <Route path="/specialActive/:id" element={<SpecialActive />} />
                             <Route path="/newpairDetails/:id" element={<NewpairDetails />} />
                             <Route path='/community/:tab' element={<Community />} />

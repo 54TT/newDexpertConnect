@@ -49,19 +49,19 @@ function Left() {
             {/* top*/}
             <div ref={hei} className={`indexTop dis`}>
                 <div className="disDis">
+                    <ChooseChain />
                     <Select
                         onChange={handleChange}
                         value={select}
                         className={'indexSelect'}
                         popupClassName={'indexSelectPopup'}
-                        style={{ width: '120px' }}
+                        style={{ width: '120px', border: "2px solid #3c453c", borderRadius: '7px', marginLeft: '7px' }}
                         options={[
                             { value: 'newPair', label: 'New Pairs' },
                             { value: 'trading', label: 'Trading', disabled: true },
                             { value: 'watch', label: 'Watch List', disabled: true },
                         ]}
                     />
-                    <ChooseChain />
                 </div>
                 {/* <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'}
                     defaultValue={'24h'} /> */}

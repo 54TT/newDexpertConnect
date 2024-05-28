@@ -32,7 +32,7 @@ const Request = () => {
     const {t} = useTranslation();
     const history = useNavigate()
     const clear = () => {
-        history('/?change=1')
+        history('/re-register')
         cookie.remove('token')
         cookie.remove('jwt')
     }
