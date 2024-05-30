@@ -1,4 +1,4 @@
-import { Modal, Table } from 'antd'
+import { Modal, Table } from 'antd';
 import { useLocation, useParams } from 'react-router-dom'
 import { CountContext } from "../../../Layout.tsx";
 import { useContext, useEffect, useState } from 'react'
@@ -12,7 +12,7 @@ import Nodata from '../../../components/Nodata.tsx';
 import { MessageAll } from "../../../components/message.ts";
 import Request from "../../../components/axios.tsx";
 import SpecialOrPass from '../components/specialOrPass.tsx';
-import { simplify } from '../../../../utils/change.ts'
+import { simplify } from '../../../../utils/change.ts';
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const par = data.length > 0 ? data : data?.campaign ? [data] : []
     const { browser, languageChange, isLogin, setUserPar, user }: any = useContext(CountContext);
@@ -137,7 +137,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 token
             })
             if (res?.data?.url) {
-                window.open(res?.data?.url, '_self')
+                window.open(res?.data?.url)
                 setLoading(false)
             } else {
                 setLoading(false)
@@ -163,16 +163,17 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             setLoading(false)
         }
     }
-
     const claimJointActivities = async (token: string, taskId: string) => {
         const res = await getAll({
             method: 'post',
-            url: '/api/v1/campaign/yuliverse/claim',
+            url: taskId==='11'?'/api/v1/campaign/yuliverse/claim':'/api/v1/campaign/yuliverse/golden-pass/claim',
             data: { taskId },
             token
         })
         if (res?.status === 200) {
-            setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) + Number(res?.data?.score) })
+            if(taskId==='11'){
+                setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) + Number(res?.data?.score)})
+            }
             getParams()
         } else {
             setLoading(false)
@@ -225,11 +226,11 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     getLink(taskId, token)
                 } else {
                     if (Number(isCompleted)) {
-                        if (data?.campaign?.title?.includes('Yuliverse')) {
+                        if (taskId==='11'||taskId==='15') {
                             claimJointActivities(token, taskId)
                         }
                     } else {
-                        if (data?.campaign?.title?.includes('Yuliverse')) {
+                        if (taskId==='11') {
                             verifyJointActivities(token, taskId)
                         }
                     }
@@ -249,7 +250,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             return ''
         }
     }
-    const operate = (isCompleted: string, title: string,) => {
+    const operate = (isCompleted: string, title: string) => {
         if (option === 'daily') {
             return t('Market.start')
         } else if (option === 'first') {
@@ -266,7 +267,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     return t('Market.Authorize')
                 }
             } else {
-                if (Number(isCompleted) === 1) {
+               if (Number(isCompleted)) {
                     return t('Market.Claim')
                 } else {
                     return t('Dpass.verify')
@@ -356,6 +357,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         }
     }
 
+
     return <>
         {
             isLogin && <div className={'activeAll'} style={{ padding: browser ? '0 17%' : '0 5%' }}>
@@ -382,7 +384,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                         return <div key={it?.taskId} className={'firstLine'}
                                             style={{
                                                 background: selectActive === it?.taskId ? 'rgb(52,62,53)' : 'linear-gradient(to right, #020c02, rgb(38, 45, 38))',
-                                                marginBottom: index === i?.tasks.length - 1 ? '' : '35px',
+                                                marginBottom: index === at.length - 1 ? '' : '35px',
                                                 display: browser ? 'flex' : 'block'
                                             }}
                                             onClick={
@@ -397,11 +399,11 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                 <img src={changeImg(it?.taskId, it?.title)} alt="" />
                                                 <span
                                                     style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>{changeTitle(it?.title, it?.extra)}</span>
-                                                <p className='point' style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>
-                                                    {showScore(it?.score, it?.extra)}
-                                                </p>
                                             </div>
                                             <div className='right' style={{ marginTop: browser ? '0' : '10px' }}>
+                                            <p className='point' style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' ,marginRight:'20px'}}>
+                                                    {(it?.taskId !== '11' || (it?.taskId === '11' && it?.extra)) && showScore(it?.score, it?.extra)}
+                                                </p>
                                                 {
                                                     Number(it?.isCompleted) !== 3 ? <p onClick={
                                                         throttle(function () {
@@ -451,11 +453,11 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         }
 
         <Modal centered style={{ width: browser ? '30%' : '90%' }}
-            title={(select==='8'||select==='10') && option === 'daily' ? t('Dpass.how') : t('Dpass.plea')}
+            title={(select === '8' || select === '10') && option === 'daily' ? t('Dpass.how') : t('Dpass.plea')}
             className={'activeModal'} open={isModalOpen} maskClosable={false}
             footer={null} onCancel={handleCancel}>
             {
-                (select==='8'||select==='10') && option === 'daily' ?
+                (select === '8' || select === '10') && option === 'daily' ?
                     <TwitterRelease handleCancel={handleCancel} openLink={openLink} setValue={setValue}
                         Confirm={Confirm} isConfirm={isConfirm} /> :
                     <Revalidate openLink={openLink} select={select} />

@@ -28,6 +28,7 @@ function Index() {
     const [isDPassCount, setIsDPassCount] = useState(false)
     const getParams = async () => {
         const token = cookie.get('token')
+        try{
         const res = await getAll({
             method: 'post', url: '/api/v1/campaign/home', data: { token: token || '' }, token: token || ''
         })
@@ -42,6 +43,9 @@ function Index() {
         } else {
             setLoad(true)
         }
+    }catch(_){
+        return null
+                }
     }
     const getDpass = async () => {
         const token = cookie.get('token')

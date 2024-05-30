@@ -7,6 +7,7 @@ import Request from "../../../components/axios.tsx";
 import { MessageAll } from '../../../components/message.ts'
 import EachActivity from './eachActivity.tsx'
 import { throttle, } from "lodash";
+
 function task({ getParams, data, select, setSelect, params, }: any) {
     const { getAll, } = Request()
     const [rankList, setRankList] = useState<any>([])

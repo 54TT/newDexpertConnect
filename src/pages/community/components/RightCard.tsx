@@ -24,17 +24,17 @@ function RightCard({ data, par, load }: any) {
             <p style={{ color: 'white', textAlign: 'center', fontSize: '20px', marginBottom: '5px' }}>{title}</p>
             <Card
                 title={<div className="card-pair-info" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
-                    <p style={{ color: "#eebfe4f5" }}>{t("Slider.Name")}</p>
-                    <p style={{ color: "#eebfe4f5" }}>{t("Slider.Price")}</p>
-                    <p style={{ color: "#eebfe4f5" }}>24h(%)</p>
+                    <p style={{ color: "white" }}>{t("Slider.Name")}</p>
+                    <p style={{ color: "white" }}>{t("Slider.Price")}</p>
+                    <p style={{ color: "white" }}>24h(%)</p>
                 </div>}
                 bordered={false}
                 style={{ width: "95%", margin: '0 auto' }}
             >
                 {/* <div className="card-pair-info">
-                    <p style={{ color: "#eebfe4f5" }}>{t("Slider.Name")}</p>
-                    <p style={{ color: "#eebfe4f5" }}>{t("Slider.Price")}</p>
-                    <p style={{ color: "#eebfe4f5" }}>24h(%)</p>
+                    <p style={{ color: "white" }}>{t("Slider.Name")}</p>
+                    <p style={{ color: "white" }}>{t("Slider.Price")}</p>
+                    <p style={{ color: "white" }}>24h(%)</p>
                 </div> */}
                 {titleValue === "New Pairs" ?
                     wait ? <Loading status={"20"} /> : params.length > 0 ? <>

@@ -63,8 +63,7 @@ function Left() {
                         ]}
                     />
                 </div>
-                {/* <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'}
-                    defaultValue={'24h'} /> */}
+                {/* <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'} defaultValue={'24h'} /> */}
                 <div className={`indexRight dis`}>
                     <p style={{ marginRight: '10px' }}>
                         <img
