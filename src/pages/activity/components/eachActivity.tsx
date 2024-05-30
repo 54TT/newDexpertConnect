@@ -225,14 +225,14 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 if (option === 'daily') {
                     getLink(taskId, token)
                 } else {
-                    if(taskId === '11' ){
-                        if(Number(isCompleted)){
+                    if (taskId === '11') {
+                        if (Number(isCompleted)) {
                             claimJointActivities(token, taskId)
-                        }else{
+                        } else {
                             verifyJointActivities(token, taskId)
                         }
                     }
-                    if(taskId === '15' ){
+                    if (taskId === '15') {
                         claimJointActivities(token, taskId)
                     }
                 }
@@ -251,7 +251,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             return ''
         }
     }
-    const operate = (isCompleted: string, title: string) => {
+    const operate = (isCompleted: string, title: string, id: string) => {
         if (option === 'daily') {
             return t('Market.start')
         } else if (option === 'first') {
@@ -268,10 +268,14 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     return t('Market.Authorize')
                 }
             } else {
-                if (Number(isCompleted)) {
+                if (id === '15') {
                     return t('Market.Claim')
                 } else {
-                    return t('Dpass.verify')
+                    if (Number(isCompleted)) {
+                        return t('Market.Claim')
+                    } else {
+                        return t('Dpass.verify')
+                    }
                 }
             }
         }
@@ -333,7 +337,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 }
             } else {
                 if (id === '15') {
-                    return  t('Dpass.deadline')
+                    return t('Dpass.deadline')
                 } else {
                     if (Number(score) || Number(score) === 0) {
                         return '+' + score
@@ -420,7 +424,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                             }
                                                         }, 1500, { 'trailing': false })} className={'start'}>
                                                         {loading && select === it?.taskId ?
-                                                            <LoadingOutlined /> : operate(it?.isCompleted, it?.title)}</p> :
+                                                            <LoadingOutlined /> : operate(it?.isCompleted, it?.title, it?.taskId)}</p> :
                                                         <div className={'success'}>
                                                             <img src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'} alt="" />
                                                         </div>
