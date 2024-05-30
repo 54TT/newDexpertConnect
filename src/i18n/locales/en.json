@@ -154,6 +154,8 @@
     "bot": "To commemorate the introduction of Dexpert, simply link your wallet to receive 1000 D-Points. Also, you can gain extra points by connecting with us on Twitter, Discord, and Telegram; each social media platform awards 500 points."
   },
   "Dpass": {
+    "mi":"mission accomplished",
+    "deadline":"2-month deadline",
     "fee": "Transaction Fee:",
     "Fast": "Fast Trade",
     "Pass": "Sniper Bot",
@@ -163,6 +165,7 @@
     "laun": "Token Creation Bot Pass can be used to access Dexpert Token Creation Bot for free once.",
     "jin": "Golden Pass can be used to access any Dexpert bot for free, unlimited times.",
     "required": "Points required",
+    "date":"Expire date",
     "pointsAmount": "Your D Points",
     "passCount": "Your Pass",
     "Time": "Time",

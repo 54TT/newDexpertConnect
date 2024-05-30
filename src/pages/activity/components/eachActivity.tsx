@@ -166,13 +166,13 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const claimJointActivities = async (token: string, taskId: string) => {
         const res = await getAll({
             method: 'post',
-            url: taskId==='11'?'/api/v1/campaign/yuliverse/claim':'/api/v1/campaign/yuliverse/golden-pass/claim',
+            url: taskId === '11' ? '/api/v1/campaign/yuliverse/claim' : '/api/v1/campaign/yuliverse/golden-pass/claim',
             data: { taskId },
             token
         })
         if (res?.status === 200) {
-            if(taskId==='11'){
-                setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) + Number(res?.data?.score)})
+            if (taskId === '11') {
+                setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) + Number(res?.data?.score) })
             }
             getParams()
         } else {
@@ -226,11 +226,11 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     getLink(taskId, token)
                 } else {
                     if (Number(isCompleted)) {
-                        if (taskId==='11'||taskId==='15') {
+                        if (taskId === '11' || taskId === '15') {
                             claimJointActivities(token, taskId)
                         }
                     } else {
-                        if (taskId==='11') {
+                        if (taskId === '11') {
                             verifyJointActivities(token, taskId)
                         }
                     }
@@ -267,7 +267,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     return t('Market.Authorize')
                 }
             } else {
-               if (Number(isCompleted)) {
+                if (Number(isCompleted)) {
                     return t('Market.Claim')
                 } else {
                     return t('Dpass.verify')
@@ -315,7 +315,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             }
         }
     }
-    const showScore = (score: string, extra: any) => {
+    const showScore = (score: string, extra: any, id: string) => {
         if (params?.id === '1') {
             if (Number(score)) {
                 return '+' + score
@@ -331,10 +331,14 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     return '+0'
                 }
             } else {
-                if (Number(score) || Number(score) === 0) {
-                    return '+' + score
+                if (id === '15') {
+                    return  t('Dpass.deadline')
                 } else {
-                    return score
+                    if (Number(score) || Number(score) === 0) {
+                        return '+' + score
+                    } else {
+                        return score
+                    }
                 }
             }
         }
@@ -401,8 +405,8 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                     style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' }}>{changeTitle(it?.title, it?.extra)}</span>
                                             </div>
                                             <div className='right' style={{ marginTop: browser ? '0' : '10px' }}>
-                                            <p className='point' style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white' ,marginRight:'20px'}}>
-                                                    {(it?.taskId !== '11' || (it?.taskId === '11' && it?.extra)) && showScore(it?.score, it?.extra)}
+                                                <p className='point' style={{ color: selectActive === it?.taskId ? 'rgb(134,240,151)' : 'white', marginRight: '20px' }}>
+                                                    {(it?.taskId !== '11' || (it?.taskId === '11' && it?.extra)) && showScore(it?.score, it?.extra, it?.taskId)}
                                                 </p>
                                                 {
                                                     Number(it?.isCompleted) !== 3 ? <p onClick={

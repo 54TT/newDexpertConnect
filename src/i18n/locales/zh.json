@@ -152,6 +152,8 @@
     "bot": "为了纪念Dexpert的推出，只需链接您的钱包即可获得1000点D积分。此外，您可以通过在Twitter、Discord和Telegram上与我们联系来获得额外积分；每个社交媒体平台奖励500分。"
   },
   "Dpass": {
+    "mi":"完成任务",
+    "deadline":"两个月期限",
     "fee": "交易手续费:",
     "Fast": "快速交易通行证",
     "Pass": "狙击机器人通行证",
@@ -161,6 +163,7 @@
     "jin": "黄金通行证可用于免费、无限次地访问任何 Dexpert 机器人。",
     "laun": "代币创建机器人通行证可用于免费访问 Dexpert 代币创建机器人一次。",
     "required": "所需积分",
+    "date":"到期时间",
     "pointsAmount": "你的 D 积分",
     "passCount": "Pass 数量",
     "Time": "时间",

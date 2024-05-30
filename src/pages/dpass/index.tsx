@@ -9,6 +9,7 @@ import { MessageAll } from '../../components/message.ts'
 import { useParams } from "react-router-dom";
 import Loading from "../../components/loading.tsx";
 import Nodata from '../../components/Nodata.tsx'
+import dayjs from 'dayjs'
 import { throttle, find } from "lodash";
 
 function Dpass() {
@@ -175,45 +176,50 @@ function Dpass() {
         }
     }, 1500, { 'trailing': false })
 
+    const paramsAll:any = {
+        'img': {
+            '2': '/launchPass.png',
+            '4': '/trade.png',
+            '3': '/sniper.png',
+            "1": '/goldenPass.svg'
+        },
+        'text': {
+            '2': t("Dpass.laun"),
+            '4': t("Dpass.Swap"),
+            '3': t("Dpass.Snipert"),
+            "1": t("Dpass.jin")
+        },
+        'point': {
+            '2': '6000',
+            '4': '480',
+            '3': '1200',
+            "1": Number(imgSta?.stopAt) ? dayjs.unix(Number(imgSta?.stopAt)).format('YYYY-MM-DD HH:mm:ss') : t("Dpass.mi")
+        },
+        'title': {
+            '2': t("Dpass.Creation"),
+            '4': t("Dpass.Fast"),
+            '3': t("Dpass.Pass"),
+            "1": t("Active.Golden")
+        }
+    }
     const changeImg = (name: string) => {
-        if (imgSta?.name) {
-            const at = imgSta?.name
-            if (name === 'img') {
-                return at.includes('Creation') ? '/launchPass.png' : at.includes('Trade') ? '/trade.png' : at.includes('Sniper') ? '/sniper.png' : '/goldenPass.svg'
-            } else if (name === 'text') {
-                return at.includes('Creation') ? t("Dpass.laun") : at.includes('Trade') ? t("Dpass.Swap") : at.includes('Sniper') ? t("Dpass.Snipert") : t("Dpass.jin")
-            } else if (name === 'point') {
-                return at.includes('Creation') ? '6000' : at.includes('Trade') ? '480' : at.includes('Sniper') ? '1200' : 'mission accomplished'
-            } else {
-                return at.includes('Creation') ? t("Dpass.Creation") : at.includes('Trade') ? t("Dpass.Fast") : at.includes('Sniper') ? t("Dpass.Pass") : t("Active.Golden")
-            }
+        if (imgSta?.passId) {
+           return  paramsAll[name][imgSta?.passId]
         }
     }
     const show = (back: string) => {
-        if (imgSta?.name) {
-            const at = imgSta?.name
-            if (at?.includes('Golden')) {
-                if (back === 'back') {
-                    return '#D6DFD7'
-                } else {
-                    return 'not-allowed'
-                }
-            } else if ((at.includes('Creation') && Number(user?.rewardPointCnt) > 6000) || (at.includes('Trade') && Number(user?.rewardPointCnt) > 480) || (at.includes('Sniper') && Number(user?.rewardPointCnt) > 1200)) {
-                if (back === 'back') {
-                    return '#86f097'
-                } else {
-                    return 'pointer'
-                }
+        if (imgSta?.passId) {
+            const at = imgSta?.passId
+            if (at === '1') {
+                return back === 'back'? '#86f097':'not-allowed'
+             
+            } else if ((at === '2' && Number(user?.rewardPointCnt) > 6000) || (at === '4' && Number(user?.rewardPointCnt) > 480) || (at === '3' && Number(user?.rewardPointCnt) > 1200)) {
+                return back === 'back'? '#86f097':'pointer'
             } else {
-                if (back === 'back') {
-                    return '#D6DFD7'
-                } else {
-                    return 'not-allowed'
-                }
+                return back === 'back'? '#D6DFD7':'not-allowed'
             }
         }
     }
-
     return (
         <>
             {
@@ -241,7 +247,7 @@ function Dpass() {
                             <img className="dpass-cap" src={'/bottomCap.png'} alt="" />
                         </div>
                         <div className="dpass-content-right">
-                            <p className="dpass-content-right-title"> <span style={{ color: 'rgb(134,240,151)' }}>{changeImg('')}</span> <span>Pass</span></p>
+                            <p className="dpass-content-right-title"> <span style={{ color: 'rgb(134,240,151)' }}>{changeImg('title')}</span> <span>Pass</span></p>
                             <p className="dpass-content-right-content">{changeImg('text')}</p>
                             <div className="dpass-content-right-action">
                                 <div className="dpass-content-right-action-input">
@@ -264,13 +270,13 @@ function Dpass() {
                                         background: show('back'),
                                         cursor: show('current')
                                     }}>
-                                    {imgSta?.name?.includes('Golden') ? t("Dpass.Inconvertible") : t("Dpass.Exchange")}
+                                    {imgSta?.passId === '1' ? t("Dpass.Inconvertible") : t("Dpass.Exchange")}
                                     {isExchange ? <LoadingOutlined /> : ''}
                                 </div>
                             </div>
                             <div className="dpass-content-right-info">
                                 <div className="dpass-content-right-info-points" style={{ borderRight: "1px solid #999", cursor: 'pointer' }} >
-                                    <div className="dpass-content-right-info-title">  {t("Dpass.required")}</div>
+                                    <div className="dpass-content-right-info-title">  {Number(imgSta?.stopAt) ? t("Dpass.date") : t("Dpass.required")}</div>
                                     <div className="dpass-content-right-info-amount"> {changeImg('point')}  </div>
                                 </div>
                                 <div
@@ -291,8 +297,8 @@ function Dpass() {
                                 <span> {t("Dpass.Status")}</span>
                                 <span>{t("Dpass.Key")}</span>
                             </div>
-                            {isHistory ? dPassHistory.length > 0 ? dPassHistory.map(({ createdAt, cnt, passId, cost }: any) => (
-                                <div className="dpass-redeem-table-td" key={passId}>
+                            {isHistory ? dPassHistory.length > 0 ? dPassHistory.map(({ createdAt, cnt, passId, cost }: any, ind: number) => (
+                                <div className="dpass-redeem-table-td" key={ind}>
                                     <span>{createdAt}</span>
                                     {!browser ? <></> : <span>{passId}</span>}
                                     <span>{cost}</span>
