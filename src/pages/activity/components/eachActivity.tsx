@@ -225,14 +225,15 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 if (option === 'daily') {
                     getLink(taskId, token)
                 } else {
-                    if (Number(isCompleted)) {
-                        if (taskId === '11' || taskId === '15') {
+                    if(taskId === '11' ){
+                        if(Number(isCompleted)){
                             claimJointActivities(token, taskId)
-                        }
-                    } else {
-                        if (taskId === '11') {
+                        }else{
                             verifyJointActivities(token, taskId)
                         }
+                    }
+                    if(taskId === '15' ){
+                        claimJointActivities(token, taskId)
                     }
                 }
             }
