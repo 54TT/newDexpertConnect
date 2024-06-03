@@ -1,7 +1,7 @@
 import { Card } from "antd";
 import { setMany, simplify } from "../../../../utils/change.ts";
 import newPair from "../../../components/getNewPair.tsx";
-import Loading from "../../../components/loading.tsx";
+import Loading from "../../../components/allLoad/loading.tsx";
 import { DownOutlined, } from "@ant-design/icons";
 import { useEffect, useState, useContext} from "react";
 import { throttle } from "lodash";

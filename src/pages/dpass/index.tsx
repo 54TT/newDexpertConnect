@@ -4,11 +4,11 @@ import Request from "../../components/axios";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CaretDownOutlined,  } from "@ant-design/icons";
-import Load from '../../components/load.tsx'
+import Load from '../../components/allLoad/load.tsx'
 import { CountContext } from "../../Layout";
 import { MessageAll } from '../../components/message.ts'
 import { useParams } from "react-router-dom";
-import Loading from "../../components/loading.tsx";
+import Loading from "../../components/allLoad/loading.tsx";
 import Nodata from '../../components/Nodata.tsx'
 import dayjs from 'dayjs'
 import { throttle, find } from "lodash";

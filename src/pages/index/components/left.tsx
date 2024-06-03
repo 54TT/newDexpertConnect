@@ -1,7 +1,7 @@
 import { Select } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Loading from "../../../components/loading.tsx";
-import Load from "../../../components/load.tsx";
+import Loading from "../../../components/allLoad/loading.tsx";
+import Load from "../../../components/allLoad/load.tsx";
 import NewPair from "./newPairDate.tsx";
 import { useContext, useEffect, useRef, useState } from "react";
 import { CountContext } from "../../../Layout.tsx";

@@ -3,8 +3,8 @@ import Tweets from "./tweets.tsx";
 import { useContext, useEffect, useState } from "react";
 import Request from "./axios.tsx";
 import cookie from "js-cookie";
-import Loading from '../components/loading.tsx'
-import Load from '../components/load.tsx'
+import Loading from './allLoad/loading.tsx'
+import Load from './allLoad/load.tsx'
 import { CountContext } from "../Layout.tsx";
 import { unionBy } from 'lodash'
 import Nodata from '../components/Nodata.tsx'

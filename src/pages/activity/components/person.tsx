@@ -6,8 +6,8 @@ import { simplify } from '../../../../utils/change.ts'
 import dayjs from 'dayjs'
 import Request from "../../../components/axios.tsx";
 import cookie from "js-cookie";
-import Loading from '../../../components/loading.tsx';
-import Load from '../../../components/load.tsx';
+import Loading from '../../../components/allLoad/loading.tsx';
+import Load from '../../../components/allLoad/load.tsx';
 import Nodata from '../../../components/Nodata.tsx';
 import { CaretDownOutlined,  } from '@ant-design/icons'
 export default function person() {

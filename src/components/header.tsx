@@ -3,7 +3,7 @@ import { Collapse, Drawer, Dropdown, } from "antd";
 import { CountContext } from "../Layout.tsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { simplify } from "../../utils/change.ts";
-import Load from '../components/load.tsx'
+import Load from './allLoad/load.tsx'
 import HeaderModal from "./headerModal.tsx";
 import { throttle } from "lodash";
 import { useTranslation } from "react-i18next";

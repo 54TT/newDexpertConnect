@@ -16,7 +16,7 @@ import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getReq
 import _ from 'lodash';
 import { MessageAll } from "./components/message.ts";
 import { useTranslation } from "react-i18next";
-import Loading from './components/loading.tsx';
+import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts'
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'))
 const ActivePerson = React.lazy(() => import('./pages/activity/components/person.tsx'))

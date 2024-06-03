@@ -4,8 +4,8 @@ import { throttle } from "lodash";
 import Request from "../../components/axios.tsx";
 import { useNavigate, } from "react-router-dom";
 import cookie from "js-cookie";
-import Loading from '../../components/loading.tsx'
-import Load from '../../components/load.tsx'
+import Loading from '../../components/allLoad/loading.tsx'
+import Load from '../../components/allLoad/load.tsx'
 import { CountContext } from "../../Layout.tsx";
 import { useTranslation } from "react-i18next";
 import EventsList from './components/eventsList.tsx'

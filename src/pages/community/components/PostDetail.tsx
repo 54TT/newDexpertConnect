@@ -3,7 +3,7 @@ import Tweets from '../../../components/tweets';
 import SendPost from './SendPost';
 import Request from '../../../components/axios.tsx';
 import Cookies from 'js-cookie';
-import Loading from '../../../components/loading.tsx';
+import Loading from '../../../components/allLoad/loading.tsx';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getQueryParams } from '../../../../utils/utils'
 import { ArrowLeftOutlined } from '@ant-design/icons'

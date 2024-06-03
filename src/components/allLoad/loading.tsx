@@ -1,3 +1,4 @@
+import './index.less'
 function Loading({ status,browser }: any) {
     const changeWidth = () => {
         if (status === 'none') {

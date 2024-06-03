@@ -7,7 +7,7 @@ import { throttle } from "lodash";
 import TwitterRelease from "./twitterRelease.tsx";
 import Revalidate from "./revalidate.tsx";
 import cookie from "js-cookie";
-import Load from '../../../components/load.tsx'
+import Load from '../../../components/allLoad/load.tsx'
 import Nodata from '../../../components/Nodata.tsx';
 import { MessageAll } from "../../../components/message.ts";
 import Request from "../../../components/axios.tsx";
