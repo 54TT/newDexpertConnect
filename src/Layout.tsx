@@ -388,7 +388,6 @@ function Layout() {
                             <Route path='/activityPerson' element={<ActivePerson />} />
                         </Routes>
                     </div>
-                    {/* <Bot /> */}
                 </CountContext.Provider>
             </Suspense>
         </ApolloProvider>

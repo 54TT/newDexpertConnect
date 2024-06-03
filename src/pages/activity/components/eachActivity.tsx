@@ -488,7 +488,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                         </div>
                                     })
                                 } else {
-                                    return <p style={{
+                                    return <p key={i} style={{
                                         textAlign: 'center',
                                         marginTop: '20px',
                                         color: 'white'
