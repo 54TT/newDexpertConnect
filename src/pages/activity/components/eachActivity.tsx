@@ -15,6 +15,7 @@ import SpecialOrPass from '../components/specialOrPass.tsx';
 import { simplify } from '../../../../utils/change.ts';
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const par = data.length > 0 ? data : data?.campaign ? [data] : []
+    console.log(par)
     const { browser, languageChange, isLogin, setUserPar, user }: any = useContext(CountContext);
     const { getAll, } = Request()
     const router = useLocation()
@@ -41,12 +42,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 return <span>{browser ? record?.userName : simplify(record?.userName)}</span>
             }
         },
-        // {
-        //     title: t('Active.tw'),
-        //     render: (_: any, record: any) => {
-        //         return <span>{record?.tweets}</span>
-        //     }
-        // },
         {
             title: t('Active.po'),
             render: (_: any, record: any) => {
@@ -58,15 +53,23 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const [select, setSelect] = useState('')
     const [isModalOpen, setIsModalOpe] = useState(false);
     const [isConfirm, setIsConfirm] = useState(false);
-    const signIn = async (token: string, url: string) => {
+    const signIn = async (token: string, url: string, taskId?: string) => {
         const res = await getAll({
-            method: 'get',
+            method: taskId ? 'post' : 'get',
             url: url,
-            data: {},
+            data: { taskId },
             token
         })
-        if (res?.status === 200 && res?.data?.url) {
-            window.open(res?.data?.url)
+        if (res?.status === 200) {
+            if (taskId) {
+                getParams()
+            } else {
+                if (res?.data?.url) {
+                    window.open(res?.data?.url)
+                } else {
+                    setLoading(false)
+                }
+            }
             setLoading(false)
         } else {
             setLoading(false)
@@ -126,6 +129,9 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             setLoading(false)
         }
     }
+    // const change = () => {
+    //     [{ status: true, name: '' }]
+    // }
 
     const getT = async (id: string) => {
         const token = cookie.get('token')
@@ -245,7 +251,12 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 }
             } else {
                 if (option === 'daily') {
-                    getLink(taskId, token)
+                    if (params?.id === '4') {
+                        //   17,18,19
+                        signIn(token, taskId === '17' ? '/api/v1/campaign/petGPT/tg/claim' : taskId === '18' ? '/api/v1/campaign/petGPT/discord/claim' : '/api/v1/campaign/petGPT/twitter/claim', taskId)
+                    } else {
+                        getLink(taskId, token)
+                    }
                 } else {
                     if (taskId === '11') {
                         if (Number(isCompleted)) {
@@ -281,9 +292,15 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             return ''
         }
     }
+
+
     const operate = (isCompleted: string, title: string, id: string) => {
         if (option === 'daily') {
-            return t('Market.start')
+            if (params?.id === '4') {
+                return t('Market.Claim')
+            } else {
+                return t('Market.start')
+            }
         } else if (option === 'first') {
             if (router.pathname === '/specialActive/1') {
                 if (Number(isCompleted)) {
@@ -454,7 +471,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                     {(it?.taskId !== '11' || (it?.taskId === '11' && it?.extra)) && showScore(it?.score, it?.extra, it?.taskId)}
                                                 </p>
                                                 {
-                                                    Number(it?.isCompleted) !== 3 ? <p onClick={
+                                                    Number(it?.isCompleted) !== 3 ? <div onClick={
                                                         throttle(function () {
                                                             if (!isVerify && !loading) {
                                                                 param(it?.isCompleted, it?.taskId)
@@ -464,13 +481,13 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                             }
                                                         }, 1500, { 'trailing': false })} className={'start'}>
                                                         {loading && select === it?.taskId ?
-                                                            <Load /> : operate(it?.isCompleted, it?.title, it?.taskId)}</p> :
+                                                            <Load /> : operate(it?.isCompleted, it?.title, it?.taskId)}</div> :
                                                         <div className={'success'}>
                                                             <img src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'} alt="" />
                                                         </div>
                                                 }
                                                 {
-                                                    option === 'daily' && Number(it?.isCompleted) !== 3 &&
+                                                    option === 'daily' && Number(it?.isCompleted) !== 3 && params?.id !== '4' &&
                                                     <p className={'verify'}
                                                         onClick={
                                                             throttle(function () {

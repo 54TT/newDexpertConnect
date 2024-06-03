@@ -22,6 +22,12 @@ function Date({ tableDta, time, setDta }: any) {
         })
         setDta([...tableDta])
     }, 1500, { 'trailing': false })
+    const changeTime = (name: any) => {
+        const data = name.split(' ')
+        const time = [{ name: 'second' || 'seconds', time: '1' }, { name: 'minute' || 'minutes', time: Number(data[0]) ? data[0] + ' m' : '1 m' }, { name: 'hour' || 'hours', time: Number(data[0]) ? data[0] + ' H' : '1 H' }, { name: 'day' || 'days', time: Number(data[0]) ? data[0] + ' D' : '1 D' }, { name: 'month' || 'months', time: Number(data[0]) ? data[0] + ' M' : '1 M' }, { name: 'year' || 'years', time: Number(data[0]) ? data[0] + ' Y' : '1 Y' }]
+        const ay = time.filter((res: any) => name.includes(res.name))
+        return ay[0]?.time
+    }
     return (
         <>
             {
@@ -56,7 +62,7 @@ function Date({ tableDta, time, setDta }: any) {
                                 style={{
                                     color: "white",
                                     lineHeight: '1.2'
-                                }}>{dayjs.unix(create).fromNow()}</div>
+                                }}>{changeTime(dayjs.unix(create).fromNow())}</div>
                             <div
                                 style={{ color: 'white' }}>{setMany(record?.initialReserve)} {switchChain === 'Polygon' ? 'matic' : switchChain === 'BSC' ? 'BNB' : "ETH"}</div>
                             <div
