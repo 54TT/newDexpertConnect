@@ -47,7 +47,7 @@ function Community() {
                     <UserInfo activeTab={activeUserTab} onChange={onActiveUserTabChange}/>
                 </div>
             }
-            <div className='community-page-content'>
+            <div className='community-page-content' style={{width:browser?'68%':'100%'}}>
                 {ComponentMap[activeUserTab as ActiveTabType]}
             </div>
             {

@@ -1,12 +1,12 @@
 import RightCard from "./RightCard";
-import {useEffect, useState} from "react";
-import { gql,  useQuery} from "@apollo/client";
-import {useTranslation} from "react-i18next";
-function CommunityRight() {
-    const [par, setPar] = useState([]);
-    const [load, setLoad] = useState(true);
-    const {t} = useTranslation();
-    const GET_DATA = gql`
+import { useEffect, useState } from "react";
+import { gql, useQuery } from "@apollo/client";
+import { useTranslation } from "react-i18next";
+function CommunityRight({ isShow }: any) {
+  const [par, setPar] = useState([]);
+  const [load, setLoad] = useState(true);
+  const { t } = useTranslation();
+  const GET_DATA = gql`
     query MyQuery {
       pairs(
         where: {
@@ -46,21 +46,21 @@ function CommunityRight() {
       }
     }
   `;
-    const {loading, data, refetch} = useQuery(GET_DATA) as any;
-    useEffect(() => {
-        const interval = setInterval(async () => {
-            refetch();
-        }, 8000);
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
+  const { loading, data, refetch } = useQuery(GET_DATA) as any;
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      refetch();
+    }, 8000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
   useEffect(() => {
     if (!loading) {
       if (data && data?.pairs.length > 0) {
         setPar(data?.pairs);
         setLoad(false);
-      }else {
+      } else {
         setLoad(false);
       }
     }
@@ -74,11 +74,7 @@ function CommunityRight() {
     value: "Trending",
   };
   return (
-    <div
-      style={{
-        width: "100%",
-      }}
-    >
+    <div className={isShow ? "displ" : ''}>
       <RightCard data={newPairs} />
       <RightCard data={trending} par={par} load={load} />
     </div>

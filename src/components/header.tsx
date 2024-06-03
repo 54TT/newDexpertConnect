@@ -79,7 +79,7 @@ function Header() {
             children: (
                 <div className={"collapseChildeen"}>
                     {[
-                        { name: t("Dapps.Token Creation Bot"), img: "/token.svg" },
+                        { name: t("Dapps.Token Creation Bot"), img: "/tokenWhite.svg" },
                         {
                             name: t("Dapps.Sniper Bot"),
                             img: "/sniper.svg",
@@ -104,6 +104,9 @@ function Header() {
                                         if (ind === 0) {
                                             history("/app/create");
                                             onClose();
+                                        } else if (ind === 1) {
+                                            history("/app/sniper");
+                                            onClose();
                                         }
                                     },
                                     1500,
@@ -111,7 +114,7 @@ function Header() {
                                 )}
                             >
                                 <img src={i.img} alt="" loading={"lazy"} />
-                                <span style={{ color: ind > 0 ? "gray" : "rgb(200,200,200)" }}>
+                                <span style={{ color: ind > 1 ? "gray" : "rgb(200,200,200)" }}>
                                     {i.name}
                                 </span>
                             </p>
@@ -126,12 +129,12 @@ function Header() {
             children: (
                 <div className={"collapseChildeen"}>
                     {[
-                        { name: "Lastest", img: "/community/latest.svg" },
+                        { name: "lastest", img: "/community/latest.svg" },
                         {
-                            name: "Profile",
+                            name: "profile",
                             img: "/community/profile.svg",
                         },
-                        { name: "Following", img: "/community/follow.svg" },
+                        { name: "following", img: "/community/follow.svg" },
                     ].map((i: any, ind: number) => {
                         return (
                             <p
@@ -221,35 +224,35 @@ function Header() {
         1500, { trailing: false });
     return (
         <div className={"headerBox"}>
-            <div className="dis" style={{ width: '50%' }}>
+            <div className="dis">
                 <img src="/logo1111.svg" alt="" onClick={throttle(
                     function () {
                         window.open("https://info.dexpert.io/");
                     },
                     1500,
                     { trailing: false })} style={{ width: "100px", display: "block", cursor: 'pointer' }} />
-                {browser && (
-                    <p className={`headerCenter dis`} style={{ width: '60%' }}>
-                        {HeaderList.map(({ label, key }, ind) => {
-                            return (
-                                <span
-                                    key={ind}
-                                    style={{ color: change(key), whiteSpace: 'nowrap', margin: ind === 1 ? '0 10px' : '0' }}
-                                    onClick={throttle(
-                                        function () {
-                                            historyChange(key);
-                                        },
-                                        1500,
-                                        { trailing: false }
-                                    )}
-                                >
-                                    {label}
-                                </span>
-                            );
-                        })}
-                    </p>
-                )}
             </div>
+            {browser && (
+                <p className={`headerCenter dis`} style={{ width: '40%' }}>
+                    {HeaderList.map(({ label, key }, ind) => {
+                        return (
+                            <span
+                                key={ind}
+                                style={{ color: change(key), whiteSpace: 'nowrap', margin: ind === 1 ? '0 10px' : '0' }}
+                                onClick={throttle(
+                                    function () {
+                                        historyChange(key);
+                                    },
+                                    1500,
+                                    { trailing: false }
+                                )}
+                            >
+                                {label}
+                            </span>
+                        );
+                    })}
+                </p>
+            )}
             <div className={'headerData'} style={{ justifyContent: browser ? 'center' : 'flex-end' }}>
                 <div className="disDis" style={{ cursor: 'pointer' }}
                     onClick={throttle(

@@ -129,10 +129,20 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
 
     const getT = async (id: string) => {
         const token = cookie.get('token')
+        let url: any = null
+        if (id === '1') {
+            url = '/api/v1/oauth/twitter/link'
+        } else if (id === '2') {
+            url = '/api/v1/oauth/telegram/chat/link'
+        } else if (id === '3') {
+            url = '/api/v1/oauth/discord/link'
+        } else {
+            url = '/api/v1/oauth/instagram/link'
+        }
         if (token) {
             const res = await getAll({
                 method: id === '2' ? 'post' : 'get',
-                url: id === '1' ? '/api/v1/oauth/twitter/link' : id === '2' ? '/api/v1/oauth/telegram/chat/link' : id === '3' ? '/api/v1/oauth/discord/link' : '/api/v1/oauth/instagram/link',
+                url,
                 data: { taskId: id },
                 token
             })
@@ -153,7 +163,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const verifyJointActivities = async (token: string, taskId: string) => {
         const res = await getAll({
             method: 'post',
-            url: '/api/v1/campaign/yuliverse/verify',
+            url: taskId === '11' ? '/api/v1/campaign/yuliverse/verify' : '/api/v1/campaign/petGPT/verify',
             data: { taskId },
             token
         })
@@ -164,19 +174,31 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         }
     }
     const claimJointActivities = async (token: string, taskId: string) => {
-        const res = await getAll({
-            method: 'post',
-            url: taskId === '11' ? '/api/v1/campaign/yuliverse/claim' : '/api/v1/campaign/yuliverse/golden-pass/claim',
-            data: { taskId },
-            token
-        })
-        if (res?.status === 200) {
-            if (taskId === '11') {
-                setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) + Number(res?.data?.score) })
+        let url: any = null
+        if (taskId === '11') {
+            url = '/api/v1/campaign/yuliverse/claim'
+        } else if (taskId === '14') {
+            url = '/api/v1/campaign/petGPT/claim'
+        } else if (taskId === '15') {
+            url = '/api/v1/campaign/yuliverse/golden-pass/claim'
+        } else if (taskId === '16') {
+            url = '/api/v1/campaign/petGPT/golden-pass/claim'
+        }
+        if (url) {
+            const res = await getAll({
+                method: 'post',
+                url,
+                data: { taskId },
+                token
+            })
+            if (res?.status === 200) {
+                if (taskId === '11' || taskId === '14') {
+                    setUserPar({ ...user, rewardPointCnt: Number(user?.rewardPointCnt) + Number(res?.data?.score) })
+                }
+                getParams()
+            } else {
+                setLoading(false)
             }
-            getParams()
-        } else {
-            setLoading(false)
         }
     }
 
@@ -232,7 +254,15 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                             verifyJointActivities(token, taskId)
                         }
                     }
-                    if (taskId === '15') {
+                    if (taskId === '14') {
+                        if (Number(isCompleted)) {
+                            claimJointActivities(token, taskId)
+                        } else {
+                            verifyJointActivities(token, taskId)
+                        }
+                    }
+
+                    if (taskId === '15' || taskId === '16') {
                         claimJointActivities(token, taskId)
                     }
                 }
@@ -268,7 +298,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     return t('Market.Authorize')
                 }
             } else {
-                if (id === '15') {
+                if (id === '15' || id === '16') {
                     return t('Market.Claim')
                 } else {
                     if (Number(isCompleted)) {
@@ -283,17 +313,27 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const verification = async (id: string) => {
         const token = cookie.get('token')
         if (id && token) {
-            const res: any = await getAll({
-                method: 'post',
-                url: router.pathname === '/specialActive/1' ? '/api/v1/airdrop/task/twitter/daily/verify' : '/api/v1/airdrop/task/twitter/daily/yuliverseVerify',
-                data: { taskId: id, },
-                token
-            })
-            if (res?.data?.message === 'success' && res?.status === 200) {
-                getParams()
-            } else if (res?.data?.code === '400') {
-                setIsVerify(false)
-                MessageAll('warning', res?.data?.message)
+            let url: any = null
+            if (router.pathname === '/specialActive/1') {
+                url = '/api/v1/airdrop/task/twitter/daily/verify'
+            } else {
+                if (id === '10') {
+                    url = '/api/v1/airdrop/task/twitter/daily/yuliverseVerify'
+                }
+            }
+            if (url) {
+                const res: any = await getAll({
+                    method: 'post',
+                    url,
+                    data: { taskId: id, },
+                    token
+                })
+                if (res?.data?.message === 'success' && res?.status === 200) {
+                    getParams()
+                } else if (res?.data?.code === '400') {
+                    setIsVerify(false)
+                    MessageAll('warning', res?.data?.message)
+                }
             }
         }
     }
@@ -336,7 +376,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                     return '+0'
                 }
             } else {
-                if (id === '15') {
+                if (id === '15' || id === '16') {
                     return t('Dpass.deadline')
                 } else {
                     if (Number(score) || Number(score) === 0) {
