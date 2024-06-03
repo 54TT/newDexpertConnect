@@ -17,12 +17,12 @@ export const DEFAULT_MAIN_CHAINS = [
 ];
 
 export type ChainId = "-1" | "-2" | "1";
-export type ChainName = "Solana" | "Ton" | "Ethereum";
+export type ChainName = "solana" | "ton" | "eth";
 
 export const ChainID_TO_ChainName: Record<ChainId, ChainName> = {
-  "-1": "Solana",
-  "-2": "Ton",
-  "1": "Ethereum",
+  "-1": "solana",
+  "-2": "ton",
+  "1": "eth",
 };
 
 //  链的  id

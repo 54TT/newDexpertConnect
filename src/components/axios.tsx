@@ -63,11 +63,13 @@ const Request = () => {
       headers: {
         "Content-Type": name ? "multipart/form-data" : "application/json", // 根据需要添加其他标头
         Authorization: token,
-        "x-chainId": chainId,
+        "x-chainId": chainId || "1",
         "x-app": "dexpert",
-        "x-chainName": ChainID_TO_ChainName[chainId as ChainId],
+        "x-chainName": ChainID_TO_ChainName[chainId as ChainId] || "eth",
       },
     });
+    console.log(chainId);
+
     if (abc?.status === 200) {
       return abc;
     }
