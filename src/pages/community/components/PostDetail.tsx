@@ -1,17 +1,18 @@
-import {useCallback, useEffect, useState} from 'react';
+import { useCallback, useEffect, useState,useContext } from 'react';
 import Tweets from '../../../components/tweets';
 import SendPost from './SendPost';
 import Request from '../../../components/axios.tsx';
 import Cookies from 'js-cookie';
-import {Spin} from 'antd';
+import Loading from '../../../components/loading.tsx';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import {getQueryParams} from '../../../../utils/utils'
-import {ArrowLeftOutlined} from '@ant-design/icons'
-import {useNavigate} from "react-router-dom";
-import {throttle} from "lodash";
+import { getQueryParams } from '../../../../utils/utils'
+import { ArrowLeftOutlined } from '@ant-design/icons'
+import { useNavigate } from "react-router-dom";
+import { throttle } from "lodash";
 import Nodata from "../../../components/Nodata.tsx";
+import {CountContext} from '../../../Layout.tsx'
 // 渲染单条评论
-const RenderCommentTweet = ({data = {}, type}: any) => {
+const RenderCommentTweet = ({ data = {}, type }: any) => {
     const renderData = {
         ...data,
         CreatedAt: data.createdAt,
@@ -39,10 +40,11 @@ const RenderCommentTweet = ({data = {}, type}: any) => {
     /*  useEffect(() => {
        getCommentReply();
      }, []) */
-    return data ? <Tweets name={renderData} type={type}/> : <></>
+    return data ? <Tweets name={renderData} type={type} /> : <></>
 }
 const PostDetail = () => {
-    const {getAll} = Request()
+    const { getAll } = Request()
+    const { browser }: any = useContext(CountContext);
     const history = useNavigate();
     const postDetail = JSON.parse(localStorage.getItem('post-detail') || '{}');
     const [localDetail] = useState(postDetail);
@@ -51,7 +53,7 @@ const PostDetail = () => {
     const [page, setPage] = useState(1);
     const [getPageStatus, setPageStatus] = useState(true);
     const token = Cookies.get('token');
-    const {reply} = getQueryParams() as any;
+    const { reply } = getQueryParams() as any;
     const getCommentOrReplyData = async (page = 1) => {
         setPage(page);
         let params = {};
@@ -71,7 +73,7 @@ const PostDetail = () => {
         }
         setPageStatus(true)
         // const result: any = await Request('post', url, params, token);
-        const result: any = await getAll({method: 'post', url, data: params, token});
+        const result: any = await getAll({ method: 'post', url, data: params, token });
         if (result?.status === 200) {
             const comments: never[] = reply ? result.data.replyList : result.data.comments
             if (page === 1) {
@@ -85,33 +87,33 @@ const PostDetail = () => {
     useEffect(() => {
         getCommentOrReplyData()
         const replyDetail = JSON.parse(localStorage.getItem('reply-detail') || '{}')
-        setLocalReplyDetail({...replyDetail});
+        setLocalReplyDetail({ ...replyDetail });
 
     }, [reply])
     const CommentTweets = useCallback(() => reply ?
-        <Tweets type={reply ? 'reply' : 'comment'} name={localReplyDetail} onPublish={getCommentOrReplyData}/> : <></>, [localReplyDetail, reply])
-    return <div id='scrollabelDetail' style={{height: 'calc(100vh - 54px )', overflow: 'auto'}}>
-        <p style={{padding: '20px 20px 0'}}><ArrowLeftOutlined
-            style={{fontSize: '20px', color: 'white', cursor: 'pointer'}} onClick={
-            throttle( function () {
-            history(-1)
-            }, 1500, {'trailing': false})}/></p>
-        <InfiniteScroll style={{overflow: 'unset'}} dataLength={data?.length || 0} hasMore={true}
-                        scrollableTarget='scrollabelDetail' next={() => {
-            getCommentOrReplyData(page + 1);
-        }} loader={<></>}>
+        <Tweets type={reply ? 'reply' : 'comment'} name={localReplyDetail} onPublish={getCommentOrReplyData} /> : <></>, [localReplyDetail, reply])
+    return <div id='scrollabelDetail' style={{ height: 'calc(100vh - 54px )', overflow: 'auto' }}>
+        <p style={{ padding: '20px 20px 0' }}><ArrowLeftOutlined
+            style={{ fontSize: '20px', color: 'white', cursor: 'pointer' }} onClick={
+                throttle(function () {
+                    history(-1)
+                }, 1500, { 'trailing': false })} /></p>
+        <InfiniteScroll style={{ overflow: 'unset' }} dataLength={data?.length || 0} hasMore={true}
+            scrollableTarget='scrollabelDetail' next={() => {
+                getCommentOrReplyData(page + 1);
+            }} loader={<></>}>
             <div className='community-post-detail'>
-                <Tweets type='post' name={localDetail} status={'detail'} onPublish={() => getCommentOrReplyData()}/>
-                <CommentTweets/>
+                <Tweets type='post' name={localDetail} status={'detail'} onPublish={() => getCommentOrReplyData()} />
+                <CommentTweets />
                 <SendPost type={reply ? 'reply' : "comment"} changeRefresh={() => {
-                }} postData={reply ? localReplyDetail : localDetail} onPublish={() => getCommentOrReplyData()}/>
+                }} postData={reply ? localReplyDetail : localDetail} onPublish={() => getCommentOrReplyData()} />
                 {
                     getPageStatus && page === 1 ?
-                        <div style={{display: 'flex', justifyContent: 'center', marginTop: '48px'}}>
-                            <Spin size='large'/>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '48px' }}>
+                            <Loading  browser={browser}/>
                         </div> : data.length > 0 ? data?.map?.((data, ind) =>
-                            <RenderCommentTweet data={data} key={ind} type={reply ? 'reply' : "comment"}/>
-                        ) :<Nodata/>
+                            <RenderCommentTweet data={data} key={ind} type={reply ? 'reply' : "comment"} />
+                        ) : <Nodata />
                 }
             </div>
         </InfiniteScroll>

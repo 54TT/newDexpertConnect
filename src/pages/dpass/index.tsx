@@ -3,7 +3,8 @@ import "./index.less";
 import Request from "../../components/axios";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CaretDownOutlined, LoadingOutlined } from "@ant-design/icons";
+import { CaretDownOutlined,  } from "@ant-design/icons";
+import Load from '../../components/load.tsx'
 import { CountContext } from "../../Layout";
 import { MessageAll } from '../../components/message.ts'
 import { useParams } from "react-router-dom";
@@ -223,7 +224,7 @@ function Dpass() {
     return (
         <>
             {
-                !isPass ? <Loading status={'20'} /> : <div className="dpass-background">
+                !isPass ? <Loading status={'20'} browser={browser}/> : <div className="dpass-background">
                     <div className="dpass-content">
                         <div className="dpass-content-left">
                             <div style={{ position: 'relative', zIndex: '10' }}>
@@ -271,7 +272,7 @@ function Dpass() {
                                         cursor: show('current')
                                     }}>
                                     {imgSta?.passId === '1' ? t("Dpass.Inconvertible") : t("Dpass.Exchange")}
-                                    {isExchange ? <LoadingOutlined /> : ''}
+                                    {isExchange ? <Load /> : ''}
                                 </div>
                             </div>
                             <div className="dpass-content-right-info">
@@ -304,7 +305,7 @@ function Dpass() {
                                     <span>{cost}</span>
                                     <span>{cnt}</span>
                                 </div>
-                            )) : <Nodata /> : <Loading status={'20'} />
+                            )) : <Nodata /> : <Loading status={'20'} browser={browser} />
                             }
                             {
                                 !isShow && <p style={{
@@ -315,7 +316,7 @@ function Dpass() {
                                     justifyContent: 'center'
                                 }}><span onClick={nextPass}
                                     style={{ cursor: 'pointer' }}>{t('Common.Next')}</span>{isNext ?
-                                        <LoadingOutlined /> : <CaretDownOutlined />}</p>
+                                        <Load /> : <CaretDownOutlined />}</p>
                             }
                         </div>
                     </div>

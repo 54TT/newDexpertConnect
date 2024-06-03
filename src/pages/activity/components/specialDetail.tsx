@@ -90,7 +90,7 @@ function SpecialActive() {
                     </div>
                     <div className='backgroundColor' style={{ top: '18vh', background: '#86F097', left: "0" }}></div>
                     <div className='backgroundColor' style={{ top: '17vh', background: '#0FF', right: "0" }}></div>
-                </div> : <Loading status={'20'} />
+                </div> : <Loading status={'20'}  browser={browser}/>
             }
         </>
     )

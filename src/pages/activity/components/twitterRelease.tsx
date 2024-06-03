@@ -1,6 +1,6 @@
 import './index.less'
 import { useTranslation } from "react-i18next";
-import { LoadingOutlined, } from "@ant-design/icons";
+import Load from '../../../components/load'
 
 function TwitterRelease({ openLink, setValue, Confirm, handleCancel, isConfirm }: any) {
     const { t } = useTranslation();
@@ -20,7 +20,7 @@ function TwitterRelease({ openLink, setValue, Confirm, handleCancel, isConfirm }
             <img src="/tweet2.png" alt="" style={{ width: '70%', display: 'block' }} />
             <div className={'bot disDis'}>
                 <p onClick={handleCancel}> {t('Active.Cancel')} </p>
-                <p onClick={Confirm}> {t('Active.Confirm')} {isConfirm ? <LoadingOutlined style={{ marginLeft: '5px' }} /> : ''}</p>
+                <p onClick={Confirm}> {t('Active.Confirm')} {isConfirm ? <Load  /> : ''}</p>
             </div>
         </div>
     );

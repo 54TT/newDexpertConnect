@@ -1,10 +1,10 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import Tweets from "./tweets.tsx";
-import { LoadingOutlined } from "@ant-design/icons";
 import { useContext, useEffect, useState } from "react";
 import Request from "./axios.tsx";
 import cookie from "js-cookie";
 import Loading from '../components/loading.tsx'
+import Load from '../components/load.tsx'
 import { CountContext } from "../Layout.tsx";
 import { unionBy } from 'lodash'
 import Nodata from '../components/Nodata.tsx'
@@ -118,12 +118,12 @@ function TweetHome({
                         </InfiniteScroll>
                         {
                             iconLoad &&
-                            <p style={{ textAlign: 'center', color: 'white', fontSize: '16px' }}><LoadingOutlined />
+                            <p style={{ textAlign: 'center', color: 'white', fontSize: '16px' }}><Load />
                             </p>
                         }
                     </div> :
                     <Nodata /> :
-                    <Loading status={'20'} />
+                    <Loading status={'20'} browser={browser} />
             }
         </>
     );

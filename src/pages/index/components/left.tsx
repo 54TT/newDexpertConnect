@@ -1,7 +1,7 @@
 import { Select } from "antd";
-import { LoadingOutlined, } from "@ant-design/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "../../../components/loading.tsx";
+import Load from "../../../components/load.tsx";
 import NewPair from "./newPairDate.tsx";
 import { useContext, useEffect, useRef, useState } from "react";
 import { CountContext } from "../../../Layout.tsx";
@@ -69,11 +69,11 @@ function Left() {
                         <img
                             src={switchChain === 'Polygon' ? '/PolygonCoin.svg' : switchChain === 'BSC' ? '/BNBChain.svg' : "/EthereumChain.svg"}
                             loading={'lazy'}
-                            alt="" />{wait ? <LoadingOutlined /> :
+                            alt="" />{wait ? <Load  /> :
                                 <span>$:{ethPrice}</span>}</p>
                     <p><img loading={'lazy'} src="/gas.svg" alt="" />
                         {
-                            gasLoad ? <LoadingOutlined /> : <span>{gas}</span>
+                            gasLoad ? <Load  /> : <span>{gas}</span>
                         }
                     </p>
                 </div>
@@ -107,7 +107,7 @@ function Left() {
                             loader={null}
                             dataLength={tableDta.length}>
                             {
-                                wait ? <Loading status={'20'} /> : tableDta.length > 0 ?
+                                wait ? <Loading status={'20'} browser={browser} /> : tableDta.length > 0 ?
                                     <NewPair tableDta={tableDta} time={time} setDta={setDta} /> : <Nodata />
 
                             }
@@ -116,7 +116,7 @@ function Left() {
                 </div>
             </div>
             <div style={{ visibility: moreLoad && tableDta.length > 0 ? 'initial' : 'hidden' }}>
-                <Loading status={'none'} /></div>
+                <Load  /></div>
         </div>
     );
 }

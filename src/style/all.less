@@ -3,10 +3,108 @@
   align-items: center;
   justify-content: space-between;
 }
-.disDis{
+
+.disDis {
   display: flex;
   align-items: center;
 }
+
+
+.animationDex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  div {
+    position: relative;
+  }
+
+  .bigImg {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .smallImg {
+    position: absolute;
+    top: 32%;
+    left: 20%;
+    animation: animateShowDex 4.5s ease-in-out  0s infinite;
+  }
+}
+
+@keyframes animateShowDex {
+  0% {
+    top: 32%;
+    left: 20%;
+  }
+
+  8% {
+    top: 32%;
+    left: 20%;
+  }
+
+  25% {
+    top: 50%;
+    left: 20%;
+  }
+
+  35% {
+    top: 50%;
+    left: 20%;
+  }
+
+  50% {
+    top: 36%;
+    left: 28%;
+  }
+
+  58% {
+    top: 36%;
+    left: 28%;
+  }
+
+  75% {
+    top: 32%;
+    left: 36%;
+  }
+
+  82% {
+    top: 32%;
+    left: 36%;
+  }
+
+  100% {
+    top: 32%;
+    left: 20%;
+  }
+}
+
+.Ellipsis {
+  display: flex;
+  align-items: center;
+
+  p:nth-child(2) {
+    margin: 0 5px;
+  }
+  .deep {
+    background-color: rgb(134, 240, 151);
+  }
+
+  .Shallow {
+    background-color: rgb(182, 246, 193);
+  }
+
+  .light {
+    background-color: rgb(219, 251, 224);
+  }
+
+  p {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+}
+
 .disCen {
   display: flex;
   align-items: center;
@@ -166,7 +264,7 @@ body::-webkit-scrollbar-thumb {
       align-items: center;
       justify-content: space-between;
       border-bottom: 5px solid;
-      padding-left:2%;
+      padding-left: 2%;
 
       &>p {
         flex: 1;
@@ -554,6 +652,7 @@ body::-webkit-scrollbar-thumb {
     font-size: 16px;
   }
 }
+
 .backgroundColor {
   position: absolute;
   border-radius: 384px;
@@ -737,6 +836,7 @@ span {
               align-items: center;
               font-size: 18px;
               margin-top: 13px;
+
               span {
                 margin-left: 6px;
                 color: rgb(200, 200, 200);

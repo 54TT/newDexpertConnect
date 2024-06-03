@@ -2,8 +2,8 @@ import { useContext, useState } from "react";
 import { Collapse, Drawer, Dropdown, } from "antd";
 import { CountContext } from "../Layout.tsx";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LoadingOutlined, } from "@ant-design/icons";
 import { simplify } from "../../utils/change.ts";
+import Load from '../components/load.tsx'
 import HeaderModal from "./headerModal.tsx";
 import { throttle } from "lodash";
 import { useTranslation } from "react-i18next";
@@ -311,9 +311,7 @@ function Header() {
                             <div className={"headerConnect"} style={{ margin: '0 15px' }} onClick={loginModal}>
                                 <div className={"disCen"}>
                                     <span>{t("Common.Connect Wallet")}</span>
-                                    {load ? (
-                                        <LoadingOutlined style={{ marginLeft: "4px" }} />
-                                    ) : ''}
+                                    {load && <Load />}
                                 </div>
                             </div>
                         ) : (

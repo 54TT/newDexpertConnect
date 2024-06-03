@@ -5,7 +5,7 @@ import Request from "../../components/axios.tsx";
 import { useNavigate, } from "react-router-dom";
 import cookie from "js-cookie";
 import Loading from '../../components/loading.tsx'
-import { LoadingOutlined } from '@ant-design/icons'
+import Load from '../../components/load.tsx'
 import { CountContext } from "../../Layout.tsx";
 import { useTranslation } from "react-i18next";
 import EventsList from './components/eventsList.tsx'
@@ -115,7 +115,7 @@ function Index() {
                                             isDPassCount ?
                                                 <span style={{ fontSize: browser ? '25px' : '20px', color: '#86f097' }}>{dPassCount || '0'}</span> :
                                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                                    <LoadingOutlined style={{ color: 'gray' }} />
+                                                    <Load />
                                                 </div>
                                         }
                                         <img style={{ marginLeft: '7px' }} src="/jian.svg" alt="" />
@@ -156,7 +156,7 @@ function Index() {
                     <div className='backgroundColor' style={{ top: '170vh', background: '#86F097', left: "0" }}></div>
                     <div className='backgroundColor' style={{ top: '170vh', background: '#0FF', right: '0' }}></div>
                 </div> :
-                    <Loading status={'20'} />
+                    <Loading status={'20'} browser={browser} />
             }
         </>
     )

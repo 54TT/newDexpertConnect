@@ -5,7 +5,6 @@ import React, { createContext, Suspense, useCallback, useEffect, useRef, useStat
 import { getAppMetadata, getSdkError } from "@walletconnect/utils";
 import 'swiper/css';
 import 'swiper/css/bundle'
-// import Bot from './components/bottom.tsx';
 import { Web3Modal } from "@web3modal/standalone";
 import cookie from 'js-cookie';
 import * as encoding from "@walletconnect/encoding";
@@ -17,7 +16,7 @@ import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getReq
 import _ from 'lodash';
 import { MessageAll } from "./components/message.ts";
 import { useTranslation } from "react-i18next";
-import { Spin } from "antd";
+import Loading from './components/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts'
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'))
 const ActivePerson = React.lazy(() => import('./pages/activity/components/person.tsx'))
@@ -365,12 +364,14 @@ function Layout() {
     });
     return (
         <ApolloProvider client={clients}>
-            <Suspense fallback={<Spin size="large" style={{
+            <Suspense fallback={<div style={{
                 position: 'absolute',
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%,-50%)'
-            }} />}>
+            }}>
+                <Loading browser={browser} />
+            </div>}>
                 <CountContext.Provider value={value}>
                     <Header />
                     <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>

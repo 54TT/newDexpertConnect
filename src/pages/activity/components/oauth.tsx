@@ -1,10 +1,13 @@
-import { useEffect } from "react";
+import { useEffect ,useContext} from "react";
 import { useNavigate, useParams, useSearchParams, } from "react-router-dom";
 import Loading from '../../../components/loading.tsx'
 import Request from "../../../components/axios.tsx";
 import cookie from "js-cookie";
-
+import {CountContext} from '../../../Layout.tsx'
 function Oauth() {
+    const {
+        browser,
+    }: any = useContext(CountContext);
     const { getAll, } = Request()
     const [search] = useSearchParams();
     const history = useNavigate()
@@ -53,7 +56,7 @@ function Oauth() {
         }
     }, []);
     return (
-        <Loading status={'20'} />
+        <Loading status={'20'} browser={browser}/>
     );
 }
 

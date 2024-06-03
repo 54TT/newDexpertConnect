@@ -4,13 +4,14 @@ import Cookies from "js-cookie";
 import cookie from "js-cookie";
 import Request from "../../../components/axios.tsx";
 import {formatAddress, getQueryParams} from "../../../../utils/utils";
-import {Spin} from "antd";
+import Loading from "../../../components/loading.tsx";
 import {useNavigate} from "react-router";
 import {throttle} from "lodash";
 import {MessageAll} from "../../../components/message.ts";
 import {useTranslation} from "react-i18next";
 import {CountContext} from "../../../Layout.tsx";
-import {CaretDownOutlined, LoadingOutlined} from '@ant-design/icons'
+import Load from '../../../components/load.tsx'
+import {CaretDownOutlined, } from '@ant-design/icons'
 
 export interface FollowTabType {
     label: 'Following' | 'Follower',
@@ -105,7 +106,7 @@ function UserItem({
 export default function ContactList() {
     const {getAll} = Request()
     const {t} = useTranslation();
-    const {user,} = useContext(CountContext) as any;
+    const {user, browser} = useContext(CountContext) as any;
     const [activeTab, setActiveTab] = useState<FollowTabType['key']>('1');
     const [loading, setLoading] = useState<boolean>(true);
     const [data, setData] = useState<any[]>([]);
@@ -177,13 +178,7 @@ export default function ContactList() {
             </div>
         }
         {
-            loading ? <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    color: '#fff',
-                    marginTop: '20px'
-                }}><Spin/></div> :
+            loading ? <Loading  browser={browser}/> :
                 data.length === 0 ? <div style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -206,7 +201,7 @@ export default function ContactList() {
                 setIsNext(true)
                 }, 1500, {'trailing': false})}><span style={{cursor: 'pointer'}}>{t('Common.Next')}</span>
                 {
-                    isNext ? <LoadingOutlined/> : <CaretDownOutlined/>
+                    isNext ? <Load /> : <CaretDownOutlined/>
                 }
             </p>
         }

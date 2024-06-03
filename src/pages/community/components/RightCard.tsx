@@ -3,13 +3,16 @@ import { setMany, simplify } from "../../../../utils/change.ts";
 import newPair from "../../../components/getNewPair.tsx";
 import Loading from "../../../components/loading.tsx";
 import { DownOutlined, } from "@ant-design/icons";
-import { useEffect, useState, } from "react";
+import { useEffect, useState, useContext} from "react";
 import { throttle } from "lodash";
 import { useLocation } from 'react-router-dom'
 import Nodata from '../../../components/Nodata.tsx'
 import { useTranslation } from "react-i18next";
+import {CountContext} from '../../../Layout.tsx'
 function RightCard({ data, par, load }: any) {
     const { tableDta, wait } = newPair() as any;
+    const { browser }: any = useContext(CountContext);
+    
     const { title, value: titleValue } = data;
     const router = useLocation()
     const { t } = useTranslation();
@@ -35,7 +38,7 @@ function RightCard({ data, par, load }: any) {
                 style={{ width: "95%", margin: '0 auto' }}>
                 <div className="scrollStyle" style={{ overflowY: 'auto', height: '30vh' }}>
                     {titleValue === "New Pairs" ?
-                        wait ? <Loading status={"20"} /> : params.length > 0 ? <>
+                        wait ? <Loading status={"20"}  browser={browser}/> : params.length > 0 ? <>
                             {params.slice(0, newPage * 5).map((i: any, ind: number) => {
                                 const change = setMany(i?.pairDayData[0]?.priceChange || 0);
                                 const float =
@@ -82,7 +85,7 @@ function RightCard({ data, par, load }: any) {
                                 </p>
                             }
                         </> : <Nodata />
-                        : load ? <Loading status={"20"} /> : par.length > 0 ? <div>
+                        : load ? <Loading status={"20"}  browser={browser}/> : par.length > 0 ? <div>
                             {par.slice(0, 5 * page).map((i: any, ind: number) => {
                                 const change = setMany(i?.pairDayData[0]?.priceChange || 0);
                                 const float =

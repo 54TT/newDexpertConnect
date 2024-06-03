@@ -7,7 +7,7 @@ import { throttle } from "lodash";
 import TwitterRelease from "./twitterRelease.tsx";
 import Revalidate from "./revalidate.tsx";
 import cookie from "js-cookie";
-import { LoadingOutlined } from '@ant-design/icons'
+import Load from '../../../components/load.tsx'
 import Nodata from '../../../components/Nodata.tsx';
 import { MessageAll } from "../../../components/message.ts";
 import Request from "../../../components/axios.tsx";
@@ -464,7 +464,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                             }
                                                         }, 1500, { 'trailing': false })} className={'start'}>
                                                         {loading && select === it?.taskId ?
-                                                            <LoadingOutlined /> : operate(it?.isCompleted, it?.title, it?.taskId)}</p> :
+                                                            <Load /> : operate(it?.isCompleted, it?.title, it?.taskId)}</p> :
                                                         <div className={'success'}>
                                                             <img src={selectActive === it?.taskId ? '/succActive.svg' : '/succ.svg'} alt="" />
                                                         </div>
@@ -482,7 +482,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                                         verification(it?.taskId)
                                                                     }
                                                                 }
-                                                            }, 1500, { 'trailing': false })}>{t('Dpass.verify')}{isVerify && selectActive === it?.taskId ? <LoadingOutlined /> : ''}</p>
+                                                            }, 1500, { 'trailing': false })}>{t('Dpass.verify')}{isVerify && selectActive === it?.taskId ? <Load /> : ''}</p>
                                                 }
                                             </div>
                                         </div>

@@ -76,7 +76,7 @@ export default function specialOrPass({ option, data }: any) {
         }) : <Nodata />
           : <div className='pass' style={{ flexDirection: browser ? 'row' : 'column' }}>
             {
-              !load ? <Loading status={'20'} /> : passPar.length > 0 ? passPar.map((i: any, ind: number) => {
+              !load ? <Loading status={'20'}  browser={browser}/> : passPar.length > 0 ? passPar.map((i: any, ind: number) => {
                 return <div className='it' style={{ width: browser ? "46%" : '100%' }} key={ind}>
                   <img src={changeImg(i?.name, 'img')} style={{ zIndex: '1' }} alt="" onClick={() => {
                     history('/Dpass/' + i?.passId)

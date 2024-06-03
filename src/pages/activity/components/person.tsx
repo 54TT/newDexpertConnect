@@ -7,8 +7,9 @@ import dayjs from 'dayjs'
 import Request from "../../../components/axios.tsx";
 import cookie from "js-cookie";
 import Loading from '../../../components/loading.tsx';
+import Load from '../../../components/load.tsx';
 import Nodata from '../../../components/Nodata.tsx';
-import { CaretDownOutlined, LoadingOutlined } from '@ant-design/icons'
+import { CaretDownOutlined,  } from '@ant-design/icons'
 export default function person() {
   const { getAll, } = Request()
   const [page, setPage] = useState(1)
@@ -114,7 +115,7 @@ export default function person() {
                 }) : <Nodata />
               }
               {
-                history.length > 0 && !(history.length % 10) && <p className='next disCen' onClick={next}><span>下一页</span> {load ? <LoadingOutlined /> : <CaretDownOutlined />}</p>
+                history.length > 0 && !(history.length % 10) && <p className='next disCen' onClick={next}><span>下一页</span> {load ? <Load /> : <CaretDownOutlined />}</p>
               }
               <img src="/GroupPass.svg" alt="" className='passCard' style={{ width: browser ? '10%' : '80px', transform: browser ? 'translate(-50%,-50%)' : 'translate(-10%,-50%)' }} />
               <img src="/coinPass.svg" alt="" className='coinPass' style={{ width: browser ? '8.5%' : '80px', transform: browser ? 'translate(50%,-50%)' : 'translate(13%,-50%)' }} />
@@ -122,7 +123,7 @@ export default function person() {
           </div>
           <div className='backgroundColor' style={{ top: '15vh', background: '#86F097', left: "0" }}></div>
           <div className='backgroundColor' style={{ top: '10vh', background: '#0FF', right: '0' }}></div>
-        </div> : <Loading status={'20'} />
+        </div> : <Loading status={'20'}  browser={browser}/>
       }
     </>
   )

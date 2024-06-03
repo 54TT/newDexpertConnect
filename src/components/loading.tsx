@@ -1,9 +1,4 @@
-import { Spin } from "antd";
-import { useContext } from "react";
-import { CountContext } from "../Layout.tsx";
-
-function Loading({ status, }: any) {
-    const { browser }: any = useContext(CountContext);
+function Loading({ status,browser }: any) {
     const changeWidth = () => {
         if (status === 'none') {
             if (browser) {
@@ -24,7 +19,12 @@ function Loading({ status, }: any) {
             marginTop: status === 'none' ? '0' : status === '20' ? '10%' : '50%',
             width: changeWidth()
         }}>
-            <Spin size="large" />
+            <div className="animationDex">
+                <div>
+                    <img src="/Union.svg" alt="" className="bigImg" style={{ width: '50px' }} />
+                    <img src="/Groupo.svg" alt="" className="smallImg" style={{ width: '22px' }} />
+                </div>
+            </div>
         </div>
     );
 }
