@@ -128,6 +128,7 @@ function Layout() {
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 const decodedToken = JSON.parse(atob(base64));
                 setNewAccount('')
+                console.log(decodedToken)
                 if (decodedToken && decodedToken?.uid) {
                     const uid = decodedToken.sub.split("-")[1];
                     getUser(uid, res.data?.accessToken, name, decodedToken);
@@ -278,7 +279,11 @@ function Layout() {
         const token = cookie.get('token')
         if (jwt && token) {
             const jwtPar = JSON.parse(jwt)
-            getUser(jwtPar?.uid, token, '', jwtPar)
+            setNewAccount('')
+            if (jwtPar?.uid) {
+                const uid = jwtPar.sub.split("-")[1];
+                getUser(uid, token, '', jwtPar)
+            }
         }
         // 监测钱包切换
         if ((window as any).ethereum) {

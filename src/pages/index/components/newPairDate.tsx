@@ -1,6 +1,7 @@
 import { setMany, simplify } from "../../../../utils/change.ts";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+// import load from "../../../components/allLoad/load.tsx";  useEffect, useState 
 import { useContext, } from 'react'
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { throttle } from "lodash";
@@ -31,10 +32,18 @@ function Date({ tableDta, time, setDta }: any) {
     // const [tt, setTt] = useState<any>(null)
     // useEffect(() => {
     //     setInterval(() => {
-    //         const time = dayjs().format()
+    //         const time = dayjs().format('YYYY-MM-DD HH:mm:ss')
     //         setTt(time)
     //     }, 1000)
     // }, [])
+    // const chang = (name: any) => {
+    //     if (tt) {
+    //         const t = dayjs(tt).diff(dayjs.unix(name).format('YYYY-MM-DD HH:mm:ss'), 'second')
+    //         return t
+    //     } else {
+    //         return ''
+    //     }
+    // }
     return (
         <>
             {
@@ -69,8 +78,8 @@ function Date({ tableDta, time, setDta }: any) {
                                 style={{
                                     color: "white",
                                     lineHeight: '1.2'
-                                }}>  {changeTime(dayjs.unix(create).fromNow())}</div>
-
+                                // }}> {chang(create)}</div>
+                                }}>{changeTime(dayjs.unix(create).fromNow())}</div>
                             <div
                                 style={{ color: 'white' }}>{setMany(record?.initialReserve)} {switchChain === 'Polygon' ? 'matic' : switchChain === 'BSC' ? 'BNB' : "ETH"}</div>
                             <div
