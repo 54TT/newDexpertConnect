@@ -1,7 +1,7 @@
 import { setMany, simplify } from "../../../../utils/change.ts";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { useContext } from 'react'
+import { useContext, } from 'react'
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { throttle } from "lodash";
 import { CountContext } from "../../../Layout.tsx"; // 引入相对时间插件
@@ -28,6 +28,13 @@ function Date({ tableDta, time, setDta }: any) {
         const ay = time.filter((res: any) => name.includes(res.name))
         return ay[0]?.time
     }
+    // const [tt, setTt] = useState<any>(null)
+    // useEffect(() => {
+    //     setInterval(() => {
+    //         const time = dayjs().format()
+    //         setTt(time)
+    //     }, 1000)
+    // }, [])
     return (
         <>
             {
@@ -57,12 +64,13 @@ function Date({ tableDta, time, setDta }: any) {
                             </div>
                             <div style={{ color: "white" }}>{Number(record?.priceUSD) ? setMany(record?.priceUSD) : 0}</div>
                             <div
-                                style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,9,58)', }}>{Number(b) !== 0 ? b : '0'}</div>
+                                style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,9,58)', }}>{Number(b) !== 0 ? b + '%' : '0'}</div>
                             <div
                                 style={{
                                     color: "white",
                                     lineHeight: '1.2'
-                                }}>{changeTime(dayjs.unix(create).fromNow())}</div>
+                                }}>  {changeTime(dayjs.unix(create).fromNow())}</div>
+
                             <div
                                 style={{ color: 'white' }}>{setMany(record?.initialReserve)} {switchChain === 'Polygon' ? 'matic' : switchChain === 'BSC' ? 'BNB' : "ETH"}</div>
                             <div

@@ -129,7 +129,8 @@ function Layout() {
                 const decodedToken = JSON.parse(atob(base64));
                 setNewAccount('')
                 if (decodedToken && decodedToken?.uid) {
-                    getUser(decodedToken.uid, res.data?.accessToken, name, decodedToken)
+                    const uid = decodedToken.sub.split("-")[1];
+                    getUser(uid, res.data?.accessToken, name, decodedToken);
                 }
             }
         } catch (e) {

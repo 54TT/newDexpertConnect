@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import { getGas } from "../../../../utils/getGas.ts";
 import Nodata from '../../../components/Nodata.tsx';
 import ChooseChain from '../../../components/chooseChain.tsx';
-
 function Left() {
     const hei = useRef<any>()
     const { ethPrice, moreLoad, tableDta, setDta, wait, changePage, } = newPair() as any
@@ -84,7 +83,7 @@ function Left() {
                     {/*tittle*/}
                     <div className={'indexNewPairTitle'}>
                         {
-                            [t('Market.Name'), `${t('Market.Price')}($)`, time + ' Change(%)', t('Market.Create Time'), t('Market.Pooled Amt'), t('Market.Swap Count'), t('Market.Liquidity'), t('Market.Links')].map((i: string, ind: number) => {
+                            [t('Market.Name'), `${t('Market.Price')}`, time + ' Change(%)', t('Market.Create Time'), t('Market.Pooled Amt'), t('Market.Swap Count'), t('Market.Liquidity'), t('Market.Links')].map((i: string, ind: number) => {
                                 return <p className={` homeTableTittle`}
                                     key={ind}>
                                     {

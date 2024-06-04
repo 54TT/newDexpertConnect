@@ -25,6 +25,7 @@
     margin: 15px 0 8px;
   }
 
+
   .bot {
     .p {
       padding: 10px 0;
@@ -33,7 +34,8 @@
       cursor: pointer;
       flex: 1;
     }
-   p {
+
+    p {
       border: 1px solid rgb(134, 240, 151);
       color: rgb(134, 240, 151);
       margin-right: 2%;
@@ -41,7 +43,7 @@
 
     div {
       background-color: rgb(134, 240, 151);
-      border: 1px solid rgb(104, 124, 105);
+      border: 2px solid rgb(104, 124, 105);
       margin-left: 2%;
     }
   }
@@ -164,42 +166,183 @@
   background-size: 100% 150vh;
   position: relative;
 
+  .Invite {
+    border: 2px solid rgb(104, 124, 105);
+    border-radius: 20px;
+    display: flex;
+    margin-top: 10%;
+    padding: 3% 9% 3% 2%;
+    justify-content: space-between;
+
+    .left {
+      .leftTop {
+        display: flex;
+        align-items: center;
+
+        p {
+          font-size: 30px;
+          color: rgb(134, 240, 151);
+          margin-right: 10px;
+        }
+
+        img {
+          display: block;
+          width: 80%;
+        }
+      }
+
+      .leftBot {
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+
+        p {
+          text-align: center;
+          padding: 8px 0;
+          border-radius: 7px;
+          font-size: 15px;
+          width: 50%;
+          cursor: pointer;
+        }
+
+        p:first-child {
+          margin-right: 10px;
+          background-color: rgb(134, 240, 151);
+        }
+
+        p:last-child {
+          margin-left: 10px;
+          border: 2px solid rgb(104, 124, 105);
+          color: rgb(104, 124, 105);
+        }
+      }
+
+    }
+
+    .centerNow {
+      margin-left: 24px;
+      border: 1px solid rgb(134, 240, 151);
+      padding: 10px 0 15px;
+      border-radius: 8px;
+      width: 30%;
+
+      p {
+        text-align: center;
+      }
+
+      p:first-child {
+        color: white;
+        font-size: 14px;
+      }
+
+      p:last-child {
+        color: rgb(134, 240, 151);
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 13px;
+      }
+    }
+
+    .rightNow {
+      width: 10%;
+      position: relative;
+
+      img {
+        position: absolute;
+        display: block;
+        width: 100%;
+      }
+
+      img:first-child {
+        top: -20%;
+        left: -15%;
+      }
+
+      img:nth-child(2) {
+        top: -5%;
+        left: 25%;
+      }
+
+      img:last-child {
+        top: -30%;
+        left: 38%;
+      }
+    }
+  }
+
   .boxLeft {
     box-sizing: border-box;
     overflow: hidden;
 
-    .tittle {
+    .address {
+      border: 2px solid rgb(104, 124, 105);
+      border-radius: 10px;
+      padding: 15px 10px;
+      position: relative;
+      z-index: 10;
       display: flex;
-      margin-bottom: 15px;
-      justify-content: space-around;
+      justify-content: space-between;
+      align-items: center;
 
-      &>img {
-        width: 30%;
-        border-radius: 50%;
+      .img {
+        display: flex;
+        align-items: center;
+
+        img {
+          display: block;
+          width: 30px;
+          margin-left: -10px;
+        }
       }
 
-      div {
+      p:first-child {
         display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
+        align-items: center;
+        color: rgb(134, 240, 151);
+        font-size: 20px;
+      }
 
-        p:first-child {
-          color: rgb(134, 240, 151);
-          font-size: 35px;
-        }
-
-        p:last-child {
-          color: rgb(214, 223, 215);
-          display: flex;
-          align-items: center;
-        }
+      p:last-child {
+        color: rgb(214, 223, 215);
+        display: flex;
+        align-items: center;
       }
     }
 
+    .tittle {
+      display: flex;
+      margin-bottom: 15px;
+      justify-content: space-evenly;
+      align-items: center;
+
+      &>p {
+        color: rgb(134, 240, 151);
+        font-size: 32px;
+      }
+
+      &>img {
+        border-radius: 50%;
+      }
+
+
+    }
+
+
+  }
+
+  .boxRight {
+    border: 2px solid rgb(104, 124, 105);
+    border-radius: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 0 5%;
+    box-sizing: border-box;
+
     .point {
-      padding: 15px;
-      border: 1px solid rgb(104, 124, 105);
-      border-radius: 10px;
+      font-size: 20px;
+      margin-bottom: 10px;
 
       span:first-child {
         color: rgb(214, 223, 215);
@@ -209,17 +352,6 @@
         color: rgb(134, 240, 151);
       }
     }
-  }
-
-  .boxRight {
-    border: 1px solid rgb(104, 124, 105);
-    border-radius: 10px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    padding: 0 8%;
-    box-sizing: border-box;
 
     div {
 
@@ -247,7 +379,7 @@
     padding: 20px;
     display: flex;
     justify-content: space-between;
-    border: 1px solid rgb(104, 124, 105);
+    border: 2px solid rgb(104, 124, 105);
     border-radius: 10px;
 
     img {
@@ -262,6 +394,7 @@
 
     .coinPass {
       bottom: 0;
+      z-index: 10;
       left: 0;
       position: absolute;
     }
@@ -269,7 +402,7 @@
 
   .list {
     position: relative;
-    border: 1px solid rgb(104, 124, 105);
+    border: 2px solid rgb(104, 124, 105);
     border-radius: 10px;
 
     .next {
@@ -279,6 +412,7 @@
 
     .data {
       margin-bottom: 18px;
+
       span {
         flex: 1;
         box-sizing: border-box;

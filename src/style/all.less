@@ -90,6 +90,68 @@ body::-webkit-scrollbar-thumb {
   height: 10px !important;
 }
 
+.personChainName {
+  .ant-popover-arrow {
+    display: none;
+  }
+
+  .ant-popover-content {
+    .ant-popover-inner {
+      background-color: rgb(28, 31, 28);
+
+      .personBox {
+        padding: 0 7px;
+        .top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          p {
+            font-size: 18px;
+            color: rgb(134, 240, 151);
+          }
+
+          p:last-child {
+            font-size: 22px;
+            cursor: pointer;
+          }
+        }
+
+        .chain {
+          margin-top: 15px;
+
+          .other {
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 7px 12px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            div {
+              display: flex;
+              align-items: center;
+
+              p {
+                color: white;
+              }
+
+              img {
+                display: block;
+                border-radius: 6px;
+                width: 30px;
+                height: 30px;
+                margin-right: 8px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 .scrollStyle::-webkit-scrollbar-thumb {
   background: rgb(24, 30, 29) !important;
   border: 1px solid rgb(104, 124, 105) !important;
@@ -169,7 +231,7 @@ body::-webkit-scrollbar-thumb {
       align-items: center;
       justify-content: space-between;
       border-bottom: 5px solid;
-      padding-left: 2%;
+      padding-left: 15px;
 
       &>p {
         flex: 1;
@@ -214,7 +276,7 @@ body::-webkit-scrollbar-thumb {
         background-color: rgb(6, 14, 11);
         cursor: pointer;
         border-bottom: 5px solid;
-        padding: 4px 0 4px 2%;
+        padding: 4px 0 4px 15px;
 
         &>div:not(:first-child) {
           font-weight: 300;

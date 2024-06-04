@@ -54,7 +54,7 @@ export const autoConvert = (number: any) => {
         return `${(number / 1000000000).toFixed(2).replace(/\.?0*$/, '')} B`;
     } else if (Number(number) >= 1000000) {
         return `${(Number(number) / 1000000).toFixed(2).replace(/\.?0*$/, '')} M`;
-    } else if (Number(number) >= 1000) {
+    } else if (Number(number) >= 10000) {
         return `${(Number(number) / 1000).toFixed(2).replace(/\.?0*$/, '')} K`;
     } else {
         if (Number(number) < 1) {
@@ -64,10 +64,10 @@ export const autoConvert = (number: any) => {
         }
     }
 };
-
 export const setMany = (text: any, countdown?: string, languageChange?: string) => {
-    // 倒计时
-    if (countdown && languageChange) {
+    if (Number(text) == -100) {
+        return '-100'
+    } else if (countdown && languageChange) {
         if (text && countdown) {
             // 判断有几个月
             const abc = dayjs(countdown).diff(dayjs(), 'month')
