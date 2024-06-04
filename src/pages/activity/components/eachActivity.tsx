@@ -15,7 +15,6 @@ import SpecialOrPass from '../components/specialOrPass.tsx';
 import { simplify } from '../../../../utils/change.ts';
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const par = data.length > 0 ? data : data?.campaign ? [data] : []
-    console.log(par)
     const { browser, languageChange, isLogin, setUserPar, user }: any = useContext(CountContext);
     const { getAll, } = Request()
     const router = useLocation()
@@ -292,8 +291,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             return ''
         }
     }
-
-
     const operate = (isCompleted: string, title: string, id: string) => {
         if (option === 'daily') {
             if (params?.id === '4') {
@@ -488,7 +485,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                 }
                                                 {
                                                     option === 'daily' && Number(it?.isCompleted) !== 3 && params?.id !== '4' &&
-                                                    <p className={'verify'}
+                                                    <div className={'verify'}
                                                         onClick={
                                                             throttle(function () {
                                                                 if (!isVerify && !loading) {
@@ -499,7 +496,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                                                                         verification(it?.taskId)
                                                                     }
                                                                 }
-                                                            }, 1500, { 'trailing': false })}>{t('Dpass.verify')}{isVerify && selectActive === it?.taskId ? <Load /> : ''}</p>
+                                                            }, 1500, { 'trailing': false })}>{t('Dpass.verify')}{isVerify && selectActive === it?.taskId ? <Load /> : ''}</div>
                                                 }
                                             </div>
                                         </div>

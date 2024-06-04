@@ -65,17 +65,17 @@ function Left() {
                 </div>
                 {/* <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'} defaultValue={'24h'} /> */}
                 <div className={`indexRight dis`}>
-                    <p style={{ marginRight: '10px' }}>
+                    <div style={{ marginRight: '10px' }} className="div">
                         <img
                             src={switchChain === 'Polygon' ? '/PolygonCoin.svg' : switchChain === 'BSC' ? '/BNBChain.svg' : "/EthereumChain.svg"}
                             loading={'lazy'}
-                            alt="" />{wait ? <Load  /> :
-                                <span>$:{ethPrice}</span>}</p>
-                    <p><img loading={'lazy'} src="/gas.svg" alt="" />
+                            alt="" />{wait ? <Load /> :
+                                <span>$:{ethPrice}</span>}</div>
+                    <div className="div"><img loading={'lazy'} src="/gas.svg" alt="" />
                         {
-                            gasLoad ? <Load  /> : <span>{gas}</span>
+                            gasLoad ? <Load /> : <span>{gas}</span>
                         }
-                    </p>
+                    </div>
                 </div>
             </div>
             <div className="scrollStyle" style={{ width: '100%', overflow: browser ? 'hidden' : 'auto hidden' }}>
@@ -116,7 +116,7 @@ function Left() {
                 </div>
             </div>
             <div style={{ visibility: moreLoad && tableDta.length > 0 ? 'initial' : 'hidden' }}>
-                <Load  /></div>
+                <Load /></div>
         </div>
     );
 }

@@ -19,8 +19,8 @@ function TwitterRelease({ openLink, setValue, Confirm, handleCancel, isConfirm }
             <input onChange={change} />
             <img src="/tweet2.png" alt="" style={{ width: '70%', display: 'block' }} />
             <div className={'bot disDis'}>
-                <p onClick={handleCancel}> {t('Active.Cancel')} </p>
-                <p onClick={Confirm}> {t('Active.Confirm')} {isConfirm ? <Load  /> : ''}</p>
+                <p onClick={handleCancel} className='p'> {t('Active.Cancel')} </p>
+                <div onClick={Confirm} className='p'> {t('Active.Confirm')} {isConfirm ? <Load  /> : ''}</div>
             </div>
         </div>
     );

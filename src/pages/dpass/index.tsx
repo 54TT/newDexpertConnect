@@ -308,7 +308,7 @@ function Dpass() {
                             )) : <Nodata /> : <Loading status={'20'} browser={browser} />
                             }
                             {
-                                !isShow && <p style={{
+                                !isShow && <div style={{
                                     marginTop: '20px',
                                     color: 'gray',
                                     display: 'flex',
@@ -316,7 +316,7 @@ function Dpass() {
                                     justifyContent: 'center'
                                 }}><span onClick={nextPass}
                                     style={{ cursor: 'pointer' }}>{t('Common.Next')}</span>{isNext ?
-                                        <Load /> : <CaretDownOutlined />}</p>
+                                        <Load /> : <CaretDownOutlined />}</div>
                             }
                         </div>
                     </div>

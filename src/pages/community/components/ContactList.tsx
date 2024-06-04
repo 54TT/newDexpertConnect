@@ -188,7 +188,7 @@ export default function ContactList() {
                 }}>Not data</div> : data.map((v) => <UserItem data={v} getAll={getAll} key={v?.uid} tab={activeTab}/>)
         }
         {
-            isShow && <p style={{
+            isShow && <div style={{
                 color: 'white',
                 fontSize: '18px',
                 display: 'flex',
@@ -203,7 +203,7 @@ export default function ContactList() {
                 {
                     isNext ? <Load /> : <CaretDownOutlined/>
                 }
-            </p>
+            </div>
         }
     </>
 }

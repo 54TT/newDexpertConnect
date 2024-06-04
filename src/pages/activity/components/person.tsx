@@ -115,7 +115,7 @@ export default function person() {
                 }) : <Nodata />
               }
               {
-                history.length > 0 && !(history.length % 10) && <p className='next disCen' onClick={next}><span>下一页</span> {load ? <Load /> : <CaretDownOutlined />}</p>
+                history.length > 0 && !(history.length % 10) && <div className='next disCen' onClick={next}><span>下一页</span> {load ? <Load /> : <CaretDownOutlined />}</div>
               }
               <img src="/GroupPass.svg" alt="" className='passCard' style={{ width: browser ? '10%' : '80px', transform: browser ? 'translate(-50%,-50%)' : 'translate(-10%,-50%)' }} />
               <img src="/coinPass.svg" alt="" className='coinPass' style={{ width: browser ? '8.5%' : '80px', transform: browser ? 'translate(50%,-50%)' : 'translate(13%,-50%)' }} />
