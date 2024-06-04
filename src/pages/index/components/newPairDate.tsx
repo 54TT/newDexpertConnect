@@ -1,8 +1,8 @@
 import { setMany, simplify } from "../../../../utils/change.ts";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-// import load from "../../../components/allLoad/load.tsx";  useEffect, useState 
-import { useContext, } from 'react'
+// import load from "../../../components/allLoad/load.tsx"; useEffect, useState
+import { useContext,  } from 'react'
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { throttle } from "lodash";
 import { CountContext } from "../../../Layout.tsx"; // 引入相对时间插件
@@ -79,7 +79,7 @@ function Date({ tableDta, time, setDta }: any) {
                                     color: "white",
                                     lineHeight: '1.2'
                                 // }}> {chang(create)}</div>
-                                }}>{changeTime(dayjs.unix(create).fromNow())}</div>
+                                }}> {changeTime(dayjs.unix(create).fromNow())}</div>
                             <div
                                 style={{ color: 'white' }}>{setMany(record?.initialReserve)} {switchChain === 'Polygon' ? 'matic' : switchChain === 'BSC' ? 'BNB' : "ETH"}</div>
                             <div
