@@ -1,12 +1,14 @@
 import { setMany, simplify } from "../../../../utils/change.ts";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-// import load from "../../../components/allLoad/load.tsx"; useEffect, useState
-import { useContext,  } from 'react'
+import Load from "../../../components/allLoad/load.tsx";
+import duration from 'dayjs/plugin/duration'
+import { useContext, useEffect, useState } from 'react'
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { throttle } from "lodash";
 import { CountContext } from "../../../Layout.tsx"; // 引入相对时间插件
 dayjs.extend(relativeTime); // 使用相对时间插件
+dayjs.extend(duration); // 使用相对时间插件
 function Date({ tableDta, time, setDta }: any) {
     const { switchChain, browser }: any = useContext(CountContext);
     const history = useNavigate();
@@ -23,27 +25,41 @@ function Date({ tableDta, time, setDta }: any) {
         })
         setDta([...tableDta])
     }, 1500, { 'trailing': false })
-    const changeTime = (name: any) => {
-        const data = name.split(' ')
-        const time = [{ name: 'second' || 'seconds', time: '1' }, { name: 'minute' || 'minutes', time: Number(data[0]) ? data[0] + ' m' : '1 m' }, { name: 'hour' || 'hours', time: Number(data[0]) ? data[0] + ' H' : '1 H' }, { name: 'day' || 'days', time: Number(data[0]) ? data[0] + ' D' : '1 D' }, { name: 'month' || 'months', time: Number(data[0]) ? data[0] + ' M' : '1 M' }, { name: 'year' || 'years', time: Number(data[0]) ? data[0] + ' Y' : '1 Y' }]
-        const ay = time.filter((res: any) => name.includes(res.name))
-        return ay[0]?.time
+    const [tt, setTt] = useState<any>(null)
+    useEffect(() => {
+        setInterval(() => {
+            const time = dayjs().format('YYYY-MM-DD HH:mm:ss')
+
+            setTt(time)
+        }, 1000)
+    }, [])
+    const chang = (name: any) => {
+        if (tt) {
+            const diff = dayjs(tt).diff(dayjs.unix(name).format('YYYY-MM-DD HH:mm:ss'))
+            const duration = dayjs.duration(diff)
+            const year = duration.years()
+            const month = duration.months()
+            const day = duration.days()
+            const hour = duration.hours()
+            const minute = duration.minutes()
+            const second = duration.seconds()
+            if (year) {
+                return year + ' y ' + month + ' m'
+            } else if (month) {
+                return month + ' m ' + day + ' d'
+            } else if (day) {
+                return day + ' d ' + hour + ' h'
+            } else if (hour) {
+                return hour + ' h ' + minute + ' m'
+            } else if (minute) {
+                return minute + ' m ' + second + ' ss'
+            } else {
+                return second + ' ss'
+            }
+        } else {
+            return <Load />
+        }
     }
-    // const [tt, setTt] = useState<any>(null)
-    // useEffect(() => {
-    //     setInterval(() => {
-    //         const time = dayjs().format('YYYY-MM-DD HH:mm:ss')
-    //         setTt(time)
-    //     }, 1000)
-    // }, [])
-    // const chang = (name: any) => {
-    //     if (tt) {
-    //         const t = dayjs(tt).diff(dayjs.unix(name).format('YYYY-MM-DD HH:mm:ss'), 'second')
-    //         return t
-    //     } else {
-    //         return ''
-    //     }
-    // }
     return (
         <>
             {
@@ -78,8 +94,7 @@ function Date({ tableDta, time, setDta }: any) {
                                 style={{
                                     color: "white",
                                     lineHeight: '1.2'
-                                // }}> {chang(create)}</div>
-                                }}> {changeTime(dayjs.unix(create).fromNow())}</div>
+                                }}>  {chang(create)}  </div>
                             <div
                                 style={{ color: 'white' }}>{setMany(record?.initialReserve)} {switchChain === 'Polygon' ? 'matic' : switchChain === 'BSC' ? 'BNB' : "ETH"}</div>
                             <div
