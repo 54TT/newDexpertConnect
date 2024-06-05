@@ -27,11 +27,11 @@ function Date({ tableDta, time, setDta }: any) {
     }, 1500, { 'trailing': false })
     const [tt, setTt] = useState<any>(null)
     useEffect(() => {
-        setInterval(() => {
+        let show = setInterval(() => {
             const time = dayjs().format('YYYY-MM-DD HH:mm:ss')
-
             setTt(time)
         }, 1000)
+        return () => clearInterval(show)
     }, [])
     const chang = (name: any) => {
         if (tt) {
@@ -89,7 +89,7 @@ function Date({ tableDta, time, setDta }: any) {
                             </div>
                             <div style={{ color: "white" }}>{Number(record?.priceUSD) ? setMany(record?.priceUSD) : 0}</div>
                             <div
-                                style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,9,58)', }}>{Number(b) !== 0 ? b + '%' : '0'}</div>
+                                style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,60,58)', }}>{Number(b) !== 0 ? b + '%' : '0'}</div>
                             <div
                                 style={{
                                     color: "white",
