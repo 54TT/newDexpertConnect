@@ -1,19 +1,24 @@
-import {defineConfig} from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 export default defineConfig({
-    plugins: [react()],
-    resolve: {
-        alias: {
-            // 可以通过别名导入 ethers.js，以避免直接引用 node_modules 中的路径
-            'ethers': 'ethers/dist/ethers.esm.min.js',
-        },
+  plugins: [react()],
+  resolve: {
+    alias: {
+      // 可以通过别名导入 ethers.js，以避免直接引用 node_modules 中的路径
+      ethers: 'ethers/dist/ethers.esm.min.js',
+      // @ 替代为 src
+      '@': resolve(__dirname, 'src'),
+      // @component 替代为 src/component
+      '@components': resolve(__dirname, 'src/components'),
     },
-    css: {
-        preprocessorOptions: {
-            less: {
-                javascriptEnabled: true
-            }
-        }
+  },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+      },
     },
-})
+  },
+});
