@@ -64,7 +64,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 getParams()
             } else {
                 if (res?.data?.url) {
-                    window.open(res?.data?.url)
+                    window.open(res?.data?.url,'_blank')
                 } else {
                     setLoading(false)
                 }
@@ -84,7 +84,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 token
             })
             if (res?.data?.url) {
-                window.open(res?.data?.url)
+                window.open(res?.data?.url,'_blank')
                 getParams()
             } else {
                 setLoading(false)
@@ -224,7 +224,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             setLoading(false)
         }
     }
-
+    
     const param = async (isCompleted: string, taskId: string) => {
         const token = cookie.get('token')
         if (token) {

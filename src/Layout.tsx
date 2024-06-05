@@ -27,6 +27,8 @@ const Community = React.lazy(() => import('./pages/community/index.tsx'))
 const Active = React.lazy(() => import('./pages/activity/index.tsx'))
 const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'))
 const SpecialActive = React.lazy(() => import('./pages/activity/components/specialDetail.tsx'))
+import TonConnect, { isWalletInfoCurrentlyEmbedded, WalletInfoCurrentlyEmbedded } from '@tonconnect/sdk';
+import { QRCode, } from 'antd';
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -34,6 +36,43 @@ const web3Modal = new Web3Modal({
 });
 export const CountContext = createContext(null);
 function Layout() {
+    const connector: any = new TonConnect();
+    // { manifestUrl: 'https://sniper-bot-frontend-test.vercel.app/tonconnect-manifest.json',}
+    const lian = async () => {
+        const walletsList = await connector.getWallets();
+        const embeddedWallet = walletsList.find(isWalletInfoCurrentlyEmbedded) as WalletInfoCurrentlyEmbedded;
+        if (embeddedWallet) {
+            connector.connect({ jsBridgeKey: embeddedWallet.jsBridgeKey });
+        } else {
+            const walletConnectionSource = {
+                universalLink: 'https://app.tonkeeper.com/ton-connect',
+                bridgeUrl: 'https://bridge.tonapi.io/bridge'
+            }
+            const universalLink = connector.connect(walletConnectionSource);
+            setQRCodeLink(universalLink)
+        }
+    }
+    const duan = async () => {
+        if (connector.connected) {
+            await connector.disconnect();
+        }
+    }
+    //  监听ton的 变化
+    // useEffect(() => {
+    //     connector.onStatusChange((wallet: any) => {
+    //         if (!wallet) {
+    //             return;
+    //         }
+    //         const tonProof = wallet.connectItems?.tonProof;
+    //         if (tonProof) {
+    //             if ('proof' in tonProof) {
+    //                 // send proof to your backend
+    //                 // e.g. myBackendCheckProof(tonProof.proof, wallet.account);
+    //                 return;
+    //             }
+    //         }
+    //     });
+    // }, [connector])
     const router = useLocation()
     const { t } = useTranslation();
     const { getAll, } = Request()
@@ -55,6 +94,7 @@ function Layout() {
     const [browser, setBrowser] = useState<any>(false)
     const [big, setBig] = useState<any>(false)
     const [activityOptions, setActivityOptions] = useState('')
+    const [QRCodeLink, setQRCodeLink] = useState('')
     // copy
     const [isCopy, setIsCopy] = useState(false)
     useEffect(() => {
@@ -128,7 +168,6 @@ function Layout() {
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 const decodedToken = JSON.parse(atob(base64));
                 setNewAccount('')
-                console.log(decodedToken)
                 if (decodedToken && decodedToken?.uid) {
                     const uid = decodedToken.sub.split("-")[1];
                     getUser(uid, res.data?.accessToken, name, decodedToken);
@@ -306,8 +345,6 @@ function Layout() {
             prevRelayerValue.current = 'wss://relay.walletconnect.com';
         }
     }, [createClient, client]);
-
-
     const changeBody = () => {
         const body = document.getElementsByTagName('body')[0]
         if (window && window?.innerWidth) {
@@ -361,7 +398,7 @@ function Layout() {
         isModalSet,
         setIsModalSet,
         languageChange,
-        setLanguageChange,
+        setLanguageChange, connector,
         setUserPar, switchChain, setSwitchChain, isLogin, activityOptions, setActivityOptions, isCopy, setIsCopy
     }
     const clients = new ApolloClient({
@@ -370,16 +407,14 @@ function Layout() {
     });
     return (
         <ApolloProvider client={clients}>
-            <Suspense fallback={<div style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%,-50%)'
-            }}>
+            <Suspense fallback={<div className='positionAbsolte'>
                 <Loading browser={browser} />
             </div>}>
                 <CountContext.Provider value={value}>
                     <Header />
+                    <p onClick={lian} style={{ marginTop: '50px', color: 'white', display: 'none' }}>连接</p>
+                    <p onClick={duan} style={{ color: 'white', display: 'none' }}>断开</p>
+                    <QRCode value={QRCodeLink} />
                     <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
                         <Routes>
                             <Route path="/" element={<Index />} />
