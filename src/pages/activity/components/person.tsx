@@ -11,9 +11,13 @@ import Loading from '../../../components/allLoad/loading.tsx';
 import Load from '../../../components/allLoad/load.tsx';
 import Nodata from '../../../components/Nodata.tsx';
 import { CaretDownOutlined, } from '@ant-design/icons'
-
+import { useTranslation } from "react-i18next";
+import { throttle } from 'lodash'
+import { MessageAll } from '../../../components/message.ts';
+import copy from 'copy-to-clipboard'
 export default function person() {
   const { getAll, } = Request()
+  const { t } = useTranslation();
   const [page, setPage] = useState(1)
   const [load, setLoad] = useState(false)
   const [userPass, setUserPass] = useState<any>(null)
@@ -21,6 +25,21 @@ export default function person() {
   const [isLoad, setIsLoad] = useState(false)
   const { user, browser }: any = useContext(CountContext);
   const [open, setOpen] = useState(false);
+  const [isCopy, setIsCopy] = useState(false);
+
+  const getLink = throttle(async function () {
+    const token = cookie.get('token')
+    const res = await getAll({
+      method: 'get', url: '/api/v1/airdrop/referral/code', data: {}, token
+    })
+    if (res?.status === 200 && res?.data?.url) {
+      setIsCopy(false)
+      copy(res?.data?.url)
+      MessageAll('success', t('person.copy'))
+    } else {
+      setIsCopy(false)
+    }
+  }, 1500, { 'trailing': false })
 
   const getPointHistory = async (page: number) => {
     const token = cookie.get('token')
@@ -57,16 +76,16 @@ export default function person() {
       getUserPass()
     }
   }, [user])
-  const next = () => {
+  const next = throttle(function () {
     getPointHistory(page + 1)
     setPage(page + 1)
     setLoad(true)
-  }
+  }, 1500, { 'trailing': false })
   const chainContent = (
     <div className='personBox' style={{ width: browser ? '20vw' : '40vw' }}>
       <div className='top'>
         <p></p>
-        <p>Link Wallet</p>
+        <p> {t('person.Wallet')}</p>
         <p onClick={() => setOpen(false)}>x</p>
       </div>
       <div className='chain'>
@@ -89,13 +108,13 @@ export default function person() {
     setOpen(newOpen);
   };
 
-  const left = <div style={{ width: browser ? '55%' : '100%', marginRight: browser ? '2%' : '0' }} className='boxLeft'>
+  const left = <div style={{ width: browser ? '90%' : '100%', marginRight: browser ? '2%' : '0' }} className='boxLeft'>
     <div className='tittle'>
       <img src={user?.avatarUrl || '/topLogo.png'} alt="" style={{ width: browser ? '22.5%' : '80px' }} />
       <p>{simplify(user?.username)}</p>
     </div>
     <div className='address'>
-      <p className='topLeft'><span>address:{simplify(user?.address)}</span> <Copy name={user?.address} /></p>
+      <p className='topLeft'><span>{t('person.address')}:{simplify(user?.address ? user?.address : user?.username)}</span> <Copy name={user?.address ? user?.address : user?.username} /></p>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div className='img'>
           <img src="/MetaMask.png" alt="" />
@@ -111,7 +130,7 @@ export default function person() {
 
   const right = <div className={`boxRight ${browser ? '' : 'boxRightSpacing'}`}>
     <div className='point dis'>
-      <span>D points:</span>
+      <span>D {t('person.points')}:</span>
       <span>{user?.rewardPointCnt || 0}</span>
     </div>
     {
@@ -142,14 +161,17 @@ export default function person() {
             <div className='Invite'>
               <div style={{ display: 'flex', width: '80%' }}>
                 <div className='left'>
-                  <div className='leftTop'><p>Invite</p><img src="/rightLi1.png" alt="" /></div>
+                  <div className='leftTop'><p>{t('person.Invite')}</p><img src="/rightLi1.png" alt="" /></div>
                   <div className='leftBot'>
-                    <p>Application form</p>
-                    <p>Invite Link</p>
+                    <p> {t('person.form')}</p>
+                    <div onClick={() => {
+                      getLink()
+                      setIsCopy(true)
+                    }}>  {isCopy ? <Load /> : t('person.Link')}</div>
                   </div>
                 </div>
                 <div className='centerNow'>
-                  <p>number of invitees</p>
+                  <p>{t('person.number')}</p>
                   <p>100</p>
                 </div>
               </div>

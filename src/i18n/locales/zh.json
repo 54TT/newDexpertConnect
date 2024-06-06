@@ -187,5 +187,15 @@
     "ins": "关注以下 Instagram 用户.",
     "how": "如何去验证?",
     "verify": "验证"
+  },
+  "person":{
+    "address":"地址",
+    "points":"积分",
+    "Invite":"邀请",
+    "number":"受邀人数",
+    "form":"申请表",
+    "Link":"邀请链接",
+    "Wallet":"钱包链接",
+    "copy":"复制成功"
   }
 }

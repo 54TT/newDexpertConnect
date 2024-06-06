@@ -64,7 +64,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 getParams()
             } else {
                 if (res?.data?.url) {
-                    window.open(res?.data?.url,'_blank')
+                    window.open(res?.data?.url,'_self')
                 } else {
                     setLoading(false)
                 }
@@ -84,7 +84,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 token
             })
             if (res?.data?.url) {
-                window.open(res?.data?.url,'_blank')
+                window.open(res?.data?.url,'_self')
                 getParams()
             } else {
                 setLoading(false)
@@ -131,7 +131,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     // const change = () => {
     //     [{ status: true, name: '' }]
     // }
-
     const getT = async (id: string) => {
         const token = cookie.get('token')
         let url: any = null
@@ -152,7 +151,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                 token
             })
             if (res?.data?.url) {
-                window.open(res?.data?.url)
+                window.open(res?.data?.url,'_self')
                 setLoading(false)
             } else {
                 setLoading(false)
@@ -224,7 +223,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             setLoading(false)
         }
     }
-    
+
     const param = async (isCompleted: string, taskId: string) => {
         const token = cookie.get('token')
         if (token) {
@@ -422,6 +421,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
 
 
     return <>
+        <a target='_blank' href="https://oauth.telegram.org/auth?bot_id=7489386842&origin=https://dexpert.io/oauth/telegram/callback&request_access=write&return_to=https://dexpert.io/oauth/telegram/callback">你好</a>
         {
             isLogin && <div className={'activeAll'} style={{ padding: browser ? '0 17%' : '0 5%' }}>
                 {

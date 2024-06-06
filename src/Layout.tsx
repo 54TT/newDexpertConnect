@@ -36,6 +36,7 @@ const web3Modal = new Web3Modal({
 });
 export const CountContext = createContext(null);
 function Layout() {
+    //ton钱包连接
     const connector: any = new TonConnect();
     // { manifestUrl: 'https://sniper-bot-frontend-test.vercel.app/tonconnect-manifest.json',}
     const lian = async () => {
@@ -414,7 +415,7 @@ function Layout() {
                     <Header />
                     <p onClick={lian} style={{ marginTop: '50px', color: 'white', display: 'none' }}>连接</p>
                     <p onClick={duan} style={{ color: 'white', display: 'none' }}>断开</p>
-                    <QRCode value={QRCodeLink} />
+                    {QRCodeLink&& <QRCode value={QRCodeLink} />}
                     <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
                         <Routes>
                             <Route path="/" element={<Index />} />

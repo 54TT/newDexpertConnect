@@ -189,5 +189,16 @@
     "ins": "Follow the following Instagram users",
     "how": "How to Verify?",
     "verify": "verify"
+  },
+  "person":{
+    "address":"address",
+    "points":"points",
+    "Invite":"Invite",
+    "number":"number of invitees",
+    "form":"Application",
+    "Link":"Invite Link",
+    "Wallet":"Link Wallet",
+    "copy":"Copied successfully"
+
   }
 }
