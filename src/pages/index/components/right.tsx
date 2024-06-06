@@ -31,7 +31,7 @@ function Right() {
         <div
             className={"rightBox"}
             style={{
-                width: browser ? "24%" : "100%",
+                width: browser ? "25%" : "100%",
                 marginBottom: browser ? "0" : "40px",
             }}
         >

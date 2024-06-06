@@ -8,7 +8,7 @@ function Index() {
         <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            padding: '0 2%',
+            padding: '0 1%',
             flexDirection: browser ? 'row' : 'column'
         }}>
             <Left />

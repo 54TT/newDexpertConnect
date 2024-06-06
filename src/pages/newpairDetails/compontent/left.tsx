@@ -1,6 +1,6 @@
 import { CaretDownOutlined, CaretUpOutlined, } from '@ant-design/icons';
 import { Progress } from 'antd';
-import { useContext } from "react";
+import { useContext, useState, } from "react";
 import { setMany, simplify } from '../../../../utils/change.ts';
 import Copy from '../../../components/copy.tsx';
 import dayjs from "dayjs";
@@ -12,6 +12,8 @@ import { CountContext } from "../../../Layout.tsx";
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({ par }: any) {
     const h = window.innerHeight - 25 - 54
+    const [selectOne, setSelectOne] = useState('more')
+    const [selectTwo, setSelectTwo] = useState('more')
     const { switchChain, }: any = useContext(CountContext);
     const { t } = useTranslation();
     const value = judgeStablecoin(par?.token0?.id, par?.token1?.id, switchChain)
@@ -19,7 +21,13 @@ function Left({ par }: any) {
     const market = Number(par?.MKTCAP) ? setMany(Number(par?.MKTCAP)) : 0
     const fdv = Number(par?.FDV) ? setMany(Number(par?.FDV)) : 0
     const create = par?.createdAtTimestamp.toString().length > 10 ? Number(par.createdAtTimestamp.toString().slice(0, 10)) : Number(par.createdAtTimestamp)
-    // const pooled = par?.token0?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' && par?.token1?.id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 1 : par.sure ? (Number(setMany(par?.reserve0.toString())) ? parseFloat(Number(setMany(par?.reserve0.toString())).toFixed(2)) + '  ' : setMany(par?.reserve0.toString()) + '  ') + 'ETH' : (Number(setMany(par?.reserve1.toString())) ? parseFloat(Number(setMany(par?.reserve1.toString())).toFixed(2)) + '  ' : setMany(par?.reserve1.toString()) + '  ') + 'ETH'
+    const show = (name: string) => {
+        if (name === 'one') {
+            setSelectOne('select')
+        } else {
+            setSelectTwo('select')
+        }
+    }
     return (
         <div className={`NewpairDetailsOne scrollStyle`} style={{ height: h + 'px' }}>
             {/*top*/}
@@ -35,24 +43,22 @@ function Left({ par }: any) {
                 {/*收藏*/}
                 <p style={{ display: 'none' }} onClick={
                     throttle(function () {
-                        // if (par?.collect) {
-                        //     setData({...par, collect: false})
-                        // } else {
-                        //     setData({...par, collect: true})
-                        // }
                     }, 1500, { 'trailing': false })
                 }>
                 </p>
             </div>
-            {/*address*/}
             <div className={`address dis`}>
-                <p>
-                    <span>CA:</span><span>{value === 0 ? simplify(par?.token0?.id) : value === 1 ? simplify(par?.token1?.id) : simplify(par?.token1?.id)}</span>
-                    <Copy name={value === 0 ? par?.token0?.id : value === 1 ? par?.token1?.id : par?.token1?.id} />
-                </p>
-                <p><span>Pair:</span><span>{simplify(par?.id)}</span>
-                    <Copy name={par?.id} />
-                </p>
+                <div>
+                    <span>CA:</span><span style={{ color: "#c2bebe" }}>{value === 0 ? simplify(par?.token0?.id) : value === 1 ? simplify(par?.token1?.id) : simplify(par?.token1?.id)}</span>
+                    <div onClick={() => show('one')}>
+                        <Copy setSelect={setSelectOne} select={selectOne} name={value === 0 ? par?.token0?.id : value === 1 ? par?.token1?.id : par?.token1?.id} />
+                    </div>
+                </div>
+                <div><span>Pair:</span><span style={{ color: "#c2bebe" }}>{simplify(par?.id)}</span>
+                    <div onClick={() => show('two')}>
+                        <Copy name={par?.id} setSelect={setSelectTwo} select={selectTwo} />
+                    </div>
+                </div>
             </div>
             <div className={`dis img`}>
                 {
