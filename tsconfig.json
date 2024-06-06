@@ -25,6 +25,6 @@
       "@components/*": ["src/components/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "abis"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
