@@ -16,19 +16,15 @@
     }
 
     &-active {
-      background: linear-gradient(
-        90deg,
-        rgba(10, 21, 17, 0.65) 27%,
-        rgba(55, 123, 101, 0.41) 100%
-      );
+      background: linear-gradient(90deg,
+      rgba(10, 21, 17, 0.65) 27%,
+      rgba(55, 123, 101, 0.41) 100%);
     }
 
     &:hover {
-      background: linear-gradient(
-        90deg,
-        rgba(10, 21, 17, 0.65) 27%,
-        rgba(55, 123, 101, 0.41) 100%
-      );
+      background: linear-gradient(90deg,
+      rgba(10, 21, 17, 0.65) 27%,
+      rgba(55, 123, 101, 0.41) 100%);
     }
 
     &-label {
@@ -186,7 +182,9 @@
     &::-webkit-scrollbar {
       width: 8px !important; /* 滚动条宽度 */
     }
+
     /* WebKit 浏览器的滚动条滑块样式 */
+
     &::-webkit-scrollbar-thumb {
       background: rgb(24, 30, 29) !important;
       border: 1px solid rgb(104, 124, 105) !important;
@@ -234,6 +232,7 @@
           }
         }
       }
+
       padding: 0 8% 2%;
       margin-top: 2%;
     }
@@ -251,11 +250,13 @@
     align-items: center;
 
     img {
-      width: 18px;
-      height: 18px;
+      width: 20px;
       margin-right: 24px;
-      margin-left: 6px;
       cursor: pointer;
+    }
+
+    img:first-child {
+      width: 18px;
     }
   }
 
@@ -277,40 +278,12 @@
       &:active {
         background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
       }
+
       &:disabled {
         background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
       }
     }
   }
-}
-
-.community-page-right {
-  /*   height: calc(100vw - 25px);
-  overflow-y: auto;
-  .ant-card {
-    color: #d6dfd7;
-    .ant-card-head-title {
-      color: #d6dfd7;
-      font-family: PingFang SC;
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 19.6px;
-      text-align: left;
-    }
-    &-head {
-      background: #181e1c;
-      border: 0.2px solid #687c69;
-    }
-    &-body {
-      background: #202221;
-      border: 0.2px solid #687c69;
-      .card-pair-info {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 12px;
-      }
-    }
-  } */
 }
 
 .post-tab-item-active {
@@ -329,26 +302,28 @@
       .community-content-post-send {
         border: none;
         padding: 0;
-        margin: 24px 0;
-        &-input {
-          min-height: 100px;
-        }
+        margin: 20px 0;
       }
+
       .post-send-tools {
         border: none;
         padding: 12px 0;
       }
     }
+
     &-header {
       background: #060e0b;
     }
+
     &-title {
       display: flex;
       justify-content: space-between;
       color: #00daff;
+
       .anticon-close {
         color: #fff;
       }
+
       span {
         cursor: pointer;
       }
@@ -359,12 +334,15 @@
 .post-send-imgList {
   border-bottom: 0.4px solid #687c69;
   padding: 12px 8%;
+
   img {
     width: 150px;
   }
+
   &-delete {
     position: relative;
     display: inline-block;
+
     .ant-btn {
       position: absolute;
       right: -5px;

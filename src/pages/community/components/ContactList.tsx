@@ -1,113 +1,124 @@
 import classNames from "classnames";
-import { useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Cookies from "js-cookie";
+import cookie from "js-cookie";
 import Request from "../../../components/axios.tsx";
-// ,{followUser, unfollowUser}
 import {formatAddress, getQueryParams} from "../../../../utils/utils";
-import {Spin} from "antd";
+import Loading from "../../../components/allLoad/loading.tsx";
 import {useNavigate} from "react-router";
+import {throttle} from "lodash";
+import {MessageAll} from "../../../components/message.ts";
+import {useTranslation} from "react-i18next";
+import {CountContext} from "../../../Layout.tsx";
+import Load from '../../../components/allLoad/load.tsx'
+import {CaretDownOutlined, } from '@ant-design/icons'
+
 export interface FollowTabType {
     label: 'Following' | 'Follower',
     key: '1' | '2',
 }
-
-export interface PostImteDataType {
-    user?: {
-        address: string
-        avatar: string;
-        uid: string;
-        username: string;
-    }
-    CreatedAt: string;
-    commentNum: string;
-    content: string;
-    imageList: string[];
-    likeNum: string;
-    likeStatus: boolean;
-    postId: string;
-}
-
 interface PostImtePropsType {
     data: any
     tab: string;
+    getAll: any
 }
 
 function UserItem({
                       data,
-                      tab
+                      tab, getAll
                   }: PostImtePropsType) {
     const {
         uid,
         avatar,
         username,
     } = data
+    const {t} = useTranslation();
 
     const [follow, setFollow] = useState(true);
     const history = useNavigate();
 
     return <div className="post-item follow-list" style={{maxHeight: '300px'}}
-                onClick={() => history(`/community/user?uid=${uid}`)}>
+                onClick={throttle(function () {
+                    history(`/community/user?uid=${uid}`)
+                }, 1500, {'trailing': false})
+                }>
         <div className="post-item-avatar">
-            <img loading={'lazy'} src={avatar || '/logo.svg'} style={{display:'block',cursor:'pointer'}} alt=""/>
+            <img loading={'lazy'} src={avatar || '/topLogo.png'} style={{display: 'block', cursor: 'pointer'}} alt=""/>
         </div>
         <div className="post-item-info">
             <div className="post-item-info-user">
                 <span className="post-item-info-user-nickName">{formatAddress(username)}</span>
                 <span className="post-item-info-user-icon">
         </span>
-                {/*         <span className="post-item-info-user-date">{CreatedAt}</span> */}
             </div>
-            {/*   <div className="post-item-info-content">
-        <span>{content}</span>
-        <div>
-          {imageList.map((src: string) => <img style={{ height: '100%' }} src={src} />)}
-        </div>
-      </div> */}
-            {/*     <div className="post-item-info-tag">{['#ETH', '#BTC'].map((tag: string) => <span>{tag}</span>)}</div> */}
-            {/*       <div className="post-item-info-action">
-        <div className="post-item-info-action-comment">
-          <img src="/community/comment.svg" alt="" />
-          <span>{commentNum}</span>
-        </div>
-        <div className="post-item-info-action-like">
-          <img src="/community/like.svg" alt="" />
-          <span>{likeNum}</span>
-        </div>
-        <div className="post-item-info-action-share">
-          <img src="/community/share.svg" alt="" />
-          <span>42</span>
-        </div>
-        <div className="post-item-info-action-watch">
-          <img src="/community/watch.svg" alt="" />
-          <span>1200k</span>
-        </div>
-      </div> */}
         </div>
         <div className="follow-list-action">
-            {tab === '1' && follow ? <div className="follow-list-action-unfollow follow-icon" onClick={async (e) => {
-                e.stopPropagation()
-                // await unfollowUser(uid);
-                setFollow(false);
-            }}>Unfollow</div> : <div className="follow-list-action-unfollow unfollow-icon" onClick={async (e) => {
-                e.stopPropagation()
-                // await followUser(uid);
-                setFollow(false);
-            }}>Follow</div>}
+            {tab === '1' && follow ? <div className="follow-list-action-unfollow follow-icon" onClick={
+                throttle(async function (e) {
+                    e.stopPropagation()
+                    try {
+                        const token = cookie.get('token')
+                        if (token) {
+                            const result: any = await getAll({
+                                method: 'post',
+                                url: '/api/v1/unfollow',
+                                data: {uid: uid},
+                                token
+                            });
+                            if (result?.status === 200) {
+                                setFollow(false);
+                            } else {
+                                return MessageAll('warning', t('Market.unF'))
+                            }
+                        }
+                    } catch (e) {
+                        return Promise.reject(e)
+                    }
+                }, 1500, {'trailing': false})
+            }>Unfollow</div> : <div className="follow-list-action-unfollow unfollow-icon" onClick={
+                throttle(async function (e) {
+                    e.stopPropagation()
+                    try {
+                        const token = cookie.get('token')
+                        if (token) {
+                            const result: any = await getAll({
+                                method: 'post',
+                                url: '/api/v1/follow',
+                                data: {userId: uid},
+                                token
+                            });
+                            if (result?.status === 200) {
+                                setFollow(true);
+                            } else {
+                                return MessageAll('error', t('Market.unFo'))
+                            }
+                        }
+
+                    } catch (e) {
+                        return Promise.reject(e)
+                    }
+                }, 1500, {'trailing': false})
+            }>Follow</div>}
         </div>
     </div>
 }
 
 export default function ContactList() {
-    const {getAll} =Request()
+    const {getAll} = Request()
+    const {t} = useTranslation();
+    const {user, browser} = useContext(CountContext) as any;
     const [activeTab, setActiveTab] = useState<FollowTabType['key']>('1');
     const [loading, setLoading] = useState<boolean>(true);
     const [data, setData] = useState<any[]>([]);
+    const [page, setPage] = useState(1);
+    const [isNext, setIsNext] = useState(false);
+    const [isShow, setIsShow] = useState(false);
     const postTab: FollowTabType[] = [{
-        label: 'Following',
+        label: t('Dpass.Following'),
         key: '1'
     },
         {
-            label: 'Follower',
+            label: t('Dpass.Follower'),
             key: '2'
         }];
     const {uid} = getQueryParams();
@@ -117,52 +128,82 @@ export default function ContactList() {
     const getContactList = async (page: number) => {
         const url = activeTab === '1' ? "/api/v1/followee/list" : "/api/v1/follower/list";
         const token = Cookies.get('token');
-        const username = Cookies.get('username');
-        if (token && username) {
-            const at = JSON.parse(username)
-            setLoading(true)
-            // const result: any = await Request('post', url, {uid: uid ? uid : at?.uid, page}, token);
-            const result: any =await  getAll({method:'post',url,data:{uid: uid ? uid : at?.uid, page},token});
+        if (token && user) {
+            const result: any = await getAll({method: 'post', url, data: {uid: uid ? uid : user?.uid, page}, token});
             if (result?.status === 200) {
                 const {
                     followeeList, followerList
                 } = result?.data;
-                if (page === 1) {
-                    setData(followeeList || followerList)
+                if (activeTab === '1') {
+                    if (followeeList.length === 10) {
+                        setIsShow(true)
+                    }
                 } else {
-                    setData([...data, ...(followeeList || followerList)])
+                    if (followerList.length === 10) {
+                        setIsShow(true)
+                    }
+                }
+                if (page === 1) {
+                    if (activeTab === '1') {
+                        setData(followeeList)
+                    } else {
+                        setData(followerList)
+                    }
+                } else {
+                    if (activeTab === '1') {
+                        const at = data.concat(followeeList)
+                        setData([...at])
+                    } else {
+                        const at = data.concat(followerList)
+                        setData([...at])
+                    }
                 }
                 setLoading(false);
+                setIsNext(false)
             }
         }
     }
-
     return <>
         {
             <div className="community-content-post-tab">
                 {
                     postTab.map((tab: FollowTabType, ind: number) => <div key={ind}
                                                                           className={classNames("community-content-post-tab-item", {"post-tab-item-active": activeTab === tab.key})}
-                                                                          onClick={() => setActiveTab(tab.key)}>
+                                                                          onClick={
+                                                                              throttle( function () {
+                                                                              setActiveTab(tab.key)
+                                                                              }, 1500, {'trailing': false})}>
                         <span>{tab.label}</span></div>)
                 }
             </div>
         }
         {
-            loading ? <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    color: '#fff',
-                    marginTop: '20px'
-                }}><Spin/></div> :
+            loading ? <Loading  browser={browser}/> :
                 data.length === 0 ? <div style={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     color: '#fff',
                     marginTop: '20px'
-                }}>Not data</div> : data.map((v,ind) => <UserItem data={v} key={ind} tab={activeTab}/>)
+                }}>Not data</div> : data.map((v) => <UserItem data={v} getAll={getAll} key={v?.uid} tab={activeTab}/>)
+        }
+        {
+            isShow && <div style={{
+                color: 'white',
+                fontSize: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }} onClick={
+                throttle( function () {
+                getContactList(page + 1)
+                setPage(page + 1)
+                setIsNext(true)
+                }, 1500, {'trailing': false})}><span style={{cursor: 'pointer'}}>{t('Common.Next')}</span>
+                {
+                    isNext ? <Load /> : <CaretDownOutlined/>
+                }
+            </div>
         }
     </>
 }

@@ -5,12 +5,14 @@ import TweetHome from "../../../components/tweetHome.tsx";
 import BuyCoin from './buyCoin.tsx'
 import {CountContext} from "../../../Layout.tsx";
 import CommingSoon from "../../../components/commingSoon.tsx";
+import { useTranslation } from 'react-i18next';
 
 function Right() {
     const {browser}: any = useContext(CountContext);
     const [value, setValue] = useState('com')
     const [hei, setHei] = useState<any>('')
     const [sta, setSta] = useState<any>(false)
+    const {t} = useTranslation();
     const topRef = useRef<any>()
     const handleChange = (e: string) => {
         setValue(e)
@@ -43,11 +45,12 @@ function Right() {
                     options={[
                         {
                             value: 'com',
-                            label: <p className={'rightSelectRow'}><span>Community</span> <CaretDownOutlined/></p>,
+                            label: <p className={'rightSelectRow'}><span>{t("Common.Community")}</span> <CaretDownOutlined/></p>,
                         },
                         {
                             value: 'fast',
-                            label: <p className={'rightSelectRow'}><span>Fast Trade</span> <CaretDownOutlined/></p>,
+                            label: <p className={'rightSelectRow'}><span>{t("Common.Fast Trade")}</span>  <span style={{color:'gray',fontSize:'12px',padding:'2px 3px',borderRadius:'5px',backgroundColor:'rgb(100,100,100)'}}>{t('Common.Coming soon')}</span> <CaretDownOutlined/></p>,
+                            disabled:true
                         },
                     ]}
                 />

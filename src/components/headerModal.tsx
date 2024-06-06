@@ -1,8 +1,12 @@
-import {Input, message, Modal} from "antd";
-import {useContext, useState} from "react";
-import {CountContext} from "../Layout.tsx";
+import { Input, Modal } from "antd";
+import { useContext, useState } from "react";
+import { CountContext } from "../Layout.tsx";
 import cookie from "js-cookie";
 import Request from "./axios.tsx";
+import { throttle } from "lodash";
+import { MessageAll } from "./message.ts";
+import { useTranslation } from "react-i18next";
+
 function HeaderModal() {
     const {
         browser,
@@ -11,9 +15,11 @@ function HeaderModal() {
         isModalSet,
         setIsModalSet, connect, setLoad,
         getMoneyEnd,
+        user,
+        setUserPar
     }: any = useContext(CountContext);
-    const {getAll} = Request()
-    const [messageApi, contextHolder] = message.useMessage();
+    const { t } = useTranslation();
+    const { getAll } = Request()
     const handleOk = () => {
         setIsModalOpen(false);
     };
@@ -25,24 +31,21 @@ function HeaderModal() {
     const changeName = (e: any) => {
         setValue(e.target.value)
     }
-    const pushSet = async () => {
+    const pushSet = throttle(async function () {
         if (value) {
-            const username = cookie.get('username')
             const token = cookie.get('token')
-            if (username && token) {
-                const ab = JSON.parse(username)
-                const user = {...ab, username: value}
-                // const result: any = await Request('post', '/api/v1/userinfo', {user}, token);
-                const result: any = await getAll({method:'post',url: '/api/v1/userinfo',data:{user},token});
+            if (user && token) {
+                const param = { ...user, username: value }
+                const result: any = await getAll({ method: 'post', url: '/api/v1/userinfo', data: { user: param }, token });
                 if (result?.status === 200) {
-                    cookie.set('username', JSON.stringify(user))
-                    messageApi.success('update success');
+                    setUserPar(param)
+                    MessageAll('success', t('Market.update'))
                     handleCancel()
                 }
             }
         }
-    }
-    const connectWallet = async () => {
+    }, 1500, { 'trailing': false })
+    const connectWallet = throttle(async function () {
         try {
             if (window.innerWidth > 768) {
                 setLoad(true)
@@ -54,40 +57,39 @@ function HeaderModal() {
         } catch (e) {
             return null
         }
-    }
-    const onConnect = () => {
+    }, 1500, { 'trailing': false })
+    const onConnect = throttle(function () {
         connect();
         setIsModalOpen(false)
-    };
+    }, 1500, { 'trailing': false })
     return (
-        <Modal destroyOnClose={true} centered title={null} footer={null} className={'walletModal'}
-               maskClosable={false} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <Modal destroyOnClose={true} centered title={null} footer={null} className={`walletModal ${browser ? 'walletModalBig' : 'walletModalSmall'}`}
+            maskClosable={false} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
             {
                 isModalSet ? <div className={'headerModalSetName'}>
-                    <p>Welcome new user</p>
-                    <p>Set up name</p>
-                    <Input allowClear onChange={changeName} className={'input'}/>
+                    <p>{t('Common.new')}</p>
+                    <p>{t('Common.set')}</p>
+                    <Input autoComplete={'off'} allowClear onChange={changeName} className={'input'} />
                     <p onClick={pushSet}>OK</p>
                 </div> : <div className={'headerModal'}>
-                    <img src="/logo1.svg" loading={'lazy'} alt=""/>
-                    <p>Connect to Dexpert</p>
+                    <img src="/logo1.svg" loading={'lazy'} alt="" style={{ width: '120px' }} />
+                    <p>{t("Common.Connect to Dexpert")}</p>
                     {
                         browser &&
-                        <button onClick={connectWallet} className={'walletButton'} style={{margin: '10px 0'}}>
+                        <button onClick={connectWallet} className={'walletButton disCen'} style={{ margin: '10px 0' }}>
                             <img loading={'lazy'}
-                                src="/metamask.svg" style={{width: '25px'}}
-                                alt=""/><span>MetaMask</span></button>
+                                src="/metamask.svg" style={{ width: '25px', height: '25px' }}
+                                alt="" /><span>MetaMask</span></button>
                     }
-                    <button onClick={onConnect} className={'walletButton'}><img
+                    <button onClick={onConnect} className={'walletButton disCen'}><img
                         src="/webAll.svg" loading={'lazy'}
                         style={{
-                            width: '25px',
+                            width: '25px', height: '25px'
                         }}
-                        alt=""/><span>WalletConnect</span>
+                        alt="" /><span>WalletConnect</span>
                     </button>
                 </div>
             }
-            {contextHolder}
         </Modal>
     );
 }

@@ -1,6 +1,7 @@
 import {Input, Select} from 'antd'
 import {CaretDownOutlined} from "@ant-design/icons";
 import {useState} from "react";
+import {throttle} from "lodash";
 
 function BuyCoin({changStatus}: any) {
     const [value, setValue] = useState('')
@@ -16,11 +17,12 @@ function BuyCoin({changStatus}: any) {
             setTwo(e.target.value)
         }
     }
-    const result = () => {
-        if (value && one && two) {
-            changStatus(true)
-        }
-    }
+    const result =
+        throttle(    function (){
+            if (value && one && two) {
+                changStatus(true)
+            }
+        }, 1500, {'trailing': false})
     return (
         <div className={`buyCoin buyCoinBorder`}>
             <Select
@@ -46,10 +48,10 @@ function BuyCoin({changStatus}: any) {
             />
             <div className={`pay buyCoinBorder`}>
                 <p>Pay</p>
-                <Input className={'input'} onChange={(e: any) => change(e, 'one')} suffix="WETH" allowClear/>
+                <Input className={'input'}  autoComplete={'off'}  onChange={(e: any) => change(e, 'one')} suffix="WETH" allowClear/>
                 <p className={'num'}>~ $34322</p>
                 <p>Receive</p>
-                <Input className={'input'} onChange={(e: any) => change(e, 'two')} style={{marginBottom: '11%'}}
+                <Input className={'input'}  autoComplete={'off'}  onChange={(e: any) => change(e, 'two')} style={{marginBottom: '11%'}}
                        suffix="BTC" allowClear/>
                 <div className={'but'} onClick={result}>
                     Trade

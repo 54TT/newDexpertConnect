@@ -8,7 +8,7 @@ export interface CommonModalPropsType extends React.PropsWithChildren, ModalProp
 }
 const CommonModal = ({ className, ...props }: CommonModalPropsType) => {
 
-  return <Modal {...props} className={classNames('common-modal', className)} >
+  return <Modal  {...props}  destroyOnClose centered  maskClosable={false} className={classNames('common-modal', className)} >
     {props.children}
   </Modal>
 }

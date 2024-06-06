@@ -1,5 +1,5 @@
 {
-  "name": "launch-token-telegram-web-app",
+  "name": "dexpert",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -21,6 +21,7 @@
     "@emoji-mart/data": "^1.1.2",
     "@emoji-mart/react": "^1.1.1",
     "@kadena/client": "0.5.0",
+    "@tanstack/react-query": "^5.40.1",
     "@twa-dev/sdk": "^7.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.0",
@@ -40,14 +41,19 @@
     "framer-motion": "^11.0.20",
     "graphql": "16.8.1",
     "graphql-tag": "2.12.6",
+    "i18next": "^23.11.2",
+    "i18next-browser-languagedetector": "^7.2.1",
     "js-cookie": "^3.0.5",
     "less": "^4.2.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^14.1.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.22.3",
-    "swiper": "^11.0.7"
+    "swiper": "^11.0.7",
+    "viem": "2.x",
+    "wagmi": "^2.9.8"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",

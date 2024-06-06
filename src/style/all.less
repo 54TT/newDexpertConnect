@@ -4,6 +4,30 @@
   justify-content: space-between;
 }
 
+.disDis {
+  display: flex;
+  align-items: center;
+}
+
+
+.disCen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.disLeft {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+
+@font-face {
+  font-family: 'tt'; // --自定义名字就好
+  src: url("../../public/MiSans1.ttf"); // --下载的字体文件路径
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -15,10 +39,117 @@ p {
 
 body {
   background-color: rgb(10, 21, 17);
+  font-family: "tt", "Microsoft YaHei", serif;
+}
+
+body::-webkit-scrollbar {
+  width: 6px;
+  background-color: rgb(249, 188, 54);
+}
+
+/*定义滚动条轨道：内阴影+圆角*/
+body::-webkit-scrollbar-track {
+  background-color: rgb(10, 21, 17);
+}
+
+/*定义滑块：内阴影+圆角*/
+body::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgb(66, 64, 61);
+}
+
+
+
+.activeModal {
+  overflow: hidden;
+
+  .ant-modal-content {
+    background-color: rgb(30, 30, 30);
+
+    .ant-modal-header {
+      background-color: rgb(30, 30, 30);
+      border-bottom: 1px solid rgb(93, 182, 110) !important;
+
+      .ant-modal-title {
+        text-align: center;
+        color: rgb(134, 240, 151);
+        font-size: 22px;
+      }
+    }
+
+    .ant-modal-close {
+      color: rgb(93, 182, 110);
+      border: 1px solid rgb(93, 182, 110);
+      border-radius: 50%;
+    }
+  }
 }
 
 .scrollStyle::-webkit-scrollbar {
-  width: 8px !important;
+  width: 10px !important;
+  height: 10px !important;
+}
+
+.personChainName {
+  .ant-popover-arrow {
+    display: none;
+  }
+
+  .ant-popover-content {
+    .ant-popover-inner {
+      background-color: rgb(28, 31, 28);
+
+      .personBox {
+        padding: 0 7px;
+        .top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          p {
+            font-size: 18px;
+            color: rgb(134, 240, 151);
+          }
+
+          p:last-child {
+            font-size: 22px;
+            cursor: pointer;
+          }
+        }
+
+        .chain {
+          margin-top: 15px;
+
+          .other {
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 7px 12px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            div {
+              display: flex;
+              align-items: center;
+
+              p {
+                color: white;
+              }
+
+              img {
+                display: block;
+                border-radius: 6px;
+                width: 30px;
+                height: 30px;
+                margin-right: 8px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .scrollStyle::-webkit-scrollbar-thumb {
@@ -73,14 +204,14 @@ body {
     }
 
     .indexRight {
-      p {
+      .div {
         display: flex;
         align-items: center;
 
         img {
           display: block;
           width: 22px;
-          margin-right: 5px;
+          margin-right: 3px;
         }
 
         span {
@@ -100,8 +231,9 @@ body {
       align-items: center;
       justify-content: space-between;
       border-bottom: 5px solid;
+      padding-left: 15px;
 
-      & > p {
+      &>p {
         flex: 1;
       }
 
@@ -114,6 +246,8 @@ body {
     }
 
     .indexNewPairBody {
+      position: relative;
+
       .infinite-scroll-component {
         overflow: hidden !important;
       }
@@ -132,38 +266,52 @@ body {
         }
       }
 
+      .indexNewPairBodyDataSmall {
+        div {
+          padding: 0 !important;
+        }
+      }
+
       .indexNewPairBodyData {
         background-color: rgb(6, 14, 11);
         cursor: pointer;
         border-bottom: 5px solid;
-        padding: 4px 0;
+        padding: 4px 0 4px 15px;
 
-        & > div {
+        &>div:not(:first-child) {
+          font-weight: 300;
+        }
+
+        &>div {
           line-height: 1;
           display: flex;
           font-size: 14px;
-          justify-content: center;
           flex: 1;
           overflow: hidden;
-          letter-spacing: -1px;
+          box-sizing: border-box;
           white-space: nowrap;
         }
 
-        .indexNewPairBone {
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          padding-left: 0.5%;
-        }
 
         .indexTableLogo {
-          img {
+          .imgBox:nth-child(2) {
+            margin: 0 5px;
+          }
+
+          .imgBox {
             width: 20px;
-            height:  20px;
+            cursor: pointer;
             background-color: white;
             border-radius: 50%;
-            cursor: pointer;
+            height: 20px;
+
+            img {
+              width: 100%;
+              height: 100%;
+              cursor: pointer;
+            }
           }
+
           div {
             color: white;
           }
@@ -178,23 +326,51 @@ body {
 }
 
 .headerBox {
-  height: 54px;
   box-sizing: border-box;
-  padding: 0 4% 8px;
+  padding: 7px 2.2%;
   display: flex;
-  align-items: flex-end;
+  position: relative;
+  align-items: center;
   justify-content: space-between;
+
   //background-color: #0d1a14;
   background: linear-gradient(to bottom, rgb(3, 5, 3), rgb(9, 18, 13));
   border-bottom: 1px solid #687c69;
   border-radius: 0 0 10px 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+
+  .headerData {
+    display: flex;
+    align-items: center;
+
+    .headLineP {
+      padding: 3px 10px;
+      color: rgb(214, 220, 214);
+      border-bottom: 2px solid rgb(60, 69, 60);
+      border-top: 2px solid rgb(60, 69, 60);
+      border-right: 2px solid rgb(60, 69, 60);
+    }
+
+    .headLine {
+      display: flex;
+      align-items: center;
+    }
+  }
 
   .headerCenter {
-    width: 40%;
 
+    // width: 34%;
     span {
       font-size: 18px;
       cursor: pointer;
+    }
+
+    span:hover {
+      color: rgb(134, 240, 151) !important;
     }
   }
 
@@ -235,7 +411,7 @@ body {
 
       div {
         width: 50%;
-        padding: 2% 0;
+        padding: 10px 0;
         text-align: center;
         cursor: pointer;
       }
@@ -249,7 +425,7 @@ body {
   cursor: pointer;
 
   &:hover {
-    background-color: #0c1815;
+    background-color: rgb(34, 36, 34);
   }
 
   .post-item-img {
@@ -261,8 +437,11 @@ body {
   }
 
   .tweetsText {
+    width: 100%;
+
     color: rgb(220, 220, 220);
     word-wrap: break-word;
+    overflow: hidden;
     margin: 12px 0;
     line-height: 1;
   }
@@ -358,11 +537,6 @@ body {
   }
 }
 
-.disCen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 .bottomBox {
   width: 100%;
@@ -378,7 +552,7 @@ body {
   align-items: center;
   justify-content: flex-end;
 
-  & > p:first-child {
+  &>p:first-child {
     width: 10px;
     height: 10px;
     background-color: rgb(134, 240, 151);
@@ -386,7 +560,7 @@ body {
     margin-right: 6px;
   }
 
-  & > p:last-child {
+  &>p:last-child {
     cursor: pointer;
     color: white;
     font-size: 15px;
@@ -403,11 +577,9 @@ body {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(
-      to right,
-      rgb(9, 21, 17),
-      rgb(37, 70, 59)
-    ) !important;
+    background: linear-gradient(to right,
+        rgb(9, 21, 17),
+        rgb(37, 70, 59)) !important;
   }
 }
 
@@ -417,6 +589,7 @@ body {
 
 .newPairTable {
   display: flex;
+
   align-items: start;
   justify-content: space-between;
 
@@ -426,6 +599,14 @@ body {
     line-height: 1;
     margin-left: 15px;
   }
+}
+
+.walletModalSmall {
+  width: 70% !important;
+}
+
+.walletModalBig {
+  width: 400px !important;
 }
 
 .walletModal {
@@ -439,15 +620,26 @@ body {
   }
 }
 
+.backgroundColor {
+  position: absolute;
+  border-radius: 384px;
+  opacity: 0.3;
+  mix-blend-mode: plus-lighter;
+  filter: blur(250px);
+  width: 384px;
+  height: 384px;
+  flex-shrink: 0;
+}
+
 .headerModal {
   display: flex;
   align-items: center;
   flex-direction: column;
 
-  & > p:nth-child(2) {
+  &>p:nth-child(2) {
     color: #f3f3f3;
     text-align: center;
-    margin: 10px 0;
+    margin: 13px 0;
     line-height: 1;
   }
 
@@ -456,10 +648,7 @@ body {
     width: 150px;
     background-color: black;
     border: none;
-    display: flex;
-    justify-content: center;
     padding: 10px 0;
-    align-items: center;
     border-radius: 10px;
 
     span {
@@ -506,8 +695,9 @@ body {
     background-color: rgb(104, 124, 105);
     border: none;
     color: rgb(200, 200, 200);
-    .ant-input-clear-icon{
-      color: rgb(220,220,200);
+
+    .ant-input-clear-icon {
+      color: rgb(220, 220, 200);
     }
   }
 }
@@ -540,8 +730,10 @@ span {
 
 .scroll-style-mixin() {
   &::-webkit-scrollbar {
-    width: 8px !important; /* 滚动条宽度 */
+    width: 8px !important;
+    /* 滚动条宽度 */
   }
+
   /* WebKit 浏览器的滚动条滑块样式 */
   &::-webkit-scrollbar-thumb {
     background: rgb(24, 30, 29) !important;
@@ -662,7 +854,196 @@ span {
   max-width: 1800px;
   margin: 0 auto;
 
-  & > div {
+  &>div {
     width: 100%;
+  }
+}
+
+.headerDropdownClass {
+  background-color: rgb(33, 36, 33) !important;
+  border: 2px solid rgb(60, 69, 60);
+
+  .ant-dropdown-menu {
+    padding: 0 !important;
+    background-color: transparent !important;
+
+    .ant-dropdown-menu-item:not(:last-child) {
+      border-bottom: 1px solid rgb(60, 69, 60);
+    }
+
+    .ant-dropdown-menu-item {
+      padding: 10px 25px;
+      color: white;
+      border-radius: 0;
+    }
+
+    .ant-dropdown-menu-item:hover {
+      background-color: gray !important;
+    }
+  }
+}
+
+.activeSwiper {
+  .swiper {
+    width: 100%;
+
+    .swiper-wrapper {
+      .swiper-slide {
+        opacity: 0.65;
+
+        img {
+          width: 93% !important;
+        }
+      }
+
+      .swiper-slide-active {
+        opacity: 1 !important;
+
+        img {
+          width: 100% !important;
+        }
+      }
+    }
+
+    .swiper-pagination {
+      .swiper-pagination-bullet {
+        background: rgb(214, 223, 215) !important;
+        opacity: 1 !important;
+      }
+
+      .swiper-pagination-bullet-active {
+        width: 20px !important;
+        border-radius: 8px;
+        background: rgb(134, 240, 151) !important;
+      }
+    }
+  }
+
+  .swiper-slide {
+    background-position: center;
+    background-size: cover;
+
+    .swiper-slide-shadow-right {
+      background-image: none !important;
+    }
+
+    .swiper-slide-shadow-left {
+      background-image: none !important;
+    }
+  }
+}
+
+.language-icon {
+  cursor: pointer;
+  width: 20px;
+  background: linear-gradient(to right, #86f097, #00ff47);
+  padding: 2px;
+  border-radius: 100%;
+  margin-right: 24px;
+}
+
+.activeSwiperWeb {
+  .swiper-slide {
+    width: 50%;
+  }
+}
+
+.activeSwiperActive {
+  .swiper-slide {
+    width: 80%;
+  }
+}
+
+.activeImgHover {
+  transition: all 0.7s;
+  border-radius: 15px;
+}
+
+.avtiveCountdown {
+  .ant-statistic-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2%;
+
+
+    .ant-statistic-content-value {
+      font-size: 26px;
+      background: linear-gradient(90deg, rgb(133, 240, 150) 0%, rgb(1, 255, 72) 100%);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
+
+.activeImgHover:hover {
+  transform: scale(1.1);
+}
+
+.activeTable {
+  background-color: transparent !important;
+
+  .ant-spin-nested-loading {
+    background-color: transparent !important;
+
+    .ant-table {
+      background-color: transparent !important;
+
+      .ant-table-container {
+        border-left: 2px solid rgb(60, 69, 60);
+        border-top: 2px solid rgb(60, 69, 60);
+        border-radius: 0 !important;
+        background-color: transparent !important;
+
+        .ant-table-content {
+          background-color: transparent !important;
+
+          table {
+            border-radius: 0 !important;
+            background-color: transparent !important;
+
+            .ant-table-thead {
+              background-color: transparent !important;
+
+              .ant-table-cell {
+                padding: 5px;
+                border-radius: 0 !important;
+                text-align: center;
+                color: rgb(200, 200, 200);
+                border-right: 2px solid rgb(60, 69, 60);
+                border-bottom: 2px solid rgb(60, 69, 60);
+                background-color: transparent !important;
+              }
+            }
+
+            .ant-table-tbody {
+              .ant-table-cell-row-hover {
+                background-color: transparent !important;
+              }
+
+              .ant-table-placeholder {
+                background: #363333 !important;
+
+                .ant-empty-description {
+                  color: rgb(220, 220, 222);
+                }
+              }
+
+              .ant-table-cell {
+                padding: 5px;
+                text-align: center;
+                color: white;
+                border-right: 2px solid rgb(60, 69, 60);
+                border-bottom: 2px solid rgb(60, 69, 60);
+                background-color: transparent !important;
+              }
+
+            }
+
+          }
+        }
+      }
+
+    }
   }
 }

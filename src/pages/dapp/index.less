@@ -1,18 +1,58 @@
 .box {
-  display: flex;
+  .topChange {
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 13%;
+    background-color: rgb(26, 26, 26);
+    display: flex;
+
+    .swiperBox {
+      width: 90%;
+
+      .swiper-slide {
+        width: auto !important;
+        margin: 0 6px;
+      }
+    }
+
+    .list {
+      padding: 8px 20px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        margin-right: 3px;
+      }
+
+      span {
+        margin-left: 3px;
+      }
+    }
+
+    img {
+      width: 20px;
+      cursor: pointer;
+      display: flex;
+    }
+  }
 
   .community-page-right {
-    width: 20%;
-    border-left: 0.2px solid #687c69;
-    height: calc(100vh - 79px);
-    overflow-y: auto;
+    margin: 0 auto;
+
+    .displ {
+      display: flex;
+      justify-content: space-between;
+    }
 
     .ant-card {
       color: #d6dfd7;
 
       .ant-card-head-title {
         color: #d6dfd7;
-        font-family: PingFang SC;
         font-size: 14px;
         font-weight: 400;
         line-height: 19.6px;
@@ -22,16 +62,23 @@
       &-head {
         background: #181e1c;
         border: 0.2px solid #687c69;
+        min-height: 34px !important;
       }
 
       &-body {
         background: #202221;
         border: 0.2px solid #687c69;
+        padding: 0 0 10px !important;
 
         .card-pair-info {
           display: flex;
           justify-content: space-between;
           margin-top: 12px;
+
+          &>p {
+            flex: 1;
+            text-align: center;
+          }
         }
       }
     }
@@ -41,67 +88,72 @@
     background-color: rgb(6, 14, 11);
     width: 18%;
     border-right: 0.2px solid #687c69;
-    padding-top: 4%;
-
-    .top {
-      width: 85%;
-      margin: 0 auto 11%;
-
-      p:first-child {
-        color: white;
-        font-size: 18px;
-      }
-
-      .list {
-        display: flex;
-        align-items: center;
-        margin-top: 12%;
-        cursor: pointer;
-
-        img {
-          display: block;
-          margin-right: 4%;
-        }
-      }
-    }
+    padding-top: 2%;
   }
 
   .center {
-    flex: 1;
+    overflow: hidden;
+    margin: 0 auto;
 
-    .centerTop {
-      border-bottom: 1px solid rgb(104, 124, 105);
+    .tt {
       display: flex;
+      align-items: flex-end;
 
-      img {
-        display: block;
-        width: 25%;
+      .ttLeft {
+        background-color: #060b08;
+        border: 2px solid rgb(72, 86, 72);
+        border-right: none;
+
+        img {
+          display: block;
+          margin: 0 auto;
+        }
       }
 
-      .centerTopRight {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
+      .ttRight {
+        .ttRightTop {
+          position: relative;
 
-        & > p:first-child {
-          color: white;
-        }
-
-        & > p:nth-child(2) {
-          color: rgb(200, 200, 200);
-          line-height: 1.3;
-        }
-
-        div {
-          & > div {
-            padding: 8px 0;
-            cursor: pointer;
-            border: 1px solid rgb(134, 240, 151);
-            border-radius: 5px;
-            text-align: center;
+          .tokenTT {
+            width: 92%;
+            z-index: 10;
+            border-radius: 0 10px 0 10px;
+            box-shadow: -23px 0 20px 0 #2f5435, 0 25px 20px 0 #2f5435;
+            background-color: rgb(134, 240, 151);
           }
         }
+
+        .ttRightBot {
+          border: 2px solid rgb(72, 86, 72);
+          border-left: none;
+          border-top: none;
+          background-color: rgb(6, 11, 8);
+        }
       }
+    }
+
+    .pp {
+      color: rgb(200, 200, 200);
+      line-height: 1.2;
+    }
+
+    .video {
+      &>div {
+        padding: 4px 0;
+        cursor: pointer;
+        border: 1px solid rgb(134, 240, 151);
+        border-radius: 5px;
+        text-align: center;
+      }
+    }
+
+    .botBb {
+      padding: 10px;
+      background-color: #060b08;
+      border-radius: 0 0 10px 10px;
+      border: 2px solid rgb(72, 86, 72);
+      border-top: none;
+
     }
   }
 }

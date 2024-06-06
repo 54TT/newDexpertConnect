@@ -1,0 +1,151 @@
+.activeOptions {
+  div {
+    border-radius: 10px;
+    border: 2px solid rgb(60, 69, 60);
+    text-align: center;
+    padding: 10px 0;
+    flex: 1;
+    margin: 0 10px;
+    cursor: pointer;
+
+    p {
+      font-size: 10px;
+      background-color: rgb(40, 40, 40);
+      padding: 3px;
+      border-radius: 4px;
+      margin-left: 3px;
+      color: rgb(104, 124, 125);
+    }
+  }
+}
+
+.activeAll {
+  .first {
+    &>.firstLine {
+      padding: 10px 20px;
+      display: flex;
+      // margin-bottom: 20px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 10px;
+
+      &>.left {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        img {
+          width: 24px;
+        }
+
+        span {
+          margin: 0 7px;
+        }
+      }
+
+      &>.right {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+
+        .success {
+          width: 75px;
+          display: flex;
+          justify-content: center;
+          box-sizing: border-box;
+        }
+
+        .verify {
+          width: 80px;
+          text-align: center;
+          padding: 3px 5px;
+          cursor: pointer;
+          box-sizing: border-box;
+          color: rgb(220, 220, 220);
+          border-radius: 6px;
+          margin-left: 10px;
+          border: 2px solid rgb(134, 240, 151);
+        }
+
+        .start {
+          background-color: rgb(134, 240, 151);
+          border-radius: 6px;
+          width: 80px;
+          text-align: center;
+          cursor: pointer;
+          color: black;
+          padding: 5px;
+          box-sizing: border-box;
+        }
+      }
+
+
+    }
+  }
+}
+
+.specialOrPass {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .pass {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+
+    .it {
+      margin-bottom: 25px;
+
+      img {
+        width: 100%;
+        cursor: pointer;
+        display: block;
+      }
+
+      div {
+        display: flex;
+        padding: 0 20px;
+        align-items: center;
+        color: rgb(214, 223, 215);
+        justify-content: space-between;
+      }
+    }
+  }
+
+  .special {
+    width: 100%;
+    margin-bottom: 50px;
+
+    &>p:first-child {
+      color: white;
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .img {
+      margin: 0 auto;
+      position: relative;
+
+      .positionImg {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        right: -15%;
+        transform: translate(0, -50%);
+      }
+
+      img:first-child {
+        width: 100%;
+        display: block;
+      }
+
+    }
+  }
+}

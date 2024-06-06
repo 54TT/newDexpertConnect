@@ -15,13 +15,13 @@
     height: 100%;
     width: 18%;
     background-color: #060e0b;
-    border-right: 0.2px solid #687c69;
   }
 
   &-content {
     height: 100%;
-    flex: 1;
-
+    overflow: hidden;
+    border-left: 0.2px solid #687c69;
+    border-right: 0.2px solid #687c69;
     .tweetsBox {
       .post-item-img {
         margin: 0;
@@ -31,10 +31,8 @@
 
   &-right {
     width: 20%;
-    border-left: 0.2px solid #687c69;
     height: calc(100vh - 79px);
     overflow-y: auto;
-
     .ant-card {
       color: #d6dfd7;
 
@@ -47,13 +45,13 @@
         background: #181e1c;
         border: 0.2px solid #687c69;
         min-height: 34px !important;
-        padding: 0 10px;
+        padding: 0 10px !important;
       }
 
       &-body {
         background: #202221;
         border: 0.2px solid #687c69;
-        padding: 12px !important;
+        padding: 0 0 10px !important;
 
         .card-pair-info {
           display: flex;
@@ -61,10 +59,6 @@
           p {
             flex: 1;
             text-align: center;
-          }
-
-          p:first-child {
-            text-align: left;
           }
 
           justify-content: space-between;
@@ -332,16 +326,20 @@
 .modify-user-modal {
   .ant-modal-content {
     padding: 12px 0;
+
     > button {
       background: #879188;
       border-radius: 100%;
+
       &:hover {
         background: #879188;
       }
+
       span {
         color: #000000;
       }
     }
+
     .user-info-form {
       margin-top: 24px;
     }
@@ -399,6 +397,7 @@
           .ant-col {
             padding: 0 !important;
           }
+
           padding: 6px 10px;
           border: 0.4px solid #687c69;
           border-radius: 12px;
@@ -409,6 +408,7 @@
             border: none;
             color: #fff;
             padding: 0 !important;
+
             &::placeholder {
               color: gray;
             }
@@ -429,7 +429,12 @@
 }
 
 .follow-list {
-  padding: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.follow-list:hover {
+  background-color: #4b3232;
 }
 
 .community-user-action {
@@ -440,6 +445,7 @@
       &:hover {
         background: #00daff;
       }
+
       .ant-float-btn-icon {
         svg {
           color: #fff;
@@ -455,15 +461,16 @@
     right: 24px;
     bottom: 48px;
     z-index: 6;
-    > button {
-    }
   }
+
   .username-page {
     .information {
       margin: 24px 8%;
       display: block !important;
+
       .informationRight {
         margin-top: 12px;
+
         .following {
           img {
             width: 24px !important;
@@ -478,6 +485,7 @@
       width: 100%;
       aspect-ratio: 3 / 1;
     }
+
     &-info {
       display: flex;
       justify-content: space-between;
@@ -487,19 +495,23 @@
       right: 8%;
       bottom: -64px;
     }
+
     &-avatar {
       position: relative;
       top: -50px;
+
       img {
         width: 42px;
         height: 42px;
         border-radius: 100%;
       }
+
       &-cover {
         width: auto !important;
         padding: 0 2px !important;
       }
     }
+
     &-button {
       display: flex;
       align-items: center;

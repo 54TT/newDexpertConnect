@@ -1,0 +1,96 @@
+.animationDex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  div {
+    position: relative;
+  }
+
+  .bigImg {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .smallImg {
+    position: absolute;
+    top: 32%;
+    left: 20%;
+    animation: animateShowDex 4.5s ease-in-out 0s infinite;
+  }
+}
+
+@keyframes animateShowDex {
+  0% {
+    top: 32%;
+    left: 20%;
+  }
+
+  8% {
+    top: 32%;
+    left: 20%;
+  }
+
+  25% {
+    top: 50%;
+    left: 20%;
+  }
+
+  35% {
+    top: 50%;
+    left: 20%;
+  }
+
+  50% {
+    top: 36%;
+    left: 28%;
+  }
+
+  58% {
+    top: 36%;
+    left: 28%;
+  }
+
+  75% {
+    top: 32%;
+    left: 36%;
+  }
+
+  82% {
+    top: 32%;
+    left: 36%;
+  }
+
+  100% {
+    top: 32%;
+    left: 20%;
+  }
+}
+
+.Ellipsis {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  p:nth-child(2) {
+    margin: 0 5px;
+  }
+
+  .deep {
+    background-color: rgb(134, 240, 151);
+  }
+
+  .Shallow {
+    background-color: rgb(182, 246, 193);
+  }
+
+  .light {
+    background-color: rgb(219, 251, 224);
+  }
+
+  p {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+}

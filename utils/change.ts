@@ -1,3 +1,5 @@
+
+import dayjs from 'dayjs'
 export const formatDecimal = (number: any, count: any) => {
     const getSubscript = (number: any) => {
         // 定义下标字符的 Unicode 起始值（0 对应 U+2080）
@@ -34,57 +36,89 @@ export const formatDecimal = (number: any, count: any) => {
     let newNumber = numberStr.slice(count0, numberStr.length);
     if (count0 >= count) {
         const subscript = getSubscript(count0);
-        newNumber = `0.0${subscript}${newNumber}`;
+        newNumber = `0.0${subscript}${Number(newNumber) ? newNumber.slice(0, 4) : newNumber}`;
         return newNumber
     } else {
-        return number;
+        if (Number(number) > 0) {
+            return number.slice(0, 8);
+        } else {
+            return number;
+        }
     }
 }
 
 export const autoConvert = (number: any) => {
     if (Number(number) >= 1000000000000) {
-        return `${(number / 1000000000000).toFixed(2).replace(/\.?0*$/, '')}T`;
+        return `${(number / 1000000000000).toFixed(2).replace(/\.?0*$/, '')} T`;
     } else if (Number(number) >= 1000000000) {
-        return `${(number / 1000000000).toFixed(2).replace(/\.?0*$/, '')}B`;
+        return `${(number / 1000000000).toFixed(2).replace(/\.?0*$/, '')} B`;
     } else if (Number(number) >= 1000000) {
-        return `${(Number(number) / 1000000).toFixed(2).replace(/\.?0*$/, '')}M`;
-    } else if (Number(number) >= 1000) {
-        return `${(Number(number) / 1000).toFixed(2).replace(/\.?0*$/, '')}K`;
+        return `${(Number(number) / 1000000).toFixed(2).replace(/\.?0*$/, '')} M`;
+    } else if (Number(number) >= 10000) {
+        return `${(Number(number) / 1000).toFixed(2).replace(/\.?0*$/, '')} K`;
     } else {
-        return Number(number).toFixed(2).replace(/\.?0*$/, '');
+        if (Number(number) < 1) {
+            return Number(number).toFixed(5).replace(/\.?0*$/, '');
+        } else {
+            return Number(number).toFixed(2).replace(/\.?0*$/, '');
+        }
     }
 };
-
-export const setMany = (text: any) => {
-    let data: any
-    if (text.toString().includes('e-')) {
-        const v = Number(text).toFixed(100).replace(/\.?0+$/, "")
-        data = formatDecimal(v, 3)
-        if (data.length > 10) {
-            data = data.slice(0, 8)
-        }
-    } else if (text.toString().includes('e+')) {
-        const nu = Number(text)
-        data = autoConvert(Number(nu))
-    } else {
-        if (text && Number(text)) {
-            if (Number(text) < 1 && text.toString().includes('0000')) {
-                data = formatDecimal(text.toString(), 3)
-                if (data.length > 10) {
-                    data = data.slice(0, 6)
+export const setMany = (text: any, countdown?: string, languageChange?: string) => {
+    if (Number(text) == -100) {
+        return '-100'
+    } else if (countdown && languageChange) {
+        if (text && countdown) {
+            // 判断有几个月
+            const abc = dayjs(countdown).diff(dayjs(), 'month')
+            //  是否过了今天
+            const at = dayjs(countdown).isAfter(dayjs())
+            if (at) {
+                if (abc) {
+                    if (languageChange === 'zh_CN') {
+                        return text + '——' + countdown
+                    } else {
+                        return text.slice(8, 10) + '/' + text.slice(5, 7) + '/' + text.slice(0, 4) + '——' + countdown.slice(8, 10) + '/' + countdown.slice(5, 7) + '/' + countdown.slice(0, 4)
+                    }
+                } else {
+                    const date = dayjs(countdown).diff(dayjs())
+                    return Date.now() + Number(date)
                 }
             } else {
-                data = autoConvert(Number(text))
+                return '00:00:00 00:00:00'
             }
         } else {
-            data = 0
+            return '00:00:00 00:00:00'
         }
+    } else {
+        //  简化数字
+        let data: any
+        if (text.toString().includes('e-')) {
+            const v = Number(text).toFixed(100).replace(/\.?0+$/, "")
+            data = formatDecimal(v, 3)
+            if (data.length > 10) {
+                data = data.slice(0, 8)
+            }
+        } else if (text.toString().includes('e+')) {
+            const nu = Number(text)
+            data = autoConvert(Number(nu))
+        } else {
+            if (text && Number(text)) {
+                if (Number(text) < 1 && text.toString().includes('0.000')) {
+                    data = formatDecimal(text.toString(), 3)
+                } else {
+                    data = autoConvert(Number(text))
+                }
+            } else {
+                data = 0
+            }
+        }
+        return data
     }
-    return data
 }
 
 export const simplify = (name: any) => {
-    return name ? name.length > 13 ? name.slice(0, 5) + '...' + name.slice(-4) : name : ''
+    return name ? name.length > 12 ? name.slice(0, 4) + '...' + name.slice(-4) : name : ''
 }
 
 
