@@ -2,7 +2,7 @@ type ChainIdList = '1' | '11155111';
 
 export const config: Record<ChainIdList, any> = {
   '1': {
-    url: "https://eth-mainnet.g.alchemy.com/v2/yvW_w6m8ti-CX4tjL7XQYU_6BbIUX3O7",
+    rpcUrl: "https://eth-mainnet.g.alchemy.com/v2/yvW_w6m8ti-CX4tjL7XQYU_6BbIUX3O7",
     chainId: 1,
     verificationURL: "https://api.etherscan.io/api",
     verificationApiKey: "QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR",
@@ -20,7 +20,7 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: "0x0000000000000000000000000000000000000000",
   },
   '11155111': {
-    url: "https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC",
+    rpcUrl: "https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC",
     verificationURL: "https://api-sepolia.etherscan.io/api",
     chainId: 11155111,
     verificationApiKey: "QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR",
