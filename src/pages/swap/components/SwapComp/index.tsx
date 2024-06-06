@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/getAmountIn';
@@ -8,6 +8,7 @@ import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
 } from '@utils/contracts';
+import { debounce } from 'lodash';
 import './index.less';
 interface SwapCompType {
   onSwap: (data: any) => void;
@@ -41,16 +42,16 @@ function SwapComp({ onSwap }: SwapCompType) {
       0,
     ];
     if (type === 'in') {
-      const res = await getAmountOut.apply(null, param);
-      console.log(res.div(10 ** 18).toString());
+      const amount = await getAmountOut.apply(null, param);
+      setAmountOut(Number(amount.div(10 ** 18).toString()));
     }
     if (type === 'out') {
-      console.log('123');
-
-      const res = await getAmountIn.apply(null, param);
-      console.log(res);
+      const amount = await getAmountIn.apply(null, param);
+      setAmountIn(Number(amount.div(10 ** 18).toString()));
     }
   };
+
+  const getAmountDebounce = useCallback(debounce(getAmount, 300), []);
 
   return (
     <>
@@ -67,7 +68,7 @@ function SwapComp({ onSwap }: SwapCompType) {
           value={amountIn}
           onChange={(v) => {
             setAmountIn(v);
-            getAmount('in', v);
+            getAmountDebounce('in', v);
           }}
         />
         <div className="token-info">
@@ -89,7 +90,7 @@ function SwapComp({ onSwap }: SwapCompType) {
           value={amountOut}
           onChange={(v) => {
             setAmountIn(v);
-            getAmount('out', v);
+            getAmountDebounce('out', v);
           }}
         />
         <div className="token-info">
