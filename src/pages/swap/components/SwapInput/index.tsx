@@ -1,5 +1,4 @@
 import ProInputNumber from '@/components/ProInputNumber';
-import { Dispatch } from 'react';
 
 interface SwapInputType {
   value: number | null;

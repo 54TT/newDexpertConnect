@@ -1,10 +1,9 @@
-import { Button } from 'antd';
 import { useAccount, useWriteContract } from 'wagmi';
 import Request from '@/components/axios.tsx';
 import './index.less';
 import { UniversalRouterAbi } from '@/abis/UniversalRouterAbi';
 import { useState } from 'react';
-import SwapInput from './components/SwapInput';
+import SwapComp from './components/SwapComp';
 import './index.less';
 import Cookies from 'js-cookie';
 
@@ -95,7 +94,6 @@ function SniperBot() {
       },
     });
     const { commands, ethValue, inputs } = data;
-    console.log(commands, ethValue, inputs);
     const sendSwapTraction = () => {
       writeContract({
         address: '0xe6f721ce154114e4f6755e3c02c99dcba109e322',
@@ -106,41 +104,14 @@ function SniperBot() {
         args: [commands, inputs, BigInt(100000000000000)],
       });
     };
-    console.log('run here');
-
     sendSwapTraction();
   };
-
-  /* {
-    "commands": "0x0b",
-    "inputs": [
-        "0x0000000000000000000000004b42fbbae2b6ed434e8598a00b1fd7efabe5bce3000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-    ],
-    "ethValue": "10000000000000000"
-} */
 
   return (
     <div className="dapp-sniper">
       <div className="dapp-sniper-left"></div>
       <div className="dapp-sniper-right">
-        <div className="input-token send-token">
-          <div className="dapp-sniper-right-label">Send</div>
-          <SwapInput value={amountIn} onChange={(v) => setAmountIn(v)} />
-        </div>
-        <div className="input-token receive-token">
-          <div className="dapp-sniper-right-label">
-            <div>Receive</div>
-            <div></div>
-          </div>
-          <SwapInput value={amountOut} onChange={(v) => setAomuntOut(v)} />
-          <div className="token-info">
-            <div>1 Usdt</div>
-            <div>123</div>
-          </div>
-        </div>
-        <Button className="swap-button" onClick={() => handleSwap()}>
-          Swap
-        </Button>
+        <SwapComp />
       </div>
     </div>
   );
