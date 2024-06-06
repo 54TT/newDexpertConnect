@@ -27,3 +27,4 @@ export const getWethPrice = async (
     }
     return wethPrice
 }
+
