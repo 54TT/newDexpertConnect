@@ -107,11 +107,11 @@ function Date({ tableDta, time, setDta }: any) {
                                             <img loading={'lazy'} src={i} alt="" onClick={
                                                 throttle(function (e: any) {
                                                     e.stopPropagation()
-                                                    if (ind === 0) {
+                                                    if (index === 0) {
                                                         window.open('https://etherscan.io/token/' + record?.token0?.id)
-                                                    } else if (ind === 1) {
+                                                    } else if (index === 1) {
                                                         window.open('https://app.uniswap.org/#/swap?inputCurrency=' + record?.token1?.id + '&outputCurrency=' + record?.token1?.id)
-                                                    } else if (ind === 2) {
+                                                    } else if (index === 2) {
                                                         window.open('https://app.uncx.network/amm/uni-v2/pair/' + record?.id)
                                                     }
                                                 }, 1500, { 'trailing': false })} />

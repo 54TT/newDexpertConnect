@@ -46,7 +46,6 @@ function CommunityRight({ isShow }: any) {
     }
   `;
   const { loading, data, refetch } = useQuery(GET_DATA) as any;
-  console.log(data)
   useEffect(() => {
     const interval = setInterval(async () => {
       refetch();

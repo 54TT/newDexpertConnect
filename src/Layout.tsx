@@ -11,7 +11,6 @@ import * as encoding from "@walletconnect/encoding";
 import Request from './components/axios.tsx';
 import Client from "@walletconnect/sign-client";
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-import { ethers } from 'ethers';
 import { DEFAULT_APP_METADATA, DEFAULT_PROJECT_ID, getOptionalNamespaces, getRequiredNamespaces } from "../utils/default";
 import _ from 'lodash';
 import { MessageAll } from "./components/message.ts";
@@ -27,8 +26,7 @@ const Community = React.lazy(() => import('./pages/community/index.tsx'))
 const Active = React.lazy(() => import('./pages/activity/index.tsx'))
 const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'))
 const SpecialActive = React.lazy(() => import('./pages/activity/components/specialDetail.tsx'))
-import TonConnect, { isWalletInfoCurrentlyEmbedded, WalletInfoCurrentlyEmbedded } from '@tonconnect/sdk';
-import { QRCode, } from 'antd';
+import TonConnect, { isWalletInfoCurrentlyEmbedded, toUserFriendlyAddress, WalletInfoCurrentlyEmbedded } from '@tonconnect/sdk';
 const web3Modal = new Web3Modal({
     projectId: DEFAULT_PROJECT_ID,
     themeMode: "dark",
@@ -37,20 +35,24 @@ const web3Modal = new Web3Modal({
 export const CountContext = createContext(null);
 function Layout() {
     //ton钱包连接
-    const connector: any = new TonConnect();
-    // { manifestUrl: 'https://sniper-bot-frontend-test.vercel.app/tonconnect-manifest.json',}
-    const lian = async () => {
-        const walletsList = await connector.getWallets();
-        const embeddedWallet = walletsList.find(isWalletInfoCurrentlyEmbedded) as WalletInfoCurrentlyEmbedded;
-        if (embeddedWallet) {
-            connector.connect({ jsBridgeKey: embeddedWallet.jsBridgeKey });
-        } else {
-            const walletConnectionSource = {
-                universalLink: 'https://app.tonkeeper.com/ton-connect',
-                bridgeUrl: 'https://bridge.tonapi.io/bridge'
+    const connector: any = new TonConnect({ manifestUrl: 'https://sniper-bot-frontend-test.vercel.app/tonconnect-manifest.json', });
+    const tonConnect = async () => {
+        //  获取 授权的随机数
+        const at = { method: 'post', url: '/api/v1/token', data: {}, token: '' }
+        const token: any = await getAll(at)
+        if (token) {
+            const walletsList = await connector.getWallets();
+            const embeddedWallet = walletsList.find(isWalletInfoCurrentlyEmbedded) as WalletInfoCurrentlyEmbedded;
+            if (embeddedWallet) {
+                connector.connect({ jsBridgeKey: embeddedWallet.jsBridgeKey }, { tonProof: '你好' });
+            } else {
+                const walletConnectionSource = {
+                    universalLink: 'https://app.tonkeeper.com/ton-connect',
+                    bridgeUrl: 'https://bridge.tonapi.io/bridge'
+                }
+                const universalLink = connector.connect(walletConnectionSource, { tonProof: '你好' });
+                setQRCodeLink(universalLink)
             }
-            const universalLink = connector.connect(walletConnectionSource);
-            setQRCodeLink(universalLink)
         }
     }
     const duan = async () => {
@@ -59,21 +61,19 @@ function Layout() {
         }
     }
     //  监听ton的 变化
-    // useEffect(() => {
-    //     connector.onStatusChange((wallet: any) => {
-    //         if (!wallet) {
-    //             return;
-    //         }
-    //         const tonProof = wallet.connectItems?.tonProof;
-    //         if (tonProof) {
-    //             if ('proof' in tonProof) {
-    //                 // send proof to your backend
-    //                 // e.g. myBackendCheckProof(tonProof.proof, wallet.account);
-    //                 return;
-    //             }
-    //         }
-    //     });
-    // }, [connector])
+    useEffect(() => {
+        connector.onStatusChange((wallet: any) => {
+            if (wallet?.account) {
+                const rawAddress = wallet.account.address;
+                const tonProof = wallet.connectItems?.tonProof;
+                // 地址
+                const bouncableUserFriendlyAddress = toUserFriendlyAddress(rawAddress);
+                login(tonProof?.proof?.signature, bouncableUserFriendlyAddress, 'message', 'more')
+                setIsModalSet(false)
+                setQRCodeLink('')
+            }
+        });
+    }, [connector])
     const router = useLocation()
     const { t } = useTranslation();
     const { getAll, } = Request()
@@ -101,7 +101,7 @@ function Layout() {
     useEffect(() => {
         if (newAccount && user?.address) {
             if (newAccount !== user?.address) {
-                handleLogin()
+                // handleLogin()
             }
         }
     }, [newAccount]);
@@ -179,25 +179,22 @@ function Layout() {
         }
     }
     //  登录
-    const getMoneyEnd = _.throttle(function () {
-        if (typeof (window as any).ethereum != 'undefined') {
-            handleLogin()
-        } else {
-            MessageAll('warning', t('Market.inst'))
-            setLoad(false)
-        }
+    const getMoneyEnd = _.throttle(function (i: any) {
+        handleLogin(i)
     }, 800)
-    const handleLogin = async () => {
+    const handleLogin = async (i: any) => {
         try {
-            const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
-            // provider._isProvider   判断是否还有请求没有结束
-            // 请求用户授权连接钱包
-            await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-            const account = await provider.send("eth_requestAccounts", []);
+            const account = await i?.provider?.request({ method: "eth_requestAccounts" })
+            // const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
+            // // provider._isProvider   判断是否还有请求没有结束
+            // // 请求用户授权连接钱包
+            // await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+            // const account = await provider.send("eth_requestAccounts", []);
             // 连接的网络和链信息。
             // const chain = await provider.getNetwork();
             // 获取签名
-            const signer = await provider.getSigner();
+            // const signer = await provider.getSigner();
+
             // 判断是否有账号
             if (account.length > 0) {
                 // 判断是否是eth
@@ -207,8 +204,12 @@ function Layout() {
                     const token: any = await getAll(at)
                     if (token?.data && token?.status === 200) {
                         // 签名消息
+                        // const sign = await signer.signMessage(message)
                         const message = token?.data?.nonce
-                        const sign = await signer.signMessage(message)
+                        const sign = await i?.provider?.request({
+                            method: "personal_sign",
+                            params: [message, account[0]],
+                        });
                         login(sign, account[0], message, 'more')
                     } else {
                         setLoad(false)
@@ -384,7 +385,7 @@ function Layout() {
         };
     }, [router]);
     const value: any = {
-        connect,
+        connect, tonConnect,
         clear,
         onDisconnect,
         getMoneyEnd,
@@ -397,7 +398,7 @@ function Layout() {
         isModalOpen,
         setIsModalOpen,
         isModalSet,
-        setIsModalSet,
+        setIsModalSet, QRCodeLink, setQRCodeLink,
         languageChange,
         setLanguageChange, connector,
         setUserPar, switchChain, setSwitchChain, isLogin, activityOptions, setActivityOptions, isCopy, setIsCopy
@@ -413,9 +414,7 @@ function Layout() {
             </div>}>
                 <CountContext.Provider value={value}>
                     <Header />
-                    <p onClick={lian} style={{ marginTop: '50px', color: 'white', display: 'none' }}>连接</p>
                     <p onClick={duan} style={{ color: 'white', display: 'none' }}>断开</p>
-                    {QRCodeLink && <QRCode value={QRCodeLink} />}
                     <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
                         <Routes>
                             <Route path="/" element={<Index />} />
