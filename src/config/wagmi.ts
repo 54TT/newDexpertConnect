@@ -7,7 +7,6 @@ export const config = createConfig({
     [mainnet.id]: http(),
     [sepolia.id]: http(
       'https://eth-sepolia.g.alchemy.com/v2/3GkmJVXjddQflFMdyVbxbc80VjGn2R5n'
-      /*       'http://127.0.0.1:8545/' */
     ),
   },
 });
