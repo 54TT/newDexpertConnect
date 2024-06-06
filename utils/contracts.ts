@@ -3,6 +3,7 @@ import {config} from '../src/config/config'
 import {UniversalRouterAbi} from '../abis/UniversalRouterAbi'
 import {UniswapV2RouterAbi} from '../abis/UniswapV2RouterAbi'
 import {ERC20Abi} from '../abis/ERC20Abi'
+import {UniswapV2PairAbi} from '../abis/UniswapV2PairAbi'
 import { ethers } from "ethers";
 
 export const getUniversalRouterContract = async (
@@ -33,5 +34,16 @@ export const getERC20Contract = async (
     const rpcUrl = chainConfig.rpcUrl
     const provider = new ethers.JsonRpcProvider(rpcUrl)
     const contract = new ethers.Contract(tokenAddress, ERC20Abi, provider)
+    return contract;
+}
+
+export const getUniswapV2Contract = async (
+    chainId: string,
+    pairAddress: string,
+) => {
+    const chainConfig = config[chainId];
+    const rpcUrl = chainConfig.rpcUrl
+    const provider = new ethers.JsonRpcProvider(rpcUrl)
+    const contract = new ethers.Contract(pairAddress, UniswapV2PairAbi, provider)
     return contract;
 }
