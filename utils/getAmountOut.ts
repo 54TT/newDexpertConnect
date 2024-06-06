@@ -8,7 +8,7 @@ export const getAmountOut = async (
   uniswapV2RouterContract: any,
   tokenInAddress: string,
   tokenOutAddress: string,
-  outAmount: bigint,
+  amountOut: bigint,
   slippage: number,
   payType: number
 ) => {
@@ -32,7 +32,7 @@ export const getAmountOut = async (
   ) {
     const swapPath = [wethAddress, tokenOutAddress];
     amountIn = new Decimal(
-      (await uniswapV2RouterContract.getAmountsIn(outAmount, swapPath))[0]
+      (await uniswapV2RouterContract.getAmountsIn(amountOut, swapPath))[0]
     );
   } else if (
     tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
@@ -40,7 +40,7 @@ export const getAmountOut = async (
   ) {
     const swapPath = [tokenInAddress, wethAddress];
     amountIn = new Decimal(
-      (await uniswapV2RouterContract.getAmountsIn(outAmount, swapPath))[0]
+      (await uniswapV2RouterContract.getAmountsIn(amountOut, swapPath))[0]
     );
   } else if (
     ethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
@@ -50,11 +50,11 @@ export const getAmountOut = async (
   ) {
     const swapPath = [tokenInAddress, wethAddress, tokenOutAddress];
     let amountsOut = await uniswapV2RouterContract.getAmountsOut(
-      outAmount,
+      amountOut,
       swapPath
     );
   } else {
-    amountIn = new Decimal(outAmount.toString());
+    amountIn = new Decimal(amountOut.toString());
   }
 
   if (fee > 0) {
