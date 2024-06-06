@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 import {config} from '../src/config/config'
-import {getERC20Contract, getUniswapV2Contract} from './contracts'
+import {getERC20Contract, getUniswapV2Contract, getUniswapV2FactoryContract} from './contracts'
 import { getWethPrice } from './getWethPrice';
 
 export const getTokenPrice = async (
