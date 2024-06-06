@@ -23,7 +23,8 @@
     "paths": {
       "@/*": ["src/*"],
       "@components/*": ["src/components/*"],
-      "@abis": ["abis/*"]
+      "@abis/*": ["abis/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "include": ["src", "abis"],

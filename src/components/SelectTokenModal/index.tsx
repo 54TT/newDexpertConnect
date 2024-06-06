@@ -5,15 +5,11 @@ interface SelectTokenModalType {
 }
 
 function SelectTokenModal({ onChange }: SelectTokenModalType) {
-
-
-  const onchange = () => {
-    onChange()
-  }
-
-  return <Modal >
-    <SelectToken onChange={(data) => } />
-  </Modal>;
+  return (
+    <Modal>
+      <SelectToken onChange={onChange} />
+    </Modal>
+  );
 }
 
 export default SelectTokenModal;

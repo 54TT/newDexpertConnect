@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
+console.log(__dirname);
+
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -12,6 +14,7 @@ export default defineConfig({
       // @component 替代为 src/component
       '@components': resolve(__dirname, 'src/components'),
       '@abis': resolve(__dirname, 'abis'),
+      '@utils': resolve(__dirname, 'utils'),
     },
   },
   css: {

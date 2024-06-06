@@ -7,9 +7,6 @@ import SwapComp from './components/SwapComp';
 import './index.less';
 import Cookies from 'js-cookie';
 
-const mockTokenIn = '0x0000000000000000000000000000000000000000';
-const mockTokenOut = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
-
 function SniperBot() {
   const { writeContract } = useWriteContract();
   const { getAll } = Request();
@@ -18,18 +15,6 @@ function SniperBot() {
   const [amountOut, setAomuntOut] = useState<number | null>(0.01);
   const getAomuntOut = async () => {
     console.log('123123');
-
-    const res = await getAll({
-      method: 'post',
-      url: '/api/v1/amounts/out',
-      data: {
-        amountIn,
-        tokenIn: mockTokenIn,
-        tokenOut: mockTokenOut,
-        payType: 0,
-      },
-    });
-    console.log(res);
   };
 
   const handleSwap = async () => {
@@ -52,7 +37,7 @@ function SniperBot() {
     });
   }; */
 
-  const getSwapGas = async () => {
+  /* const getSwapGas = async () => {
     const token = Cookies.get('token');
 
     const res = await getAll({
@@ -105,13 +90,13 @@ function SniperBot() {
       });
     };
     sendSwapTraction();
-  };
+  }; */
 
   return (
     <div className="dapp-sniper">
       <div className="dapp-sniper-left"></div>
       <div className="dapp-sniper-right">
-        <SwapComp />
+        <SwapComp onSwap={(data) => console.log(data)} />
       </div>
     </div>
   );

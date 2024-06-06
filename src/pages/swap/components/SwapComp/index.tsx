@@ -1,14 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
+import { getAmountIn } from '@utils/getAmountIn';
+import { getAmountOut } from '@utils/getAmountOut';
+import { getWethPrice } from '@utils/getWethPrice';
+import {
+  getUniswapV2RouterContract,
+  getUniversalRouterContract,
+} from '@utils/contracts';
 import './index.less';
 interface SwapCompType {
   onSwap: (data: any) => void;
 }
-
+const mockTokenIn = '0x0000000000000000000000000000000000000000';
+const mockTokenOut = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
 function SwapComp({ onSwap }: SwapCompType) {
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
+  const [tokenIn, setTokenIn] = useState<string>(mockTokenIn);
+  const [tokenOut, setTokenOut] = useState<string>(mockTokenOut);
+
+  useEffect(() => {
+    getWeth();
+  }, []);
+
+  const getWeth = async () => {
+    const res = await getWethPrice('11155111');
+    console.log(res);
+  };
+
+  const getAmount = async (type: 'in' | 'out', value: number) => {
+    const param = [
+      '11155111',
+      await getUniversalRouterContract('11155111'),
+      await getUniswapV2RouterContract('11155111'),
+      tokenIn,
+      tokenOut,
+      BigInt((value as number) * 10 ** 18),
+      0.02,
+      0,
+    ];
+    if (type === 'in') {
+      const res = await getAmountOut.apply(null, param);
+      console.log(res.div(10 ** 18).toString());
+    }
+    if (type === 'out') {
+      console.log('123');
+
+      const res = await getAmountIn.apply(null, param);
+      console.log(res);
+    }
+  };
 
   return (
     <>
@@ -21,7 +63,13 @@ function SwapComp({ onSwap }: SwapCompType) {
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
         </div>
-        <ProInputNumber value={amountIn} onChange={(v) => setAmountIn(v)} />
+        <ProInputNumber
+          value={amountIn}
+          onChange={(v) => {
+            setAmountIn(v);
+            getAmount('in', v);
+          }}
+        />
         <div className="token-info">
           <div>1 USDT</div>
           <div>Balance: 0</div>
@@ -37,7 +85,13 @@ function SwapComp({ onSwap }: SwapCompType) {
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
         </div>
-        <ProInputNumber value={amountOut} onChange={(v) => setAmountOut(v)} />
+        <ProInputNumber
+          value={amountOut}
+          onChange={(v) => {
+            setAmountIn(v);
+            getAmount('out', v);
+          }}
+        />
         <div className="token-info">
           <div>1 USDT</div>
           <div>Balance: 0</div>
@@ -45,7 +99,7 @@ function SwapComp({ onSwap }: SwapCompType) {
       </div>
       <Button
         className="swap-button"
-        onClick={() => onSwap({ amountIn, amountOut })}
+        onClick={() => onSwap({ amountIn, amountOut, tokenIn, tokenOut })}
       >
         Swap
       </Button>
