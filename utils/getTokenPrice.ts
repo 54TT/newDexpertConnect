@@ -28,11 +28,14 @@ export const getTokenPrice = async (
 
     const pairToken1Decimal = await pairToken1Contract.decimal()
 
+    const reserve0 = new Decimal(pairReserves[0]).div(new Decimal(10 ** pairToken0Decimal))
+    const reserve1 = new Decimal(pairReserves[1]).div(new Decimal(10 ** pairToken1Decimal))
+
     let price = new Decimal(0)
     if (pairToken0Address.toLowerCase() === wethAddress.toLowerCase() && pairToken1Address.toLowerCase() !== wethAddress.toLowerCase()) {
-        price = new Decimal(pairReserves.receive0).div(new Decimal(10 ** pairToken0Decimal)).div(new Decimal(pairReserves.receive1)).div(new Decimal(10 ** pairToken1Decimal))
+        price = reserve0.div(reserve1)
     } else if (pairToken1Address.toLowerCase() === wethAddress.toLowerCase() && pairToken0Address.toLowerCase() !== wethAddress.toLowerCase()) {
-        price = new Decimal(pairReserves.receive1).div(new Decimal(10 ** pairToken1Decimal)).div(new Decimal(pairReserves.receive0)).div(new Decimal(10 ** pairToken0Decimal))
+        price = reserve1.div(reserve0)
     } else {
         price = new Decimal(0)
     }

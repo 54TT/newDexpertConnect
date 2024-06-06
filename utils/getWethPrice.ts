@@ -17,19 +17,27 @@ export const getWethPrice = async (chainId: string) => {
 
   const wethUsdtPairToken0 = await wethUsdtPairContract.token0();
 
+  const wethUsdtPairToken1 = await wethUsdtPairContract.token1();
+
+  console.log("wethUsdtPairToken0:",wethUsdtPairToken0)
   const wethUsdtReserves = await wethUsdtPairContract.getReserves();
 
+  console.log("wethUsdtReserves:",wethUsdtReserves)
   let wethPrice = new Decimal(0);
-  if (wethUsdtPairToken0.toLowerCase() === wethAddress.toLowerCase()) {
-    wethPrice = new Decimal(wethUsdtReserves[1].toString())
+  if (wethUsdtPairToken0.toLowerCase() === wethAddress.toLowerCase() && wethUsdtPairToken1.toLowerCase() !== wethAddress.toLowerCase()) {
+      const usdtReserves = new Decimal(wethUsdtReserves[1].toString())
       .div(new Decimal(10 ** usdtDecimal))
-      .div(new Decimal(wethUsdtReserves[0].toString()))
-      .div(new Decimal(10 ** wethDecimal));
+      const wethReserves = new Decimal(wethUsdtReserves[0].toString())
+      .div(new Decimal(10 ** wethDecimal)).toString()
+      wethPrice = usdtReserves.div(wethReserves);
+  } else if  (wethUsdtPairToken0.toLowerCase() !== wethAddress.toLowerCase() && wethUsdtPairToken1.toLowerCase() === wethAddress.toLowerCase()) {
+    const usdtReserves = new Decimal(wethUsdtReserves[0].toString())
+    .div(new Decimal(10 ** usdtDecimal))
+    const wethReserves = new Decimal(wethUsdtReserves[1].toString())
+    .div(new Decimal(10 ** wethDecimal)).toString()
+    wethPrice = usdtReserves.div(wethReserves);
   } else {
-    wethPrice = new Decimal(wethUsdtReserves[0].toString())
-      .div(new Decimal(10 ** wethDecimal))
-      .div(new Decimal(wethUsdtReserves[1].toString()))
-      .div(new Decimal(10 ** usdtDecimal));
+    wethPrice = new Decimal(0)
   }
   return wethPrice.toString();
 };
