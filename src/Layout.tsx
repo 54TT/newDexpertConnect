@@ -415,7 +415,7 @@ function Layout() {
                     <Header />
                     <p onClick={lian} style={{ marginTop: '50px', color: 'white', display: 'none' }}>连接</p>
                     <p onClick={duan} style={{ color: 'white', display: 'none' }}>断开</p>
-                    {QRCodeLink&& <QRCode value={QRCodeLink} />}
+                    {QRCodeLink && <QRCode value={QRCodeLink} />}
                     <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
                         <Routes>
                             <Route path="/" element={<Index />} />
