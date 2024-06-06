@@ -1,7 +1,7 @@
 import { useAccount, useWriteContract } from 'wagmi';
 import Request from '@/components/axios.tsx';
 import './index.less';
-import { UniversalRouterAbi } from '@/abis/UniversalRouterAbi';
+import { UniversalRouterAbi } from '@abis/UniversalRouterAbi';
 import { useState } from 'react';
 import SwapComp from './components/SwapComp';
 import './index.less';

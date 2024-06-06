@@ -13,9 +13,25 @@
     }
   }
   &-token {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     &-label {
       color: @desc-font-color;
       font-weight: 400;
+    }
+    &-icon {
+      background-color: #1e1e1e;
+      width: 80px;
+      padding: 2px;
+      border-radius: 20px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      .eth-logo {
+        width: 24px;
+        height: 24px;
+      }
     }
   }
   .swap-button {
@@ -37,6 +53,7 @@
     .token-info {
       margin-bottom: 42px;
     }
+    position: relative;
   }
   .receive-token {
     width: 400px;
@@ -58,5 +75,13 @@
     color: @desc-font-color;
     display: flex;
     justify-content: space-between;
+    font-size: 12px;
+    font-weight: 300;
+  }
+  .exchange-img {
+    width: 16px;
+    position: absolute;
+    bottom: 22px;
+    left: calc(50% - 8px);
   }
 }
