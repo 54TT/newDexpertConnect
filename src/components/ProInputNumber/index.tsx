@@ -1,6 +1,6 @@
-import { InputNumber, InputNumberProps } from "antd";
-import classnames from "classnames";
-import "./index.less";
+import { InputNumber, InputNumberProps } from 'antd';
+import classnames from 'classnames';
+import './index.less';
 interface ProInputPropsType {
   inputNumberProps?: InputNumberProps<number>;
   value: number | null;
@@ -17,7 +17,7 @@ function ProInput({
   className,
 }: ProInputPropsType) {
   return (
-    <div className={classnames("pro-input", className)} style={style}>
+    <div className={classnames('pro-input', className)} style={style}>
       <InputNumber
         {...inputNumberProps}
         value={value}

@@ -30,7 +30,7 @@ import { MessageAll } from './components/message.ts';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
-import SniperBot from './pages/sniperBot/index.tsx';
+import SniperBot from './pages/swap/index.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { config } from './config/wagmi.ts';

@@ -1,0 +1,58 @@
+@import url('@/style/variable.less');
+@desc-font-color: #8c8c8c;
+@button-color: #86f097;
+.dapp-sniper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  > div {
+    color: #fff !important;
+    font-size: 14px;
+  }
+  &-right {
+    .pro-input {
+      width: 100%;
+      margin-top: 25px;
+      .ant-input-number {
+        width: 100%;
+        input {
+          font-size: 32px;
+        }
+      }
+    }
+    &-label {
+      color: @desc-font-color;
+      font-weight: 400;
+    }
+    .swap-button {
+      .action-button(@button-color);
+    }
+    .send-token {
+      width: 400px;
+      aspect-ratio: 360/162;
+      background-image: url(/swapBoxUp.png);
+      background-repeat: no-repeat;
+      background-size: 100%;
+      margin-bottom: -34px;
+      margin-top: 20vh;
+    }
+    .receive-token {
+      width: 400px;
+      aspect-ratio: 360/138;
+      background-image: url(/swapBoxDown.png);
+      background-repeat: no-repeat;
+      background-size: 100%;
+    }
+    .input-token {
+      padding: 12px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .token-info {
+      color: @desc-font-color;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}

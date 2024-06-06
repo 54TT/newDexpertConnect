@@ -1,2 +1,11 @@
 @backgroundColor: #0a1511;
 @modalBackgroundColor: #060e0b;
+
+.action-button(@color) {
+  background-color: @color;
+  border: none;
+
+  &:hover {
+    background-color: @color !important;
+  }
+}
