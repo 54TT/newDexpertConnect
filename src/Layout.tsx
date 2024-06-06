@@ -180,7 +180,7 @@ function Layout() {
   }, 800);
   const handleLogin = async () => {
     try {
-      const provider: any = new ethers.providers.Web3Provider(
+      const provider: any = new ethers.BrowserProvider(
         (window as any).ethereum
       );
       // provider._isProvider   判断是否还有请求没有结束
