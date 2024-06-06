@@ -7,11 +7,11 @@ export default defineConfig({
   resolve: {
     alias: {
       // 可以通过别名导入 ethers.js，以避免直接引用 node_modules 中的路径
-      ethers: 'ethers/dist/ethers.esm.min.js',
       // @ 替代为 src
       '@': resolve(__dirname, 'src'),
       // @component 替代为 src/component
       '@components': resolve(__dirname, 'src/components'),
+      '@abis': resolve(__dirname, 'abis'),
     },
   },
   css: {

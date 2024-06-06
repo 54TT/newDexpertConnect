@@ -9,7 +9,7 @@ interface ProInputPropsType {
   className?: string;
 }
 
-function ProInput({
+function ProInputNumber({
   value,
   inputNumberProps,
   onChange,
@@ -27,4 +27,4 @@ function ProInput({
   );
 }
 
-export default ProInput;
+export default ProInputNumber;
