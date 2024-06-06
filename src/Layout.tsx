@@ -1,5 +1,5 @@
 import Header, { I18N_Key } from './components/header.tsx'
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import './style/all.less';
 import React, { createContext, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { getAppMetadata, getSdkError } from "@walletconnect/utils";
@@ -74,7 +74,8 @@ function Layout() {
             }
         });
     }, [connector])
-    const router = useLocation()
+    const router: any = useLocation()
+    const [search] = useSearchParams();
     const { t } = useTranslation();
     const { getAll, } = Request()
     const history = useNavigate()
@@ -154,13 +155,13 @@ function Layout() {
     }
     const login = async (sign: string, account: string, message: string, name: string) => {
         try {
-            // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
+            const inviteCode = search.get('inviteCode') ? search.get('inviteCode') : cookie.get('inviteCode') || ''
             const res = await getAll({
                 method: 'post', url: '/api/v1/login', data: {
                     signature: sign,
                     addr: account,
                     message,
-                    inviteCode: ''
+                    inviteCode
                 }, token: ''
             })
             if (res?.status === 200 && res?.data?.accessToken) {
@@ -194,7 +195,6 @@ function Layout() {
             // const chain = await provider.getNetwork();
             // 获取签名
             // const signer = await provider.getSigner();
-
             // 判断是否有账号
             if (account.length > 0) {
                 // 判断是否是eth
@@ -370,6 +370,10 @@ function Layout() {
     }
     useEffect(() => {
         changeBody()
+        const getI = search.get('inviteCode')
+        if (getI) {
+            cookie.set('inviteCode', getI)
+        }
         const handleResize = () => {
             changeBody()
         };

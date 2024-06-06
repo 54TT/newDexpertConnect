@@ -20,7 +20,6 @@ function HeaderModal() {
         setUserPar, tonConnect
     }: any = useContext(CountContext);
     const [list, setList] = useState<any>([])
-    
     function onAnnouncement(event?: any) {
         list.push(event?.detail)
         setList([...list])
@@ -30,7 +29,6 @@ function HeaderModal() {
         window.dispatchEvent(new Event("eip6963:requestProvider"));
         return () => window.removeEventListener("eip6963:announceProvider", onAnnouncement)
     }, [])
-
     const { t } = useTranslation();
     const { getAll } = Request()
     const handleOk = () => {
