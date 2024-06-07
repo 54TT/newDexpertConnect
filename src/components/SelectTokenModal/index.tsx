@@ -1,12 +1,12 @@
-import { Modal } from 'antd';
+import { Modal, ModalProps } from 'antd';
 import SelectToken from '../SelectToken';
-interface SelectTokenModalType {
+interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;
 }
 
-function SelectTokenModal({ onChange }: SelectTokenModalType) {
+function SelectTokenModal({ onChange, ...props }: SelectTokenModalType) {
   return (
-    <Modal>
+    <Modal {...props} footer={null}>
       <SelectToken onChange={onChange} />
     </Modal>
   );

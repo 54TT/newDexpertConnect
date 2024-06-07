@@ -57,12 +57,12 @@ function SniperBot() {
         chainId: 1,
       },
     });
-  };
+  }; */
 
   const getSwapBytes = async () => {
     const token = Cookies.get('token');
 
-    const { data } = await getAll({
+    /* const { data } = await getAll({
       method: 'post',
       url: '/api/v1/dapp/swap',
       token,
@@ -88,9 +88,9 @@ function SniperBot() {
         value: ethValue,
         args: [commands, inputs, BigInt(100000000000000)],
       });
-    };
+    }; */
     sendSwapTraction();
-  }; */
+  };
 
   return (
     <div className="dapp-sniper">

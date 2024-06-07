@@ -22,7 +22,8 @@ export const config: Record<ChainIdList, any> = {
   },
   '11155111': {
     rpcUrl:
-      'https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC',
+      /* 'https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC' */
+      'https://sepolia.drpc.org',
     verificationURL: 'https://api-sepolia.etherscan.io/api',
     chainId: 11155111,
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
