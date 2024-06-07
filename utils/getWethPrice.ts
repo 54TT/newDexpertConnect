@@ -1,10 +1,10 @@
-import { BigNumber } from 'ethers';
+import { Decimal } from 'decimal.js'
 import { config } from '../src/config/config';
-import { getERC20Contract, getUniswapV2Contract } from './contracts';
+import { getUniswapV2Contract } from './contracts';
+import { reduceFromDecimalsBN } from './utils'
 
 export const getWethPrice = async (chainId: string) => {
   const chainConfig = config[chainId];
-  const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
   const wethDecimal = chainConfig.wethDecimal;
   const usdtDecimal = chainConfig.usdtDecimal;
@@ -23,21 +23,17 @@ export const getWethPrice = async (chainId: string) => {
   const wethUsdtReserves = await wethUsdtPairContract.getReserves();
 
   console.log("wethUsdtReserves:",wethUsdtReserves)
-  let wethPrice = BigNumber.from(0);
+  let wethPrice = new Decimal(0);
   if (wethUsdtPairToken0.toLowerCase() === wethAddress.toLowerCase() && wethUsdtPairToken1.toLowerCase() !== wethAddress.toLowerCase()) {
-      const usdtReserves = BigNumber.from(wethUsdtReserves[1].toString())
-      .div(BigNumber.from(10 ** usdtDecimal))
-      const wethReserves = BigNumber.from(wethUsdtReserves[0].toString())
-      .div(BigNumber.from(10 ** wethDecimal)).toString()
+      const usdtReserves = reduceFromDecimalsBN(wethUsdtReserves[1], usdtDecimal)
+      const wethReserves = reduceFromDecimalsBN(wethUsdtReserves[0], wethDecimal)
       wethPrice = usdtReserves.div(wethReserves);
   } else if  (wethUsdtPairToken0.toLowerCase() !== wethAddress.toLowerCase() && wethUsdtPairToken1.toLowerCase() === wethAddress.toLowerCase()) {
-    const usdtReserves = BigNumber.from(wethUsdtReserves[0].toString())
-    .div(BigNumber.from(10 ** usdtDecimal))
-    const wethReserves = BigNumber.from(wethUsdtReserves[1].toString())
-    .div(BigNumber.from(10 ** wethDecimal)).toString()
+    const usdtReserves = reduceFromDecimalsBN(wethUsdtReserves[0], usdtDecimal)
+    const wethReserves = reduceFromDecimalsBN(wethUsdtReserves[1], wethDecimal)
     wethPrice = usdtReserves.div(wethReserves);
   } else {
-    wethPrice = BigNumber.from(0)
+    wethPrice = new Decimal(0)
   }
   return wethPrice.toString();
 };

@@ -1,7 +1,9 @@
-import Decimal from 'decimal.js';
+import { BigNumber } from 'ethers';
 import { config } from '../src/config/config';
 import { getERC20Contract, getUniswapV2Contract } from './contracts';
 import { getWethPrice } from './getWethPrice';
+import { reduceFromDecimalsBN } from './utils'
+import Decimal from 'decimal.js';
 
 export const getTokenPrice = async (chainId: string, pairAddress: string) => {
   const chainConfig = config[chainId];
@@ -25,12 +27,8 @@ export const getTokenPrice = async (chainId: string, pairAddress: string) => {
 
   const pairToken1Decimal = await pairToken1Contract.decimal();
 
-  const reserve0 = new Decimal(pairReserves[0]).div(
-    new Decimal(10 ** pairToken0Decimal)
-  );
-  const reserve1 = new Decimal(pairReserves[1]).div(
-    new Decimal(10 ** pairToken1Decimal)
-  );
+  const reserve0 = reduceFromDecimalsBN(pairReserves[0], pairToken0Decimal)
+  const reserve1 = reduceFromDecimalsBN(pairReserves[1], pairToken1Decimal)
 
   let price = new Decimal(0);
   if (

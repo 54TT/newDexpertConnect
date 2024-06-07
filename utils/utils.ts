@@ -1,4 +1,6 @@
-import Decimal from 'decimal.js';
+import { BigNumber } from 'ethers'
+import bn from 'bignumber.js'
+import { Decimal } from 'decimal.js'
 
 export function getQueryParams() {
   const queryString = window.location.search;
@@ -16,9 +18,11 @@ export const formatAddress = (address: string) => {
   return `${address.slice(0,5)}...${address.slice(address.length - 4, address.length)}`
 }
 
-export function convertTokenToDecimal(tokenAmount: Decimal, exchangeDecimals: number): Decimal {
-  if (exchangeDecimals <= 1) {
-    return tokenAmount
-  }
-  return tokenAmount.div(10 ** exchangeDecimals)
+export function expandToDecimalsBN(n: Decimal, decimals: number): BigNumber {
+  // use bn intermediately to allow decimals in intermediate calculations
+  return BigNumber.from(new bn(n.toString()).times(new bn(10).pow(decimals)).toFixed())
+}
+
+export function reduceFromDecimalsBN(n: BigNumber, decimals: number): Decimal {
+  return new Decimal(new bn(n.toString()).div(new bn(10).pow(decimals)).toString());
 }
