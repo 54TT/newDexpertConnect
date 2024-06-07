@@ -53,7 +53,7 @@
     .token-info {
       margin-bottom: 42px;
     }
-    position: relative;
+    z-index: 1;
   }
   .receive-token {
     width: 400px;
@@ -64,12 +64,14 @@
     .token-info {
       margin-bottom: 18px;
     }
+    z-index: 2;
   }
   .input-token {
     padding: 12px 14px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
   }
   .token-info {
     color: @desc-font-color;
@@ -81,7 +83,10 @@
   .exchange-img {
     width: 16px;
     position: absolute;
-    bottom: 22px;
-    left: calc(50% - 8px);
+    cursor: pointer;
+    bottom: 16px;
+    padding: 4px;
+    left: calc(50% - 12px);
+    z-index: 2;
   }
 }

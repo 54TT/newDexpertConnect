@@ -3,13 +3,15 @@ import { Button } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/getAmountIn';
 import { getAmountOut } from '@utils/getAmountOut';
-import { getWethPrice } from '@utils/getWethPrice';
+import { getTokenPrice } from '@utils/getTokenPrice';
+import { getPairAddress } from '@utils/getPairAddress';
 import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
 } from '@utils/contracts';
 import { debounce } from 'lodash';
 import './index.less';
+import SelectTokenModal from '@/components/SelectTokenModal';
 interface SwapCompType {
   onSwap: (data: any) => void;
 }
@@ -20,15 +22,30 @@ function SwapComp({ onSwap }: SwapCompType) {
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<string>(mockTokenIn);
   const [tokenOut, setTokenOut] = useState<string>(mockTokenOut);
+  const [openSelect, setOpenSelect] = useState(false);
 
-  useEffect(() => {
+  /* useEffect(() => {
     getWeth();
   }, []);
 
   const getWeth = async () => {
     const res = await getWethPrice('11155111');
     console.log(res);
-  };
+  }; */
+
+  /*   const getTKPrice = async () => {
+    const pairAddress = await getPairAddress(
+      '11155111',
+      '0xb72bc8971d5e595776592e8290be6f31937097c6'
+    );
+    console.log(pairAddress);
+
+    const res = await getTokenPrice('11155111', pairAddress);
+    console.log(res.toString());
+  }; */
+  /*   useEffect(() => {
+    getTKPrice();
+  }, []); */
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
     const param = [
@@ -58,7 +75,10 @@ function SwapComp({ onSwap }: SwapCompType) {
       <div className="input-token send-token">
         <div className="dapp-sniper-right-token">
           <div className="dapp-sniper-right-token-label">Send</div>
-          <div className="dapp-sniper-right-token-icon">
+          <div
+            className="dapp-sniper-right-token-icon"
+            onClick={() => setOpenSelect(true)}
+          >
             <img className="eth-logo" src="/eth1.svg" alt="" />
             <span>ETH</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
@@ -80,7 +100,10 @@ function SwapComp({ onSwap }: SwapCompType) {
       <div className="input-token receive-token">
         <div className="dapp-sniper-right-token">
           <div className="dapp-sniper-right-token-label">Receive</div>
-          <div className="dapp-sniper-right-token-icon">
+          <div
+            className="dapp-sniper-right-token-icon"
+            onClick={() => setOpenSelect(true)}
+          >
             <img className="eth-logo" src="/eth1.svg" alt="" />
             <span>ETC</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
@@ -104,6 +127,10 @@ function SwapComp({ onSwap }: SwapCompType) {
       >
         Swap
       </Button>
+      <SelectTokenModal
+        open={openSelect}
+        onChange={(data) => console.log(data)}
+      />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js';
+import { BigNumber } from 'ethers';
 import { config } from '../src/config/config';
 import { getERC20Contract } from './contracts';
 
@@ -8,7 +8,7 @@ export const getAmountIn = async (
   uniswapV2RouterContract: any,
   tokenInAddress: string,
   tokenOutAddress: string,
-  inAmount: bigint,
+  amountIn: bigint,
   slippage: number,
   payType: number
 ) => {
@@ -27,7 +27,7 @@ export const getAmountIn = async (
     fee = fastTradeFeeBps / feeBaseBps;
   }
 
-  let amountOut: Decimal = new Decimal(0);
+  let amountOut: BigNumber = BigNumber.from(0);
 
   if (
     ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
@@ -35,20 +35,20 @@ export const getAmountIn = async (
   ) {
     const swapPath = [wethAddress, tokenOutAddress];
     let amountsOut = await uniswapV2RouterContract.getAmountsOut(
-      inAmount,
+      amountIn,
       swapPath
     );
-    amountOut = new Decimal(amountsOut[amountsOut.length - 1]);
+    amountOut = BigNumber.from(amountsOut[amountsOut.length - 1]);
   } else if (
     tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
     tokenOutAddress.toLowerCase() === ethAddress.toLowerCase()
   ) {
     const swapPath = [tokenInAddress, wethAddress];
     let amountsOut = await uniswapV2RouterContract.getAmountsOut(
-      inAmount,
+      amountIn,
       swapPath
     );
-    amountOut = new Decimal(amountsOut[amountsOut.length - 1]);
+    amountOut = BigNumber.from(amountsOut[amountsOut.length - 1]);
   } else if (
     ethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
     ethAddress.toLowerCase() !== tokenOutAddress.toLowerCase() &&
@@ -57,12 +57,12 @@ export const getAmountIn = async (
   ) {
     const swapPath = [tokenInAddress, wethAddress, tokenOutAddress];
     let amountsOut = await uniswapV2RouterContract.getAmountsOut(
-      inAmount,
+      amountIn,
       swapPath
     );
-    amountOut = new Decimal(amountsOut[amountsOut.length - 1]);
+    amountOut = BigNumber.from(amountsOut[amountsOut.length - 1]);
   } else {
-    amountOut = new Decimal(inAmount.toString());
+    amountOut = BigNumber.from(amountIn.toString());
   }
 
   if (fee > 0) {

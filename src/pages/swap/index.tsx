@@ -1,12 +1,18 @@
 import { useAccount, useWriteContract } from 'wagmi';
 import Request from '@/components/axios.tsx';
 import './index.less';
-import { UniversalRouterAbi } from '@abis/UniversalRouterAbi';
+import { getSwapEthAndWeth } from '@utils/getSwapEthAndWeth';
+import { getSwapExactInBytes } from '@utils/getSwapExactInBytes';
+import { getSwapExactOutBytes } from '@utils/getSwapExactOutBytes';
 import { useState } from 'react';
 import SwapComp from './components/SwapComp';
 import './index.less';
 import Cookies from 'js-cookie';
+import { getUniversalRouterContract } from '@utils/contracts';
+import { ethToWei } from '@utils/convertEthUnit';
 
+const mockRecipentAddress = '0x4b42fbbae2b6ed434e8598a00b1fd7efabe5bce3';
+const mockChainId = '11155111';
 function SniperBot() {
   const { writeContract } = useWriteContract();
   const { getAll } = Request();
@@ -57,12 +63,14 @@ function SniperBot() {
         chainId: 1,
       },
     });
-  };
+  }; */
 
-  const getSwapBytes = async () => {
+  const getSwapBytes = async (data: any) => {
     const token = Cookies.get('token');
-
-    const { data } = await getAll({
+    console.log(data);
+    const { amountIn, amountOut, tokenIn, tokenOut } = data;
+    /*     getSwapEthAndWeth('11155111', token); */
+    /* const { data } = await getAll({
       method: 'post',
       url: '/api/v1/dapp/swap',
       token,
@@ -88,15 +96,39 @@ function SniperBot() {
         value: ethValue,
         args: [commands, inputs, BigInt(100000000000000)],
       });
-    };
-    sendSwapTraction();
-  }; */
+    }; */
+    /*   sendSwapTraction(); */
+    console.log(ethToWei(amountIn).toString(), ethToWei(amountOut).toString());
+
+    try {
+      const res = await getSwapEthAndWeth(
+        mockChainId,
+        tokenIn,
+        tokenOut,
+        ethToWei(amountIn),
+        ethToWei(amountOut),
+        mockRecipentAddress
+      );
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+
+    /*  const universalRouterContract =
+      await getUniversalRouterContract(mockChainId);
+    const tx = await universalRouterContract.execute(
+      commands,
+      inputs,
+      BigInt(1000000000000)
+    );
+    console.log(tx); */
+  };
 
   return (
     <div className="dapp-sniper">
       <div className="dapp-sniper-left"></div>
       <div className="dapp-sniper-right">
-        <SwapComp onSwap={(data) => console.log(data)} />
+        <SwapComp onSwap={(data) => getSwapBytes(data)} />
       </div>
     </div>
   );

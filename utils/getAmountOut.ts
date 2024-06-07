@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js';
+import { BigNumber } from 'ethers';
 import { config } from '../src/config/config';
 import { getERC20Contract } from './contracts';
 
@@ -24,14 +24,14 @@ export const getAmountOut = async (
     fee = fastTradeFeeBps / feeBaseBps;
   }
 
-  let amountIn: Decimal = new Decimal(0);
+  let amountIn: BigNumber = BigNumber.from(0);
 
   if (
     ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
     wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
   ) {
     const swapPath = [wethAddress, tokenOutAddress];
-    amountIn = new Decimal(
+    amountIn = BigNumber.from(
       (await uniswapV2RouterContract.getAmountsIn(amountOut, swapPath))[0]
     );
   } else if (
@@ -39,7 +39,7 @@ export const getAmountOut = async (
     tokenOutAddress.toLowerCase() === ethAddress.toLowerCase()
   ) {
     const swapPath = [tokenInAddress, wethAddress];
-    amountIn = new Decimal(
+    amountIn = BigNumber.from(
       (await uniswapV2RouterContract.getAmountsIn(amountOut, swapPath))[0]
     );
   } else if (
@@ -54,7 +54,7 @@ export const getAmountOut = async (
       swapPath
     );
   } else {
-    amountIn = new Decimal(amountOut.toString());
+    amountIn = BigNumber.from(amountOut.toString());
   }
 
   if (fee > 0) {
