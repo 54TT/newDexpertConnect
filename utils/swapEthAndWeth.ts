@@ -1,10 +1,10 @@
-import Decimal from 'decimal.js';
+import { BigNumber } from 'ethers';
 import { RoutePlanner, CommandType } from './planner'
 import { config } from '../src/config/config';
 
 export const ethToWeth = async (
     planner: RoutePlanner,
-    amountIn: Decimal,
+    amountIn: BigNumber,
     recipient: string,
 ) => {
     const wrapEthParams = [recipient, amountIn, false, 0]
@@ -15,8 +15,8 @@ export const wethToEth = async (
     chainId: string,
     planner: RoutePlanner,
     tokenIn: string,
-    amountIn: Decimal,
-    amountOutMin: Decimal,
+    amountIn: BigNumber,
+    amountOutMin: BigNumber,
     recipient: string,
 ) => {
     const chainConfig = config[chainId];

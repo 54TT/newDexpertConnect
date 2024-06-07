@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js';
+import { BigNumber } from 'ethers';
 import { RoutePlanner, CommandType } from './planner'
 import { config } from '../src/config/config';
 
@@ -7,8 +7,8 @@ export const erc20ToErc20 = async (
     planner: RoutePlanner,
     tokenIn: string,
     tokenOut: string,
-    amountIn: Decimal,
-    amountOutMin: Decimal,
+    amountIn: BigNumber,
+    amountOutMin: BigNumber,
     recipient: string,
     isFee: boolean,
     feeType: number
@@ -40,8 +40,8 @@ export const erc20ToETH = async (
     planner: RoutePlanner,
     tokenIn: string,
     tokenOut: string,
-    amountIn: Decimal,
-    amountOutMin: Decimal,
+    amountIn: BigNumber,
+    amountOutMin: BigNumber,
     recipient: string,
     isFee: boolean,
     feeType: number
@@ -69,8 +69,8 @@ export const ethToErc20 = async (
     planner: RoutePlanner,
     tokenIn: string,
     tokenOut: string,
-    amountIn: Decimal,
-    amountOutMin: Decimal,
+    amountIn: BigNumber,
+    amountOutMin: BigNumber,
     recipient: string,
     pairAddress: string,
     isFee: boolean,

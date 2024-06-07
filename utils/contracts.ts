@@ -12,7 +12,7 @@ export const getUniversalRouterContract = async (
 ) => {
     const chainConfig = config[chainId];
     const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.JsonRpcProvider(rpcUrl)
+    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
     const contract = new ethers.Contract(chainConfig.universalRouterAddress, UniversalRouterAbi, provider)
     return contract;
 }
@@ -22,7 +22,7 @@ export const getUniswapV2RouterContract = async (
 ) => {
     const chainConfig = config[chainId];
     const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.JsonRpcProvider(rpcUrl)
+    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
     const contract = new ethers.Contract(chainConfig.uniswapV2RouterAddress, UniswapV2RouterAbi, provider)
     return contract;
 }
@@ -33,7 +33,7 @@ export const getERC20Contract = async (
 ) => {
     const chainConfig = config[chainId];
     const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.JsonRpcProvider(rpcUrl)
+    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
     const contract = new ethers.Contract(tokenAddress, ERC20Abi, provider)
     return contract;
 }
@@ -44,7 +44,7 @@ export const getUniswapV2Contract = async (
 ) => {
     const chainConfig = config[chainId];
     const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.JsonRpcProvider(rpcUrl)
+    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
     const contract = new ethers.Contract(pairAddress, UniswapV2PairAbi, provider)
     return contract;
 }
@@ -54,7 +54,7 @@ export const getUniswapV2FactoryContract = async (
 ) => {
     const chainConfig = config[chainId];
     const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.JsonRpcProvider(rpcUrl)
+    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
     const contract = new ethers.Contract(chainConfig.uniswapV2FactoryAddress, UniswapV2FactoryAbi, provider)
     return contract;
 }

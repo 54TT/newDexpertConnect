@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js';
+import { BigNumber } from 'ethers';
 import { config } from '../src/config/config';
 import { getERC20Contract, getUniswapV2Contract } from './contracts';
 import { RoutePlanner, CommandType } from './planner'
@@ -9,8 +9,8 @@ export const getSwapExactInBytes = async (
   chainId: string,
   tokenInAddress: string,
   tokenOutAddress: string,
-  amountIn: Decimal,
-  amountOutMin: Decimal,
+  amountIn: BigNumber,
+  amountOutMin: BigNumber,
   recipient: string,
   isFee: boolean,
   feeType: number

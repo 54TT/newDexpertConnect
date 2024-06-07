@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js';
+import { BigNumber } from 'ethers';
 import { config } from '../src/config/config';
 import { getERC20Contract, getUniswapV2Contract } from './contracts';
 
@@ -23,21 +23,21 @@ export const getWethPrice = async (chainId: string) => {
   const wethUsdtReserves = await wethUsdtPairContract.getReserves();
 
   console.log("wethUsdtReserves:",wethUsdtReserves)
-  let wethPrice = new Decimal(0);
+  let wethPrice = BigNumber.from(0);
   if (wethUsdtPairToken0.toLowerCase() === wethAddress.toLowerCase() && wethUsdtPairToken1.toLowerCase() !== wethAddress.toLowerCase()) {
-      const usdtReserves = new Decimal(wethUsdtReserves[1].toString())
-      .div(new Decimal(10 ** usdtDecimal))
-      const wethReserves = new Decimal(wethUsdtReserves[0].toString())
-      .div(new Decimal(10 ** wethDecimal)).toString()
+      const usdtReserves = BigNumber.from(wethUsdtReserves[1].toString())
+      .div(BigNumber.from(10 ** usdtDecimal))
+      const wethReserves = BigNumber.from(wethUsdtReserves[0].toString())
+      .div(BigNumber.from(10 ** wethDecimal)).toString()
       wethPrice = usdtReserves.div(wethReserves);
   } else if  (wethUsdtPairToken0.toLowerCase() !== wethAddress.toLowerCase() && wethUsdtPairToken1.toLowerCase() === wethAddress.toLowerCase()) {
-    const usdtReserves = new Decimal(wethUsdtReserves[0].toString())
-    .div(new Decimal(10 ** usdtDecimal))
-    const wethReserves = new Decimal(wethUsdtReserves[1].toString())
-    .div(new Decimal(10 ** wethDecimal)).toString()
+    const usdtReserves = BigNumber.from(wethUsdtReserves[0].toString())
+    .div(BigNumber.from(10 ** usdtDecimal))
+    const wethReserves = BigNumber.from(wethUsdtReserves[1].toString())
+    .div(BigNumber.from(10 ** wethDecimal)).toString()
     wethPrice = usdtReserves.div(wethReserves);
   } else {
-    wethPrice = new Decimal(0)
+    wethPrice = BigNumber.from(0)
   }
   return wethPrice.toString();
 };

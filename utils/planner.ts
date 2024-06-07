@@ -1,4 +1,4 @@
-import { AbiCoder } from 'ethers'
+import { defaultAbiCoder } from 'ethers/lib/utils'
 
 /**
  * CommandTypes
@@ -94,7 +94,6 @@ export type RouterCommand = {
 }
 
 export function createCommand(type: CommandType, parameters: any[]): RouterCommand {
-  const defaultAbiCoder = AbiCoder.defaultAbiCoder()
   const encodedInput = defaultAbiCoder.encode(ABI_DEFINITION[type], parameters)
   return { type, encodedInput }
 }
