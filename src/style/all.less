@@ -1,3 +1,4 @@
+@import url('@/style/variable.less');
 .dis {
   display: flex;
   align-items: center;
@@ -8,7 +9,6 @@
   display: flex;
   align-items: center;
 }
-
 
 .disCen {
   display: flex;
@@ -22,10 +22,9 @@
   justify-content: flex-start;
 }
 
-
 @font-face {
   font-family: 'tt'; // --自定义名字就好
-  src: url("../../public/MiSans1.ttf"); // --下载的字体文件路径
+  src: url('../../public/MiSans1.ttf'); // --下载的字体文件路径
 }
 
 * {
@@ -39,7 +38,7 @@ p {
 
 body {
   background-color: rgb(10, 21, 17);
-  font-family: "tt", "Microsoft YaHei", serif;
+  font-family: 'tt', 'Microsoft YaHei', serif;
 }
 
 body::-webkit-scrollbar {
@@ -57,8 +56,6 @@ body::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: rgb(66, 64, 61);
 }
-
-
 
 .activeModal {
   overflow: hidden;
@@ -233,7 +230,7 @@ body::-webkit-scrollbar-thumb {
       border-bottom: 5px solid;
       padding-left: 15px;
 
-      &>p {
+      & > p {
         flex: 1;
       }
 
@@ -278,11 +275,11 @@ body::-webkit-scrollbar-thumb {
         border-bottom: 5px solid;
         padding: 4px 0 4px 15px;
 
-        &>div:not(:first-child) {
+        & > div:not(:first-child) {
           font-weight: 300;
         }
 
-        &>div {
+        & > div {
           line-height: 1;
           display: flex;
           font-size: 14px;
@@ -291,7 +288,6 @@ body::-webkit-scrollbar-thumb {
           box-sizing: border-box;
           white-space: nowrap;
         }
-
 
         .indexTableLogo {
           .imgBox:nth-child(2) {
@@ -342,7 +338,6 @@ body::-webkit-scrollbar-thumb {
   left: 0;
   width: 100%;
 
-
   .headerData {
     display: flex;
     align-items: center;
@@ -362,7 +357,6 @@ body::-webkit-scrollbar-thumb {
   }
 
   .headerCenter {
-
     // width: 34%;
     span {
       font-size: 18px;
@@ -537,7 +531,6 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
-
 .bottomBox {
   width: 100%;
   position: fixed;
@@ -552,7 +545,7 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
   justify-content: flex-end;
 
-  &>p:first-child {
+  & > p:first-child {
     width: 10px;
     height: 10px;
     background-color: rgb(134, 240, 151);
@@ -560,7 +553,7 @@ body::-webkit-scrollbar-thumb {
     margin-right: 6px;
   }
 
-  &>p:last-child {
+  & > p:last-child {
     cursor: pointer;
     color: white;
     font-size: 15px;
@@ -577,9 +570,11 @@ body::-webkit-scrollbar-thumb {
 
   .ant-select-item-option-selected {
     color: white !important;
-    background: linear-gradient(to right,
-        rgb(9, 21, 17),
-        rgb(37, 70, 59)) !important;
+    background: linear-gradient(
+      to right,
+      rgb(9, 21, 17),
+      rgb(37, 70, 59)
+    ) !important;
   }
 }
 
@@ -636,7 +631,7 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
   flex-direction: column;
 
-  &>p:nth-child(2) {
+  & > p:nth-child(2) {
     color: #f3f3f3;
     text-align: center;
     margin: 13px 0;
@@ -854,7 +849,7 @@ span {
   max-width: 1800px;
   margin: 0 auto;
 
-  &>div {
+  & > div {
     width: 100%;
   }
 }
@@ -966,10 +961,13 @@ span {
     justify-content: center;
     margin-top: 2%;
 
-
     .ant-statistic-content-value {
       font-size: 26px;
-      background: linear-gradient(90deg, rgb(133, 240, 150) 0%, rgb(1, 255, 72) 100%);
+      background: linear-gradient(
+        90deg,
+        rgb(133, 240, 150) 0%,
+        rgb(1, 255, 72) 100%
+      );
       background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -1037,13 +1035,25 @@ span {
                 border-bottom: 2px solid rgb(60, 69, 60);
                 background-color: transparent !important;
               }
-
             }
-
           }
         }
       }
-
     }
+  }
+}
+
+// 覆盖默认modal样式
+
+.ant-modal {
+  &-content {
+    background-color: @modal-background-color !important;
+
+    .ant-modal-close {
+      color: #fff !important;
+    }
+  }
+  &-header {
+    background-color: @modal-background-color !important;
   }
 }

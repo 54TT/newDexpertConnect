@@ -5,7 +5,7 @@ import { RoutePlanner, CommandType } from './planner';
 import { ethToWeth, wethToEth } from './swapEthAndWeth';
 import { getPairAddress } from './getPairAddress';
 import Decimal from 'decimal.js';
-import { expandToDecimalsBN} from './utils'
+import { expandToDecimalsBN } from './utils';
 
 export const getSwapEthAndWeth = async (
   chainId: string,
@@ -13,18 +13,35 @@ export const getSwapEthAndWeth = async (
   tokenOutAddress: string,
   amountIn: Decimal,
   amountOut: Decimal,
-  recipient: string,
+  recipient: string
 ) => {
+  const str = amountIn.toString();
+  debugger;
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
   const planner = new RoutePlanner();
 
-  const tokenInContract = await getERC20Contract(chainId, tokenInAddress)
-  const tokenInDecimals = await tokenInContract.decimals();
-
-  const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress)
-  const tokenOutDecimals = await tokenOutContract.decimals();
+  let tokenInDecimals;
+  let tokenOutDecimals;
+  if (
+    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
+    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
+  ) {
+    tokenInDecimals = 18;
+  } else {
+    const tokenInContract = await getERC20Contract(chainId, tokenInAddress);
+    tokenInDecimals = await tokenInContract.decimals();
+  }
+  if (
+    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
+    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
+  ) {
+    tokenOutDecimals = 18;
+  } else {
+    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress);
+    tokenOutDecimals = await tokenOutContract.decimals();
+  }
 
   const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);
   const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenOutDecimals);

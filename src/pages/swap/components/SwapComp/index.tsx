@@ -12,6 +12,8 @@ import {
 import { debounce } from 'lodash';
 import './index.less';
 import SelectTokenModal from '@/components/SelectTokenModal';
+import Decimal from 'decimal.js';
+import AdvConfig from '../AdvConfig';
 interface SwapCompType {
   onSwap: (data: any) => void;
 }
@@ -54,8 +56,8 @@ function SwapComp({ onSwap }: SwapCompType) {
       await getUniswapV2RouterContract('11155111'),
       tokenIn,
       tokenOut,
-      BigInt((value as number) * 10 ** 18),
-      0.02,
+      new Decimal((value as number) * 10 ** 18),
+      new Decimal(0.02),
       0,
     ];
     if (type === 'in') {
@@ -71,7 +73,10 @@ function SwapComp({ onSwap }: SwapCompType) {
   const getAmountDebounce = useCallback(debounce(getAmount, 300), []);
 
   return (
-    <>
+    <div className="swap-comp">
+      <div>
+        <AdvConfig onClose={() => console.log('123123')} />
+      </div>
       <div className="input-token send-token">
         <div className="dapp-sniper-right-token">
           <div className="dapp-sniper-right-token-label">Send</div>
@@ -121,6 +126,20 @@ function SwapComp({ onSwap }: SwapCompType) {
           <div>Balance: 0</div>
         </div>
       </div>
+      <div className="bottom-info">
+        <div className="exchange-rate">
+          <span>Reference Exchange Rate</span>
+          <span>-</span>
+        </div>
+        <div className="exchange-fee">
+          <span>Estinated Fees</span>
+          <span>-</span>
+        </div>
+        <div className="exchange-path">
+          <span>Quote Path</span>
+          <span>-</span>
+        </div>
+      </div>
       <Button
         className="swap-button"
         onClick={() => onSwap({ amountIn, amountOut, tokenIn, tokenOut })}
@@ -130,8 +149,9 @@ function SwapComp({ onSwap }: SwapCompType) {
       <SelectTokenModal
         open={openSelect}
         onChange={(data) => console.log(data)}
+        onCancel={() => setOpenSelect(false)}
       />
-    </>
+    </div>
   );
 }
 

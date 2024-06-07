@@ -10,9 +10,14 @@ import './index.less';
 import Cookies from 'js-cookie';
 import { getUniversalRouterContract } from '@utils/contracts';
 import { ethToWei } from '@utils/convertEthUnit';
+import { ethers } from 'ethers';
+import { config } from '@/config/config';
+import PairPriceCharts from './components/PairPriceCharts';
 
 const mockRecipentAddress = '0x4b42fbbae2b6ed434e8598a00b1fd7efabe5bce3';
 const mockChainId = '11155111';
+const mockTokenIn = '0x0000000000000000000000000000000000000000';
+const mockTokenOut = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
 function SniperBot() {
   const { writeContract } = useWriteContract();
   const { getAll } = Request();
@@ -67,10 +72,9 @@ function SniperBot() {
 
   const getSwapBytes = async (data: any) => {
     const token = Cookies.get('token');
-    console.log(data);
     const { amountIn, amountOut, tokenIn, tokenOut } = data;
     /*     getSwapEthAndWeth('11155111', token); */
-    /* const { data } = await getAll({
+    /* const { res } = await getAll({
       method: 'post',
       url: '/api/v1/dapp/swap',
       token,
@@ -86,8 +90,9 @@ function SniperBot() {
         payType: 0,
       },
     });
-    const { commands, ethValue, inputs } = data;
-    const sendSwapTraction = () => {
+    console.log(res); */
+
+    /*     const sendSwapTraction = () => {
       writeContract({
         address: '0xe6f721ce154114e4f6755e3c02c99dcba109e322',
         abi: UniversalRouterAbi,
@@ -98,35 +103,56 @@ function SniperBot() {
       });
     }; */
     /*   sendSwapTraction(); */
-    console.log(ethToWei(amountIn).toString(), ethToWei(amountOut).toString());
+    /*     console.log([
+      mockChainId,
+      tokenIn,
+      tokenOut,
+      ethToWei(amountIn).toString(),
+      ethToWei(amountOut).toString(),
+      mockRecipentAddress,
+    ]); */
 
-    try {
-      const res = await getSwapEthAndWeth(
-        mockChainId,
-        tokenIn,
-        tokenOut,
-        ethToWei(amountIn),
-        ethToWei(amountOut),
-        mockRecipentAddress
-      );
-      console.log(res);
-    } catch (e) {
-      console.log(e);
+    const { commands, inputs } = await getSwapEthAndWeth(
+      mockChainId,
+      tokenIn,
+      tokenOut,
+      amountIn,
+      amountOut,
+      mockRecipentAddress
+    );
+
+    let etherValue = BigInt(0);
+    if (tokenIn === config['11155111'].ethAddress) {
+      etherValue = BigInt(amountIn * 10 ** 18);
     }
 
-    /*  const universalRouterContract =
+    const universalRouterContract =
       await getUniversalRouterContract(mockChainId);
-    const tx = await universalRouterContract.execute(
-      commands,
-      inputs,
-      BigInt(1000000000000)
+    const provider: any = new ethers.providers.Web3Provider(
+      (window as any).ethereum
     );
-    console.log(tx); */
+    const signer = await provider.getSigner();
+    console.log(signer);
+    const universalRouterWriteContract =
+      await universalRouterContract.connect(signer);
+
+    universalRouterWriteContract.estimateGas;
+    console.log(commands, inputs);
+
+    const tx = await universalRouterWriteContract[
+      'execute(bytes,bytes[],uint256)'
+    ](commands, inputs, BigInt(100000000000000), {
+      value: etherValue,
+      gasLimit: 210000,
+    });
+    console.log(tx);
   };
 
   return (
     <div className="dapp-sniper">
-      <div className="dapp-sniper-left"></div>
+      <div className="dapp-sniper-left">
+        <PairPriceCharts />
+      </div>
       <div className="dapp-sniper-right">
         <SwapComp onSwap={(data) => getSwapBytes(data)} />
       </div>
