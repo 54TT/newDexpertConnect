@@ -1,10 +1,7 @@
 import {
   Area,
   AreaChart,
-  CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -61,7 +58,7 @@ function PairPriceCharts() {
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         width={500}
-        height={300}
+        height={400}
         data={data}
         margin={{
           top: 5,
