@@ -318,6 +318,7 @@ export const getOptionalNamespaces = (
     chains:any
 ) => {
     const selectedNamespaces = getNamespacesFromChains(chains);
+    console.log(selectedNamespaces)
     return Object.fromEntries(
         selectedNamespaces.map((namespace:any) => [
             namespace,

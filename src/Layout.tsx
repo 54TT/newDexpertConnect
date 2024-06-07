@@ -297,6 +297,8 @@ function Layout() {
         try {
             const requiredNamespaces = getRequiredNamespaces(['eip155:1']);
             const optionalNamespaces = getOptionalNamespaces(['eip155:1']);
+            console.log(requiredNamespaces)
+            console.log(optionalNamespaces)
             const { uri, approval } = await client.connect({
                 requiredNamespaces,
                 optionalNamespaces,

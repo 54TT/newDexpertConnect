@@ -85,7 +85,8 @@ function HeaderModal() {
                 <p>{t("Common.Connect to Dexpert")}</p>
                 {
                     browser && list.length > 0 && list.map((i: any, ind: number) => {
-                        return i?.info?.name !== "Backpack" && <button key={ind} onClick={() => connectWallet(i)} className={'walletButton disCen'} style={{ marginBottom: "7px" }}>
+                        // i?.info?.name !== "Backpack" && 
+                        return <button key={ind} onClick={() => connectWallet(i)} className={'walletButton disCen'} style={{ marginBottom: "7px" }}>
                             <img loading={'lazy'}
                                 src={i?.info?.icon} style={{ width: '25px', height: '25px' }}
                                 alt="" /><span>{i?.info?.name}</span></button>
