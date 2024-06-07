@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { Input } from 'antd';
 import './index.less';
+import { formatAddress } from '@utils/utils';
 interface TokenItemData {
   symbol: string;
   name: string;
@@ -13,7 +15,9 @@ interface SelectTokenType {
   onChange: (data: TokenItemData) => void;
 }
 
-const mockTokenList: TokenItemData[] = new Array(10).fill(0).map(() => ({
+const { Search } = Input;
+
+const mockTokenList: TokenItemData[] = new Array(5).fill(0).map(() => ({
   symbol: 'ETH',
   name: 'ETH',
   address: '0x000000000000000000',
@@ -24,9 +28,16 @@ const mockTokenList: TokenItemData[] = new Array(10).fill(0).map(() => ({
 function SelectToken({ onChange }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>(mockTokenList);
   const [searchList, setSearchList] = useState<TokenItemData[]>();
+  const [historyList, setHistoryList] = useState<TokenItemData[]>();
 
   return (
     <div className="select-token">
+      <Search
+        className="select-token-search"
+        placeholder="Token Contract Address"
+      />
+      <div className="token-history-list"></div>
+      <span className="popular-tokens">Popular tokens</span>
       {tokenList?.map?.((item: TokenItemData) => (
         <div className="select-token-item" onClick={() => onChange(item)}>
           <div className="select-token-item-info">
@@ -36,7 +47,7 @@ function SelectToken({ onChange }: SelectTokenType) {
                 {item.symbol}
               </span>
               <span className="select-token-item-info-address">
-                {item.address}
+                {formatAddress(item.address)}
               </span>
             </div>
           </div>
