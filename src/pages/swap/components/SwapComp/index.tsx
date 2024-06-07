@@ -33,7 +33,7 @@ function SwapComp({ onSwap }: SwapCompType) {
     console.log(res);
   }; */
 
-  const getTKPrice = async () => {
+  /*   const getTKPrice = async () => {
     const pairAddress = await getPairAddress(
       '11155111',
       '0xb72bc8971d5e595776592e8290be6f31937097c6'
@@ -42,10 +42,10 @@ function SwapComp({ onSwap }: SwapCompType) {
 
     const res = await getTokenPrice('11155111', pairAddress);
     console.log(res.toString());
-  };
-  useEffect(() => {
+  }; */
+  /*   useEffect(() => {
     getTKPrice();
-  }, []);
+  }, []); */
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
     const param = [
