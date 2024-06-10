@@ -1,19 +1,85 @@
+@import url(@/style/variable.less);
+
 .select-token {
   margin-top: 24px;
   &-item {
     display: flex;
     justify-content: space-between;
-    height: 42px;
+    height: 48px;
     margin-bottom: 12px;
     &-info {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       > div {
         display: flex;
         flex-direction: column;
-        margin-left: 6px;
+        margin-left: 10px;
         justify-content: space-evenly;
+        height: 100%;
+      }
+      &-symbol {
+        color: #fff;
+      }
+      &-address {
+        color: @desc-font-color;
+      }
+      img {
+        width: 36px;
+        height: 36px;
       }
     }
+    &-balance {
+      color: #fff;
+      font-size: 18px;
+    }
+  }
+  &-search {
+    margin-bottom: 12px;
+    input {
+      background-color: transparent;
+      border: 1px solid @search-border-color;
+      height: 42px;
+      border-radius: 10px 0 0 10px !important;
+      background-color: transparent !important;
+      border: 1px solid @search-border-color !important;
+      color: #fff;
+      border-right: none !important;
+      font-size: 16px;
+      font-weight: 300;
+      &:focus {
+        box-shadow: none;
+      }
+      &::placeholder {
+        color: @desc-font-color;
+      }
+    }
+    .ant-input-group-addon {
+      button {
+        height: 42px;
+        background-color: transparent;
+        border: 1px solid @search-border-color;
+        border-left: none;
+        border-radius: 0 10px 10px 0 !important;
+        &:hover {
+          background-color: transparent !important;
+          border: 1px solid @search-border-color !important;
+          border-left: none !important;
+        }
+        .anticon-search {
+          color: @search-border-color;
+          > svg {
+            height: 20px;
+            width: 20px;
+          }
+        }
+      }
+    }
+  }
+  .popular-tokens {
+    display: inline-block;
+    font-size: 16px;
+    color: #fff;
+    margin: 12px 0;
   }
 }
