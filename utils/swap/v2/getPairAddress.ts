@@ -1,5 +1,5 @@
-import {config} from '../src/config/config'
-import {getUniswapV2FactoryContract} from './contracts'
+import {config} from '../../../src/config/config'
+import {getUniswapV2FactoryContract} from '../../contracts'
 
 export const getPairAddress = async (
     chainId: string,

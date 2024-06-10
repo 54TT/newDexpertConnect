@@ -1,9 +1,9 @@
 import { useAccount, useWriteContract } from 'wagmi';
 import Request from '@/components/axios.tsx';
 import './index.less';
-import { getSwapEthAndWeth } from '@utils/getSwapEthAndWeth';
-import { getSwapExactInBytes } from '@utils/getSwapExactInBytes';
-import { getSwapExactOutBytes } from '@utils/getSwapExactOutBytes';
+import { getSwapEthAndWeth } from '@utils/swap/v2/getSwapEthAndWeth';
+import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
+import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 import { useState } from 'react';
 import SwapComp from './components/SwapComp';
 import './index.less';

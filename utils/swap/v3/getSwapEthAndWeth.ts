@@ -1,11 +1,10 @@
 import { BigNumber } from 'ethers';
-import { config } from '../src/config/config';
-import { getERC20Contract, getUniswapV2Contract } from './contracts';
-import { RoutePlanner, CommandType } from './planner';
+import { config } from '../../../src/config/config';
+import { getERC20Contract, getUniswapV2Contract } from '../../contracts';
+import { RoutePlanner, CommandType } from '../../planner';
 import { ethToWeth, wethToEth } from './swapEthAndWeth';
-import { getPairAddress } from './getPairAddress';
 import Decimal from 'decimal.js';
-import { expandToDecimalsBN} from './utils'
+import { expandToDecimalsBN} from '../../utils'
 
 export const getSwapEthAndWeth = async (
   chainId: string,

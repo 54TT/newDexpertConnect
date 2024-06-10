@@ -30,6 +30,8 @@ export const config: Record<ChainIdList, any> = {
     uncxAddress: '0xdc5adc1c05fd9e46200349258f74761b0a75baa7',
     uniswapV2RouterAddress: '0xb22ce52905d25987321d6bf73d1705886f1cc4f4',
     uniswapV2FactoryAddress: '0xce71f5957f481a77161f368ad6dfc61d694cf171',
+    uniswapV3FactoryAddress: '0x0227628f3F023bb0B980b67D528571c95c6DaC1c',
+    uniswapV3OracleLibraryAddress: '0xA4896b3573333Ad215E6F4B76439eEe14eE46a9D',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
     universalRouterAddress: '0xD06CBe0ec2138c7aAFA8eAB031EA164f5c1C6bC1',
     wethAddress: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
@@ -39,5 +41,6 @@ export const config: Record<ChainIdList, any> = {
     usdtDecimal: 6,
     ethAddress: '0x0000000000000000000000000000000000000000',
     zeroAddress: '0x0000000000000000000000000000000000000000',
+    uniswapV3FeeAmounts: [500, 3000, 10000]
   },
 };

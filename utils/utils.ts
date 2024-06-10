@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers'
 import bn from 'bignumber.js'
 import { Decimal } from 'decimal.js'
+import {encodePath} from './swapRouter02Helpers'
 
 export function getQueryParams() {
   const queryString = window.location.search;
@@ -25,4 +26,12 @@ export function expandToDecimalsBN(n: Decimal, decimals: number): BigNumber {
 
 export function reduceFromDecimalsBN(n: BigNumber, decimals: number): Decimal {
   return new Decimal(new bn(n.toString()).div(new bn(10).pow(decimals)).toString());
+}
+
+export function encodePathExactInput(tokens: string[], feeAmounts: number[]) {
+  return encodePath(tokens, feeAmounts)
+}
+
+export function encodePathExactOutput(tokens: string[], feeAmounts: number[]) {
+  return encodePath(tokens.slice().reverse(), feeAmounts)
 }
