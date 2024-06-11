@@ -22,11 +22,11 @@ export default function person() {
   const [load, setLoad] = useState(false)
   const [userPass, setUserPass] = useState<any>(null)
   const [history, setHistory] = useState([])
+  const [list, setList] = useState([{ name: 'ETH', img: '/MetaMasketh.png' }, { name: 'Sol', img: '/MetaMasksol.png' }, { name: 'Ton', img: '/Groupton.png' }])
   const [isLoad, setIsLoad] = useState(false)
-  const { user, browser }: any = useContext(CountContext);
+  const { user, bindingAddress, browser, setIsModalOpen, changeBindind }: any = useContext(CountContext);
   const [open, setOpen] = useState(false);
   const [isCopy, setIsCopy] = useState(false);
-
   const getLink = throttle(async function () {
     const token = cookie.get('token')
     const res = await getAll({
@@ -74,6 +74,15 @@ export default function person() {
     if (user && token) {
       getPointHistory(1)
       getUserPass()
+      const at = list.map((i: any) => {
+        bindingAddress.map((item: any) => {
+          if (i.name.toLowerCase() === item.chainName.toLowerCase()) {
+            i.address = item.address
+          }
+        })
+        return i
+      })
+      setList(at)
     }
   }, [user])
   const next = throttle(function () {
@@ -81,8 +90,13 @@ export default function person() {
     setPage(page + 1)
     setLoad(true)
   }, 1500, { 'trailing': false })
+  const select = (i: any) => {
+    setOpen(false)
+    setIsModalOpen(true)
+    changeBindind.current = i.name
+  }
   const chainContent = (
-    <div className='personBox' style={{ width: browser ? '20vw' : '40vw' }}>
+    <div className='personBox' style={{ width: '70vw' }}>
       <div className='top'>
         <p></p>
         <p> {t('person.Wallet')}</p>
@@ -90,14 +104,18 @@ export default function person() {
       </div>
       <div className='chain'>
         {
-          [{ name: 'ETH', img: '/MetaMasketh.png' }, { name: 'Sol', img: '/MetaMasksol.png' }, { name: 'Ton', img: '/Groupton.png' }].map((i: any, ind: number) => {
-            return <div className='other' key={ind} style={{ border: '1px solid rgb(134,240,151)' }}>
+          list.map((i: any, ind: number) => {
+            return <div className='other' key={ind} style={{ border: i.name === 'Sol' ? '1px solid gray' : '1px solid rgb(134,240,151)' }}>
               <div>
                 <img src={i?.img} alt="" />
-                <p>{i?.name}</p>
+                <p style={{ color: i.name === 'Sol' ? 'gray' : "rgb(141,143,141)" }}>{i?.name}</p>
               </div>
-              <p style={{ color: "rgb(141,143,141)" }}>Bound</p>
-              {/*   UnBound */}
+              <p style={{ color: 'rgb(118,128,118)', fontSize: '18px' }}>{i?.address || ''}</p>
+              <p onClick={() => {
+                if (i.name !== 'Sol') {
+                  select(i)
+                }
+              }} style={{ color: i.name === 'Sol' ? 'gray' : i?.address ? 'rgb(69,115,77)' : "rgb(141,143,141)", cursor: i.name === 'Sol' ? 'not-allowed' : 'pointer' }}> {i.name === 'Sol' ? 'Coming Soon' : i?.address ? 'Switch' : 'Bound'}</p>
             </div>
           })
         }
@@ -158,7 +176,7 @@ export default function person() {
             {
               !browser && right
             }
-            <div className='Invite'>
+            <div style={{ display: 'none' }} className='Invite'>
               <div style={{ display: 'flex', width: '80%' }}>
                 <div className='left'>
                   <div className='leftTop'><p>{t('person.Invite')}</p><img src="/rightLi1.png" alt="" /></div>
@@ -183,6 +201,10 @@ export default function person() {
                 }
 
               </div>
+            </div>
+            <div className='sureInvite'>
+              <input type="text" placeholder='Enter Invitation Code' />
+              <p>Confirm</p>
             </div>
             <div className='list' style={{ padding: browser ? "3% 6%" : '45px 20px', marginTop: browser ? "10%" : '65px' }}>
               <div className='data dis top'>

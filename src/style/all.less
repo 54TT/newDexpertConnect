@@ -38,7 +38,8 @@ p {
 }
 
 body {
-  background-color: rgb(10, 21, 17);
+  background-color: rgb(22, 25, 22);
+  // background-color: rgb(10, 21, 17);
   font-family: "tt", "Microsoft YaHei", serif;
 }
 
@@ -101,6 +102,7 @@ body::-webkit-scrollbar-thumb {
 
       .personBox {
         padding: 0 7px;
+
         .top {
           display: flex;
           align-items: center;
@@ -332,9 +334,9 @@ body::-webkit-scrollbar-thumb {
   position: relative;
   align-items: center;
   justify-content: space-between;
-
   //background-color: #0d1a14;
-  background: linear-gradient(to bottom, rgb(3, 5, 3), rgb(9, 18, 13));
+  background: rgb(18, 18, 18);
+  // background: linear-gradient(to bottom, rgb(3, 5, 3), rgb(9, 18, 13));
   border-bottom: 1px solid #687c69;
   border-radius: 0 0 10px 10px;
   position: absolute;
@@ -537,7 +539,7 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
-.positionAbsolte{
+.positionAbsolte {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -664,8 +666,10 @@ body::-webkit-scrollbar-thumb {
       color: rgb(240, 240, 240);
     }
 
-    img {
+    &>img {
       margin: 0 10px;
+      width: 25px;
+      height: 25px;
     }
   }
 }
