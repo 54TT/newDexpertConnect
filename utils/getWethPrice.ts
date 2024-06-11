@@ -3,7 +3,7 @@ import { config } from '../src/config/config';
 import { getUniswapV2Contract } from './contracts';
 import { reduceFromDecimalsBN } from './utils'
 
-export const getWethPrice = async (chainId: string) => {
+export const getWethPrice = async (chainId: string, provider: any) => {
   const chainConfig = config[chainId];
   const wethAddress = chainConfig.wethAddress;
   const wethDecimal = chainConfig.wethDecimal;
@@ -11,7 +11,7 @@ export const getWethPrice = async (chainId: string) => {
   const wethUsdtPairAddress = chainConfig.wethUsdtPairAddress;
 
   const wethUsdtPairContract = await getUniswapV2Contract(
-    chainId,
+    provider,
     wethUsdtPairAddress
   );
 

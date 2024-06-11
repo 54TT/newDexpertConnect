@@ -1,11 +1,12 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
-import { RoutePlanner } from '../../planner'
-import {erc20ToETH, erc20ToErc20, ethToErc20} from './swapExactOut'
+import { RoutePlanner } from '../../planner';
+import { erc20ToETH, erc20ToErc20, ethToErc20 } from './swapExactOut';
 import { getPairAddress } from './getPairAddress';
-import { expandToDecimalsBN} from '../../utils'
+import { expandToDecimalsBN } from '../../utils';
 import Decimal from 'decimal.js';
 import {getERC20Contract} from '../../contracts'
+import { getDecimals } from '../../getDecimals';
 
 export const getSwapExactOutBytes = async (
   chainId: string,
@@ -24,27 +25,12 @@ export const getSwapExactOutBytes = async (
   const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress
   const planner = new RoutePlanner();
 
-  let tokenInDecimals;
-  let tokenOutDecimals;
-  if (
-    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
-  ) {
-    tokenInDecimals = 18;
-  } else {
-    const tokenInContract = await getERC20Contract(provider, tokenInAddress);
-    tokenInDecimals = await tokenInContract.decimals();
-  }
-  if (
-    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
-  ) {
-    tokenOutDecimals = 18;
-  } else {
-    const tokenOutContract = await getERC20Contract(provider, tokenOutAddress);
-    tokenOutDecimals = await tokenOutContract.decimals();
-  }
-
+  const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
+    provider,
+    tokenInAddress,
+    tokenOutAddress,
+    chainId,
+  });
   const amountInBigNumber = expandToDecimalsBN(amountInMax, tokenInDecimals);
   const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenOutDecimals);
 
@@ -53,7 +39,7 @@ export const getSwapExactOutBytes = async (
     tokenOutAddress.toLowerCase() !== wethAddress.toLowerCase() &&
     tokenOutAddress.toLowerCase() !== ethAddress.toLowerCase()
   ) {
-    const pairAddress = await getPairAddress(provider, uniswapV2FactoryAddress, tokenInAddress, tokenOutAddress);
+    const pairAddress = await getPairAddress(provider, uniswapV2FactoryAddress, wethAddress, tokenOutAddress);
     await ethToErc20(
       chainId,
       planner,

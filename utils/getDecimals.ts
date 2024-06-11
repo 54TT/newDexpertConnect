@@ -4,13 +4,14 @@ import { config } from '../src/config/config';
 import { getERC20Contract } from './contracts';
 
 // WETH || ETH 默认返回18位
-export const getDecimals = async (
-  {
-    tokenInAddress,
-    tokenOutAddress,
-  }: Record<'tokenInAddress' | 'tokenOutAddress', string>,
-  chainId: string
-): Promise<Record<'tokenInDecimals' | 'tokenOutDecimals', number>> => {
+export const getDecimals = async ({
+  provider,
+  tokenInAddress,
+  tokenOutAddress,
+  chainId,
+}: Record<'tokenInAddress' | 'tokenOutAddress' | 'chainId' | 'provider', string>): Promise<
+  Record<'tokenInDecimals' | 'tokenOutDecimals', number>
+> => {
   let tokenInDecimals;
   let tokenOutDecimals;
 
@@ -23,7 +24,7 @@ export const getDecimals = async (
   ) {
     tokenInDecimals = 18;
   } else {
-    const tokenInContract = await getERC20Contract(chainId, tokenInAddress);
+    const tokenInContract = await getERC20Contract(provider, tokenInAddress);
     tokenInDecimals = await tokenInContract.decimals();
   }
   if (
@@ -32,7 +33,7 @@ export const getDecimals = async (
   ) {
     tokenOutDecimals = 18;
   } else {
-    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress);
+    const tokenOutContract = await getERC20Contract(provider, tokenOutAddress);
     tokenOutDecimals = await tokenOutContract.decimals();
   }
   return Promise.resolve({ tokenInDecimals, tokenOutDecimals });

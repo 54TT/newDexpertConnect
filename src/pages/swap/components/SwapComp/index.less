@@ -80,15 +80,7 @@
     font-size: 12px;
     font-weight: 300;
   }
-  .exchange-img {
-    width: 16px;
-    position: absolute;
-    cursor: pointer;
-    bottom: 16px;
-    padding: 4px;
-    left: calc(50% - 12px);
-    z-index: 2;
-  }
+
   .bottom-info {
     background-color: #2d2d2d;
     padding: 12px 14px;
@@ -105,5 +97,20 @@
         font-weight: 300;
       }
     }
+  }
+}
+
+.exchange {
+  position: relative;
+  z-index: 2;
+  height: 0px;
+  bottom: -25px;
+  .exchange-img {
+    width: 16px;
+    position: absolute;
+    cursor: pointer;
+    bottom: 16px;
+    padding: 4px;
+    left: calc(50% - 12px);
   }
 }

@@ -6,6 +6,7 @@ import { zeroAddress } from 'viem';
 
 export const erc20ToErc20 = async (
     chainId: string,
+    provider: any,
     planner: RoutePlanner,
     tokenIn: string,
     tokenOut: string,
@@ -18,13 +19,14 @@ export const erc20ToErc20 = async (
     const chainConfig = config[chainId];
     const universalRouterAddress = chainConfig.universalRouterAddress;
     const wethAddress = chainConfig.wethAddress;
+    const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress
 
     const transferParams = [tokenIn, universalRouterAddress, amountInMax]
     planner.addCommand(CommandType.TRANSFER_FROM, transferParams, false)
 
     let swapPath = [""]
     if (tokenIn.toLowerCase() !== wethAddress.toLowerCase && tokenOut.toLowerCase() !== wethAddress.toLowerCase) {
-        const pairAddress = await getPairAddress(chainId, tokenIn, tokenOut);
+        const pairAddress = await getPairAddress(provider, uniswapV2FactoryAddress, tokenIn, tokenOut);
         if(pairAddress.toLowerCase() === zeroAddress.toLowerCase()){
             swapPath = [tokenIn, wethAddress, tokenOut]
         }else{

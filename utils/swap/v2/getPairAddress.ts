@@ -1,5 +1,5 @@
-import {config} from '../../../src/config/config'
-import {getUniswapV2FactoryContract} from '../../contracts'
+import { config } from '../../../src/config/config';
+import { getUniswapV2FactoryContract } from '../../contracts';
 
 export const getPairAddress = async (
     provider: any,
@@ -9,9 +9,10 @@ export const getPairAddress = async (
 ) => {
     const uniswapV2FactoryContract = await getUniswapV2FactoryContract(provider, uniswapV2FactoryAddress);
 
-    const pairAddress = await uniswapV2FactoryContract.getPair(token0Address, token1Address);
+  const pairAddress = await uniswapV2FactoryContract.getPair(
+    token0Address,
+    token1Address
+  );
 
-    return pairAddress;
-}
-
-
+  return pairAddress;
+};
