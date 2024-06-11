@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
@@ -18,15 +18,21 @@ import AdvConfig from '../AdvConfig';
 interface SwapCompType {
   onSwap: (data: any) => void;
 }
-const mockTokenETH = '0x0000000000000000000000000000000000000000';
-const mockTokenWETH = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
-const mockTokenUSDT = '0xb72bc8971d5e595776592e8290be6f31937097c6';
+
+interface TokenInfoType {
+  address: string;
+  icon: string;
+  symbol: string;
+  name: string;
+}
+
 function SwapComp({ onSwap }: SwapCompType) {
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
-  const [tokenIn, setTokenIn] = useState<string>(mockTokenETH);
-  const [tokenOut, setTokenOut] = useState<string>(mockTokenUSDT);
+  const [tokenIn, setTokenIn] = useState<TokenInfoType>();
+  const [tokenOut, setTokenOut] = useState<TokenInfoType>();
   const [openSelect, setOpenSelect] = useState(false);
+  const currentSetToken = useRef<'in' | 'out'>('in');
 
   useEffect(() => {
     getWeth();
@@ -51,10 +57,10 @@ function SwapComp({ onSwap }: SwapCompType) {
 
     const a = await getSwapExactInBytes(
       '11155111',
-      '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
-      '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
-      new Decimal(1000000000000),
-      new Decimal(0),
+      tokenIn?.address,
+      tokenOut?.address,
+      new Decimal(amountIn || 0),
+      new Decimal(amountOut || 0),
       '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
       false,
       0,
@@ -83,8 +89,8 @@ function SwapComp({ onSwap }: SwapCompType) {
       '11155111',
       await getUniversalRouterContract('11155111'),
       await getUniswapV2RouterContract('11155111'),
-      tokenIn,
-      tokenOut,
+      tokenIn.address,
+      tokenOut.address,
       new Decimal(value),
       new Decimal(0.02),
       0,
@@ -116,10 +122,13 @@ function SwapComp({ onSwap }: SwapCompType) {
           <div className="dapp-sniper-right-token-label">Send</div>
           <div
             className="dapp-sniper-right-token-icon"
-            onClick={() => setOpenSelect(true)}
+            onClick={() => {
+              currentSetToken.current = 'in';
+              setOpenSelect(true);
+            }}
           >
-            <img className="eth-logo" src="/eth1.svg" alt="" />
-            <span>ETH</span>
+            <img className="eth-logo" src={tokenIn?.icon} alt="" />
+            <span>{tokenIn?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
         </div>
@@ -141,10 +150,13 @@ function SwapComp({ onSwap }: SwapCompType) {
           <div className="dapp-sniper-right-token-label">Receive</div>
           <div
             className="dapp-sniper-right-token-icon"
-            onClick={() => setOpenSelect(true)}
+            onClick={() => {
+              currentSetToken.current = 'out';
+              setOpenSelect(true);
+            }}
           >
-            <img className="eth-logo" src="/eth1.svg" alt="" />
-            <span>ETC</span>
+            <img className="eth-logo" src={tokenOut?.icon || ''} alt="" />
+            <span>{tokenOut?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
         </div>
@@ -176,13 +188,27 @@ function SwapComp({ onSwap }: SwapCompType) {
       </div>
       <Button
         className="swap-button"
-        onClick={() => onSwap({ amountIn, amountOut, tokenIn, tokenOut })}
+        onClick={() =>
+          onSwap({
+            amountIn,
+            amountOut,
+            tokenIn: tokenIn.address,
+            tokenOut: tokenOut.address,
+          })
+        }
       >
         Swap
       </Button>
       <SelectTokenModal
         open={openSelect}
-        onChange={(data) => console.log(data)}
+        onChange={(data) => {
+          if (currentSetToken.current === 'in') {
+            setTokenIn(data);
+          } else {
+            setTokenOut(data);
+          }
+          setOpenSelect(false);
+        }}
         onCancel={() => setOpenSelect(false)}
       />
     </div>

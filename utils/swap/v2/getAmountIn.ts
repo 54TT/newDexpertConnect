@@ -62,9 +62,8 @@ export const getAmountIn = async (
 
   let amountInBigNumber: BigNumber = BigNumber.from(0);
 
-  const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenInDecimals);
+  const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenOutDecimals);
 
-  debugger;
   if (
     ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
     wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
@@ -112,7 +111,7 @@ export const getAmountIn = async (
     amountInBigNumber = BigNumber.from(amountOutBigNumber.toString());
   }
 
-  let amount = reduceFromDecimalsBN(amountOutBigNumber, tokenOutDecimals);
+  let amount = reduceFromDecimalsBN(amountInBigNumber, tokenInDecimals);
 
   if (fee.greaterThan(0)) {
     amount = amount.add(amount.mul(fee));

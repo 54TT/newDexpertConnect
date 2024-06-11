@@ -44,7 +44,6 @@ export const getAmountOut = async (
 
   let tokenInDecimals;
   let tokenOutDecimals;
-  debugger;
   if (
     ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
     wethAddress.toLowerCase() === tokenInAddress.toLowerCase()

@@ -2,7 +2,7 @@ import { useAccount, useWriteContract } from 'wagmi';
 import Request from '@/components/axios.tsx';
 import './index.less';
 import { getSwapEthAndWeth } from '@utils/swap/v2/getSwapEthAndWeth';
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import SwapComp from './components/SwapComp';
 import './index.less';
 import Cookies from 'js-cookie';
