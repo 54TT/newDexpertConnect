@@ -76,6 +76,7 @@ export const getAmountOut = async (
       amountInBigNumber,
       swapPath
     );
+    console.log("amountsOut:",amountsOut)
     amountOutBigNumber = BigNumber.from(amountsOut[amountsOut.length - 1]);
   } else if (
     tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
