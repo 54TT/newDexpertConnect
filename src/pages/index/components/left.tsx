@@ -79,7 +79,7 @@ function Left() {
             </div>
             <div className="scrollStyle" style={{ width: '100%', overflow: browser ? 'hidden' : 'auto hidden' }}>
                 <div className={`indexNewPair`}
-                    style={{ width: browser ? '100%' : '120vh' }}>
+                    style={{ width: browser ? '100%' : '85vh' }}>
                     {/*tittle*/}
                     <div className={'indexNewPairTitle'}>
                         {

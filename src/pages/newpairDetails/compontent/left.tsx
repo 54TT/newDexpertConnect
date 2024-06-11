@@ -11,7 +11,7 @@ import { judgeStablecoin } from '../../../../utils/judgeStablecoin.ts'
 import { CountContext } from "../../../Layout.tsx";
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({ par }: any) {
-    const h = window.innerHeight - 25 - 54
+    const h = window.innerHeight - 25 - 54+6
     const [selectOne, setSelectOne] = useState('more')
     const [selectTwo, setSelectTwo] = useState('more')
     const { switchChain, }: any = useContext(CountContext);

@@ -10,7 +10,7 @@ function Index() {
             display: 'flex',
             justifyContent: 'space-between',
             padding: '0 1%',
-            flexDirection: browser ? 'row' : 'column'
+            flexDirection: browser ? 'row' : 'column',
         }}>
             <Left />
             <Right />
