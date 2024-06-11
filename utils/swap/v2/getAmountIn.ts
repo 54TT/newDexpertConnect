@@ -1,8 +1,8 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
-import { expandToDecimalsBN , reduceFromDecimalsBN} from '../../utils'
 import { getERC20Contract } from '../../contracts';
-import { Decimal } from 'decimal.js'
+import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
+import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
 import { zeroAddress } from 'viem';
 
@@ -12,7 +12,7 @@ export const getAmountIn = async (
   uniswapV2RouterContract: any,
   tokenInAddress: string,
   tokenOutAddress: string,
-  amountIn: Decimal,
+  amountOut: Decimal,
   slippage: Decimal,
   payType: number
 ) => {
@@ -20,12 +20,20 @@ export const getAmountIn = async (
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
 
+  console.log({
+    chainId,
+    universalRouterContract,
+    uniswapV2RouterContract,
+    tokenInAddress,
+    tokenOutAddress,
+    amountOut: amountOut.toString(),
+    slippage,
+    payType,
+  });
+
   let fee = new Decimal(0);
   if (payType == 0) {
-    console.log(universalRouterContract);
-
     const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
-
     const feeBaseBps = await universalRouterContract.feeBaseBps();
 
     fee = new Decimal(fastTradeFeeBps / feeBaseBps);
@@ -52,49 +60,56 @@ export const getAmountIn = async (
     tokenOutDecimals = await tokenOutContract.decimals();
   }
 
-  let amountOutBigNumber: BigNumber = BigNumber.from(0);
+  let amountInBigNumber: BigNumber = BigNumber.from(0);
 
-  const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);
+  const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenInDecimals);
+
+  debugger;
   if (
     ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
     wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
   ) {
     const swapPath = [wethAddress, tokenOutAddress];
-    let amountsOut = await uniswapV2RouterContract.getAmountsOut(
-      amountInBigNumber,
-      swapPath
+    amountInBigNumber = BigNumber.from(
+      (
+        await uniswapV2RouterContract.getAmountsIn(amountOutBigNumber, swapPath)
+      )[0]
     );
-    amountOutBigNumber = BigNumber.from(amountsOut[amountsOut.length - 1]);
   } else if (
     tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
     tokenOutAddress.toLowerCase() === ethAddress.toLowerCase()
   ) {
     const swapPath = [tokenInAddress, wethAddress];
-    let amountsOut = await uniswapV2RouterContract.getAmountsOut(
-      amountInBigNumber,
-      swapPath
+    amountInBigNumber = BigNumber.from(
+      (
+        await uniswapV2RouterContract.getAmountsIn(amountOutBigNumber, swapPath)
+      )[0]
     );
-    amountOutBigNumber = BigNumber.from(amountsOut[amountsOut.length - 1]);
   } else if (
     ethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
     ethAddress.toLowerCase() !== tokenOutAddress.toLowerCase() &&
     wethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
     wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
   ) {
-    let swapPath = [""]
-    const pairAddress = await getPairAddress(chainId, tokenInAddress, tokenOutAddress);
-    if(pairAddress.toLowerCase() === zeroAddress.toLowerCase()){
-      swapPath = [tokenInAddress, wethAddress, tokenOutAddress];
-    }else{
-      swapPath = [tokenInAddress, tokenOutAddress]
-    }
-    let amountsOut = await uniswapV2RouterContract.getAmountsOut(
-      amountInBigNumber,
-      swapPath
+    let swapPath = [''];
+    const pairAddress = await getPairAddress(
+      chainId,
+      tokenInAddress,
+      tokenOutAddress
     );
-    amountOutBigNumber = BigNumber.from(amountsOut[amountsOut.length - 1]);
+    if (pairAddress.toLowerCase() === zeroAddress.toLowerCase()) {
+      swapPath = [tokenInAddress, wethAddress, tokenOutAddress];
+    } else {
+      swapPath = [tokenInAddress, tokenOutAddress];
+    }
+
+    amountInBigNumber = BigNumber.from(
+      (
+        await uniswapV2RouterContract.getAmountsIn(amountOutBigNumber, swapPath)
+      )[0]
+    );
   } else {
-    amountOutBigNumber = BigNumber.from(amountInBigNumber.toString());
+    amountInBigNumber = BigNumber.from(amountOutBigNumber.toString());
   }
 
   let amount = reduceFromDecimalsBN(amountOutBigNumber, tokenOutDecimals);

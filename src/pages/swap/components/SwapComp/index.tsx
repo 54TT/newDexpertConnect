@@ -5,7 +5,7 @@ import { getAmountIn } from '@utils/swap/v2/getAmountIn';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
 import { getTokenPrice } from '@utils/getTokenPrice';
 import { getV3AmountIn } from '@utils/swap/v3/getAmountIn';
-import {getSwapExactInBytes} from '@utils/swap/v3/getSwapExactInBytes'
+import { getSwapExactInBytes } from '@utils/swap/v3/getSwapExactInBytes';
 import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
@@ -18,13 +18,14 @@ import AdvConfig from '../AdvConfig';
 interface SwapCompType {
   onSwap: (data: any) => void;
 }
-const mockTokenIn = '0x0000000000000000000000000000000000000000';
-const mockTokenOut = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
+const mockTokenETH = '0x0000000000000000000000000000000000000000';
+const mockTokenWETH = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
+const mockTokenUSDT = '0xb72bc8971d5e595776592e8290be6f31937097c6';
 function SwapComp({ onSwap }: SwapCompType) {
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
-  const [tokenIn, setTokenIn] = useState<string>(mockTokenIn);
-  const [tokenOut, setTokenOut] = useState<string>(mockTokenOut);
+  const [tokenIn, setTokenIn] = useState<string>(mockTokenETH);
+  const [tokenOut, setTokenOut] = useState<string>(mockTokenUSDT);
   const [openSelect, setOpenSelect] = useState(false);
 
   useEffect(() => {
@@ -32,24 +33,35 @@ function SwapComp({ onSwap }: SwapCompType) {
   }, []);
 
   const getWeth = async () => {
-    console.log("-----------------")
+    console.log('-----------------');
     const param = [
       '11155111',
       await getUniversalRouterContract('11155111'),
-      "0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406",
-      "0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d",
+      '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
+      '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
       BigInt(1000000000000),
       new Decimal(0.01),
       0,
     ];
     const res = await getV3AmountIn.apply(null, param);
-    console.log("res-----",res);
-    console.log(res.quoteAmount.toString())
-    console.log(res.fee)
-    console.log(res.poolAddress)
+    console.log('res-----', res);
+    console.log(res.quoteAmount.toString());
+    console.log(res.fee);
+    console.log(res.poolAddress);
 
-    const a = await getSwapExactInBytes("11155111", "0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406", "0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d", new Decimal(1000000000000), new Decimal(0), "0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89", false, 0, Number(res.fee), res.poolAddress)
-    console.log("----------aaaaa",a)
+    const a = await getSwapExactInBytes(
+      '11155111',
+      '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
+      '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
+      new Decimal(1000000000000),
+      new Decimal(0),
+      '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
+      false,
+      0,
+      Number(res.fee),
+      res.poolAddress
+    );
+    console.log('----------aaaaa', a);
   };
 
   /*   const getTKPrice = async () => {
@@ -73,17 +85,22 @@ function SwapComp({ onSwap }: SwapCompType) {
       await getUniswapV2RouterContract('11155111'),
       tokenIn,
       tokenOut,
-      new Decimal((value as number) * 10 ** 18),
+      new Decimal(value),
       new Decimal(0.02),
       0,
     ];
     if (type === 'in') {
+      console.log(param);
+
       const amount = await getAmountOut.apply(null, param);
-      setAmountOut(Number(amount.div(10 ** 18).toString()));
+      console.log(amount);
+
+      setAmountOut(Number(amount.toString()));
     }
     if (type === 'out') {
       const amount = await getAmountIn.apply(null, param);
-      setAmountIn(Number(amount.div(10 ** 18).toString()));
+      console.log(amount);
+      setAmountIn(Number(amount.toString()));
     }
   };
 
@@ -134,7 +151,7 @@ function SwapComp({ onSwap }: SwapCompType) {
         <ProInputNumber
           value={amountOut}
           onChange={(v) => {
-            setAmountIn(v);
+            setAmountOut(v);
             getAmountDebounce('out', v);
           }}
         />

@@ -5,7 +5,7 @@ import { RoutePlanner, CommandType } from '../../planner';
 import { ethToWeth, wethToEth } from './swapEthAndWeth';
 import { getPairAddress } from './getPairAddress';
 import Decimal from 'decimal.js';
-import { expandToDecimalsBN} from '../../utils'
+import { expandToDecimalsBN } from '../../utils';
 
 export const getSwapEthAndWeth = async (
   chainId: string,
@@ -16,7 +16,7 @@ export const getSwapEthAndWeth = async (
   recipient: string
 ) => {
   const str = amountIn.toString();
-  debugger;
+
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
