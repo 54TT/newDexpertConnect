@@ -136,7 +136,7 @@ function HeaderModal() {
       img: '/webAll.svg',
       key: 'WalletConnect',
       binding: 'ETH',
-    }
+    },
   ];
   const allConnect = async (i: any) => {
     if (i.key === 'WalletConnect') {
@@ -223,8 +223,8 @@ function HeaderModal() {
             }}
           >
             <QRCode
-              value={select === 'one' ? QRCodeLink : tgCodeLink}
-              icon={select === 'one' ? '/tonconnect.png' : '/tgLink.png'}
+              value={select === 'one' ? tgCodeLink : QRCodeLink}
+              icon={select === 'one' ? '/tgLink.png' : '/tonconnect.png'}
               color="white"
               size={200}
             />
@@ -272,7 +272,7 @@ function HeaderModal() {
         <div className="selectQRlink">
           <div
             onClick={() => {
-              setSelect('two');
+              setSelect('one');
             }}
           >
             <img src="/tgLink.png" alt="" />
@@ -280,7 +280,7 @@ function HeaderModal() {
           </div>
           <div
             onClick={() => {
-              setSelect('one');
+              setSelect('two');
             }}
           >
             <img src="/tonconnect.png" alt="" />

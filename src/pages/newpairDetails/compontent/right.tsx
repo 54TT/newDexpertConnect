@@ -7,7 +7,6 @@ function Right() {
     <div className={'right'} style={{ width: browser ? '21%' : '100%' }}>
       <div className="box">
         <p className="Swap">Swap</p>
-        
       </div>
     </div>
   );
