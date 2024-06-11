@@ -106,10 +106,7 @@ function SwapComp({ onSwap }: SwapCompType) {
       0,
     ];
     if (type === 'in') {
-      console.log(param);
-
       const amount = await getAmountOut.apply(null, param);
-      console.log(amount);
 
       setAmountOut(Number(amount.toString()));
     }

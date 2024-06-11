@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
 import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
-import { getERC20Contract } from '../../contracts';
 import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
 import { zeroAddress } from 'viem';
@@ -20,17 +19,6 @@ export const getAmountOut = async (
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
-
-  console.log(
-    chainId,
-    universalRouterContract,
-    uniswapV2RouterContract,
-    tokenInAddress,
-    tokenOutAddress,
-    amountIn,
-    slippage,
-    payType
-  );
 
   let fee = new Decimal(0);
   if (payType == 0) {
