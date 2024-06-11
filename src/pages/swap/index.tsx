@@ -137,7 +137,6 @@ function SniperBot() {
       await universalRouterContract.connect(signer);
 
     universalRouterWriteContract.estimateGas;
-    console.log(commands, inputs);
 
     const tx = await universalRouterWriteContract[
       'execute(bytes,bytes[],uint256)'

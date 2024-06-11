@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { RoutePlanner, CommandType } from '../../planner'
+import { RoutePlanner, CommandType } from '../../planner';
 import { config } from '../../../src/config/config';
 
 export const ethToWeth = async (
@@ -9,7 +9,7 @@ export const ethToWeth = async (
 ) => {
   const str = amountIn.toString();
   const wrapEthParams = [recipient, amountIn, false, 0];
-  debugger;
+
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
 };
 

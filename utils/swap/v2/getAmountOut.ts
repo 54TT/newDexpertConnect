@@ -1,80 +1,83 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
-import { getERC20Contract } from '../../contracts';
-import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils'
-import { Decimal } from 'decimal.js'
+import { getDecimals } from '@utils/getDecimals';
+import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
+import { Decimal } from 'decimal.js';
 
 export const getAmountOut = async (
-    chainId: string,
-    universalRouterContract: any,
-    uniswapV2RouterContract: any,
-    tokenInAddress: string,
-    tokenOutAddress: string,
-    amountOut: Decimal,
-    slippage: Decimal,
-    payType: number
+  chainId: string,
+  universalRouterContract: any,
+  uniswapV2RouterContract: any,
+  tokenInAddress: string,
+  tokenOutAddress: string,
+  amountOut: Decimal,
+  slippage: Decimal,
+  payType: number
 ) => {
-    const chainConfig = config[chainId];
-    const ethAddress = chainConfig.ethAddress;
-    const wethAddress = chainConfig.wethAddress;
+  const chainConfig = config[chainId];
+  const ethAddress = chainConfig.ethAddress;
+  const wethAddress = chainConfig.wethAddress;
 
-    let fee = new Decimal(0);
-    if (payType == 0) {
-        const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
-        const feeBaseBps = await universalRouterContract.feeBaseBps();
+  let fee = new Decimal(0);
+  if (payType == 0) {
+    const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
+    const feeBaseBps = await universalRouterContract.feeBaseBps();
 
-        fee = new Decimal(fastTradeFeeBps / feeBaseBps);
-    }
+    fee = new Decimal(fastTradeFeeBps / feeBaseBps);
+  }
 
+  const { tokenInDecimals, tokenOutDecimals } = await getDecimals(
+    { tokenInAddress, tokenOutAddress },
+    chainId
+  );
 
-    const tokenInContract = await getERC20Contract(chainId, tokenInAddress)
-    const tokenInDecimals = await tokenInContract.decimals();
+  let amountInBigNumber: BigNumber = BigNumber.from(0);
 
-    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress)
-    const tokenOutDecimals = await tokenOutContract.decimals();
+  const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenInDecimals);
 
-    let amountInBigNumber: BigNumber = BigNumber.from(0);
+  if (
+    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
+    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
+  ) {
+    const swapPath = [wethAddress, tokenOutAddress];
+    amountInBigNumber = BigNumber.from(
+      (
+        await uniswapV2RouterContract.getAmountsIn(amountOutBigNumber, swapPath)
+      )[0]
+    );
+  } else if (
+    tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
+    tokenOutAddress.toLowerCase() === ethAddress.toLowerCase()
+  ) {
+    const swapPath = [tokenInAddress, wethAddress];
+    amountInBigNumber = BigNumber.from(
+      (
+        await uniswapV2RouterContract.getAmountsIn(amountOutBigNumber, swapPath)
+      )[0]
+    );
+  } else if (
+    ethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
+    ethAddress.toLowerCase() !== tokenOutAddress.toLowerCase() &&
+    wethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
+    wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
+  ) {
+    const swapPath = [tokenInAddress, wethAddress, tokenOutAddress];
+    amountInBigNumber = BigNumber.from(
+      (
+        await uniswapV2RouterContract.getAmountsIn(amountOutBigNumber, swapPath)
+      )[0]
+    );
+  } else {
+    amountInBigNumber = BigNumber.from(amountOutBigNumber.toString());
+  }
 
-    const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenInDecimals);
+  let amount = reduceFromDecimalsBN(amountOutBigNumber, tokenOutDecimals);
 
-    if (
-        ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
-        wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
-    ) {
-        const swapPath = [wethAddress, tokenOutAddress];
-        amountInBigNumber = BigNumber.from(
-            (await uniswapV2RouterContract.getAmountsIn(amountOutBigNumber, swapPath))[0]
-        );
-    } else if (
-        tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
-        tokenOutAddress.toLowerCase() === ethAddress.toLowerCase()
-    ) {
-        const swapPath = [tokenInAddress, wethAddress];
-        amountInBigNumber = BigNumber.from(
-            (await uniswapV2RouterContract.getAmountsIn(amountOutBigNumber, swapPath))[0]
-        );
-    } else if (
-        ethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
-        ethAddress.toLowerCase() !== tokenOutAddress.toLowerCase() &&
-        wethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
-        wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
-    ) {
-        const swapPath = [tokenInAddress, wethAddress, tokenOutAddress];
-        amountInBigNumber = BigNumber.from((await uniswapV2RouterContract.getAmountsIn(
-            amountOutBigNumber,
-            swapPath
-        ))[0]);
-    } else {
-        amountInBigNumber = BigNumber.from(amountOutBigNumber.toString());
-    }
-
-    let amount = reduceFromDecimalsBN(amountOutBigNumber, tokenOutDecimals)
-
-    if (fee.greaterThan(0)) {
-        amount = amount.sub(amount.mul(fee));
-    }
-    if (slippage.greaterThan(0)) {
-        amount = amount.sub(amount.mul(slippage));
-    }
-    return amount;
+  if (fee.greaterThan(0)) {
+    amount = amount.sub(amount.mul(fee));
+  }
+  if (slippage.greaterThan(0)) {
+    amount = amount.sub(amount.mul(slippage));
+  }
+  return amount;
 };

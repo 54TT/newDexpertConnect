@@ -1,8 +1,9 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
-import { expandToDecimalsBN , reduceFromDecimalsBN} from '../../utils'
+import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
 import { getERC20Contract } from '../../contracts';
-import { Decimal } from 'decimal.js'
+import { Decimal } from 'decimal.js';
+import { getDecimals } from '@utils/getDecimals';
 
 export const getAmountIn = async (
   chainId: string,
@@ -29,26 +30,10 @@ export const getAmountIn = async (
     fee = new Decimal(fastTradeFeeBps / feeBaseBps);
   }
 
-  let tokenInDecimals;
-  let tokenOutDecimals;
-  if (
-    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
-  ) {
-    tokenInDecimals = 18;
-  } else {
-    const tokenInContract = await getERC20Contract(chainId, tokenInAddress);
-    tokenInDecimals = await tokenInContract.decimals();
-  }
-  if (
-    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
-  ) {
-    tokenOutDecimals = 18;
-  } else {
-    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress);
-    tokenOutDecimals = await tokenOutContract.decimals();
-  }
+  const { tokenInDecimals, tokenOutDecimals } = await getDecimals(
+    { tokenInAddress, tokenOutAddress },
+    chainId
+  );
 
   let amountOutBigNumber: BigNumber = BigNumber.from(0);
 
