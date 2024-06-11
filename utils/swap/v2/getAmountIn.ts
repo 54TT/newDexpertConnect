@@ -3,6 +3,8 @@ import { config } from '../../../src/config/config';
 import { expandToDecimalsBN , reduceFromDecimalsBN} from '../../utils'
 import { getERC20Contract } from '../../contracts';
 import { Decimal } from 'decimal.js'
+import { getPairAddress } from './getPairAddress';
+import { zeroAddress } from 'viem';
 
 export const getAmountIn = async (
   chainId: string,
@@ -79,7 +81,13 @@ export const getAmountIn = async (
     wethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
     wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
   ) {
-    const swapPath = [tokenInAddress, wethAddress, tokenOutAddress];
+    let swapPath = [""]
+    const pairAddress = await getPairAddress(chainId, tokenInAddress, tokenOutAddress);
+    if(pairAddress.toLowerCase() === zeroAddress.toLowerCase()){
+      swapPath = [tokenInAddress, wethAddress, tokenOutAddress];
+    }else{
+      swapPath = [tokenInAddress, tokenOutAddress]
+    }
     let amountsOut = await uniswapV2RouterContract.getAmountsOut(
       amountInBigNumber,
       swapPath

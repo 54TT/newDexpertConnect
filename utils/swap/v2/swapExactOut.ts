@@ -1,6 +1,8 @@
 import { BigNumber } from 'ethers';
 import { RoutePlanner, CommandType } from '../../planner'
 import { config } from '../../../src/config/config';
+import { getPairAddress } from './getPairAddress';
+import { zeroAddress } from 'viem';
 
 export const erc20ToErc20 = async (
     chainId: string,
@@ -21,8 +23,13 @@ export const erc20ToErc20 = async (
     planner.addCommand(CommandType.TRANSFER_FROM, transferParams, false)
 
     let swapPath = [""]
-    if (tokenIn.toLowerCase() === wethAddress.toLowerCase && tokenOut.toLowerCase() === wethAddress.toLowerCase) {
-        swapPath = [tokenIn, wethAddress, tokenOut]
+    if (tokenIn.toLowerCase() !== wethAddress.toLowerCase && tokenOut.toLowerCase() !== wethAddress.toLowerCase) {
+        const pairAddress = await getPairAddress(chainId, tokenIn, tokenOut);
+        if(pairAddress.toLowerCase() === zeroAddress.toLowerCase()){
+            swapPath = [tokenIn, wethAddress, tokenOut]
+        }else{
+            swapPath = [tokenIn, tokenOut]
+        }
     } else {
         swapPath = [tokenIn, tokenOut]
     }
