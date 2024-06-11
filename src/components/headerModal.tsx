@@ -117,7 +117,7 @@ function HeaderModal() {
                 <p>{t("Common.Connect to Dexpert")}</p>
                 {
                     wallet.map((i: any) => {
-                        return ((!changeBindind.current) || (changeBindind.current === i?.binding)) && <button key={i?.key} onClick={() => allConnect(i)} className={'walletButton disCen'}>
+                        return ((!changeBindind?.current) || (changeBindind?.current === i?.binding)) && <button key={i?.key} onClick={() => allConnect(i)} className={'walletButton disCen'}>
                             <img src={i?.img} loading={'lazy'} alt="" />
                             <span>{i.name}</span>
                         </button>

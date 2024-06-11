@@ -100,7 +100,10 @@ export default function person() {
       <div className='top'>
         <p></p>
         <p> {t('person.Wallet')}</p>
-        <p onClick={() => setOpen(false)}>x</p>
+        <p onClick={() => {
+          changeBindind.current = ''
+          setOpen(false)
+        }}>x</p>
       </div>
       <div className='chain'>
         {
@@ -160,6 +163,16 @@ export default function person() {
       })
     }
   </div>
+  const [value, setValue] = useState('')
+  const verifyInvite = () => {
+    if (value) {
+
+    }
+  }
+  const change = (e: any) => {
+    setValue(e.target.value)
+  }
+
   return (
     <>
       {
@@ -203,10 +216,20 @@ export default function person() {
               </div>
             </div>
             <div className='sureInvite'>
-              <input type="text" placeholder='Enter Invitation Code' />
-              <p>Confirm</p>
+              <div style={{ width: browser ? '50%' : '100%' }}>
+                <input type="text" placeholder='Enter Invitation Code' onChange={change} />
+                <p onClick={verifyInvite}>Confirm</p>
+              </div>
+              {browser && <img src="/GroupPass.svg" alt="" className='positionImg' />}
+              {browser && <div className='rightNow'>
+                {
+                  ["/coinPass.svg", "/coinPass.svg", "/coinPass.svg"].map((i: string, ind: number) => {
+                    return <img src={i} key={ind} alt="" />
+                  })
+                }
+              </div>}
             </div>
-            <div className='list' style={{ padding: browser ? "3% 6%" : '45px 20px', marginTop: browser ? "10%" : '65px' }}>
+            <div className='list' style={{ padding: browser ? "3% 6%" : '45px 20px', marginTop: browser ? "8%" : '65px' }}>
               <div className='data dis top'>
                 <span>Time</span>
                 <span>Task</span>

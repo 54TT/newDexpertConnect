@@ -179,15 +179,17 @@ function Layout() {
             const inviteCode = search.get('inviteCode') ? search.get('inviteCode') : cookie.get('inviteCode') || ''
             // 绑定新钱包
             if (changeBindind?.current?.toLocaleLowerCase() === chain) {
-                const at: any = chain === 'ton' ? { ton: par } : { eth: par }
-                const bind = await getAll({
-                    method: 'post', url: '/api/v1/wallet/bind', data: {
-                        chainName: chain,
-                        ...at,
-                        // }, token: '', chainId: chain === 'ton' ? '-2' : '1'
-                    }, token: '', chainId: '1'
-                })
-                console.log(bind)
+                const token = cookie.get('token')
+                if (token) {
+                    const at: any = chain === 'ton' ? { ton: par } : { eth: par }
+                    const bind = await getAll({
+                        method: 'post', url: '/api/v1/wallet/bind', data: {
+                            chainName: chain,
+                            ...at,
+                        }, token: token, chainId: chain === 'ton' ? '-2' : '1'
+                    })
+                    console.log(bind)
+                }
             } else {
                 // 登录
                 const res = await getAll({

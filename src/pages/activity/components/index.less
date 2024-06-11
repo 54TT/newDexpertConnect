@@ -277,20 +277,71 @@
   .sureInvite {
     border: 2px solid rgb(104, 124, 105);
     border-radius: 20px;
+    position: relative;
     display: flex;
-    margin-top: 10%;
-    padding: 2% 8% 2% 2%;
+    margin-top: 8%;
+    padding: 2%;
     justify-content: space-between;
 
-    input {
-      background-color: transparent;
-      color: #687C69;
-      border: 2px solid rgb(104, 124, 105);
-      border-radius: 10px;
-      padding: 1.5% 0;
-      width: 30%;
-      outline: none;
+    .positionImg {
+      position: absolute;
+      top: 30%;
+      left: 65%;
+      width: 13%;
+    }
 
+    .rightNow {
+      width: 10%;
+      position: relative;
+
+      img {
+        position: absolute;
+        display: block;
+        width: 80%;
+      }
+
+      img:first-child {
+        top: -45%;
+        left: -20%;
+      }
+
+      img:nth-child(2) {
+        top: -15%;
+        left: 10%;
+      }
+
+      img:last-child {
+        top: -70%;
+        left: 38%;
+      }
+    }
+
+    &>div {
+      display: flex;
+      justify-content: space-between;
+
+      &>input {
+        background-color: transparent;
+        color: #687C69;
+        border: 2px solid rgb(104, 124, 105);
+        border-radius: 10px;
+        font-size: 17px;
+        padding: 1% 2%;
+        box-sizing: border-box;
+        width: 68%;
+        outline: none;
+      }
+
+      &>p {
+        background-color: rgb(134, 240, 151);
+        font-size: 17px;
+        font-weight: bold;
+        text-align: center;
+        width: 28%;
+        cursor: pointer;
+        line-height: 2.2;
+        border-radius: 7px;
+      }
     }
   }
 
@@ -399,7 +450,7 @@
 
   .person {
     position: relative;
-    padding: 20px;
+    padding: 15px;
     display: flex;
     justify-content: space-between;
     border: 2px solid rgb(104, 124, 105);
