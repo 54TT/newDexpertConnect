@@ -29,11 +29,26 @@ export const getAmountOut = async (
     }
 
 
-    const tokenInContract = await getERC20Contract(chainId, tokenInAddress)
-    const tokenInDecimals = await tokenInContract.decimals();
-
-    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress)
-    const tokenOutDecimals = await tokenOutContract.decimals();
+    let tokenInDecimals;
+    let tokenOutDecimals;
+    if (
+      ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
+      wethAddress.toLowerCase() === tokenInAddress.toLowerCase()
+    ) {
+      tokenInDecimals = 18;
+    } else {
+      const tokenInContract = await getERC20Contract(chainId, tokenInAddress);
+      tokenInDecimals = await tokenInContract.decimals();
+    }
+    if (
+      ethAddress.toLowerCase() === tokenOutAddress.toLowerCase() ||
+      wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
+    ) {
+      tokenOutDecimals = 18;
+    } else {
+      const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress);
+      tokenOutDecimals = await tokenOutContract.decimals();
+    }
 
     let amountInBigNumber: BigNumber = BigNumber.from(0);
 
