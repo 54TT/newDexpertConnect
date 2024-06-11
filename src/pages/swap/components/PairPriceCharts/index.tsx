@@ -8,6 +8,8 @@ import {
   YAxis,
 } from 'recharts';
 
+import './index.less';
+
 const data = [
   {
     name: 'Page A',
@@ -55,31 +57,40 @@ const data = [
 
 function PairPriceCharts() {
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <AreaChart
-        width={500}
-        height={400}
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Area
-          type="monotone"
-          dataKey="uv"
-          stroke="#86F097"
-          fill="#86F097"
-          fillOpacity="0.2"
-        />
-      </AreaChart>
-    </ResponsiveContainer>
+    <div className="pair-chartes">
+      <div className="token-query">
+        <div className="token-query-info">
+          <img src="" alt="" />
+          <img src="" alt="" />
+          <div>ETH/ETC</div>
+        </div>
+        <div className="token-query-price">3816.31</div>
+      </div>
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart
+          width={500}
+          height={400}
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <XAxis dataKey="name" />
+          <Tooltip />
+          <Legend />
+          <Area
+            type="monotone"
+            dataKey="uv"
+            stroke="#86F097"
+            fill="#86F097"
+            fillOpacity="0.2"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 
