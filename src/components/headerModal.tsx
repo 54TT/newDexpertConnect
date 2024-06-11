@@ -136,7 +136,7 @@ function HeaderModal() {
       img: '/webAll.svg',
       key: 'WalletConnect',
       binding: 'ETH',
-    },
+    }
   ];
   const allConnect = async (i: any) => {
     if (i.key === 'WalletConnect') {
