@@ -198,7 +198,14 @@
     "form":"Application",
     "Link":"Invite Link",
     "Wallet":"Link Wallet",
-    "copy":"Copied successfully"
-
+    "copy":"Copied successfully",
+    "bind":"Binding successful!",
+    "ver":"Verification successful!",
+    "con":"Confirm",
+    "chang":"Change binding",
+    "Unbound":"Unbound",
+    "com":"Coming Soon",
+    "ent":"Enter Invitation Code",
+    "logout":"Logout"
   }
 }

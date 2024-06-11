@@ -188,14 +188,22 @@
     "how": "如何去验证?",
     "verify": "验证"
   },
-  "person":{
-    "address":"地址",
-    "points":"积分",
-    "Invite":"邀请",
-    "number":"受邀人数",
-    "form":"申请表",
-    "Link":"邀请链接",
-    "Wallet":"钱包链接",
-    "copy":"复制成功"
+  "person": {
+    "address": "地址",
+    "points": "积分",
+    "Invite": "邀请",
+    "number": "受邀人数",
+    "form": "申请表",
+    "Link": "邀请链接",
+    "Wallet": "钱包链接",
+    "copy": "复制成功",
+    "bind": "绑定成功!",
+    "ver": "验证成功!",
+    "con": "确认",
+    "chang": "更改绑定",
+    "Unbound": "未绑定",
+    "com": "即将到来",
+    "ent": "输入邀请码",
+    "logout": "登出"
   }
 }

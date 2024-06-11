@@ -67,6 +67,8 @@ const connector: any = new TonConnect({
 export const CountContext = createContext(null);
 function Layout() {
   const changeBindind = useRef<any>();
+  const [QRCodeLink, setQRCodeLink] = useState('');
+  const [tgCodeLink, setTGCodeLink] = useState('');
   //ton钱包连接
   const tonConnect = async () => {
     //  获取 授权的message
@@ -82,20 +84,24 @@ function Layout() {
           { tonProof: noce?.data?.nonce }
         );
       } else {
+        //   TG 链接
         const walletConnectionSource = {
+          universalLink: 'https://t.me/wallet?attach=wallet',
+          bridgeUrl: 'https://bridge.ton.space/bridge',
+        };
+        const walletConnectionSource1 = {
           universalLink: 'https://app.tonkeeper.com/ton-connect',
           bridgeUrl: 'https://bridge.tonapi.io/bridge',
         };
         const universalLink = connector.connect(walletConnectionSource, {
           tonProof: noce?.data?.nonce,
         });
-        setQRCodeLink(universalLink);
+        const universalLink1 = connector.connect(walletConnectionSource1, {
+          tonProof: noce?.data?.nonce,
+        });
+        setTGCodeLink(universalLink);
+        setQRCodeLink(universalLink1);
       }
-    }
-  };
-  const duan = async () => {
-    if (connector.connected) {
-      await connector.disconnect();
     }
   };
   //  监听ton的 变化
@@ -111,7 +117,6 @@ function Layout() {
         const tonProof = wallet.connectItems?.tonProof;
         // 地址
         const bouncableUserFriendlyAddress = toUserFriendlyAddress(rawAddress);
-        console.log(111111111);
         const par = {
           payload: tonProof?.proof?.payload,
           value: tonProof?.proof?.domain.value,
@@ -125,8 +130,10 @@ function Layout() {
         connector.pauseConnection();
         setIsModalSet(false);
         setQRCodeLink('');
+        setTGCodeLink('');
       } else {
         setQRCodeLink('');
+        setTGCodeLink('');
         setLoad(false);
         setIsModalOpen(false);
       }
@@ -155,7 +162,6 @@ function Layout() {
   const [browser, setBrowser] = useState<any>(false);
   const [big, setBig] = useState<any>(false);
   const [activityOptions, setActivityOptions] = useState('');
-  const [QRCodeLink, setQRCodeLink] = useState('');
   // copy
   const [isCopy, setIsCopy] = useState(false);
   useEffect(() => {
@@ -183,6 +189,7 @@ function Layout() {
   const clear = async () => {
     history('/re-register');
     cookie.remove('token');
+    cookie.remove('currentAddress');
     changeBindind.current = '';
     cookie.remove('jwt');
     if (connector?.connected) {
@@ -196,7 +203,7 @@ function Layout() {
     const data: any = await getAll({
       method: 'get',
       url: '/api/v1/userinfo/' + id,
-      data: '',
+      data: {},
       token,
     });
     if (data?.status === 200) {
@@ -248,7 +255,10 @@ function Layout() {
             token: token,
             chainId: chain === 'ton' ? '-2' : '1',
           });
-          console.log(bind);
+          if (bind?.status === 200) {
+            getUserNow();
+            MessageAll('success', t('person.bind'));
+          }
         }
       } else {
         // 登录
@@ -268,6 +278,7 @@ function Layout() {
           const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
           const decodedToken = JSON.parse(atob(base64));
           setNewAccount('');
+          cookie.set('currentAddress', par?.address ? par?.address : par?.addr);
           if (decodedToken && decodedToken?.uid) {
             const uid = decodedToken.sub.split('-')[1];
             getUser(uid, res.data?.accessToken, name, decodedToken);
@@ -436,7 +447,7 @@ function Layout() {
       web3Modal.closeModal();
     }
   }, [chains, client, onSessionConnected]);
-  useEffect(() => {
+  const getUserNow = () => {
     const jwt = cookie.get('jwt');
     const token = cookie.get('token');
     if (jwt && token) {
@@ -447,6 +458,9 @@ function Layout() {
         getUser(uid, token, '', jwtPar);
       }
     }
+  };
+  useEffect(() => {
+    getUserNow();
     // 监测钱包切换
     // if ((window as any).ethereum) {
     //     (window as any).ethereum.on('accountsChanged', function (accounts: any) {
@@ -536,10 +550,9 @@ function Layout() {
     changeBindind,
     isModalSet,
     setIsModalSet,
-    QRCodeLink,
+    QRCodeLink,tgCodeLink,setTGCodeLink,
     setQRCodeLink,
     languageChange,
-
     setLanguageChange,
     connector,
     setBindingAddress,
@@ -569,9 +582,6 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <p onClick={duan} style={{ color: 'white', display: 'none' }}>
-            断开
-          </p>
           <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
             <Routes>
               <Route path="/" element={<Index />} />
