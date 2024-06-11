@@ -111,6 +111,7 @@ function Layout() {
         const tonProof = wallet.connectItems?.tonProof;
         // 地址
         const bouncableUserFriendlyAddress = toUserFriendlyAddress(rawAddress);
+        console.log(111111111);
         const par = {
           payload: tonProof?.proof?.payload,
           value: tonProof?.proof?.domain.value,
@@ -141,7 +142,7 @@ function Layout() {
   const [session, setSession] = useState<any>(null);
   const prevRelayerValue = useRef<any>();
   const [user, setUserPar] = useState<any>(null);
-  const [bindingAddress, setBindingAddress] = useState<any>(null);
+  const [bindingAddress, setBindingAddress] = useState<any>([]);
   const [isLogin, setIsLogin] = useState(false);
   const [load, setLoad] = useState<boolean>(false);
   const [newPairPar, setNewPairPar] = useState<any>([]);
@@ -225,13 +226,21 @@ function Layout() {
         ? search.get('inviteCode')
         : cookie.get('inviteCode') || '';
       // 绑定新钱包
-      if (changeBindind?.current?.toLocaleLowerCase() === chain) {
+      if (
+        changeBindind?.current?.toLocaleLowerCase() ===
+        chain.toLocaleLowerCase()
+      ) {
         const token = cookie.get('token');
+        const data = bindingAddress.filter(
+          (res: any) =>
+            res?.chainName?.toLocaleLowerCase() === chain.toLocaleLowerCase()
+        );
         if (token) {
           const at: any = chain === 'ton' ? { ton: par } : { eth: par };
           const bind = await getAll({
             method: 'post',
-            url: '/api/v1/wallet/bind',
+            url:
+              data.length > 0 ? '/api/v1/wallet/switch' : '/api/v1/wallet/bind',
             data: {
               chainName: chain,
               ...at,
@@ -580,12 +589,12 @@ function Layout() {
           <img
             src="/bodyLeft.png"
             alt=""
-            style={{ position: 'fixed', top: '0', left: '0' ,zIndex:'-1'}}
+            style={{ position: 'fixed', top: '0', left: '0', zIndex: '-1' }}
           />
           <img
             src="/bodyRight.png"
             alt=""
-            style={{ position: 'fixed', bottom: '0', right: '0',zIndex:'-1' }}
+            style={{ position: 'fixed', bottom: '0', right: '0', zIndex: '-1' }}
           />
         </CountContext.Provider>
       </Suspense>
