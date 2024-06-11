@@ -7,6 +7,7 @@ import { getPools } from './getPools';
 
 export const getV3AmountIn = async (
     chainId: string,
+    provider: any,
     universalRouterContract: any,
     tokenInAddress: string,
     tokenOutAddress: string,
@@ -17,8 +18,13 @@ export const getV3AmountIn = async (
     const chainConfig = config[chainId];
     const ethAddress = chainConfig.ethAddress;
     const wethAddress = chainConfig.wethAddress;
+    const quoterAddress = chainConfig.quoterAddress;
+    const uniswapV3OracleLibraryAddress = chainConfig.uniswapV3OracleLibraryAddress
+    const uniswapV3FactoryAddress = chainConfig.uniswapV3FactoryAddress
+    const uniswapV3FeeAmounts = chainConfig.uniswapV3FeeAmounts
 
-    const uniswapV3OracleLibraryContract = await getUniswapV3OracleLibraryContract(chainId);
+    const uniswapV3OracleLibraryContract = await getUniswapV3OracleLibraryContract(provider, uniswapV3OracleLibraryAddress);
+    const quoterContract = ""
 
     let fee = new Decimal(0);
     if (payType == 0) {
@@ -31,10 +37,10 @@ export const getV3AmountIn = async (
         fee = new Decimal(fastTradeFeeBps / feeBaseBps);
     }
 
-    const tokenInContract = await getERC20Contract(chainId, tokenInAddress)
+    const tokenInContract = await getERC20Contract(provider, tokenInAddress)
     const tokenInDecimals = await tokenInContract.decimals();
 
-    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress)
+    const tokenOutContract = await getERC20Contract(provider, tokenOutAddress)
     const tokenOutDecimals = await tokenOutContract.decimals();
 
     let quoteAmountBigNumber: BigNumber = BigNumber.from(0);
@@ -46,7 +52,7 @@ export const getV3AmountIn = async (
         ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
         wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
     ) {
-        const pools = await getPools(chainId, wethAddress, tokenOutAddress)
+        const pools = await getPools(provider, uniswapV3FactoryAddress, uniswapV3FeeAmounts, wethAddress, tokenOutAddress)
         if(pools.length > 0){
             for (const pool of pools) {
                 const consult = await uniswapV3OracleLibraryContract.consult(pool.address, 300)
@@ -74,7 +80,7 @@ export const getV3AmountIn = async (
         tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
         tokenOutAddress.toLowerCase() === ethAddress.toLowerCase()
     ) {
-        const pools = await getPools(chainId, tokenInAddress, wethAddress)
+        const pools = await getPools(provider, uniswapV3FactoryAddress, uniswapV3FeeAmounts, tokenInAddress, wethAddress)
         if(pools.length > 0){
             for (const pool of pools) {
                 const consult = await uniswapV3OracleLibraryContract.consult(pool.address, 300)
@@ -104,7 +110,7 @@ export const getV3AmountIn = async (
         wethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
         wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
     ) {
-        const pools = await getPools(chainId, tokenInAddress, tokenOutAddress)
+        const pools = await getPools(provider, uniswapV3FactoryAddress, uniswapV3FeeAmounts, tokenInAddress, tokenOutAddress)
         if(pools.length > 0){
             for (const pool of pools) {
                 const consult = await uniswapV3OracleLibraryContract.consult(pool.address, 300)

@@ -42,5 +42,6 @@ export const config: Record<ChainIdList, any> = {
     ethAddress: '0x0000000000000000000000000000000000000000',
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
+    quoterAddress: '0x20893BBb093b0fdc669991236F6170ceCD101737'
   },
 };

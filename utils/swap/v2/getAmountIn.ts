@@ -8,6 +8,7 @@ import { zeroAddress } from 'viem';
 
 export const getAmountIn = async (
   chainId: string,
+  provider: any,
   universalRouterContract: any,
   uniswapV2RouterContract: any,
   tokenInAddress: string,
@@ -19,6 +20,7 @@ export const getAmountIn = async (
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
+  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress
 
   console.log({
     chainId,
@@ -47,7 +49,7 @@ export const getAmountIn = async (
   ) {
     tokenInDecimals = 18;
   } else {
-    const tokenInContract = await getERC20Contract(chainId, tokenInAddress);
+    const tokenInContract = await getERC20Contract(provider, tokenInAddress);
     tokenInDecimals = await tokenInContract.decimals();
   }
   if (
@@ -56,7 +58,7 @@ export const getAmountIn = async (
   ) {
     tokenOutDecimals = 18;
   } else {
-    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress);
+    const tokenOutContract = await getERC20Contract(provider, tokenOutAddress);
     tokenOutDecimals = await tokenOutContract.decimals();
   }
 
@@ -92,7 +94,8 @@ export const getAmountIn = async (
   ) {
     let swapPath = [''];
     const pairAddress = await getPairAddress(
-      chainId,
+      provider,
+      uniswapV2FactoryAddress,
       tokenInAddress,
       tokenOutAddress
     );

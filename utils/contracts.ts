@@ -9,75 +9,67 @@ import {UniswapV3FactoryAbi} from '../abis/UniswapV3FactoryAbi'
 import {UniswapV3PoolAbi} from '../abis/UniswapV3PoolAbi'
 import {UniswapV3OracleLibraryAbi} from '../abis/UniswapV3OracleLibraryAbi'
 import { ethers } from "ethers";
+import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 
 export const getUniversalRouterContract = async (
-    chainId: string,
+    provider: any,
+    address: string,
 ) => {
-    const chainConfig = config[chainId];
-    const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    const contract = new ethers.Contract(chainConfig.universalRouterAddress, UniversalRouterAbi, provider)
+    const contract = new ethers.Contract(address, UniversalRouterAbi, provider)
     return contract;
 }
 
 export const getUniswapV2RouterContract = async (
-    chainId: string,
+    provider: any,
+    address: string,
 ) => {
-    const chainConfig = config[chainId];
-    const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    const contract = new ethers.Contract(chainConfig.uniswapV2RouterAddress, UniswapV2RouterAbi, provider)
+    const contract = new ethers.Contract(address, UniswapV2RouterAbi, provider)
     return contract;
 }
 
 export const getERC20Contract = async (
-    chainId: string,
-    tokenAddress: string,
+    provider: any,
+    address: string,
 ) => {
-    const chainConfig = config[chainId];
-    const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    const contract = new ethers.Contract(tokenAddress, ERC20Abi, provider)
+    const contract = new ethers.Contract(address, ERC20Abi, provider)
     return contract;
 }
 
 export const getUniswapV2Contract = async (
-    chainId: string,
-    pairAddress: string,
+    provider: any,
+    address: string,
 ) => {
-    const chainConfig = config[chainId];
-    const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    const contract = new ethers.Contract(pairAddress, UniswapV2PairAbi, provider)
+    const contract = new ethers.Contract(address, UniswapV2PairAbi, provider)
     return contract;
 }
 
 export const getUniswapV2FactoryContract = async (
-    chainId: string,
+    provider: any,
+    address: string,
 ) => {
-    const chainConfig = config[chainId];
-    const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    const contract = new ethers.Contract(chainConfig.uniswapV2FactoryAddress, UniswapV2FactoryAbi, provider)
+    const contract = new ethers.Contract(address, UniswapV2FactoryAbi, provider)
     return contract;
 }
 
 export const getUniswapV3FactoryContract = async (
-    chainId: string,
+    provider: any,
+    address: string,
 ) => {
-    const chainConfig = config[chainId];
-    const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    const contract = new ethers.Contract(chainConfig.uniswapV3FactoryAddress, UniswapV3FactoryAbi, provider)
+    const contract = new ethers.Contract(address, UniswapV3FactoryAbi, provider)
     return contract;
 }
 
 export const getUniswapV3OracleLibraryContract = async (
-    chainId: string,
+    provider: any,
+    address: string,
 ) => {
-    const chainConfig = config[chainId];
-    const rpcUrl = chainConfig.rpcUrl
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    const contract = new ethers.Contract(chainConfig.uniswapV3OracleLibraryAddress, UniswapV3OracleLibraryAbi, provider)
+    const contract = new ethers.Contract(address, UniswapV3OracleLibraryAbi, provider)
+    return contract;
+}
+export const getQuoterContract = async (
+    provider: any,
+    address: string,
+) => {
+    const contract = new ethers.Contract(address, Quoter.abi, provider)
     return contract;
 }

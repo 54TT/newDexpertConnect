@@ -5,9 +5,11 @@ import {erc20ToETH, erc20ToErc20, ethToErc20} from './swapExactOut'
 import { getPairAddress } from './getPairAddress';
 import { expandToDecimalsBN} from '../../utils'
 import Decimal from 'decimal.js';
+import {getERC20Contract} from '../../contracts'
 
 export const getSwapExactOutBytes = async (
   chainId: string,
+  provider: any,
   tokenInAddress: string,
   tokenOutAddress: string,
   amountInMax: Decimal,
@@ -19,6 +21,7 @@ export const getSwapExactOutBytes = async (
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
+  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress
   const planner = new RoutePlanner();
 
   let tokenInDecimals;
@@ -29,7 +32,7 @@ export const getSwapExactOutBytes = async (
   ) {
     tokenInDecimals = 18;
   } else {
-    const tokenInContract = await getERC20Contract(chainId, tokenInAddress);
+    const tokenInContract = await getERC20Contract(provider, tokenInAddress);
     tokenInDecimals = await tokenInContract.decimals();
   }
   if (
@@ -38,7 +41,7 @@ export const getSwapExactOutBytes = async (
   ) {
     tokenOutDecimals = 18;
   } else {
-    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress);
+    const tokenOutContract = await getERC20Contract(provider, tokenOutAddress);
     tokenOutDecimals = await tokenOutContract.decimals();
   }
 
@@ -50,7 +53,7 @@ export const getSwapExactOutBytes = async (
     tokenOutAddress.toLowerCase() !== wethAddress.toLowerCase() &&
     tokenOutAddress.toLowerCase() !== ethAddress.toLowerCase()
   ) {
-    const pairAddress = await getPairAddress(chainId, tokenOutAddress);
+    const pairAddress = await getPairAddress(provider, uniswapV2FactoryAddress, tokenInAddress, tokenOutAddress);
     await ethToErc20(
       chainId,
       planner,
