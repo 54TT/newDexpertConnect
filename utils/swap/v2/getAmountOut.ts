@@ -41,7 +41,7 @@ export const getAmountOut = async (
 
     if (
         ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
-        wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
+        wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
     ) {
         const swapPath = [wethAddress, tokenOutAddress];
         amountInBigNumber = BigNumber.from(
