@@ -70,6 +70,14 @@ function SwapComp({ onSwap }: SwapCompType) {
     console.log('----------aaaaa', a);
   };
 
+  const exchange = () => {
+    const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
+    setTokenIn(newTokenIn);
+    setTokenOut(newTokenOut);
+    setAmountIn(amountOut);
+    setAmountOut(0);
+  };
+
   /*   const getTKPrice = async () => {
     const pairAddress = await getPairAddress(
       '11155111',
@@ -143,7 +151,14 @@ function SwapComp({ onSwap }: SwapCompType) {
           <div>1 USDT</div>
           <div>Balance: 0</div>
         </div>
-        <img className="exchange-img" src="/exchange.png" alt="" />
+      </div>
+      <div className="exchange">
+        <img
+          className="exchange-img"
+          src="/exchange.png"
+          alt=""
+          onClick={() => exchange()}
+        />
       </div>
       <div className="input-token receive-token">
         <div className="dapp-sniper-right-token">
