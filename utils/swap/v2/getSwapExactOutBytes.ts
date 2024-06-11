@@ -1,10 +1,11 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
-import { RoutePlanner } from '../../planner'
-import {erc20ToETH, erc20ToErc20, ethToErc20} from './swapExactOut'
+import { RoutePlanner } from '../../planner';
+import { erc20ToETH, erc20ToErc20, ethToErc20 } from './swapExactOut';
 import { getPairAddress } from './getPairAddress';
-import { expandToDecimalsBN} from '../../utils'
+import { expandToDecimalsBN } from '../../utils';
 import Decimal from 'decimal.js';
+import { getDecimals } from '../../getDecimals';
 
 export const getSwapExactOutBytes = async (
   chainId: string,
@@ -21,27 +22,11 @@ export const getSwapExactOutBytes = async (
   const wethAddress = chainConfig.wethAddress;
   const planner = new RoutePlanner();
 
-  let tokenInDecimals;
-  let tokenOutDecimals;
-  if (
-    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
-  ) {
-    tokenInDecimals = 18;
-  } else {
-    const tokenInContract = await getERC20Contract(chainId, tokenInAddress);
-    tokenInDecimals = await tokenInContract.decimals();
-  }
-  if (
-    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
-  ) {
-    tokenOutDecimals = 18;
-  } else {
-    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress);
-    tokenOutDecimals = await tokenOutContract.decimals();
-  }
-
+  const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
+    tokenInAddress,
+    tokenOutAddress,
+    chainId,
+  });
   const amountInBigNumber = expandToDecimalsBN(amountInMax, tokenInDecimals);
   const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenOutDecimals);
 
@@ -50,7 +35,7 @@ export const getSwapExactOutBytes = async (
     tokenOutAddress.toLowerCase() !== wethAddress.toLowerCase() &&
     tokenOutAddress.toLowerCase() !== ethAddress.toLowerCase()
   ) {
-    const pairAddress = await getPairAddress(chainId, tokenOutAddress);
+    const pairAddress = await getPairAddress(chainId, '', tokenOutAddress);
     await ethToErc20(
       chainId,
       planner,

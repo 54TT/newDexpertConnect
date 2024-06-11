@@ -10,6 +10,8 @@ import { getUniversalRouterContract } from '@utils/contracts';
 import { ethers } from 'ethers';
 import { config } from '@/config/config';
 import PairPriceCharts from './components/PairPriceCharts';
+import Decimal from 'decimal.js';
+import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 
 const mockRecipentAddress = '0x4b42fbbae2b6ed434e8598a00b1fd7efabe5bce3';
 const mockChainId = '11155111';
@@ -109,13 +111,15 @@ function SniperBot() {
       mockRecipentAddress,
     ]); */
 
-    const { commands, inputs } = await getSwapEthAndWeth(
+    const { commands, inputs } = await getSwapExactOutBytes(
       mockChainId,
       tokenIn,
       tokenOut,
-      amountIn,
-      amountOut,
-      mockRecipentAddress
+      new Decimal(amountIn),
+      new Decimal(amountOut),
+      mockRecipentAddress,
+      false,
+      0
     );
 
     let etherValue = BigInt(0);
@@ -132,15 +136,20 @@ function SniperBot() {
 
     const universalRouterWriteContract =
       await universalRouterContract.connect(signer);
+    debugger;
+    const gas = await universalRouterWriteContract.estimateGas[
+      'execute(bytes,bytes[],uint256)'
+    ](commands, inputs, BigInt(100000000001), {
+      value: etherValue,
+    });
+    console.log(gas);
 
-    universalRouterWriteContract.estimateGas;
-
-    const tx = await universalRouterWriteContract[
+    /* const tx = await universalRouterWriteContract[
       'execute(bytes,bytes[],uint256)'
     ](commands, inputs, BigInt(100000000000000), {
       value: etherValue,
     });
-    console.log(tx);
+    console.log(tx); */
   };
 
   return (

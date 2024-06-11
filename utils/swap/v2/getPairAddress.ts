@@ -1,19 +1,22 @@
-import {config} from '../../../src/config/config'
-import {getUniswapV2FactoryContract} from '../../contracts'
+import { config } from '../../../src/config/config';
+import { getUniswapV2FactoryContract } from '../../contracts';
 
 export const getPairAddress = async (
-    chainId: string,
-    token0Address: string,
-    token1Address: string,
+  chainId: string,
+  token0Address: string,
+  token1Address: string
 ) => {
-    const chainConfig = config[chainId];
-    const wethAddress = chainConfig.wethAddress;
-    
-    const uniswapV2FactoryContract = await getUniswapV2FactoryContract(chainId);
+  const chainConfig = config[chainId];
+  const wethAddress = chainConfig.wethAddress;
+  token0Address = token0Address || wethAddress;
+  token1Address = token1Address || wethAddress;
 
-    const pairAddress = await uniswapV2FactoryContract.getPair(token0Address, token1Address);
+  const uniswapV2FactoryContract = await getUniswapV2FactoryContract(chainId);
 
-    return pairAddress;
-}
+  const pairAddress = await uniswapV2FactoryContract.getPair(
+    token0Address,
+    token1Address
+  );
 
-
+  return pairAddress;
+};

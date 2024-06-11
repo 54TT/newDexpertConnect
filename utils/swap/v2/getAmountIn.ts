@@ -5,6 +5,7 @@ import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
 import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
 import { zeroAddress } from 'viem';
+import { getDecimals } from '@utils/getDecimals';
 
 export const getAmountIn = async (
   chainId: string,
@@ -39,26 +40,11 @@ export const getAmountIn = async (
     fee = new Decimal(fastTradeFeeBps / feeBaseBps);
   }
 
-  let tokenInDecimals;
-  let tokenOutDecimals;
-  if (
-    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenInAddress.toLowerCase()
-  ) {
-    tokenInDecimals = 18;
-  } else {
-    const tokenInContract = await getERC20Contract(chainId, tokenInAddress);
-    tokenInDecimals = await tokenInContract.decimals();
-  }
-  if (
-    ethAddress.toLowerCase() === tokenOutAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
-  ) {
-    tokenOutDecimals = 18;
-  } else {
-    const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress);
-    tokenOutDecimals = await tokenOutContract.decimals();
-  }
+  const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
+    tokenInAddress,
+    tokenOutAddress,
+    chainId,
+  });
 
   let amountInBigNumber: BigNumber = BigNumber.from(0);
 

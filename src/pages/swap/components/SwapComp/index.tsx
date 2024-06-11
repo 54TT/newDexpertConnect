@@ -93,6 +93,8 @@ function SwapComp({ onSwap }: SwapCompType) {
   }, []); */
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
+    console.log(tokenIn, tokenOut);
+
     const param = [
       '11155111',
       await getUniversalRouterContract('11155111'),
@@ -118,7 +120,10 @@ function SwapComp({ onSwap }: SwapCompType) {
     }
   };
 
-  const getAmountDebounce = useCallback(debounce(getAmount, 300), []);
+  const getAmountDebounce = useCallback(debounce(getAmount, 300), [
+    tokenIn,
+    tokenOut,
+  ]);
 
   return (
     <div className="swap-comp">
@@ -217,6 +222,8 @@ function SwapComp({ onSwap }: SwapCompType) {
       <SelectTokenModal
         open={openSelect}
         onChange={(data) => {
+          console.log(data);
+
           if (currentSetToken.current === 'in') {
             setTokenIn(data);
           } else {

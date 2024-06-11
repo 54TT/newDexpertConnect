@@ -4,13 +4,13 @@ import { config } from '../src/config/config';
 import { getERC20Contract } from './contracts';
 
 // WETH || ETH 默认返回18位
-export const getDecimals = async (
-  {
-    tokenInAddress,
-    tokenOutAddress,
-  }: Record<'tokenInAddress' | 'tokenOutAddress', string>,
-  chainId: string
-): Promise<Record<'tokenInDecimals' | 'tokenOutDecimals', number>> => {
+export const getDecimals = async ({
+  tokenInAddress,
+  tokenOutAddress,
+  chainId,
+}: Record<'tokenInAddress' | 'tokenOutAddress' | 'chainId', string>): Promise<
+  Record<'tokenInDecimals' | 'tokenOutDecimals', number>
+> => {
   let tokenInDecimals;
   let tokenOutDecimals;
 
