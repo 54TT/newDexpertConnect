@@ -22,8 +22,8 @@ export const config: Record<ChainIdList, any> = {
   },
   '11155111': {
     rpcUrl:
-      /*  'https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC', */
-      'https://public.stackup.sh/api/v1/node/ethereum-sepolia',
+      'https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC',
+    /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
     verificationURL: 'https://api-sepolia.etherscan.io/api',
     chainId: 11155111,
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
@@ -41,6 +41,6 @@ export const config: Record<ChainIdList, any> = {
     usdtDecimal: 6,
     ethAddress: '0x0000000000000000000000000000000000000000',
     zeroAddress: '0x0000000000000000000000000000000000000000',
-    uniswapV3FeeAmounts: [500, 3000, 10000]
+    uniswapV3FeeAmounts: [500, 3000, 10000],
   },
 };

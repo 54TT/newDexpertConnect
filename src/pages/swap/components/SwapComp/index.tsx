@@ -18,13 +18,14 @@ import AdvConfig from '../AdvConfig';
 interface SwapCompType {
   onSwap: (data: any) => void;
 }
-const mockTokenIn = '0x0000000000000000000000000000000000000000';
-const mockTokenOut = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
+const mockTokenETH = '0x0000000000000000000000000000000000000000';
+const mockTokenWETH = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
+const mockTokenUSDT = '0xb72bc8971d5e595776592e8290be6f31937097c6';
 function SwapComp({ onSwap }: SwapCompType) {
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
-  const [tokenIn, setTokenIn] = useState<string>(mockTokenIn);
-  const [tokenOut, setTokenOut] = useState<string>(mockTokenOut);
+  const [tokenIn, setTokenIn] = useState<string>(mockTokenETH);
+  const [tokenOut, setTokenOut] = useState<string>(mockTokenUSDT);
   const [openSelect, setOpenSelect] = useState(false);
 
   useEffect(() => {
@@ -89,6 +90,8 @@ function SwapComp({ onSwap }: SwapCompType) {
       0,
     ];
     if (type === 'in') {
+      console.log(param);
+
       const amount = await getAmountOut.apply(null, param);
       console.log(amount);
 

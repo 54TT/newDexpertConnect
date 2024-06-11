@@ -19,7 +19,7 @@ export const getDecimals = async (
   const wethAddress = chainConfig.wethAddress;
   if (
     ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
+    wethAddress.toLowerCase() === tokenInAddress.toLowerCase()
   ) {
     tokenInDecimals = 18;
   } else {
@@ -27,7 +27,7 @@ export const getDecimals = async (
     tokenInDecimals = await tokenInContract.decimals();
   }
   if (
-    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
+    ethAddress.toLowerCase() === tokenOutAddress.toLowerCase() ||
     wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
   ) {
     tokenOutDecimals = 18;
