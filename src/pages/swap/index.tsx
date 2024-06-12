@@ -1,6 +1,6 @@
 import Request from '@/components/axios.tsx';
 import './index.less';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import SwapComp from './components/SwapComp';
 import './index.less';
 import { getUniversalRouterContract } from '@utils/contracts';
@@ -10,6 +10,7 @@ import PairPriceCharts from './components/PairPriceCharts';
 import Decimal from 'decimal.js';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
 import { ERC20Abi } from '@abis/ERC20Abi';
+import { CountContext } from '@/Layout';
 
 const mockRecipentAddress = '0x4b42fbbae2b6ed434e8598a00b1fd7efabe5bce3';
 const mockChainId = '11155111';
@@ -17,7 +18,7 @@ function Swap() {
   const { getAll } = Request();
   const [amountIn, setAmountIn] = useState<number | null>(0.01);
   const [amountOut, setAomuntOut] = useState<number | null>(0.01);
-
+  const { provider } = useContext(CountContext);
   const handleApprove = async (
     tokenInAddress: string,
     signer: ethers.Signer
@@ -102,11 +103,8 @@ function Swap() {
   }) => {
     const chainId = localStorage.getItem('chainId');
     const { zeroAddress } = config[chainId || '11155111'];
-    const provider: any = new ethers.providers.Web3Provider(
-      (window as any).ethereum
-    );
     const signer = await provider.getSigner();
-    const { amountIn, amountOut, tokenIn, tokenOut } = data;
+    const { tokenIn } = data;
     const { commands, inputs, etherValue } = await getSwapBytes(data);
     if (tokenIn !== zeroAddress) {
       const successApprove = await handleApprove(tokenIn, signer);

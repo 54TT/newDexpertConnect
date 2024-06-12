@@ -96,6 +96,7 @@ function SwapComp({ onSwap }: SwapCompType) {
   }, []); */
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
+    let start = Date.now();
     const chainId = localStorage.getItem('chainId');
     const { universalRouterAddress, uniswapV2RouterAddress } =
       config[chainId || '11155111'];
@@ -122,6 +123,7 @@ function SwapComp({ onSwap }: SwapCompType) {
       console.log(amount);
       setAmountIn(Number(amount.toString()));
     }
+    console.log(`获取输入输出总耗时${(Date.now() - start) / 1000} 秒 `);
   };
 
   const getAmountDebounce = useCallback(debounce(getAmount, 300), [
