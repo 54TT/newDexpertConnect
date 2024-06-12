@@ -30,13 +30,13 @@ function Left({ par }: any) {
     par?.createdAtTimestamp.toString().length > 10
       ? Number(par.createdAtTimestamp.toString().slice(0, 10))
       : Number(par.createdAtTimestamp);
-  const show = (name: string) => {
+  const show =  throttle(  function (name: string) {
     if (name === 'one') {
       setSelectOne('select');
     } else {
       setSelectTwo('select');
     }
-  };
+  }, 1500,{ trailing: false })
   return (
     <div
       className={`NewpairDetailsOne scrollStyle`}

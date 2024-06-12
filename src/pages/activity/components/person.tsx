@@ -137,10 +137,14 @@ export default function person() {
         <p></p>
         <p> {t('person.Wallet')}</p>
         <p
-          onClick={() => {
-            changeBindind.current = '';
-            setOpen(false);
-          }}
+          onClick={throttle(
+            function () {
+              changeBindind.current = '';
+              setOpen(false);
+            },
+            1500,
+            { trailing: false }
+          )}
         >
           x
         </p>
@@ -151,16 +155,20 @@ export default function person() {
             <div
               className="other"
               key={ind}
-              onClick={() => {
-                if (
-                  i?.address &&
-                  currentAddress?.toLocaleLowerCase() !==
-                    i?.address?.toLocaleLowerCase()
-                ) {
-                  setRefresh(!refresh);
-                  cookie.set('currentAddress', i?.address);
-                }
-              }}
+              onClick={throttle(
+                function () {
+                  if (
+                    i?.address &&
+                    currentAddress?.toLocaleLowerCase() !==
+                      i?.address?.toLocaleLowerCase()
+                  ) {
+                    setRefresh(!refresh);
+                    cookie.set('currentAddress', i?.address);
+                  }
+                },
+                1500,
+                { trailing: false }
+              )}
               style={{
                 border:
                   currentAddress?.toLocaleLowerCase() ===
@@ -187,11 +195,15 @@ export default function person() {
                 {i?.address || ''}
               </p>
               <p
-                onClick={() => {
-                  if (i.name !== 'Sol') {
-                    select(i);
-                  }
-                }}
+                onClick={throttle(
+                  function () {
+                    if (i.name !== 'Sol') {
+                      select(i);
+                    }
+                  },
+                  1500,
+                  { trailing: false }
+                )}
                 style={{
                   color:
                     i.name === 'Sol'
@@ -285,26 +297,26 @@ export default function person() {
   );
   const [value, setValue] = useState('');
   const [isValue, setIsValue] = useState(false);
-  const verifyInvite = async () => {
-    if (value) {
-      const token = cookie.get('token');
-      if (token) {
-        setIsValue(true);
-        const res = await getAll({
-          method: 'post',
-          url: '/api/v1/invite-code/confirm',
-          data: { inviteCode: value },
-          token,
-        });
-        if (res?.status === 200) {
-          setIsValue(false);
-          MessageAll('success', t('person.ver'));
-        } else {
-          setIsValue(false);
+  const verifyInvite = throttle( async function () {
+      if (value) {
+        const token = cookie.get('token');
+        if (token) {
+          setIsValue(true);
+          const res = await getAll({
+            method: 'post',
+            url: '/api/v1/invite-code/confirm',
+            data: { inviteCode: value },
+            token,
+          });
+          if (res?.status === 200) {
+            setIsValue(false);
+            MessageAll('success', t('person.ver'));
+          } else {
+            setIsValue(false);
+          }
         }
       }
-    }
-  };
+    }, 1500,{ trailing: false });
   const change = (e: any) => {
     setValue(e.target.value);
   };
@@ -357,10 +369,14 @@ export default function person() {
                   <div className="leftBot">
                     <p> {t('person.form')}</p>
                     <div
-                      onClick={() => {
-                        getLink();
-                        setIsCopy(true);
-                      }}
+                      onClick={throttle(
+                        function () {
+                          getLink();
+                          setIsCopy(true);
+                        },
+                        1500,
+                        { trailing: false }
+                      )}
                     >
                       {' '}
                       {isCopy ? <Load /> : t('person.Link')}
