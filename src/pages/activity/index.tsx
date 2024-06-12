@@ -149,7 +149,7 @@ function Index() {
                             color: 'rgb(212,223,214)',
                             lineHeight: '1.1',
                             textAlign: 'center',
-                        }}>*In order to cooperate with the integration, the golden pass will be issued three working days after the end of the event.</p>
+                        }}> {t('Active.order')}</p>
                     </div>
                     <div className='backgroundColor' style={{ top: '15vh', background: '#86F097', left: "0" }}></div>
                     <div className='backgroundColor' style={{ top: '10vh', background: '#0FF', right: '0' }}></div>

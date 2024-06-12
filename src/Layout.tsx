@@ -67,6 +67,7 @@ const connector: any = new TonConnect({
 export const CountContext = createContext(null);
 function Layout() {
   const changeBindind = useRef<any>();
+  //  ton  二维码
   const [QRCodeLink, setQRCodeLink] = useState('');
   const [tgCodeLink, setTGCodeLink] = useState('');
   //ton钱包连接
