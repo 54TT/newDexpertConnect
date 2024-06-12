@@ -4,7 +4,7 @@ import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
 import { getTokenPrice } from '@utils/getTokenPrice';
-import { getV3AmountIn } from '@utils/swap/v3/getAmountIn';
+import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
 import { getSwapExactInBytes } from '@utils/swap/v3/getSwapExactInBytes';
 import {
   getUniswapV2RouterContract,
@@ -45,14 +45,15 @@ function SwapComp({ onSwap }: SwapCompType) {
     console.log('-----------------');
     const param = [
       '11155111',
-      await getUniversalRouterContract(provider, '11155111'),
+      provider,
+      await getUniversalRouterContract(provider, '0xD06CBe0ec2138c7aAFA8eAB031EA164f5c1C6bC1'),
       '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
       '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
-      BigInt(1000000000000),
+      new Decimal(1000000000000),
       new Decimal(0.01),
       0,
     ];
-    const res = await getV3AmountIn.apply(null, param);
+    const res = await getV3AmountOut.apply(null, param);
     console.log('res-----', res);
     console.log(res.quoteAmount.toString());
     console.log(res.fee);
@@ -60,10 +61,11 @@ function SwapComp({ onSwap }: SwapCompType) {
 
     const a = await getSwapExactInBytes(
       '11155111',
-      tokenIn?.address,
-      tokenOut?.address,
-      new Decimal(amountIn || 0),
-      new Decimal(amountOut || 0),
+      provider,
+      "0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406",
+      "0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d",
+      new Decimal(1000000000000),
+      new Decimal(res.quoteAmount),
       '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
       false,
       0,

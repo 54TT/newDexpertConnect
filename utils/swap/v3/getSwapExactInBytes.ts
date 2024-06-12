@@ -8,6 +8,7 @@ import Decimal from 'decimal.js';
 
 export const getSwapExactInBytes = async (
   chainId: string,
+  provider: any,
   tokenInAddress: string,
   tokenOutAddress: string,
   amountIn: Decimal,
@@ -23,10 +24,10 @@ export const getSwapExactInBytes = async (
   const wethAddress = chainConfig.wethAddress;
   const planner = new RoutePlanner();
 
-  const tokenInContract = await getERC20Contract(chainId, tokenInAddress)
+  const tokenInContract = await getERC20Contract(provider, tokenInAddress)
   const tokenInDecimals = await tokenInContract.decimals();
 
-  const tokenOutContract = await getERC20Contract(chainId, tokenOutAddress)
+  const tokenOutContract = await getERC20Contract(provider, tokenOutAddress)
   const tokenOutDecimals = await tokenOutContract.decimals();
 
   const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);

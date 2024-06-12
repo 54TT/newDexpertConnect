@@ -9,7 +9,7 @@ import {UniswapV3FactoryAbi} from '../abis/UniswapV3FactoryAbi'
 import {UniswapV3PoolAbi} from '../abis/UniswapV3PoolAbi'
 import {UniswapV3OracleLibraryAbi} from '../abis/UniswapV3OracleLibraryAbi'
 import { ethers } from "ethers";
-import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
+import {QuoterAbi} from '../abis/QuoterAbi'
 
 export const getUniversalRouterContract = async (
     provider: any,
@@ -70,6 +70,6 @@ export const getQuoterContract = async (
     provider: any,
     address: string,
 ) => {
-    const contract = new ethers.Contract(address, Quoter.abi, provider)
+    const contract = new ethers.Contract(address, QuoterAbi, provider)
     return contract;
 }
