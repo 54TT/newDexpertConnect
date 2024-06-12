@@ -46,7 +46,10 @@ function SwapComp({ onSwap }: SwapCompType) {
     const param = [
       '11155111',
       provider,
-      await getUniversalRouterContract(provider, '0xD06CBe0ec2138c7aAFA8eAB031EA164f5c1C6bC1'),
+      await getUniversalRouterContract(
+        provider,
+        '0xD06CBe0ec2138c7aAFA8eAB031EA164f5c1C6bC1'
+      ),
       '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
       '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
       new Decimal(1000000000000),
@@ -62,8 +65,8 @@ function SwapComp({ onSwap }: SwapCompType) {
     const a = await getSwapExactInBytes(
       '11155111',
       provider,
-      "0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406",
-      "0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d",
+      '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
+      '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
       new Decimal(1000000000000),
       new Decimal(res.quoteAmount),
       '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
