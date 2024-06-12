@@ -15,27 +15,15 @@ export const erc20ToErc20 = async (
   isFee: boolean,
   feeType: number,
   permit: any,
-  signature: string,
+  signature: string
 ) => {
   const chainConfig = config[chainId];
-<<<<<<< HEAD
-=======
-
-  const universalRouterAddress = chainConfig.universalRouterAddress;
->>>>>>> 62a6a55f5ae3547830b4b33bf43f85ab024d172d
   const wethAddress = chainConfig.wethAddress;
   const zeroAddress = chainConfig.zeroAddress;
   const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
 
-<<<<<<< HEAD
   const permit2PermitParams = [permit, signature];
   planner.addCommand(CommandType.PERMIT2_PERMIT, permit2PermitParams, false);
-=======
-  console.log(amountIn.toString(), amountOutMin.toString());
-
-  const transferParams = [tokenIn, universalRouterAddress, amountIn];
-  planner.addCommand(CommandType.TRANSFER_FROM, transferParams, false);
->>>>>>> 62a6a55f5ae3547830b4b33bf43f85ab024d172d
 
   let swapPath = [''];
   if (
@@ -84,7 +72,7 @@ export const erc20ToETH = async (
   isFee: boolean,
   feeType: number,
   permit: any,
-  signature: string,
+  signature: string
 ) => {
   const chainConfig = config[chainId];
   const universalRouterAddress = chainConfig.universalRouterAddress;

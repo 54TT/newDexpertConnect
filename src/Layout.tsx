@@ -43,7 +43,7 @@ const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
 );
 const Index = React.lazy(() => import('./pages/index/index.tsx'));
-const Dapp = React.lazy(() => import('./pages/dapp/index.tsx'));
+const Dapp = React.lazy(() => import('./pages/dappTools/index.tsx'));
 const Community = React.lazy(() => import('./pages/community/index.tsx'));
 const Active = React.lazy(() => import('./pages/activity/index.tsx'));
 const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
@@ -55,9 +55,10 @@ import TonConnect, {
   WalletInfoCurrentlyEmbedded,
   isWalletInfoCurrentlyInjected,
 } from '@tonconnect/sdk';
-import Swap from './pages/swap/index.tsx';
+import Swap from './pages/dapps/swap/index.tsx';
 import { ethers } from 'ethers';
 import { config } from './config/config.ts';
+import Dapps from './pages/dapps/index.tsx';
 const web3Modal = new Web3Modal({
   projectId: DEFAULT_PROJECT_ID,
   themeMode: 'dark',
@@ -568,7 +569,9 @@ function Layout() {
     changeBindind,
     isModalSet,
     setIsModalSet,
-    QRCodeLink,tgCodeLink,setTGCodeLink,
+    QRCodeLink,
+    tgCodeLink,
+    setTGCodeLink,
     setQRCodeLink,
     languageChange,
     setLanguageChange,
@@ -602,7 +605,7 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
+          <div className={big ? 'bigCen' : ''} style={{ marginTop: '100px' }}>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/re-register" element={<Index />} />
@@ -614,7 +617,7 @@ function Layout() {
               <Route path="/oauth/:id/callback" element={<Oauth />} />
               <Route path="/dpass/:id" element={<Dpass />} />
               <Route path="/activityPerson" element={<ActivePerson />} />
-              <Route path="/swap" element={<Swap />} />
+              <Route path="/dapps/*" element={<Dapps />} />
             </Routes>
           </div>
           <img

@@ -38,7 +38,7 @@ function Swap() {
 
     const approveTx = await tokenInContract.approve(
       universalRouterAddress,
-      BigInt(amountIn * 10 ** 6)
+      BigInt(amountIn * 10 ** 18)
     );
 
     const recipent = await approveTx.wait();
@@ -87,7 +87,9 @@ function Swap() {
       new Decimal(amountOut),
       mockRecipentAddress,
       true,
-      0
+      0,
+      permit,
+      signature
     );
 
     /*     console.log('SwapExactInParam', {
