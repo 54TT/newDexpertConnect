@@ -41,6 +41,9 @@ import { MessageAll } from './components/message.ts';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
+import Dapps from './pages/dapps/index.tsx';
+import { config } from './config/config.ts';
+import { ethers } from 'ethers';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
   () => import('./pages/activity/components/person.tsx')
@@ -119,7 +122,7 @@ function Layout() {
   //  监听ton的 变化
   useEffect(() => {
     tonConnectUI.onStatusChange((wallet) => {
-      if (wallet?.account&&wallet?.connectItems) {
+      if (wallet?.account && wallet?.connectItems) {
         setTonWallet(wallet);
       } else {
         setTonWallet(null);
@@ -182,7 +185,7 @@ function Layout() {
     if (tonConnectUI?.connected) {
       tonConnectUI.disconnect();
     }
-    setTonWallet(null)
+    setTonWallet(null);
     setUserPar(null);
     setIsLogin(false);
     setBindingAddress(null);
