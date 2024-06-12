@@ -53,7 +53,7 @@ function Header() {
     const items: any = [
         {
             key: "1",
-            label: <p onClick={logout}>logout</p>,
+            label: <p onClick={logout}>{t('person.logout')}</p>,
         },
     ];
     const loginModal = throttle(

@@ -120,7 +120,3 @@ export const setMany = (text: any, countdown?: string, languageChange?: string) 
 export const simplify = (name: any) => {
     return name ? name.length > 12 ? name.slice(0, 4) + '...' + name.slice(-4) : name : ''
 }
-
-
-
-
