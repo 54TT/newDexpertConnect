@@ -49,7 +49,8 @@
     "Telegram Suite": "Telegram Suite",
     "Start on Web": "Start on Web",
     "Thor Desc": "Thor is a user-friendly DApp that automates the ERC-20 token creation process. By providing an intuitive interface and simplifying complex tasks, Thor empowers users to efficiently create and deploy their tokens.",
-    "Run Tips": "In the Uniswap protocol design, the development team does not extract fees from transactions, and all fees in transactions are returned to the liquidity provider."
+    "Run Tips": "In the Uniswap protocol design, the development team does not extract fees from transactions, and all fees in transactions are returned to the liquidity provider.",
+    "Fee": "Fee"
   },
   "Slider": {
     "New Pairs": "New Pairs",
@@ -76,9 +77,9 @@
     "fail": "fail"
   },
   "Market": {
-    "Favorites":"Favorites List",
-    "Trading":"Popular Trading",
-    "New":"New Pairs",
+    "Favorites": "Favorites List",
+    "Trading": "Popular Trading",
+    "New": "New Pairs",
     "Name": "Name",
     "Price": "Price",
     "24h Change": "24h Change",
@@ -149,13 +150,13 @@
     "po": "POINT",
     "us": "USER",
     "ra": "RANK",
-    "points":"point",
+    "points": "point",
     "Each": "Accounts are limited to obtaining 2000D-points and can only finish the First Mission once. An account may only finish daily chores once, for a maximum of 600D-points. You can use 6000D-points once to get a free Token Creation Bot. Fast trade can be done once with 480D-points, and 1200D-points can be used for a free Sniper Bot bot once. The final interpretation of this activity rule belongs to the company.",
     "bot": "To commemorate the introduction of Dexpert, simply link your wallet to receive 1000 D-Points. Also, you can gain extra points by connecting with us on Twitter, Discord, and Telegram; each social media platform awards 500 points."
   },
   "Dpass": {
-    "mi":"mission accomplished",
-    "deadline":"2-month deadline",
+    "mi": "mission accomplished",
+    "deadline": "2-month deadline",
     "fee": "Transaction Fee:",
     "Fast": "Fast Trade",
     "Pass": "Sniper Bot",
@@ -165,7 +166,7 @@
     "laun": "Token Creation Bot Pass can be used to access Dexpert Token Creation Bot for free once.",
     "jin": "Golden Pass can be used to access any Dexpert bot for free, unlimited times.",
     "required": "Points required",
-    "date":"Expire date",
+    "date": "Expire date",
     "pointsAmount": "Your D Points",
     "passCount": "Your Pass",
     "Time": "Time",
@@ -188,5 +189,16 @@
     "ins": "Follow the following Instagram users",
     "how": "How to Verify?",
     "verify": "verify"
+  },
+  "person":{
+    "address":"address",
+    "points":"points",
+    "Invite":"Invite",
+    "number":"number of invitees",
+    "form":"Application",
+    "Link":"Invite Link",
+    "Wallet":"Link Wallet",
+    "copy":"Copied successfully"
+
   }
 }

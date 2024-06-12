@@ -46,7 +46,8 @@
     "Start on Web": "在网页中使用",
     "Telegram Suite": "Telegram 套件",
     "Thor Desc": "Thor是一个用户友好的DApp，它自动化了ERC-20代币创建过程。通过提供直观的界面和简化复杂任务，Thor使用户能够高效地创建和部署他们的代币。",
-    "Run Tips": "在Uniswap协议设计中，开发团队不会从交易中提取费用，所有交易中的费用都会返还给提供流动性的提供者。"
+    "Run Tips": "在Uniswap协议设计中，开发团队不会从交易中提取费用，所有交易中的费用都会返还给提供流动性的提供者。",
+    "Fee": "费用"
   },
   "Slider": {
     "New Pairs": "新交易对",
@@ -73,9 +74,9 @@
     "copy": "复制成功"
   },
   "Market": {
-    "Favorites":"收藏列表",
-    "Trading":"热门交易",
-    "New":"新交易对",
+    "Favorites": "收藏列表",
+    "Trading": "热门交易",
+    "New": "新交易对",
     "Name": "名称",
     "Price": "价格",
     "24h Change": "24h 变化",
@@ -133,7 +134,7 @@
     "Multiplier": "乘数",
     "task": "D点",
     "task1": "任务",
-    "points":"积分",
+    "points": "积分",
     "point": "你的D点积分",
     "pass": "你的pass卡",
     "today": "今天积分",
@@ -152,8 +153,8 @@
     "bot": "为了纪念Dexpert的推出，只需链接您的钱包即可获得1000点D积分。此外，您可以通过在Twitter、Discord和Telegram上与我们联系来获得额外积分；每个社交媒体平台奖励500分。"
   },
   "Dpass": {
-    "mi":"完成任务",
-    "deadline":"两个月期限",
+    "mi": "完成任务",
+    "deadline": "两个月期限",
     "fee": "交易手续费:",
     "Fast": "快速交易通行证",
     "Pass": "狙击机器人通行证",
@@ -163,7 +164,7 @@
     "jin": "黄金通行证可用于免费、无限次地访问任何 Dexpert 机器人。",
     "laun": "代币创建机器人通行证可用于免费访问 Dexpert 代币创建机器人一次。",
     "required": "所需积分",
-    "date":"到期时间",
+    "date": "到期时间",
     "pointsAmount": "你的 D 积分",
     "passCount": "Pass 数量",
     "Time": "时间",
@@ -185,6 +186,16 @@
     "dis": "加入以下 Discord 群组",
     "ins": "关注以下 Instagram 用户.",
     "how": "如何去验证?",
-    "verify":"验证"
+    "verify": "验证"
+  },
+  "person":{
+    "address":"地址",
+    "points":"积分",
+    "Invite":"邀请",
+    "number":"受邀人数",
+    "form":"申请表",
+    "Link":"邀请链接",
+    "Wallet":"钱包链接",
+    "copy":"复制成功"
   }
 }

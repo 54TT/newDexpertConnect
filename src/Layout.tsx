@@ -1,5 +1,11 @@
 import Header, { I18N_Key } from './components/header.tsx';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import './style/all.less';
 import React, {
   createContext,
@@ -49,14 +55,89 @@ const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
   () => import('./pages/activity/components/specialDetail.tsx')
 );
+import TonConnect, {
+  toUserFriendlyAddress,
+  WalletInfoCurrentlyEmbedded,
+  isWalletInfoCurrentlyInjected,
+} from '@tonconnect/sdk';
 const web3Modal = new Web3Modal({
   projectId: DEFAULT_PROJECT_ID,
   themeMode: 'dark',
   walletConnectVersion: 1,
 });
+const connector: any = new TonConnect({
+  manifestUrl:
+    'https://sniper-bot-frontend-test.vercel.app/tonconnect-manifest.json',
+});
 export const CountContext = createContext(null);
 function Layout() {
-  const router = useLocation();
+  const changeBindind = useRef<any>();
+  //ton钱包连接
+  const tonConnect = async () => {
+    //  获取 授权的message
+    const noce: any = await getNoce('', '-2');
+    if (noce?.data?.nonce) {
+      const walletsList = await connector.getWallets();
+      const embeddedWallet = walletsList.find((value: any) =>
+        isWalletInfoCurrentlyInjected(value)
+      ) as WalletInfoCurrentlyEmbedded;
+      if (embeddedWallet?.name) {
+        connector.connect(
+          { jsBridgeKey: embeddedWallet?.jsBridgeKey },
+          { tonProof: noce?.data?.nonce }
+        );
+      } else {
+        const walletConnectionSource = {
+          universalLink: 'https://app.tonkeeper.com/ton-connect',
+          bridgeUrl: 'https://bridge.tonapi.io/bridge',
+        };
+        const universalLink = connector.connect(walletConnectionSource, {
+          tonProof: noce?.data?.nonce,
+        });
+        setQRCodeLink(universalLink);
+      }
+    }
+  };
+  const duan = async () => {
+    if (connector.connected) {
+      await connector.disconnect();
+    }
+  };
+  //  监听ton的 变化
+  useEffect(() => {
+    window.addEventListener('ton-connect-connection-error', () => {
+      setLoad(false);
+      setIsModalOpen(false);
+    });
+    connector.onStatusChange((wallet: any) => {
+      if (wallet?.account) {
+        setIsModalOpen(false);
+        const rawAddress = wallet.account.address;
+        const tonProof = wallet.connectItems?.tonProof;
+        // 地址
+        const bouncableUserFriendlyAddress = toUserFriendlyAddress(rawAddress);
+        const par = {
+          payload: tonProof?.proof?.payload,
+          value: tonProof?.proof?.domain.value,
+          lengthBytes: tonProof?.proof?.domain.lengthBytes,
+          stateInit: wallet.account.walletStateInit,
+          signature: tonProof?.proof?.signature,
+          address: bouncableUserFriendlyAddress,
+          timestamp: tonProof?.proof?.timestamp,
+        };
+        login(par, 'ton', '');
+        connector.pauseConnection();
+        setIsModalSet(false);
+        setQRCodeLink('');
+      } else {
+        setQRCodeLink('');
+        setLoad(false);
+        setIsModalOpen(false);
+      }
+    });
+  }, [connector]);
+  const router: any = useLocation();
+  const [search] = useSearchParams();
   const { t } = useTranslation();
   const { getAll } = Request();
   const history = useNavigate();
@@ -65,6 +146,7 @@ function Layout() {
   const [session, setSession] = useState<any>(null);
   const prevRelayerValue = useRef<any>();
   const [user, setUserPar] = useState<any>(null);
+  const [bindingAddress, setBindingAddress] = useState<any>(null);
   const [isLogin, setIsLogin] = useState(false);
   const [load, setLoad] = useState<boolean>(false);
   const [newPairPar, setNewPairPar] = useState<any>([]);
@@ -77,13 +159,13 @@ function Layout() {
   const [browser, setBrowser] = useState<any>(false);
   const [big, setBig] = useState<any>(false);
   const [activityOptions, setActivityOptions] = useState('');
+  const [QRCodeLink, setQRCodeLink] = useState('');
   // copy
   const [isCopy, setIsCopy] = useState(false);
-  const queryClient = new QueryClient();
   useEffect(() => {
     if (newAccount && user?.address) {
       if (newAccount !== user?.address) {
-        handleLogin();
+        // handleLogin()
       }
     }
   }, [newAccount]);
@@ -105,9 +187,14 @@ function Layout() {
   const clear = async () => {
     history('/re-register');
     cookie.remove('token');
+    changeBindind.current = '';
     cookie.remove('jwt');
+    if (connector?.connected) {
+      await connector.disconnect();
+    }
     setUserPar(null);
     setIsLogin(false);
+    setBindingAddress(null);
   };
   const getUser = async (id: string, token: string, name: string, jwt: any) => {
     const data: any = await getAll({
@@ -118,6 +205,8 @@ function Layout() {
     });
     if (data?.status === 200) {
       const user = data?.data?.data;
+      const wallet = data?.data?.userWallets;
+      setBindingAddress(wallet);
       setUserPar(user);
       setIsLogin(true);
       cookie.set('token', token);
@@ -134,80 +223,87 @@ function Layout() {
       setLoad(false);
     }
   };
-  const login = async (
-    sign: string,
-    account: string,
-    message: string,
-    name: string
-  ) => {
+
+  const login = async (par: any, chain: string, name: string) => {
     try {
-      // const pa = router.query && router.query?.inviteCode ? router.query.inviteCode : cookie.get('inviteCode') || ''
-      const res = await getAll({
-        method: 'post',
-        url: '/api/v1/login',
-        data: {
-          signature: sign,
-          addr: account,
-          message,
-          inviteCode: '',
-        },
-        token: '',
-      });
-      if (res?.status === 200 && res?.data?.accessToken) {
-        //    解析 token获取用户信息
-        const base64Url = res.data?.accessToken.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const decodedToken = JSON.parse(atob(base64));
-        setNewAccount('');
-        console.log(decodedToken);
-        if (decodedToken && decodedToken?.uid) {
-          const uid = decodedToken.sub.split('-')[1];
-          getUser(uid, res.data?.accessToken, name, decodedToken);
+      const inviteCode = search.get('inviteCode')
+        ? search.get('inviteCode')
+        : cookie.get('inviteCode') || '';
+      // 绑定新钱包
+      if (changeBindind?.current?.toLocaleLowerCase() === chain) {
+        const token = cookie.get('token');
+        if (token) {
+          const at: any = chain === 'ton' ? { ton: par } : { eth: par };
+          const bind = await getAll({
+            method: 'post',
+            url: '/api/v1/wallet/bind',
+            data: {
+              chainName: chain,
+              ...at,
+            },
+            token: token,
+            chainId: chain === 'ton' ? '-2' : '1',
+          });
+          console.log(bind);
+        }
+      } else {
+        // 登录
+        const res = await getAll({
+          method: 'post',
+          url: chain === 'ton' ? '/api/v1/ton/login' : '/api/v1/login',
+          data: {
+            ...par,
+            inviteCode,
+          },
+          token: '',
+          chainId: chain === 'ton' ? '-2' : '1',
+        });
+        if (res?.status === 200 && res?.data?.accessToken) {
+          //    解析 token获取用户信息
+          const base64Url = res.data?.accessToken.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const decodedToken = JSON.parse(atob(base64));
+          setNewAccount('');
+          if (decodedToken && decodedToken?.uid) {
+            const uid = decodedToken.sub.split('-')[1];
+            getUser(uid, res.data?.accessToken, name, decodedToken);
+          }
         }
       }
     } catch (e) {
       return null;
     }
   };
-  //  登录
-  const getMoneyEnd = _.throttle(function () {
-    if (typeof (window as any).ethereum != 'undefined') {
-      handleLogin();
-    } else {
-      MessageAll('warning', t('Market.inst'));
-      setLoad(false);
-    }
-  }, 800);
-  const handleLogin = async () => {
+  const handleLogin = async (i: any) => {
     try {
-      const provider: any = new ethers.providers.Web3Provider(
-        (window as any).ethereum
-      );
-      // provider._isProvider   判断是否还有请求没有结束
-      // 请求用户授权连接钱包
-      await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-      const account = await provider.send('eth_requestAccounts', []);
+      const account = await i?.provider?.request({
+        method: 'eth_requestAccounts',
+      });
+      // const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
+      // // provider._isProvider   判断是否还有请求没有结束
+      // // 请求用户授权连接钱包
+      // await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+      // const account = await provider.send("eth_requestAccounts", []);
       // 连接的网络和链信息。
       // const chain = await provider.getNetwork();
       // 获取签名
-      const signer = await provider.getSigner();
+      // const signer = await provider.getSigner();
       // 判断是否有账号
       if (account.length > 0) {
         // 判断是否是eth
         // if (chain && chain.name === 'homestead' && chain.chainId === 1) {
         try {
-          const at = {
-            method: 'post',
-            url: '/api/v1/token',
-            data: { address: account[0] },
-            token: '',
-          };
-          const token: any = await getAll(at);
+          const token: any = await getNoce(account[0]);
           if (token?.data && token?.status === 200) {
             // 签名消息
+            // const sign = await signer.signMessage(message)
             const message = token?.data?.nonce;
-            const sign = await signer.signMessage(message);
-            login(sign, account[0], message, 'more');
+            const sign = await i?.provider?.request({
+              method: 'personal_sign',
+              params: [message, account[0]],
+            });
+            const data = { signature: sign, addr: account[0], message };
+            login(data, 'eth', 'more');
           } else {
             setLoad(false);
           }
@@ -243,7 +339,8 @@ function Layout() {
           params,
         },
       });
-      login(signature, address, toName, 'modal');
+      const data = { signature, addr: address, message: toName };
+      login(data, 'eth', 'modal');
     } catch (e) {
       return null;
     }
@@ -267,6 +364,16 @@ function Layout() {
     });
     reset();
   }, [client, session]);
+  const getNoce = async (address: string, chainId?: any) => {
+    const noce: any = await getAll({
+      method: 'post',
+      url: '/api/v1/token',
+      data: { address },
+      token: '',
+      chainId,
+    });
+    return noce;
+  };
   const getBlockchainActions = async (
     acount: any,
     client: any,
@@ -275,12 +382,7 @@ function Layout() {
     try {
       const [namespace, reference, address] = acount[0].split(':');
       const chainId = `${namespace}:${reference}`;
-      const token: any = await getAll({
-        method: 'post',
-        url: '/api/v1/token',
-        data: { address: address },
-        token: '',
-      });
+      const token: any = await getNoce(address);
       if (token && token?.data && token?.status === 200) {
         await loginMore(chainId, address, client, session, token?.data?.nonce);
       } else {
@@ -342,13 +444,15 @@ function Layout() {
       }
     }
     // 监测钱包切换
-    if ((window as any).ethereum) {
-      (window as any).ethereum.on('accountsChanged', function (accounts: any) {
-        setNewAccount(accounts[0]);
-      });
-    }
-    // 监测链切换
+    // if ((window as any).ethereum) {
+    //     (window as any).ethereum.on('accountsChanged', function (accounts: any) {
+    //         console.log(accounts)
+    //         // setNewAccount(accounts[0])
+    //     })
+    // }
+    // // 监测链切换
     // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
+    //         console.log(networkIDstring)
     // })
   }, []);
   useEffect(() => {
@@ -362,7 +466,6 @@ function Layout() {
       prevRelayerValue.current = 'wss://relay.walletconnect.com';
     }
   }, [createClient, client]);
-
   const changeBody = () => {
     const body = document.getElementsByTagName('body')[0];
     if (window && window?.innerWidth) {
@@ -391,25 +494,33 @@ function Layout() {
   };
   useEffect(() => {
     changeBody();
+    const getI = search.get('inviteCode');
+    if (getI) {
+      cookie.set('inviteCode', getI);
+    }
     const handleResize = () => {
       changeBody();
     };
     if (router.pathname === '/re-register') {
       setUserPar(null);
+      setBindingAddress(null);
       setIsLogin(false);
     }
+
     // 添加事件监听器
     window.addEventListener('resize', handleResize);
     // 在组件卸载时移除事件监听器
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, [router]);
   const value: any = {
     connect,
+    tonConnect,
     clear,
     onDisconnect,
-    getMoneyEnd,
+    handleLogin,
     user,
     setLoad,
     load,
@@ -418,10 +529,17 @@ function Layout() {
     setNewPairPar,
     isModalOpen,
     setIsModalOpen,
+    changeBindind,
     isModalSet,
     setIsModalSet,
+    QRCodeLink,
+    setQRCodeLink,
     languageChange,
+
     setLanguageChange,
+    connector,
+    setBindingAddress,
+    bindingAddress,
     setUserPar,
     switchChain,
     setSwitchChain,
@@ -431,6 +549,7 @@ function Layout() {
     isCopy,
     setIsCopy,
   };
+
   const clients = new ApolloClient({
     uri: chain[switchChain],
     cache: new InMemoryCache(),
@@ -439,48 +558,40 @@ function Layout() {
     <ApolloProvider client={clients}>
       <Suspense
         fallback={
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%,-50%)',
-            }}
-          >
+          <div className="positionAbsolte">
             <Loading browser={browser} />
           </div>
         }
       >
         <CountContext.Provider value={value}>
-          <WagmiProvider config={config}>
-            <QueryClientProvider client={queryClient}>
-              <Header />
-              <div
-                className={big ? 'bigCen' : ''}
-                style={{ marginTop: '50px' }}
-              >
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/re-register" element={<Index />} />
-                  <Route
-                    path="/specialActive/:id"
-                    element={<SpecialActive />}
-                  />
-                  <Route
-                    path="/newpairDetails/:id"
-                    element={<NewpairDetails />}
-                  />
-                  <Route path="/community/:tab" element={<Community />} />
-                  <Route path="/app/:id" element={<Dapp />} />
-                  <Route path="/activity" element={<Active />} />
-                  <Route path="/oauth/:id/callback" element={<Oauth />} />
-                  <Route path="/dpass/:id" element={<Dpass />} />
-                  <Route path="/activityPerson" element={<ActivePerson />} />
-                  <Route path="/sniper" element={<SniperBot />} />
-                </Routes>
-              </div>
-            </QueryClientProvider>
-          </WagmiProvider>
+          <Header />
+          <p onClick={duan} style={{ color: 'white', display: 'none' }}>
+            断开
+          </p>
+          <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/re-register" element={<Index />} />
+              <Route path="/specialActive/:id" element={<SpecialActive />} />
+              <Route path="/newpairDetails/:id" element={<NewpairDetails />} />
+              <Route path="/community/:tab" element={<Community />} />
+              <Route path="/app/:id" element={<Dapp />} />
+              <Route path="/activity" element={<Active />} />
+              <Route path="/oauth/:id/callback" element={<Oauth />} />
+              <Route path="/dpass/:id" element={<Dpass />} />
+              <Route path="/activityPerson" element={<ActivePerson />} />
+            </Routes>
+          </div>
+          <img
+            src="/bodyLeft.png"
+            alt=""
+            style={{ position: 'fixed', top: '0', left: '0' ,zIndex:'-1'}}
+          />
+          <img
+            src="/bodyRight.png"
+            alt=""
+            style={{ position: 'fixed', bottom: '0', right: '0',zIndex:'-1' }}
+          />
         </CountContext.Provider>
       </Suspense>
     </ApolloProvider>

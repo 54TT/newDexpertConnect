@@ -90,7 +90,7 @@ function Index() {
                         </div>
                         <div className={`point`} style={{ width: browser ? '66%' : '90%' }}>
                             {
-                                !isLogin && <div className={'connect'}>
+                                !isLogin && <div className={'connect positionAbsolte'}>
                                     <p onClick={() => {
                                         setIsModalOpen(true)
                                     }}>{t('Common.Connect Wallet')}</p>

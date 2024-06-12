@@ -27,11 +27,11 @@ function Date({ tableDta, time, setDta }: any) {
     }, 1500, { 'trailing': false })
     const [tt, setTt] = useState<any>(null)
     useEffect(() => {
-        setInterval(() => {
+        let show = setInterval(() => {
             const time = dayjs().format('YYYY-MM-DD HH:mm:ss')
-
             setTt(time)
         }, 1000)
+        return () => clearInterval(show)
     }, [])
     const chang = (name: any) => {
         if (tt) {
@@ -89,7 +89,7 @@ function Date({ tableDta, time, setDta }: any) {
                             </div>
                             <div style={{ color: "white" }}>{Number(record?.priceUSD) ? setMany(record?.priceUSD) : 0}</div>
                             <div
-                                style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,9,58)', }}>{Number(b) !== 0 ? b + '%' : '0'}</div>
+                                style={{ color: Number(a) > 0 ? 'rgb(0,255,71)' : Number(a) === 0 ? 'white' : 'rgb(213,60,58)', }}>{Number(b) !== 0 ? b + '%' : '0'}</div>
                             <div
                                 style={{
                                     color: "white",
@@ -107,11 +107,11 @@ function Date({ tableDta, time, setDta }: any) {
                                             <img loading={'lazy'} src={i} alt="" onClick={
                                                 throttle(function (e: any) {
                                                     e.stopPropagation()
-                                                    if (ind === 0) {
+                                                    if (index === 0) {
                                                         window.open('https://etherscan.io/token/' + record?.token0?.id)
-                                                    } else if (ind === 1) {
+                                                    } else if (index === 1) {
                                                         window.open('https://app.uniswap.org/#/swap?inputCurrency=' + record?.token1?.id + '&outputCurrency=' + record?.token1?.id)
-                                                    } else if (ind === 2) {
+                                                    } else if (index === 2) {
                                                         window.open('https://app.uncx.network/amm/uni-v2/pair/' + record?.id)
                                                     }
                                                 }, 1500, { 'trailing': false })} />

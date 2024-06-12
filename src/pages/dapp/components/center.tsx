@@ -1,17 +1,20 @@
 // import Conyent from "../../community/components/PostContent.tsx";
-import { useContext } from "react";
-import { CountContext } from "../../../Layout.tsx";
-import { useLocation, useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useContext } from 'react';
+import { CountContext } from '../../../Layout.tsx';
+import { useLocation, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 const LINK_CREATE = [
-  "https://drive.google.com/file/d/1ED7qadkVJMKJazvnqlgVARGR4-RYMCbc/view?usp=sharing",
-  "https://t.me/DexpertThorBot"
-]
-const LINK_sniper = ['https://youtu.be/vkKD4GD_awY', "https://t.me/DexpertOdinBot"]
+  'https://drive.google.com/file/d/1ED7qadkVJMKJazvnqlgVARGR4-RYMCbc/view?usp=sharing',
+  'https://t.me/DexpertThorBot',
+];
+const LINK_sniper = [
+  'https://youtu.be/vkKD4GD_awY',
+  'https://t.me/DexpertOdinBot',
+];
 function Center() {
   const { browser }: any = useContext(CountContext);
   const router = useLocation();
-  const params: any = useParams()
+  const params: any = useParams();
   const { t } = useTranslation();
 
   const video = (
@@ -95,27 +98,57 @@ function Center() {
     </>
   );
   return (
-    <div className={"center"} style={{ width: browser ? '80%' : '95%', marginTop: '25px' }}>
-      <div className='tt'>
-        <div className="ttLeft" style={{ width: browser ? '30%' : '35%', borderBottom: browser ? '' : 'none', borderRadius: browser ? '10px 10px 0 10px' : '10px 10px 0 0' }}>
-          <img style={{ width: params?.id === 'create' ? '65%' : '72%' }} src={params?.id === 'create' ? "/bot11.png" : '/bot.png'} alt="" />
+    <div
+      className={'center'}
+      style={{ width: browser ? '80%' : '95%', marginTop: '25px' }}
+    >
+      <div className="tt">
+        <div
+          className="ttLeft"
+          style={{
+            width: browser ? '30%' : '35%',
+            borderBottom: browser ? '' : 'none',
+            borderRadius: browser ? '10px 10px 0 10px' : '10px 10px 0 0',
+          }}
+        >
+          <img
+            style={{ width: params?.id === 'create' ? '65%' : '72%' }}
+            src={params?.id === 'create' ? '/bot11.png' : '/bot.png'}
+            alt=""
+          />
         </div>
         <div className="ttRight" style={{ width: browser ? '70%' : '65%' }}>
           <div className="ttRightTop">
-            <div className="tokenTT" style={{ padding: params?.id === 'create' ? '1%' : '0.5%' }}>
-              <p style={{ fontSize: browser ? "28px" : '18px', padding: browser ? '' : '5%' }}>{params?.id === 'create' ? t("Dapps.Token Creation Bot") + '(Thor)' : t("Dapps.sniper")}</p>
+            <div
+              className="tokenTT"
+              style={{ padding: params?.id === 'create' ? '1%' : '0.5%' }}
+            >
+              <p
+                style={{
+                  fontSize: browser ? '28px' : '18px',
+                  padding: browser ? '' : '5%',
+                }}
+              >
+                {params?.id === 'create'
+                  ? t('Dapps.Token Creation Bot') + '(Thor)'
+                  : t('Dapps.sniper')}
+              </p>
             </div>
           </div>
-          <div className="ttRightBot" style={{ height: browser ? 'auto' : '15px', borderBottom: browser ? '' : 'none', padding: params?.id === 'create' ? '3% 13px' : '1.6% 13px', borderRadius: browser ? '0 10px 10px 0' : '0 10px 0 0' }}>
+          <div
+            className="ttRightBot"
+            style={{
+              height: browser ? 'auto' : '15px',
+              borderBottom: browser ? '' : 'none',
+              padding: params?.id === 'create' ? '3% 13px' : '1.6% 13px',
+              borderRadius: browser ? '0 10px 10px 0' : '0 10px 0 0',
+            }}
+          >
             {browser && video}
           </div>
         </div>
       </div>
-      {!browser &&
-        <div className="botBb">
-          {video}
-        </div>
-      }
+      {!browser && <div className="botBb">{video}</div>}
     </div>
   );
 }
