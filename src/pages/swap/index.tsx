@@ -1,28 +1,20 @@
-import { useAccount, useWriteContract } from 'wagmi';
 import Request from '@/components/axios.tsx';
 import './index.less';
-import { getSwapEthAndWeth } from '@utils/swap/v2/getSwapEthAndWeth';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
 import SwapComp from './components/SwapComp';
 import './index.less';
-import Cookies from 'js-cookie';
 import { getUniversalRouterContract } from '@utils/contracts';
 import { ethers } from 'ethers';
 import { config } from '@/config/config';
 import PairPriceCharts from './components/PairPriceCharts';
 import Decimal from 'decimal.js';
-import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
 import { ERC20Abi } from '@abis/ERC20Abi';
 
 const mockRecipentAddress = '0x4b42fbbae2b6ed434e8598a00b1fd7efabe5bce3';
 const mockChainId = '11155111';
-const mockTokenIn = '0x0000000000000000000000000000000000000000';
-const mockTokenOut = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
-function SniperBot() {
-  const { writeContract } = useWriteContract();
+function Swap() {
   const { getAll } = Request();
-  const { address } = useAccount();
   const [amountIn, setAmountIn] = useState<number | null>(0.01);
   const [amountOut, setAomuntOut] = useState<number | null>(0.01);
 
@@ -138,4 +130,4 @@ function SniperBot() {
   );
 }
 
-export default SniperBot;
+export default Swap;

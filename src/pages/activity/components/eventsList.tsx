@@ -47,7 +47,6 @@ function task({ getParams, data, select, setSelect, params, }: any) {
                             backgroundColor: isLogin ? option === i.name ? 'rgb(134,240,151)' : '' : '',
                             color: isLogin ? option === i.name ? 'black' : 'white' : 'white',
                             fontSize: browser ? '18px' : '14px',
-                            zIndex: '1'
                         }} onClick={
                             throttle(function () {
                                 if (isLogin) {

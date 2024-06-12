@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Button } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
@@ -15,6 +15,8 @@ import './index.less';
 import SelectTokenModal from '@/components/SelectTokenModal';
 import Decimal from 'decimal.js';
 import AdvConfig from '../AdvConfig';
+import { CountContext } from '@/Layout';
+import { config } from '@/config/config';
 interface SwapCompType {
   onSwap: (data: any) => void;
 }
@@ -27,6 +29,7 @@ interface TokenInfoType {
 }
 
 function SwapComp({ onSwap }: SwapCompType) {
+  const { provider, changeProvider } = useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<TokenInfoType>();
@@ -42,7 +45,7 @@ function SwapComp({ onSwap }: SwapCompType) {
     console.log('-----------------');
     const param = [
       '11155111',
-      await getUniversalRouterContract('11155111'),
+      await getUniversalRouterContract(provider, '11155111'),
       '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
       '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
       BigInt(1000000000000),
@@ -93,12 +96,16 @@ function SwapComp({ onSwap }: SwapCompType) {
   }, []); */
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
-    console.log(tokenIn, tokenOut);
+    const chainId = localStorage.getItem('chainId');
+    const { universalRouterAddress, uniswapV2RouterAddress } =
+      config[chainId || '11155111'];
+    console.log(provider);
 
     const param = [
       '11155111',
-      await getUniversalRouterContract('11155111'),
-      await getUniswapV2RouterContract('11155111'),
+      provider,
+      await getUniversalRouterContract(provider, universalRouterAddress),
+      await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
       tokenIn.address,
       tokenOut.address,
       new Decimal(value),

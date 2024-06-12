@@ -79,11 +79,11 @@ function Left() {
             </div>
             <div className="scrollStyle" style={{ width: '100%', overflow: browser ? 'hidden' : 'auto hidden' }}>
                 <div className={`indexNewPair`}
-                    style={{ width: browser ? '100%' : '120vh' }}>
+                    style={{ width: browser ? '100%' : '85vh' }}>
                     {/*tittle*/}
                     <div className={'indexNewPairTitle'}>
                         {
-                            [t('Market.Name'), `${t('Market.Price')}`, time + ' Change(%)', t('Market.Create Time'), t('Market.Pooled Amt'), t('Market.Swap Count'), t('Market.Liquidity'), t('Market.Links')].map((i: string, ind: number) => {
+                            [t('Market.Name'), `${t('Market.Price')}($)`, time + ' Change', t('Market.Create Time'), t('Market.Pooled Amt'), t('Market.Swap Count'), t('Market.Liquidity'), t('Market.Links')].map((i: string, ind: number) => {
                                 return <p className={` homeTableTittle`}
                                     key={ind}>
                                     {

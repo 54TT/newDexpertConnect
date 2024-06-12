@@ -162,7 +162,7 @@
   overflow: hidden;
   background-image: url("/badsada.svg");
   background-repeat: no-repeat;
-  padding: 3.5% 0 6%;
+  padding: 2% 0 6%;
   background-size: 100% 150vh;
   position: relative;
 
@@ -196,21 +196,25 @@
         display: flex;
         align-items: center;
 
-        p {
+        &>p,
+        &>div {
           text-align: center;
-          padding: 8px 0;
           border-radius: 7px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           font-size: 15px;
           width: 50%;
           cursor: pointer;
         }
 
-        p:first-child {
+        &>p:first-child {
           margin-right: 10px;
           background-color: rgb(134, 240, 151);
         }
 
-        p:last-child {
+        &>div:last-child {
           margin-left: 10px;
           border: 2px solid rgb(104, 124, 105);
           color: rgb(104, 124, 105);
@@ -254,18 +258,89 @@
       }
 
       img:first-child {
-        top: -20%;
+        top: -24%;
         left: -15%;
       }
 
       img:nth-child(2) {
-        top: -5%;
+        top: -7%;
         left: 25%;
       }
 
       img:last-child {
-        top: -30%;
+        top: -36%;
         left: 38%;
+      }
+    }
+  }
+
+  .sureInvite {
+    border: 2px solid rgb(104, 124, 105);
+    border-radius: 20px;
+    position: relative;
+    display: flex;
+    margin-top: 8%;
+    padding: 2%;
+    justify-content: space-between;
+
+    .positionImg {
+      position: absolute;
+      top: 30%;
+      left: 65%;
+      width: 13%;
+    }
+
+    .rightNow {
+      width: 10%;
+      position: relative;
+
+      img {
+        position: absolute;
+        display: block;
+        width: 80%;
+      }
+
+      img:first-child {
+        top: -45%;
+        left: -20%;
+      }
+
+      img:nth-child(2) {
+        top: -15%;
+        left: 10%;
+      }
+
+      img:last-child {
+        top: -70%;
+        left: 38%;
+      }
+    }
+
+    &>div {
+      display: flex;
+      justify-content: space-between;
+
+      &>input {
+        background-color: transparent;
+        color: #687C69;
+        border: 2px solid rgb(104, 124, 105);
+        border-radius: 10px;
+        font-size: 17px;
+        padding: 1% 2%;
+        box-sizing: border-box;
+        width: 68%;
+        outline: none;
+      }
+
+      &>p {
+        background-color: rgb(134, 240, 151);
+        font-size: 17px;
+        font-weight: bold;
+        text-align: center;
+        width: 28%;
+        cursor: pointer;
+        line-height: 2.2;
+        border-radius: 7px;
       }
     }
   }
@@ -279,7 +354,6 @@
       border-radius: 10px;
       padding: 15px 10px;
       position: relative;
-      z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -376,7 +450,7 @@
 
   .person {
     position: relative;
-    padding: 20px;
+    padding: 15px;
     display: flex;
     justify-content: space-between;
     border: 2px solid rgb(104, 124, 105);
@@ -394,7 +468,6 @@
 
     .coinPass {
       bottom: 0;
-      z-index: 10;
       left: 0;
       position: absolute;
     }

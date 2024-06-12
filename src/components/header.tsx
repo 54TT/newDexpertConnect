@@ -168,7 +168,7 @@ function Header() {
             if (ind === 'Market') {
                 return "rgb(134,240,151)";
             } else {
-                return "rgb(214,223,215)";
+                return "rgb(172,172,172)";
             }
         } else if (
             router.pathname === "/community/lastest" ||
@@ -178,16 +178,16 @@ function Header() {
             if (ind === 'Community') {
                 return "rgb(134,240,151)";
             } else {
-                return "rgb(214,223,215)";
+                return "rgb(172,172,172)";
             }
         } else if (router.pathname.includes("/app/")) {
             if (ind === 'DApps') {
                 return "rgb(134,240,151)";
             } else {
-                return "rgb(214,223,215)";
+                return "rgb(172,172,172)";
             }
         } else {
-            return "rgb(214,223,215)";
+            return "rgb(172,172,172)";
         }
     };
 

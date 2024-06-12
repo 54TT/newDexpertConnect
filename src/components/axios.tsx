@@ -46,15 +46,15 @@ const Request = () => {
     cookie.remove('token');
     cookie.remove('jwt');
   };
-  const chainId = localStorage.getItem('chainId');
-  const username = cookie.get('jwt');
+  const chain = localStorage.getItem("chainId");
+  const username = cookie.get("jwt");
   const encapsulation = async (
     method: string,
     data: any,
     url: string,
     token: string,
     name: string,
-    config?: AxiosRequestConfig
+    chainId?: any
   ) => {
     const abc = await requestA({
       method,
@@ -64,9 +64,9 @@ const Request = () => {
       headers: {
         'Content-Type': name ? 'multipart/form-data' : 'application/json', // 根据需要添加其他标头
         Authorization: token,
-        'x-chainId': chainId || '1',
-        'x-app': 'dexpert',
-        'x-chainName': ChainID_TO_ChainName[chainId as ChainId] || 'eth',
+        "x-chainId": chainId ? chainId : chain || "1",
+        "x-app": "dexpert",
+        "x-chainName": chainId ? ChainID_TO_ChainName[chainId as ChainId] : ChainID_TO_ChainName[chain as ChainId] || "eth",
       },
       ...config,
     });
@@ -75,9 +75,9 @@ const Request = () => {
     }
   };
 
-  const getAll = async (name: any, config?: AxiosRequestConfig) => {
-    const { method, url, data, token } = name as any;
-    if (username && username != 'undefined') {
+  const getAll = async (name: any) => {
+    const { method, url, data, token, chainId } = name as any;
+    if (username && username != "undefined") {
       const params = JSON.parse(username);
       if (
         params &&
@@ -86,24 +86,17 @@ const Request = () => {
       ) {
         if (url.includes('upload/image')) {
           const formData = new FormData();
-          formData.append('file', data);
-          return await encapsulation(
-            method,
-            formData,
-            url,
-            token,
-            'form',
-            config
-          );
+          formData.append("file", data);
+          return await encapsulation(method, formData, url, token, "form", chainId);
         } else {
-          return await encapsulation(method, data, url, token, '', config);
+          return await encapsulation(method, data, url, token, "", chainId);
         }
       } else {
         MessageAll('warning', t('Market.login'));
         clear();
       }
     } else {
-      return await encapsulation(method, data, url, token, '', config);
+      return await encapsulation(method, data, url, token, "", chainId);
     }
   };
   return { getAll };

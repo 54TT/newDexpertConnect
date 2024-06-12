@@ -37,7 +37,7 @@ p {
 }
 
 body {
-  background-color: rgb(10, 21, 17);
+  background-color: rgb(22, 25, 22);
   font-family: 'tt', 'Microsoft YaHei', serif;
 }
 
@@ -98,6 +98,7 @@ body::-webkit-scrollbar-thumb {
 
       .personBox {
         padding: 0 7px;
+
         .top {
           display: flex;
           align-items: center;
@@ -161,7 +162,6 @@ body::-webkit-scrollbar-thumb {
 
   .indexTop {
     padding: 0.6% 2%;
-    background-color: rgb(24, 30, 28);
     border-radius: 12px 12px 0 0;
 
     .indexInput {
@@ -224,19 +224,17 @@ body::-webkit-scrollbar-thumb {
     width: 100%;
 
     .indexNewPairTitle {
+      padding: 10px 8px 10px 15px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 5px solid;
-      padding-left: 15px;
+      background: rgb(57, 57, 57);
 
       & > p {
         flex: 1;
       }
 
       .homeTableTittle {
-        padding: 7px 0;
-        background: rgb(18, 18, 18);
         color: rgb(214, 223, 215);
         font-size: 14px;
       }
@@ -270,9 +268,9 @@ body::-webkit-scrollbar-thumb {
       }
 
       .indexNewPairBodyData {
-        background-color: rgb(6, 14, 11);
+        background-color: rgb(25, 27, 25);
         cursor: pointer;
-        border-bottom: 5px solid;
+        border-bottom: 1.5px solid rgb(59, 59, 59);
         padding: 4px 0 4px 15px;
 
         & > div:not(:first-child) {
@@ -324,13 +322,12 @@ body::-webkit-scrollbar-thumb {
 .headerBox {
   box-sizing: border-box;
   padding: 7px 2.2%;
+  z-index: 10;
   display: flex;
   position: relative;
   align-items: center;
   justify-content: space-between;
-
-  //background-color: #0d1a14;
-  background: linear-gradient(to bottom, rgb(3, 5, 3), rgb(9, 18, 13));
+  background: rgb(18, 18, 18);
   border-bottom: 1px solid #687c69;
   border-radius: 0 0 10px 10px;
   position: absolute;
@@ -395,9 +392,24 @@ body::-webkit-scrollbar-thumb {
   margin-top: 10px;
 
   .rightBoxTweet {
-    background-color: rgb(18, 18, 18);
-    border: 1px solid rgba(134, 240, 151, 0.5);
     margin-top: 12px;
+    .rightSegmented {
+      background-color: rgb(45, 45, 45);
+      margin-bottom: 5px;
+      .ant-segmented-item {
+        background-color: rgb(45, 45, 45);
+        .ant-segmented-item-label {
+          color: white;
+        }
+      }
+
+      .ant-segmented-item-selected {
+        background-color: rgb(134, 240, 151);
+        .ant-segmented-item-label {
+          color: black;
+        }
+      }
+    }
 
     .rightBoxTweetTop {
       display: flex;
@@ -415,12 +427,10 @@ body::-webkit-scrollbar-thumb {
 
 .tweetsBox {
   margin-top: 4%;
-  padding: 0 3%;
+  padding: 3%;
+  background-color: rgb(45, 45, 45);
+  border-radius: 8px;
   cursor: pointer;
-
-  &:hover {
-    background-color: rgb(34, 36, 34);
-  }
 
   .post-item-img {
     max-width: 50%;
@@ -531,6 +541,13 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
+.positionAbsolte {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .bottomBox {
   width: 100%;
   position: fixed;
@@ -621,8 +638,9 @@ body::-webkit-scrollbar-thumb {
   opacity: 0.3;
   mix-blend-mode: plus-lighter;
   filter: blur(250px);
-  width: 384px;
-  height: 384px;
+  z-index: -1;
+  width: 15vw;
+  height: 200px;
   flex-shrink: 0;
 }
 
@@ -640,19 +658,22 @@ body::-webkit-scrollbar-thumb {
 
   .walletButton {
     cursor: pointer;
-    width: 150px;
+    width: 25vw;
     background-color: black;
     border: none;
     padding: 10px 0;
     border-radius: 10px;
+    margin-bottom: 7px;
 
     span {
       line-height: 1;
       color: rgb(240, 240, 240);
     }
 
-    img {
+    & > img {
       margin: 0 10px;
+      width: 25px;
+      height: 25px;
     }
   }
 }
