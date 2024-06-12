@@ -157,8 +157,6 @@ body::-webkit-scrollbar-thumb {
 
 .indexBox {
   overflow: hidden;
-  margin-top: 10px;
-
   .indexTop {
     padding: 0.6% 2%;
     border-radius: 12px 12px 0 0;
@@ -236,6 +234,10 @@ body::-webkit-scrollbar-thumb {
       .homeTableTittle {
         color: rgb(214, 223, 215);
         font-size: 14px;
+        margin: 0 5px;
+        span {
+          white-space: nowrap;
+        }
       }
     }
 
@@ -270,7 +272,7 @@ body::-webkit-scrollbar-thumb {
         background-color: rgb(25, 27, 25);
         cursor: pointer;
         border-bottom: 1.5px solid rgb(59, 59, 59);
-        padding: 4px 0 4px 15px;
+        padding: 4px 0 4px 20px;
 
         & > div:not(:first-child) {
           font-weight: 300;
@@ -612,7 +614,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .walletModalSmall {
-  width: 70% !important;
+  width: 86% !important;
 }
 
 .walletModalBig {
@@ -674,7 +676,7 @@ body::-webkit-scrollbar-thumb {
 
   .walletButton {
     cursor: pointer;
-    width: 25vw;
+    width: 80%;
     background-color: black;
     border: none;
     padding: 10px 0;
@@ -752,6 +754,22 @@ span {
   }
 }
 
+.bodyLeftImg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 50%;
+  display: block;
+}
+.bodyRightImg {
+  width: 50%;
+  display: block;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+}
 .textAlign {
   text-align: center;
 }

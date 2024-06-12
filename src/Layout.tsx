@@ -105,7 +105,7 @@ function Layout() {
   //  监听ton的 变化
   useEffect(() => {
     tonConnectUI.onStatusChange((wallet) => {
-      if (wallet?.account&&wallet?.connectItems) {
+      if (wallet?.account && wallet?.connectItems) {
         setTonWallet(wallet);
       } else {
         setTonWallet(null);
@@ -168,7 +168,7 @@ function Layout() {
     if (tonConnectUI?.connected) {
       tonConnectUI.disconnect();
     }
-    setTonWallet(null)
+    setTonWallet(null);
     setUserPar(null);
     setIsLogin(false);
     setBindingAddress(null);
@@ -543,7 +543,10 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <div className={big ? 'bigCen' : ''} style={{ marginTop: '50px' }}>
+          <div
+            className={big ? 'bigCen' : ''}
+            style={{ marginTop: '50px', marginBottom: '20px' }}
+          >
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/re-register" element={<Index />} />
@@ -560,17 +563,12 @@ function Layout() {
           <img
             src="/bodyLeft.png"
             alt=""
-            style={{ position: 'fixed', top: '0', left: '0', zIndex: '-1' }}
+            className='bodyLeftImg'
           />
           <img
             src="/bodyRight.png"
             alt=""
-            style={{
-              position: 'fixed',
-              bottom: '0',
-              right: '0',
-              zIndex: '-1',
-            }}
+            className='bodyRightImg'
           />
         </CountContext.Provider>
       </Suspense>
