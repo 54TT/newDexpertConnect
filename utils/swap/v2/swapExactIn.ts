@@ -19,7 +19,7 @@ export const erc20ToErc20 = async (
   const universalRouterAddress = chainConfig.universalRouterAddress;
   const wethAddress = chainConfig.wethAddress;
   const zeroAddress = chainConfig.zeroAddress;
-  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress
+  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
 
   const transferParams = [tokenIn, universalRouterAddress, amountIn];
   planner.addCommand(CommandType.TRANSFER_FROM, transferParams, false);
@@ -29,7 +29,12 @@ export const erc20ToErc20 = async (
     tokenIn.toLowerCase() !== wethAddress.toLowerCase &&
     tokenOut.toLowerCase() !== wethAddress.toLowerCase
   ) {
-    const pairAddress = await getPairAddress(provider, uniswapV2FactoryAddress, tokenIn, tokenOut);
+    const pairAddress = await getPairAddress(
+      provider,
+      uniswapV2FactoryAddress,
+      tokenIn,
+      tokenOut
+    );
     if (pairAddress.toLowerCase() === zeroAddress.toLowerCase()) {
       swapPath = [tokenIn, wethAddress, tokenOut];
     } else {
@@ -68,8 +73,6 @@ export const erc20ToETH = async (
 ) => {
   const chainConfig = config[chainId];
   const universalRouterAddress = chainConfig.universalRouterAddress;
-
-
 
   const transferParams = [tokenIn, universalRouterAddress, amountIn];
   planner.addCommand(CommandType.TRANSFER_FROM, transferParams, false);
@@ -115,6 +118,7 @@ export const ethToErc20 = async (
   let swapPath = [tokenIn, tokenOut];
   const payerIsUser = true;
   const swapParams = [
+    recipient,
     0,
     amountOutMin,
     swapPath,

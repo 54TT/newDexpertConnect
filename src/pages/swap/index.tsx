@@ -44,9 +44,9 @@ function Swap() {
 
   const getSwapBytes = async (data: any) => {
     const { amountIn, amountOut, tokenIn, tokenOut } = data;
-
     const { commands, inputs } = await getSwapExactInBytes(
       mockChainId,
+      provider,
       tokenIn,
       tokenOut,
       new Decimal(amountIn),
@@ -56,16 +56,17 @@ function Swap() {
       0
     );
 
-    console.log({
+    console.log(
       mockChainId,
+      provider,
       tokenIn,
       tokenOut,
-      amountIn,
-      amountOut,
+      new Decimal(amountIn),
+      new Decimal(amountOut),
       mockRecipentAddress,
-      isFee: true,
-      payType: 0,
-    });
+      true,
+      0
+    );
 
     let etherValue = BigInt(0);
     if (tokenIn === config['11155111'].ethAddress) {
@@ -75,9 +76,17 @@ function Swap() {
     return { commands, inputs, etherValue };
   };
 
-  const sendSwap = async ({ commands, inputs, etherValue, signer }) => {
-    const universalRouterContract =
-      await getUniversalRouterContract(mockChainId);
+  const sendSwap = async ({
+    commands,
+    inputs,
+    etherValue,
+    signer,
+    universalRouterAddress,
+  }) => {
+    const universalRouterContract = await getUniversalRouterContract(
+      provider,
+      universalRouterAddress
+    );
 
     const universalRouterWriteContract =
       await universalRouterContract.connect(signer);
@@ -102,17 +111,35 @@ function Swap() {
     tokenOut: any;
   }) => {
     const chainId = localStorage.getItem('chainId');
-    const { zeroAddress } = config[chainId || '11155111'];
-    const signer = await provider.getSigner();
+    const { zeroAddress, universalRouterAddress } =
+      config[chainId || '11155111'];
+
+    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const signer = await web3Provider.getSigner();
+    console.log(signer);
+
     const { tokenIn } = data;
     const { commands, inputs, etherValue } = await getSwapBytes(data);
     if (tokenIn !== zeroAddress) {
       const successApprove = await handleApprove(tokenIn, signer);
       if (successApprove) {
-        sendSwap({ commands, inputs, etherValue, signer });
+        sendSwap({
+          commands,
+          inputs,
+          etherValue,
+          signer,
+          universalRouterAddress,
+        });
       }
     } else {
-      sendSwap({ commands, inputs, etherValue, signer });
+      sendSwap({
+        commands,
+        inputs,
+        etherValue,
+        signer,
+        universalRouterAddress,
+      });
     }
   };
 

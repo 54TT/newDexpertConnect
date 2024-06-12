@@ -100,7 +100,6 @@ function SwapComp({ onSwap }: SwapCompType) {
     const chainId = localStorage.getItem('chainId');
     const { universalRouterAddress, uniswapV2RouterAddress } =
       config[chainId || '11155111'];
-    console.log(provider);
 
     const param = [
       '11155111',
@@ -115,12 +114,10 @@ function SwapComp({ onSwap }: SwapCompType) {
     ];
     if (type === 'in') {
       const amount = await getAmountOut.apply(null, param);
-
       setAmountOut(Number(amount.toString()));
     }
     if (type === 'out') {
       const amount = await getAmountIn.apply(null, param);
-      console.log(amount);
       setAmountIn(Number(amount.toString()));
     }
     console.log(`获取输入输出总耗时${(Date.now() - start) / 1000} 秒 `);
