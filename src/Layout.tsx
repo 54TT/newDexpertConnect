@@ -278,7 +278,6 @@ function Layout() {
           const token: any = await getNoce(account[0]);
           if (token?.data && token?.status === 200) {
             // 签名消息
-            // const sign = await signer.signMessage(message)
             const message = token?.data?.nonce;
             const sign = await i?.provider?.request({
               method: 'personal_sign',
