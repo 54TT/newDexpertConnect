@@ -15,6 +15,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
+
+import {
+  useTonConnectUI,
+  useTonAddress,
+  useTonConnectModal,
+} from '@tonconnect/ui-react';
 import { getAppMetadata, getSdkError } from '@walletconnect/utils';
 import 'swiper/css';
 import 'swiper/css/bundle';
@@ -50,23 +56,10 @@ const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
   () => import('./pages/activity/components/specialDetail.tsx')
 );
-import TonConnect, {
-  toUserFriendlyAddress,
-  WalletInfoCurrentlyEmbedded,
-  isWalletInfoCurrentlyInjected,
-} from '@tonconnect/sdk';
-import Swap from './pages/dapps/swap/index.tsx';
-import { ethers } from 'ethers';
-import { config } from './config/config.ts';
-import Dapps from './pages/dapps/index.tsx';
 const web3Modal = new Web3Modal({
   projectId: DEFAULT_PROJECT_ID,
   themeMode: 'dark',
   walletConnectVersion: 1,
-});
-const connector: any = new TonConnect({
-  manifestUrl:
-    'https://sniper-bot-frontend-test.vercel.app/tonconnect-manifest.json',
 });
 export const CountContext = createContext(null);
 function Layout() {
@@ -85,79 +78,54 @@ function Layout() {
     changeProvider();
   }, []);
 
-  //  ton  二维码
-  const [QRCodeLink, setQRCodeLink] = useState('');
-  const [tgCodeLink, setTGCodeLink] = useState('');
+  const { open: openTonConnect } = useTonConnectModal();
+  const [tonWallet, setTonWallet] = useState<any>(null);
+  const userFriendlyAddress = useTonAddress();
+  useEffect(() => {
+    if (userFriendlyAddress && tonWallet?.account) {
+      tonConnect('login');
+    }
+  }, [userFriendlyAddress]);
   //ton钱包连接
-  const tonConnect = async () => {
-    //  获取 授权的message
-    const noce: any = await getNoce('', '-2');
-    if (noce?.data?.nonce) {
-      const walletsList = await connector.getWallets();
-      const embeddedWallet = walletsList.find((value: any) =>
-        isWalletInfoCurrentlyInjected(value)
-      ) as WalletInfoCurrentlyEmbedded;
-      if (embeddedWallet?.name) {
-        connector.connect(
-          { jsBridgeKey: embeddedWallet?.jsBridgeKey },
-          { tonProof: noce?.data?.nonce }
-        );
-      } else {
-        //   TG 链接
-        const walletConnectionSource = {
-          universalLink: 'https://t.me/wallet?attach=wallet',
-          bridgeUrl: 'https://bridge.ton.space/bridge',
-        };
-        const walletConnectionSource1 = {
-          universalLink: 'https://app.tonkeeper.com/ton-connect',
-          bridgeUrl: 'https://bridge.tonapi.io/bridge',
-        };
-        const universalLink = connector.connect(walletConnectionSource, {
-          tonProof: noce?.data?.nonce,
+  const tonConnect = async (log?: any) => {
+    if (log) {
+      const proof = tonWallet?.connectItems?.tonProof?.proof;
+      const par = {
+        payload: proof?.payload,
+        value: proof?.domain.value,
+        lengthBytes: proof?.domain.lengthBytes,
+        stateInit: tonWallet?.account?.walletStateInit,
+        signature: proof?.signature,
+        address: userFriendlyAddress,
+        timestamp: proof?.timestamp,
+      };
+      login(par, 'ton', '');
+    } else {
+      //  获取 授权的message
+      const noce: any = await getNoce('', '-2');
+      if (noce?.data?.nonce) {
+        tonConnectUI.setConnectRequestParameters({
+          state: 'ready',
+          value: {
+            tonProof: noce?.data?.nonce,
+          },
         });
-        const universalLink1 = connector.connect(walletConnectionSource1, {
-          tonProof: noce?.data?.nonce,
-        });
-        setTGCodeLink(universalLink);
-        setQRCodeLink(universalLink1);
+        openTonConnect();
+        setIsModalOpen(false);
       }
     }
   };
+  const [tonConnectUI] = useTonConnectUI();
   //  监听ton的 变化
   useEffect(() => {
-    window.addEventListener('ton-connect-connection-error', () => {
-      setLoad(false);
-      setIsModalOpen(false);
-    });
-    connector.onStatusChange((wallet: any) => {
-      if (wallet?.account) {
-        setIsModalOpen(false);
-        const rawAddress = wallet.account.address;
-        const tonProof = wallet.connectItems?.tonProof;
-        // 地址
-        const bouncableUserFriendlyAddress = toUserFriendlyAddress(rawAddress);
-        const par = {
-          payload: tonProof?.proof?.payload,
-          value: tonProof?.proof?.domain.value,
-          lengthBytes: tonProof?.proof?.domain.lengthBytes,
-          stateInit: wallet.account.walletStateInit,
-          signature: tonProof?.proof?.signature,
-          address: bouncableUserFriendlyAddress,
-          timestamp: tonProof?.proof?.timestamp,
-        };
-        login(par, 'ton', '');
-        connector.pauseConnection();
-        setIsModalSet(false);
-        setQRCodeLink('');
-        setTGCodeLink('');
+    tonConnectUI.onStatusChange((wallet) => {
+      if (wallet?.account&&wallet?.connectItems) {
+        setTonWallet(wallet);
       } else {
-        setQRCodeLink('');
-        setTGCodeLink('');
-        setLoad(false);
-        setIsModalOpen(false);
+        setTonWallet(null);
       }
     });
-  }, [connector]);
+  }, []);
   const router: any = useLocation();
   const [search] = useSearchParams();
   const { t } = useTranslation();
@@ -211,9 +179,10 @@ function Layout() {
     cookie.remove('currentAddress');
     changeBindind.current = '';
     cookie.remove('jwt');
-    if (connector?.connected) {
-      await connector.disconnect();
+    if (tonConnectUI?.connected) {
+      tonConnectUI.disconnect();
     }
+    setTonWallet(null)
     setUserPar(null);
     setIsLogin(false);
     setBindingAddress(null);
@@ -297,14 +266,18 @@ function Layout() {
           const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
           const decodedToken = JSON.parse(atob(base64));
           setNewAccount('');
+          setTonWallet(null);
           cookie.set('currentAddress', par?.address ? par?.address : par?.addr);
           if (decodedToken && decodedToken?.uid) {
             const uid = decodedToken.sub.split('-')[1];
             getUser(uid, res.data?.accessToken, name, decodedToken);
           }
+        } else {
+          setTonWallet(null);
         }
       }
     } catch (e) {
+      setTonWallet(null);
       return null;
     }
   };
@@ -313,24 +286,12 @@ function Layout() {
       const account = await i?.provider?.request({
         method: 'eth_requestAccounts',
       });
-      // const provider: any = new ethers.providers.Web3Provider((window as any).ethereum)
-      // // provider._isProvider   判断是否还有请求没有结束
-      // // 请求用户授权连接钱包
-      // await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-      // const account = await provider.send("eth_requestAccounts", []);
-      // 连接的网络和链信息。
-      // const chain = await provider.getNetwork();
-      // 获取签名
-      // const signer = await provider.getSigner();
       // 判断是否有账号
       if (account.length > 0) {
-        // 判断是否是eth
-        // if (chain && chain.name === 'homestead' && chain.chainId === 1) {
         try {
           const token: any = await getNoce(account[0]);
           if (token?.data && token?.status === 200) {
             // 签名消息
-            // const sign = await signer.signMessage(message)
             const message = token?.data?.nonce;
             const sign = await i?.provider?.request({
               method: 'personal_sign',
@@ -483,13 +444,11 @@ function Layout() {
     // 监测钱包切换
     // if ((window as any).ethereum) {
     //     (window as any).ethereum.on('accountsChanged', function (accounts: any) {
-    //         console.log(accounts)
     //         // setNewAccount(accounts[0])
     //     })
     // }
     // // 监测链切换
     // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
-    //         console.log(networkIDstring)
     // })
   }, []);
   useEffect(() => {
@@ -569,13 +528,8 @@ function Layout() {
     changeBindind,
     isModalSet,
     setIsModalSet,
-    QRCodeLink,
-    tgCodeLink,
-    setTGCodeLink,
-    setQRCodeLink,
     languageChange,
     setLanguageChange,
-    connector,
     setBindingAddress,
     bindingAddress,
     setUserPar,
@@ -628,7 +582,12 @@ function Layout() {
           <img
             src="/bodyRight.png"
             alt=""
-            style={{ position: 'fixed', bottom: '0', right: '0', zIndex: '-1' }}
+            style={{
+              position: 'fixed',
+              bottom: '0',
+              right: '0',
+              zIndex: '-1',
+            }}
           />
         </CountContext.Provider>
       </Suspense>
