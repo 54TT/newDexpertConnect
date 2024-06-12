@@ -16,10 +16,13 @@ export const erc20ToErc20 = async (
   feeType: number
 ) => {
   const chainConfig = config[chainId];
+
   const universalRouterAddress = chainConfig.universalRouterAddress;
   const wethAddress = chainConfig.wethAddress;
   const zeroAddress = chainConfig.zeroAddress;
   const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
+
+  console.log(amountIn.toString(), amountOutMin.toString());
 
   const transferParams = [tokenIn, universalRouterAddress, amountIn];
   planner.addCommand(CommandType.TRANSFER_FROM, transferParams, false);

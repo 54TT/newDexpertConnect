@@ -75,7 +75,6 @@ function Layout() {
   const changeProvider = () => {
     const chainId = localStorage.getItem('chainId');
     const { rpcUrl } = config[chainId ?? '11155111'];
-    console.log(rpcUrl);
 
     const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
     setProvider(rpcProvider);
