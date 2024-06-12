@@ -24,7 +24,6 @@ import * as encoding from '@walletconnect/encoding';
 import Request from './components/axios.tsx';
 import Client from '@walletconnect/sign-client';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { ethers } from 'ethers';
 import {
   DEFAULT_APP_METADATA,
   DEFAULT_PROJECT_ID,
@@ -36,10 +35,6 @@ import { MessageAll } from './components/message.ts';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
-import SniperBot from './pages/swap/index.tsx';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
-import { config } from './config/wagmi.ts';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
   () => import('./pages/activity/components/person.tsx')
@@ -60,6 +55,9 @@ import TonConnect, {
   WalletInfoCurrentlyEmbedded,
   isWalletInfoCurrentlyInjected,
 } from '@tonconnect/sdk';
+import Swap from './pages/swap/index.tsx';
+import { ethers } from 'ethers';
+import { config } from './config/config.ts';
 const web3Modal = new Web3Modal({
   projectId: DEFAULT_PROJECT_ID,
   themeMode: 'dark',
@@ -72,6 +70,21 @@ const connector: any = new TonConnect({
 export const CountContext = createContext(null);
 function Layout() {
   const changeBindind = useRef<any>();
+  const [provider, setProvider] = useState();
+
+  const changeProvider = () => {
+    const chainId = localStorage.getItem('chainId');
+    const { rpcUrl } = config[chainId ?? '11155111'];
+    console.log(rpcUrl);
+
+    const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
+    setProvider(rpcProvider);
+  };
+
+  useEffect(() => {
+    changeProvider();
+  }, []);
+
   //ton钱包连接
   const tonConnect = async () => {
     //  获取 授权的message
@@ -535,7 +548,6 @@ function Layout() {
     QRCodeLink,
     setQRCodeLink,
     languageChange,
-
     setLanguageChange,
     connector,
     setBindingAddress,
@@ -548,6 +560,8 @@ function Layout() {
     setActivityOptions,
     isCopy,
     setIsCopy,
+    provider,
+    changeProvider,
   };
 
   const clients = new ApolloClient({
@@ -580,17 +594,18 @@ function Layout() {
               <Route path="/oauth/:id/callback" element={<Oauth />} />
               <Route path="/dpass/:id" element={<Dpass />} />
               <Route path="/activityPerson" element={<ActivePerson />} />
+              <Route path="/swap" element={<Swap />} />
             </Routes>
           </div>
           <img
             src="/bodyLeft.png"
             alt=""
-            style={{ position: 'fixed', top: '0', left: '0' ,zIndex:'-1'}}
+            style={{ position: 'fixed', top: '0', left: '0', zIndex: '-1' }}
           />
           <img
             src="/bodyRight.png"
             alt=""
-            style={{ position: 'fixed', bottom: '0', right: '0',zIndex:'-1' }}
+            style={{ position: 'fixed', bottom: '0', right: '0', zIndex: '-1' }}
           />
         </CountContext.Provider>
       </Suspense>

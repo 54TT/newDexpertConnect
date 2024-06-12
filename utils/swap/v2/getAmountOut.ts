@@ -20,13 +20,12 @@ export const getAmountOut = async (
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
-  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress
+  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
 
   let fee = new Decimal(0);
   if (payType == 0) {
-    console.log(universalRouterContract);
-
     const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
+    console.log(fastTradeFeeBps);
 
     const feeBaseBps = await universalRouterContract.feeBaseBps();
 
@@ -74,8 +73,8 @@ export const getAmountOut = async (
   ) {
     let swapPath = [''];
     const pairAddress = await getPairAddress(
-        provider,
-        uniswapV2FactoryAddress,
+      provider,
+      uniswapV2FactoryAddress,
       tokenInAddress,
       tokenOutAddress
     );
