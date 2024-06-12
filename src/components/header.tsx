@@ -164,12 +164,13 @@ function Header() {
         }
     };
     const change = (ind: string) => {
-        if (router.pathname === "/" || router.pathname === "/newpairDetails") {
+        if (router.pathname === "/" || router.pathname === "/newpairDetails"||router.pathname === "/re-register") {
             if (ind === 'Market') {
                 return "rgb(134,240,151)";
             } else {
                 return "rgb(172,172,172)";
             }
+            // 判断  community
         } else if (
             router.pathname === "/community/lastest" ||
             router.pathname === "/community/profile" ||
@@ -180,6 +181,7 @@ function Header() {
             } else {
                 return "rgb(172,172,172)";
             }
+            // 判断 dapps
         } else if (router.pathname.includes("/app/")) {
             if (ind === 'DApps') {
                 return "rgb(134,240,151)";
@@ -198,8 +200,8 @@ function Header() {
             key: 'Market'
         },
         {
-            label: t("Common.DApps & Tools"),
-            value: "DApps & Tools",
+            label: t("Common.DApps"),
+            value: "DApps",
             key: 'DApps'
         },
         {

@@ -5,9 +5,7 @@ import cookie from 'js-cookie';
 import Request from './axios.tsx';
 import { throttle } from 'lodash';
 import { MessageAll } from './message.ts';
-import { DoubleLeftOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { QRCode } from 'antd';
 function HeaderModal() {
   const {
     browser,
@@ -18,17 +16,12 @@ function HeaderModal() {
     setIsModalSet,
     connect,
     setLoad,
-    setQRCodeLink,
     handleLogin,
     user,
-    QRCodeLink,
-    tgCodeLink,
-    setTGCodeLink,
     setUserPar,
     tonConnect,
   }: any = useContext(CountContext);
   const [list, setList] = useState<any>([]);
-  const [select, setSelect] = useState('one');
   function onAnnouncement(event?: any) {
     list.push(event?.detail);
     setList([...list]);
@@ -41,15 +34,10 @@ function HeaderModal() {
   }, []);
   const { t } = useTranslation();
   const { getAll } = Request();
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
   const handleCancel = () => {
     setIsModalOpen(false);
     setIsModalSet(false);
     setLoad(false);
-    setQRCodeLink('');
-    setTGCodeLink('');
   };
   const [value, setValue] = useState('');
   const changeName = (e: any) => {
@@ -145,7 +133,6 @@ function HeaderModal() {
       setIsModalOpen(false);
     } else if (i.key === 'Ton') {
       tonConnect();
-      setLoad(true);
     } else {
       //  判断浏览器是否安装了  evm链钱包
       const data = list.filter(
@@ -197,40 +184,10 @@ function HeaderModal() {
       className={`walletModal ${browser ? 'walletModalBig' : 'walletModalSmall'}`}
       maskClosable={false}
       open={isModalOpen}
-      onOk={handleOk}
+      onOk={handleCancel}
       onCancel={handleCancel}
     >
-      {/* 判断是否 为二维码 */}
-      {QRCodeLink && tgCodeLink ? (
-        <>
-          <DoubleLeftOutlined
-            style={{
-              fontSize: '20px',
-              cursor: 'pointer',
-              color: 'white',
-              marginBottom: '10px',
-            }}
-            onClick={() => {
-              setQRCodeLink('');
-              setTGCodeLink('');
-            }}
-          />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '10px 0',
-            }}
-          >
-            <QRCode
-              value={select === 'one' ? tgCodeLink : QRCodeLink}
-              icon={select === 'one' ? '/tgLink.png' : '/tonconnect.png'}
-              color="white"
-              size={200}
-            />
-          </div>
-        </>
-      ) : isModalSet ? (
+      {isModalSet ? (
         <div className={'headerModalSetName'}>
           <p>{t('Common.new')}</p>
           <p>{t('Common.set')}</p>
@@ -266,26 +223,6 @@ function HeaderModal() {
               )
             );
           })}
-        </div>
-      )}
-      {QRCodeLink && tgCodeLink && (
-        <div className="selectQRlink">
-          <div
-            onClick={() => {
-              setSelect('one');
-            }}
-          >
-            <img src="/tgLink.png" alt="" />
-            <p>Wallet On Telegram</p>
-          </div>
-          <div
-            onClick={() => {
-              setSelect('two');
-            }}
-          >
-            <img src="/tonconnect.png" alt="" />
-            <p>TonKeeper</p>
-          </div>
         </div>
       )}
     </Modal>

@@ -239,8 +239,8 @@ export default function person() {
           <span>
             {t('person.address')}:
             {simplify(currentAddress ? currentAddress : user?.username)}
-          </span>{' '}
-          <Copy name={user?.address ? user?.address : user?.username} />
+          </span>
+          <Copy name={currentAddress ? currentAddress : user?.username} />
         </p>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div className="img">

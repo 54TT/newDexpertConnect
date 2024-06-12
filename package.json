@@ -1,4 +1,4 @@
-{
+  {
   "name": "dexpert",
   "private": true,
   "version": "0.0.1",
@@ -22,6 +22,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@kadena/client": "0.5.0",
     "@tonconnect/sdk": "^3.0.3",
+    "@tonconnect/ui-react": "^2.0.5",
     "@twa-dev/sdk": "^7.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.0",
