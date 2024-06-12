@@ -1,6 +1,5 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
-import { getERC20Contract } from '../../contracts';
 import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
 import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
@@ -21,18 +20,7 @@ export const getAmountIn = async (
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
-  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress
-
-  console.log({
-    chainId,
-    universalRouterContract,
-    uniswapV2RouterContract,
-    tokenInAddress,
-    tokenOutAddress,
-    amountOut: amountOut.toString(),
-    slippage,
-    payType,
-  });
+  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
 
   let fee = new Decimal(0);
   if (payType == 0) {
@@ -54,10 +42,12 @@ export const getAmountIn = async (
   const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenOutDecimals);
 
   if (
-    ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
-    wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase() ||
-    wethAddress.toLowerCase() === tokenInAddress.toLowerCase()
+    (ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
+      wethAddress.toLowerCase() === tokenInAddress.toLowerCase()) &&
+    wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase() &&
+    ethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
   ) {
+    // in 是 eth / weth  out 是 erc20
     const swapPath = [wethAddress, tokenOutAddress];
     amountInBigNumber = BigNumber.from(
       (
@@ -66,9 +56,11 @@ export const getAmountIn = async (
     );
   } else if (
     tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
-    tokenOutAddress.toLowerCase() === ethAddress.toLowerCase() || 
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
+    tokenInAddress.toLowerCase() !== ethAddress.toLowerCase() &&
+    (tokenOutAddress.toLowerCase() === ethAddress.toLowerCase() ||
+      tokenOutAddress.toLowerCase() === wethAddress.toLowerCase())
   ) {
+    // in 是erc20 out 是 weth /eth
     const swapPath = [tokenInAddress, wethAddress];
     amountInBigNumber = BigNumber.from(
       (
@@ -81,6 +73,7 @@ export const getAmountIn = async (
     wethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
     wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
   ) {
+    // in out 都是普通erc20 ，寻找pair
     let swapPath = [''];
     const pairAddress = await getPairAddress(
       provider,
@@ -100,6 +93,7 @@ export const getAmountIn = async (
       )[0]
     );
   } else {
+    // eth / weth 互转
     amountInBigNumber = BigNumber.from(amountOutBigNumber.toString());
   }
 

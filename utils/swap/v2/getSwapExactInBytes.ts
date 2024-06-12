@@ -22,7 +22,7 @@ export const getSwapExactInBytes = async (
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
-  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress
+  const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
   const planner = new RoutePlanner();
 
   const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
@@ -40,7 +40,12 @@ export const getSwapExactInBytes = async (
     tokenOutAddress.toLowerCase() !== wethAddress.toLowerCase() &&
     tokenOutAddress.toLowerCase() !== ethAddress.toLowerCase()
   ) {
-    const pairAddress = await getPairAddress(provider,uniswapV2FactoryAddress , wethAddress, tokenOutAddress);
+    const pairAddress = await getPairAddress(
+      provider,
+      uniswapV2FactoryAddress,
+      wethAddress,
+      tokenOutAddress
+    );
     await ethToErc20(
       chainId,
       planner,
@@ -72,6 +77,7 @@ export const getSwapExactInBytes = async (
   } else {
     await erc20ToErc20(
       chainId,
+      provider,
       planner,
       tokenInAddress,
       tokenOutAddress,
