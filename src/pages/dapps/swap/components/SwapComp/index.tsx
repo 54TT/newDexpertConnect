@@ -238,7 +238,7 @@ function SwapComp() {
 
     let etherValue = BigInt(0);
     if (tokenIn === config['11155111'].ethAddress) {
-      etherValue = BigInt(amountIn * 10 ** 18);
+      etherValue = BigInt((amountIn * 10 ** 18).toFixed(0));
     }
     return { commands, inputs, etherValue };
   };
