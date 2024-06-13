@@ -1,3 +1,4 @@
+@import url('@/style/variable.less');
 .dis {
   display: flex;
   align-items: center;
@@ -323,17 +324,15 @@ body::-webkit-scrollbar-thumb {
 .headerBox {
   box-sizing: border-box;
   padding: 0 2.2%;
-  height: 50px;
-  box-sizing: border-box;
+  height: 70px;
   z-index: 10;
   display: flex;
-  position: relative;
+  position: absolute;
   align-items: center;
   justify-content: space-between;
   background: rgb(18, 18, 18);
   border-bottom: 1px solid #687c69;
   border-radius: 0 0 10px 10px;
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -1095,5 +1094,20 @@ span {
         }
       }
     }
+  }
+}
+
+// 覆盖默认modal样式
+
+.ant-modal {
+  &-content {
+    background-color: @modal-background-color !important;
+    .right-top-halo();
+    .ant-modal-close {
+      color: #fff !important;
+    }
+  }
+  &-header {
+    background-color: @modal-background-color !important;
   }
 }

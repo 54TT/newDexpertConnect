@@ -1,6 +1,7 @@
 import './in.less';
-import BuyBot from './buyBot'
+import BuyBot from './buyBot';
 import { useParams, useNavigate } from 'react-router-dom';
+import Swap from './swap';
 export default function index() {
   const params: any = useParams();
   const history = useNavigate();
@@ -65,9 +66,9 @@ export default function index() {
         </div>
       </div>
       {/* butbotLogo.svg */}
-      {params?.id === 'swap' && <p style={{ color: 'white' }}>1</p>}
+      {params?.id === 'swap' && <Swap />}
       {params?.id === 'sniping' && <p style={{ color: 'white' }}>2</p>}
-      {params?.id === 'buyBot' && <BuyBot/>}
+      {params?.id === 'buyBot' && <BuyBot />}
     </div>
   );
 }

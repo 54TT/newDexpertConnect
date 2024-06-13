@@ -1,0 +1,35 @@
+@import url('@/style/variable.less');
+@desc-font-color: #8c8c8c;
+@button-color: #86f097;
+.dapp-sniper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20vh;
+  > div {
+    color: #fff !important;
+    font-size: 14px;
+  }
+  &-left {
+    width: 1000px;
+    height: 500px;
+    margin-right: 40px;
+  }
+  &-right {
+    margin-right: 8vw;
+  }
+}
+
+@media (max-width: 800px) {
+  .dapp-sniper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20vh;
+    &-left {
+      width: 1000px;
+      height: 500px;
+      margin-right: 40px;
+    }
+  }
+}

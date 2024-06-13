@@ -41,6 +41,8 @@ import { MessageAll } from './components/message.ts';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
+import { config } from './config/config.ts';
+import { ethers } from 'ethers';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
   () => import('./pages/activity/components/person.tsx')
@@ -49,7 +51,7 @@ const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
 );
 const Index = React.lazy(() => import('./pages/index/index.tsx'));
-const Dapp = React.lazy(() => import('./pages/dapp/index.tsx'));
+const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Dapps = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Community = React.lazy(() => import('./pages/community/index.tsx'));
 const Active = React.lazy(() => import('./pages/activity/index.tsx'));
@@ -65,6 +67,20 @@ const web3Modal = new Web3Modal({
 export const CountContext = createContext(null);
 function Layout() {
   const changeBindind = useRef<any>();
+  const [provider, setProvider] = useState();
+
+  const changeProvider = () => {
+    const chainId = localStorage.getItem('chainId');
+    const { rpcUrl } = config[chainId ?? '11155111'];
+
+    const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
+    setProvider(rpcProvider);
+  };
+
+  useEffect(() => {
+    changeProvider();
+  }, []);
+
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -527,6 +543,8 @@ function Layout() {
     setActivityOptions,
     isCopy,
     setIsCopy,
+    provider,
+    changeProvider,
   };
 
   const clients = new ApolloClient({
@@ -544,10 +562,7 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <div
-            className={big ? 'bigCen' : ''}
-            style={{ marginTop: '50px', marginBottom: '20px' }}
-          >
+          <div className={big ? 'bigCen' : ''} style={{ marginTop: '70px' }}>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/re-register" element={<Index />} />
@@ -560,18 +575,11 @@ function Layout() {
               <Route path="/oauth/:id/callback" element={<Oauth />} />
               <Route path="/dpass/:id" element={<Dpass />} />
               <Route path="/activityPerson" element={<ActivePerson />} />
+              <Route path="/dapps/*" element={<Dapps />} />
             </Routes>
           </div>
-          <img
-            src="/bodyLeft.png"
-            alt=""
-            className='bodyLeftImg'
-          />
-          <img
-            src="/bodyRight.png"
-            alt=""
-            className='bodyRightImg'
-          />
+          <img src="/bodyLeft.png" alt="" className="bodyLeftImg" />
+          <img src="/bodyRight.png" alt="" className="bodyRightImg" />
         </CountContext.Provider>
       </Suspense>
     </ApolloProvider>

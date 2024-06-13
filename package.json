@@ -21,11 +21,14 @@
     "@emoji-mart/data": "^1.1.2",
     "@emoji-mart/react": "^1.1.1",
     "@kadena/client": "0.5.0",
+    "@tanstack/react-query": "^5.40.1",
+    "@tonconnect/sdk": "^3.0.3",
     "@tonconnect/ui-react": "^2.0.5",
     "@twa-dev/sdk": "^7.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.0",
-    "@types/node": "^20.12.3",
+    "@types/node": "^20.14.2",
+    "@uniswap/v3-periphery": "^1.4.4",
     "@walletconnect/encoding": "^1.0.2",
     "@walletconnect/sign-client": "^2.11.3",
     "@walletconnect/utils": "^2.11.3",
@@ -35,6 +38,7 @@
     "classnames": "^2.5.1",
     "copy-to-clipboard": "^3.3.3",
     "dayjs": "^1.11.10",
+    "decimal.js": "^10.4.3",
     "dotenv": "^16.4.5",
     "emoji-mart": "^5.5.2",
     "ethers": "^5.7.2",
@@ -44,6 +48,7 @@
     "i18next": "^23.11.2",
     "i18next-browser-languagedetector": "^7.2.1",
     "js-cookie": "^3.0.5",
+    "jsbi": "^4.3.0",
     "less": "^4.2.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
@@ -51,7 +56,10 @@
     "react-i18next": "^14.1.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.22.3",
-    "swiper": "^11.0.7"
+    "recharts": "^2.12.7",
+    "swiper": "^11.0.7",
+    "viem": "2.x",
+    "wagmi": "^2.9.8"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",
@@ -65,7 +73,7 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "3.2.5",
-    "typescript": "^5.2.2",
+    "typescript": "^5.4.5",
     "vite": "^5.1.0"
   }
 }

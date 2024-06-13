@@ -1,2 +1,20 @@
 @backgroundColor: #0a1511;
 @modalBackgroundColor: #060e0b;
+@desc-font-color: #8c8c8c;
+@button-color: #86f097;
+@modal-background-color: #2d2d2d;
+@search-border-color: #777777;
+@dark-font-color: rgba(255, 255, 255, 0.85);
+.action-button(@color) {
+  background-color: @color;
+  border: none;
+
+  &:hover {
+    background-color: @color !important;
+  }
+}
+
+// swap 背景右上角的光晕
+.right-top-halo {
+  background-color: #8b0505;
+}

@@ -18,8 +18,15 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@abis/*": ["abis/*"],
+      "@utils/*": ["utils/*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src", "abis"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
