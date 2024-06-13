@@ -82,7 +82,7 @@ function Header() {
     },
     {
       key: '1',
-      label: 'Dapps & Tools',
+      label: 'Dapps',
       children: (
         <div className={'collapseChildeen'}>
           {[
@@ -280,7 +280,10 @@ function Header() {
       )}
       <div
         className={'headerData'}
-        style={{ justifyContent: browser ? 'center' : 'flex-end' }}
+        style={{
+          justifyContent: browser ? 'center' : 'space-between',
+          width: browser ? '' : '35%',
+        }}
       >
         <div
           className="disDis"
@@ -384,7 +387,7 @@ function Header() {
                 loading={'lazy'}
                 src="/wallet.svg"
                 onClick={loginModal}
-                style={{ width: '26px', margin: '0 15px' }}
+                style={{ width: '26px' }}
                 alt=""
               />
             )}
@@ -398,10 +401,10 @@ function Header() {
         />
         {!browser && (
           <img
-            src="/side.svg"
+            src="/rightOpen.png"
             loading={'lazy'}
             alt=""
-            style={{ cursor: 'pointer', width: '28px', marginLeft: '8px' }}
+            style={{ cursor: 'pointer', width: '23px' }}
             onClick={showDrawer}
           />
         )}

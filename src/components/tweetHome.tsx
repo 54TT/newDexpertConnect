@@ -118,8 +118,8 @@ function TweetHome({
                         </InfiniteScroll>
                         {
                             iconLoad &&
-                            <p style={{ textAlign: 'center', color: 'white', fontSize: '16px' }}><Load />
-                            </p>
+                            <div style={{ textAlign: 'center', color: 'white', fontSize: '16px' }}><Load />
+                            </div>
                         }
                     </div> :
                     <Nodata /> :

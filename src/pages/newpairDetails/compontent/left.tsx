@@ -11,10 +11,10 @@ import { judgeStablecoin } from '../../../../utils/judgeStablecoin.ts';
 import { CountContext } from '../../../Layout.tsx';
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({ par }: any) {
-  const h = window.innerHeight - 25 - 54 + 6;
+  const h = window.innerHeight - 25 - 54 + 21;
   const [selectOne, setSelectOne] = useState('more');
   const [selectTwo, setSelectTwo] = useState('more');
-  const { switchChain }: any = useContext(CountContext);
+  const { switchChain, browser }: any = useContext(CountContext);
   const { t } = useTranslation();
   const value = judgeStablecoin(par?.token0?.id, par?.token1?.id, switchChain);
   const float =
@@ -30,13 +30,13 @@ function Left({ par }: any) {
     par?.createdAtTimestamp.toString().length > 10
       ? Number(par.createdAtTimestamp.toString().slice(0, 10))
       : Number(par.createdAtTimestamp);
-  const show = (name: string) => {
+  const show =  throttle(  function (name: string) {
     if (name === 'one') {
       setSelectOne('select');
     } else {
       setSelectTwo('select');
     }
-  };
+  }, 1500,{ trailing: false })
   return (
     <div
       className={`NewpairDetailsOne scrollStyle`}
@@ -71,7 +71,12 @@ function Left({ par }: any) {
       <div className={`address dis`}>
         <div>
           <span>CA:</span>
-          <span style={{ color: '#c2bebe' }}>
+          <span
+            style={{
+              color: browser ? '#c2bebe' : 'rgb(89,175,255)',
+              borderBottom: browser ? 'none' : '1px solid rgb(89,175,255)',
+            }}
+          >
             {value === 0
               ? simplify(par?.token0?.id)
               : value === 1
@@ -94,7 +99,14 @@ function Left({ par }: any) {
         </div>
         <div>
           <span>Pair:</span>
-          <span style={{ color: '#c2bebe' }}>{simplify(par?.id)}</span>
+          <span
+            style={{
+              color: browser ? '#c2bebe' : 'rgb(89,175,255)',
+              borderBottom: browser ? 'none' : '1px solid rgb(89,175,255)',
+            }}
+          >
+            {simplify(par?.id)}
+          </span>
           <div onClick={() => show('two')}>
             <Copy name={par?.id} setSelect={setSelectTwo} select={selectTwo} />
           </div>
@@ -153,10 +165,7 @@ function Left({ par }: any) {
             },
           ].map((i: any, ind: number) => {
             return (
-              <div
-                className={`dis butt`}
-                key={ind}
-              >
+              <div className={`dis butt`} key={ind}>
                 <span>{i.name}</span>
                 <span>{i.price}</span>
               </div>
@@ -164,78 +173,72 @@ function Left({ par }: any) {
           })}
         </div>
       </div>
-      <div className='all'>
-      <div className={'swap'}>
-        <p>{t('Common.Swap Count')}</p>
-        <div className={`dis swapTop`} style={{fontSize:'14px',color:'rgb(150,150,150)'}}>
-          <span>{t('Common.buy')}</span>
-          <span>{t('Common.total')}</span>
-          <span>{t('Common.sell')}</span>
+      <div className="all">
+        <div className={'swap'}>
+          <p>{t('Common.Swap Count')}</p>
+          <div className={`dis swapTop`} style={{ color: 'rgb(150,150,150)' }}>
+            <span>{t('Common.buy')}</span>
+            <span>{t('Common.total')}</span>
+            <span>{t('Common.sell')}</span>
+          </div>
+          <div className={`dis swapTop`} style={{ marginBottom: '-5px' }}>
+            <span>{par?.buyTxs || 0}</span>
+            <span>{Number(par?.sellTxs) + Number(par?.buyTxs)}</span>
+            <span>{par?.sellTxs || 0}</span>
+          </div>
+          <Progress
+            percent={
+              (Number(par?.buyTxs) /
+                (Number(par?.sellTxs) + Number(par?.buyTxs))) *
+              100
+            }
+            showInfo={false}
+            strokeColor={'rgb(0,255,71)'}
+            trailColor={'rgb(232,68,68)'}
+          />
+          <div className={`dis swapTop`}>
+            <span>{setMany(par?.buyVolumeUSD) || 0}</span>
+            <span>{setMany(par?.volumeUSD) || 0}</span>
+            <span>{setMany(par?.sellVolumeUSD) || 0}</span>
+          </div>
         </div>
-        <div
-          className={`dis swapTop`}
-          style={{  marginBottom: '-5px' }}
-        >
-          <span>{par?.buyTxs || 0}</span>
-          <span>{Number(par?.sellTxs) + Number(par?.buyTxs)}</span>
-          <span>{par?.sellTxs || 0}</span>
+        <div className={'valume'}>
+          {[
+            {
+              name: t('Common.Created Time'),
+              price: dayjs.unix(create).fromNow(),
+            },
+            {
+              name: t('Common.Total Supply'),
+              price: setMany(par?.tokenTotalSupply) || 0,
+            },
+            {
+              name: t('Common.Initial Pool Amount'),
+              price: setMany(par?.initialReserve),
+            },
+            {
+              name:
+                t('Common.Pooled') +
+                ' ' +
+                par?.token0?.symbol?.replace(/^\s*|\s*$/g, ''),
+              price: setMany(par?.reserve0),
+            },
+            {
+              name:
+                t('Common.Pooled') +
+                ' ' +
+                par?.token1?.symbol?.replace(/^\s*|\s*$/g, ''),
+              price: setMany(par?.reserve1),
+            },
+          ].map((i: any, ind: number) => {
+            return (
+              <div className={`dis butt`} key={ind}>
+                <span>{i.name}</span>
+                <span>{i.price}</span>
+              </div>
+            );
+          })}
         </div>
-        <Progress
-          percent={
-            (Number(par?.buyTxs) /
-              (Number(par?.sellTxs) + Number(par?.buyTxs))) *
-            100
-          }
-          showInfo={false}
-          strokeColor={'rgb(0,255,71)'}
-          trailColor={'rgb(232,68,68)'}
-        />
-        <div className={`dis swapTop`}>
-          <span>{setMany(par?.buyVolumeUSD) || 0}</span>
-          <span>{setMany(par?.volumeUSD) || 0}</span>
-          <span>{setMany(par?.sellVolumeUSD) || 0}</span>
-        </div>
-      </div>
-      <div className={'valume'}>
-        {[
-          {
-            name: t('Common.Created Time'),
-            price: dayjs.unix(create).fromNow(),
-          },
-          {
-            name: t('Common.Total Supply'),
-            price: setMany(par?.tokenTotalSupply) || 0,
-          },
-          {
-            name: t('Common.Initial Pool Amount'),
-            price: setMany(par?.initialReserve),
-          },
-          {
-            name:
-              t('Common.Pooled') +
-              ' ' +
-              par?.token0?.symbol?.replace(/^\s*|\s*$/g, ''),
-            price: setMany(par?.reserve0),
-          },
-          {
-            name:
-              t('Common.Pooled') +
-              ' ' +
-              par?.token1?.symbol?.replace(/^\s*|\s*$/g, ''),
-            price: setMany(par?.reserve1),
-          },
-        ].map((i: any, ind: number) => {
-          return (
-            <div
-              className={`dis butt`}
-              key={ind}
-            >
-              <span>{i.name}</span>
-              <span>{i.price}</span>
-            </div>
-          );
-        })}
-      </div>
       </div>
     </div>
   );

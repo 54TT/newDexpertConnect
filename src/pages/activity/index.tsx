@@ -69,7 +69,7 @@ function Index() {
     return (
         <>
             {
-                load ? <div className={'activityBox'} style={{ marginBottom: '50px', overflow: 'hidden' }}>
+                load ? <div className={'activityBox'} style={{ overflow: 'hidden' }}>
                     <p className='topTitle' style={{ margin: browser ? ' 3% 0 2%' : '50px 0 20px' }}><span style={{ color: 'rgb(134,240,151)' }}>{t('Active.task')}</span><span style={{ color: 'white' }}>{t('Active.task1')}</span></p>
                     <div className={'activeBack'} style={{ backgroundSize: browser ? "100% 150vh" : '100%' }}>
                         <div className={'allTime dis'} style={{ flexDirection: browser ? "row" : 'column', width: browser ? '65%' : '80%' }}>

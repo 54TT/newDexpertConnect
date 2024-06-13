@@ -24,7 +24,6 @@ function Right() {
       className={'rightBox'}
       style={{
         width: browser ? '25%' : '100%',
-        marginBottom: browser ? '0' : '40px',
       }}
     >
       <div
@@ -61,7 +60,7 @@ function Right() {
                   )}
                   style={{
                     width: '100%',
-                    maxHeight: '200px',
+                    maxHeight: browser ? '200px' : '32vh',
                     borderRadius: '20px',
                     cursor: 'pointer',
                     display: 'block',
@@ -76,7 +75,7 @@ function Right() {
       <div
         className={'rightBoxTweet'}
         style={{
-          height: browser ? heigh + 60 + 'px' : '50vh',
+          height: browser ? heigh + 60 + 'px' : '86vh',
           borderRadius: '15px 15px 0 0',
         }}
       >
@@ -84,14 +83,17 @@ function Right() {
           rootClassName="rightSegmented"
           value={select}
           block
-          options={[{label:t('Common.Recommand'),value:'one'}, {label:t('Common.Lastest'),value:'two'}]}
+          options={[
+            { label: t('Common.Recommand'), value: 'one' },
+            { label: t('Common.Lastest'), value: 'two' },
+          ]}
           onChange={(value: any) => {
             if (select !== value) {
-                setSelect(value);
-              }
+              setSelect(value);
+            }
           }}
         />
-        <TweetHome hei={`${heigh}px`} />
+        <TweetHome hei={`${browser ? heigh + 15 + 'px' : '82vh'}`} />
       </div>
     </div>
   );

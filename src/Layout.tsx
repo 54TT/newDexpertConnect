@@ -580,17 +580,12 @@ function Layout() {
           <img
             src="/bodyLeft.png"
             alt=""
-            style={{ position: 'fixed', top: '0', left: '0', zIndex: '-1' }}
+            className='bodyLeftImg'
           />
           <img
             src="/bodyRight.png"
             alt=""
-            style={{
-              position: 'fixed',
-              bottom: '0',
-              right: '0',
-              zIndex: '-1',
-            }}
+            className='bodyRightImg'
           />
         </CountContext.Provider>
       </Suspense>

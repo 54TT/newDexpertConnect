@@ -126,55 +126,55 @@ function HeaderModal() {
       binding: 'ETH',
     },
   ];
-  const allConnect = async (i: any) => {
-    if (i.key === 'WalletConnect') {
-      onConnect();
-      setLoad(true);
-      setIsModalOpen(false);
-    } else if (i.key === 'Ton') {
-      tonConnect();
-    } else {
-      //  判断浏览器是否安装了  evm链钱包
-      const data = list.filter(
-        (item: any) =>
-          item?.info?.name === i?.key || item?.info?.rdns === i?.value
-      );
-      if (data.length > 0) {
-        //   判断是否是   phantom钱包  solana连接
-        connectWallet(data[0]);
+  const allConnect = throttle(async function (i: any) {
+      if (i.key === 'WalletConnect') {
+        onConnect();
         setLoad(true);
         setIsModalOpen(false);
+      } else if (i.key === 'Ton') {
+        tonConnect();
       } else {
-        if (i?.key === 'Phantom' || i.value === 'app.phantom') {
-          window.open(
-            'https://chromewebstore.google.com/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa?utm_source=ext_app_menu'
-          );
-        } else if (
-          i?.key === 'Coinbase Wallet' ||
-          i.value === 'com.coinbase.wallet'
-        ) {
-          window.open(
-            'https://chromewebstore.google.com/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad?utm_source=ext_app_menu'
-          );
-        } else if (
-          i?.key === 'Trust Wallet' ||
-          i.value === 'com.trustwallet.app'
-        ) {
-          window.open(
-            'https://chromewebstore.google.com/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph?utm_source=ext_app_menu'
-          );
-        } else if (i?.key === 'OKX Wallet' || i.value === 'com.okex.wallet') {
-          window.open(
-            'https://chromewebstore.google.com/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/mcohilncbfahbmgdjkbpemcciiolgcge?hl=en-US&utm_source=ext_sidebar'
-          );
-        } else if (i?.key === 'MetaMask' || i.value === 'io.metamask') {
-          window.open(
-            'https://chromewebstore.google.com/detail/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en-US&utm_source=ext_sidebar'
-          );
+        //  判断浏览器是否安装了  evm链钱包
+        const data = list.filter(
+          (item: any) =>
+            item?.info?.name === i?.key || item?.info?.rdns === i?.value
+        );
+        if (data.length > 0) {
+          //   判断是否是   phantom钱包  solana连接
+          connectWallet(data[0]);
+          setLoad(true);
+          setIsModalOpen(false);
+        } else {
+          if (i?.key === 'Phantom' || i.value === 'app.phantom') {
+            window.open(
+              'https://chromewebstore.google.com/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa?utm_source=ext_app_menu'
+            );
+          } else if (
+            i?.key === 'Coinbase Wallet' ||
+            i.value === 'com.coinbase.wallet'
+          ) {
+            window.open(
+              'https://chromewebstore.google.com/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad?utm_source=ext_app_menu'
+            );
+          } else if (
+            i?.key === 'Trust Wallet' ||
+            i.value === 'com.trustwallet.app'
+          ) {
+            window.open(
+              'https://chromewebstore.google.com/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph?utm_source=ext_app_menu'
+            );
+          } else if (i?.key === 'OKX Wallet' || i.value === 'com.okex.wallet') {
+            window.open(
+              'https://chromewebstore.google.com/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/mcohilncbfahbmgdjkbpemcciiolgcge?hl=en-US&utm_source=ext_sidebar'
+            );
+          } else if (i?.key === 'MetaMask' || i.value === 'io.metamask') {
+            window.open(
+              'https://chromewebstore.google.com/detail/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en-US&utm_source=ext_sidebar'
+            );
+          }
         }
       }
-    }
-  };
+    }, 1500,{ trailing: false })
   return (
     <Modal
       destroyOnClose={true}
