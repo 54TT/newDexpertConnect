@@ -40,6 +40,8 @@ export default function index() {
   return (
     <div className="dappsBox">
       <div className="top">
+        <div className='back'></div>
+        <div className='box'>
         {top.map((i: any) => {
           return (
             <div key={i.key} className="item" onClick={i.onClick}>
@@ -60,6 +62,7 @@ export default function index() {
             </div>
           );
         })}
+        </div>
       </div>
       {/* butbotLogo.svg */}
       {params?.id === 'swap' && <p style={{ color: 'white' }}>1</p>}
