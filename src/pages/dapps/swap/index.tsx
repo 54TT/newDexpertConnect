@@ -1,57 +1,57 @@
 import Request from '@/components/axios.tsx';
 import './index.less';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import SwapComp from './components/SwapComp';
 import './index.less';
 import { getUniversalRouterContract } from '@utils/contracts';
-import { Contract, ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { config } from '@/config/config';
 import PairPriceCharts from './components/PairPriceCharts';
 import Decimal from 'decimal.js';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
 import { ERC20Abi } from '@abis/ERC20Abi';
 import { CountContext } from '@/Layout';
-import { getDecimals } from '@utils/getDecimals';
 import { Permit2Abi } from '@abis/Permit2Abi';
-import {
-  PermitDetails,
-  PermitSingle,
-  getPermitSignature,
-} from '@utils/permit2';
-const mockRecipentAddress = '0x4b42fbbae2b6ed434e8598a00b1fd7efabe5bce3';
+import { PermitSingle, getPermitSignature } from '@utils/permit2';
+
 const mockChainId = '11155111';
 function Swap() {
   const { provider } = useContext(CountContext);
+  // 处理approve
   const handleApprove = async (
-    tokenInAddress: string,
+    tokenContract: ethers.Contract,
     amountIn: number,
-    signer: ethers.Signer
+    decimals: number
   ) => {
     const chainId = localStorage.getItem('chainId');
-    const { universalRouterAddress } = config[chainId || '11155111'];
-
-    const tokenInContract = new ethers.Contract(
-      tokenInAddress,
-      ERC20Abi,
-      signer
+    const { permit2Address } = config[chainId || '11155111'];
+    const approveTx = await tokenContract.approve(
+      permit2Address,
+      BigInt(amountIn * 10 ** decimals)
     );
-
-    const approveTx = await tokenInContract.approve(
-      universalRouterAddress,
-      BigInt(amountIn * 10 ** 18)
-    );
+    console.log(approveTx, 'approve--tx');
 
     const recipent = await approveTx.wait();
-
     // 1 成功 2 失败
     return recipent.status === 1;
   };
 
+  // 查询对 permit2 的approve额度， 未授权为 0
+  const queryAllowance = async (
+    tokenContract: ethers.Contract,
+    owner: string,
+    spender: string
+  ) => {
+    return await tokenContract.allowance(owner, spender);
+  };
+
+  // 获取签名
   const signPermit = async ({
     signerAddress,
     token,
     amount,
     permit2Contract,
+    signer,
   }) => {
     const { universalRouterAddress } = config['11155111'];
     const permitSingle: PermitSingle = {
@@ -65,19 +65,34 @@ function Swap() {
       },
     };
 
-    const res = await getPermitSignature(
-      11155111,
-      permitSingle,
-      permit2Contract,
-      signerAddress
-    );
-    console.log(res);
+    const { eip712Domain, PERMIT2_PERMIT_TYPE, permit } =
+      await getPermitSignature(
+        11155111,
+        permitSingle,
+        permit2Contract,
+        signerAddress
+      );
 
-    return res;
+    const signature = await signer._signTypedData(
+      eip712Domain,
+      PERMIT2_PERMIT_TYPE,
+      permit
+    );
+
+    return { signature, permit };
   };
 
+  // 获取交易字节码
   const getSwapBytes = async (data: any) => {
-    const { amountIn, amountOut, tokenIn, tokenOut } = data;
+    const {
+      amountIn,
+      amountOut,
+      tokenIn,
+      tokenOut,
+      permit,
+      signature,
+      recipientAddress,
+    } = data;
     const { commands, inputs } = await getSwapExactInBytes(
       mockChainId,
       provider,
@@ -85,12 +100,16 @@ function Swap() {
       tokenOut,
       new Decimal(amountIn),
       new Decimal(amountOut),
-      mockRecipentAddress,
+      recipientAddress,
       true,
       0,
       permit,
       signature
     );
+    console.log('swap-code', {
+      commands,
+      inputs,
+    });
 
     /*     console.log('SwapExactInParam', {
       mockChainId,
@@ -111,6 +130,7 @@ function Swap() {
     return { commands, inputs, etherValue };
   };
 
+  // 发送交易
   const sendSwap = async ({
     commands,
     inputs,
@@ -137,8 +157,10 @@ function Swap() {
       value: etherValue,
       gasLimit: 1030000,
     });
+    console.log('swap-tx', tx);
   };
 
+  // 触发交易流程
   const handleSwap = async (data: {
     amountIn: any;
     amountOut: any;
@@ -153,46 +175,76 @@ function Swap() {
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
 
     const signer = await web3Provider.getSigner();
-    /* const signerAddress = await signer.getAddress();
+    const signerAddress = await signer.getAddress();
     const permit2Contract = new ethers.Contract(
       permit2Address,
       Permit2Abi,
       signer
     );
-    console.log({
-      signerAddress,
-      token: tokenIn,
-      amount: BigInt(amountIn * 10 ** 6).toString(),
-      permit2Contract,
-    });
 
-    const { eip712Domain, PERMIT2_PERMIT_TYPE, permit } = await signPermit({
-      signerAddress,
-      token: tokenIn,
-      amount: BigInt(amountIn * 10 ** 6),
-      permit2Contract,
-    });
-
-    const result = await signer._signTypedData(
-      eip712Domain,
-      PERMIT2_PERMIT_TYPE,
-      permit
-    );
-    console.log(result);
-
-    return; */
-
-    const { commands, inputs, etherValue } = await getSwapBytes(data);
-
-    console.log('swap-code', {
+    const tokenInContract = new ethers.Contract(tokenIn, ERC20Abi, signer);
+    /*     console.log('swap-code', {
       commands,
       inputs,
       etherValue,
-    });
+    }); */
 
     if (tokenIn !== zeroAddress) {
-      const successApprove = await handleApprove(tokenIn, amountIn, signer);
-      if (successApprove) {
+      const balance: BigNumber = await queryAllowance(
+        tokenInContract,
+        signerAddress,
+        permit2Address
+      );
+      const decimals = await tokenInContract.decimals();
+      if (
+        balance.isZero() ||
+        balance.lte(
+          BigNumber.from(new Decimal(amountIn * 10 ** decimals).toFixed(0))
+        )
+      ) {
+        // 余额为0 或者余额 小于amount 需要approve
+        const successApprove = await handleApprove(
+          tokenInContract,
+          amountIn,
+          decimals
+        );
+        if (successApprove) {
+          const { permit, signature } = await signPermit({
+            signerAddress,
+            token: tokenIn,
+            amount: BigInt(amountIn * 10 ** decimals),
+            permit2Contract,
+            signer,
+          });
+
+          const { commands, inputs, etherValue } = await getSwapBytes({
+            ...data,
+            permit,
+            signature,
+            recipientAddress: signerAddress,
+          });
+
+          sendSwap({
+            commands,
+            inputs,
+            etherValue,
+            signer,
+            universalRouterAddress,
+          });
+        }
+      } else {
+        const { permit, signature } = await signPermit({
+          signerAddress,
+          token: tokenIn,
+          amount: BigInt(amountIn * 10 ** 6),
+          permit2Contract,
+          signer,
+        });
+        const { commands, inputs, etherValue } = await getSwapBytes({
+          ...data,
+          permit,
+          signature,
+        });
         sendSwap({
           commands,
           inputs,
@@ -202,6 +254,7 @@ function Swap() {
         });
       }
     } else {
+      const { commands, inputs, etherValue } = await getSwapBytes({ ...data });
       sendSwap({
         commands,
         inputs,

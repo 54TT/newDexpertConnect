@@ -18,8 +18,8 @@ export const getSwapExactInBytes = async (
   recipient: string,
   isFee: boolean,
   feeType: number,
-  permit,
-  signature
+  permit: any,
+  signature: any
 ) => {
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
