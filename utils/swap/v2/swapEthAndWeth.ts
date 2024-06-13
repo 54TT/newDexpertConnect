@@ -19,13 +19,26 @@ export const wethToEth = async (
   tokenIn: string,
   amountIn: BigNumber,
   amountOutMin: BigNumber,
-  recipient: string
+  recipient: string,
+  permit,
+  signature
 ) => {
+  const isFee = false;
+  const feeType = 0;
   const chainConfig = config[chainId];
   const universalRouterAddress = chainConfig.universalRouterAddress;
 
-  const transferParams = [tokenIn, universalRouterAddress, amountIn];
-  planner.addCommand(CommandType.TRANSFER_FROM, transferParams, false);
+  const permit2PermitParams = [permit, signature];
+  planner.addCommand(CommandType.PERMIT2_PERMIT, permit2PermitParams, false);
+
+  const transferParams = [
+    tokenIn,
+    universalRouterAddress,
+    amountIn,
+    isFee,
+    feeType,
+  ];
+  planner.addCommand(CommandType.PERMIT2_TRANSFER_FROM, transferParams, false);
 
   const unWrapEthParams = [recipient, amountOutMin];
   planner.addCommand(CommandType.UNWRAP_WETH, unWrapEthParams, false);

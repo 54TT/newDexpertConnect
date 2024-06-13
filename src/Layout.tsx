@@ -68,17 +68,17 @@ export const CountContext = createContext(null);
 function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
-
-  const changeProvider = () => {
+  const [contractConfig, setContractConfig] = useState();
+  const changeConfig = () => {
     const chainId = localStorage.getItem('chainId');
-    const { rpcUrl } = config[chainId ?? '11155111'];
-
-    const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
+    const newConfig = config[chainId ?? '11155111'];
+    setContractConfig(newConfig);
+    const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
     setProvider(rpcProvider);
   };
 
   useEffect(() => {
-    changeProvider();
+    changeConfig();
   }, []);
 
   const { open: openTonConnect } = useTonConnectModal();
@@ -544,7 +544,8 @@ function Layout() {
     isCopy,
     setIsCopy,
     provider,
-    changeProvider,
+    changeConfig,
+    contractConfig,
   };
 
   const clients = new ApolloClient({

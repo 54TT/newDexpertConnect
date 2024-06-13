@@ -95,6 +95,7 @@ export const getAmountIn = async (
   } else {
     // eth / weth 互转
     amountInBigNumber = BigNumber.from(amountOutBigNumber.toString());
+    return reduceFromDecimalsBN(amountInBigNumber, tokenInDecimals);
   }
 
   let amount = reduceFromDecimalsBN(amountInBigNumber, tokenInDecimals);

@@ -1,29 +1,28 @@
-import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
-import { getERC20Contract, getUniswapV2Contract } from '../../contracts';
-import { RoutePlanner, CommandType } from '../../planner';
+import { RoutePlanner } from '../../planner';
 import { ethToWeth, wethToEth } from './swapEthAndWeth';
-import { getPairAddress } from './getPairAddress';
 import { getDecimals } from '@utils/getDecimals';
 import Decimal from 'decimal.js';
 import { expandToDecimalsBN } from '../../utils';
 
 export const getSwapEthAndWeth = async (
   chainId: string,
+  provider: any,
   tokenInAddress: string,
   tokenOutAddress: string,
   amountIn: Decimal,
   amountOut: Decimal,
-  recipient: string
+  recipient: string,
+  permit,
+  signature
 ) => {
-  const str = amountIn.toString();
-
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
   const planner = new RoutePlanner();
 
   const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
+    provider,
     tokenInAddress,
     tokenOutAddress,
     chainId,
@@ -47,7 +46,9 @@ export const getSwapEthAndWeth = async (
       tokenInAddress,
       amountInBigNumber,
       amountOutBigNumber,
-      recipient
+      recipient,
+      permit,
+      signature
     );
   }
   return planner;
