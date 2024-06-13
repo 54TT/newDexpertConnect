@@ -815,6 +815,8 @@ span {
 }
 
 .headerDrawerOpen {
+  border-radius: 15px;
+  background-color: transparent !important;
   .headerCollapse {
     .ant-collapse-item {
       .ant-collapse-header {
@@ -824,17 +826,20 @@ span {
         flex-direction: row-reverse;
 
         .ant-collapse-header-text {
+          & > div {
+            img{
+              width: 20px;
+              display: block;
+              margin-right: 8px;
+            }
+            display: flex;
+            align-items: center;
+          }
           font-size: 20px;
-          color: white !important;
+          color: rgb(134, 240, 151) !important;
         }
-
         .ant-collapse-expand-icon {
           padding-right: 0 !important;
-
-          .ant-collapse-arrow {
-            font-size: 20px;
-            color: white !important;
-          }
         }
       }
 
@@ -845,18 +850,12 @@ span {
           .collapseChildeen {
             padding: 0 18px;
 
-            p:last-child {
-              margin-bottom: 10px;
-            }
-
             p {
               display: flex;
+              margin-bottom: 20px;
               align-items: center;
-              font-size: 18px;
-              margin-top: 13px;
-
               span {
-                margin-left: 6px;
+                margin-left: 9px;
                 color: rgb(200, 200, 200);
               }
 
@@ -880,17 +879,15 @@ span {
   }
 
   .ant-drawer-header {
-    padding: 18px 24px !important;
-    background-color: #2b3531 !important;
-
+    background-color: rgb(26, 26, 26) !important;
     .ant-drawer-close {
-      color: rgb(220, 220, 220) !important;
+      display: none;
     }
   }
 
   .ant-drawer-body {
     padding: 12px !important;
-    background-color: #2b3531 !important;
+    background-color: rgb(26, 26, 26) !important;
   }
 }
 

@@ -562,7 +562,7 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <div className={big ? 'bigCen' : ''} style={{ marginTop: '70px' }}>
+          <div className={big ? 'bigCen' : ''} style={{ marginTop: '70px' ,overflow:'hidden'}}>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/re-register" element={<Index />} />
