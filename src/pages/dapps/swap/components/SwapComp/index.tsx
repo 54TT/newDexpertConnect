@@ -18,7 +18,6 @@ import SelectTokenModal from '@/components/SelectTokenModal';
 import Decimal from 'decimal.js';
 import AdvConfig from '../AdvConfig';
 import { CountContext } from '@/Layout';
-import { config } from '@/config/config';
 import { PermitSingle, getPermitSignature } from '@utils/permit2';
 import { BigNumber, ethers } from 'ethers';
 import { Permit2Abi } from '@abis/Permit2Abi';
@@ -32,7 +31,7 @@ interface TokenInfoType {
 }
 const mockChainId = '11155111';
 function SwapComp() {
-  const { provider, changeProvider } = useContext(CountContext);
+  const { provider, contractConfig, changeConfig } = useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<TokenInfoType>();
@@ -92,9 +91,7 @@ function SwapComp() {
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
     let start = Date.now();
-    const chainId = localStorage.getItem('chainId');
-    const { universalRouterAddress, uniswapV2RouterAddress } =
-      config[chainId || '11155111'];
+    const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
     console.log(tokenIn, tokenOut);
 
     const param = [
@@ -129,8 +126,7 @@ function SwapComp() {
     amountIn: number,
     decimals: number
   ) => {
-    const chainId = localStorage.getItem('chainId');
-    const { permit2Address } = config[chainId || '11155111'];
+    const { permit2Address } = contractConfig;
     const approveTx = await tokenContract.approve(
       permit2Address,
       BigInt((amountIn * 10 ** decimals).toFixed(0))
@@ -159,7 +155,7 @@ function SwapComp() {
     permit2Contract,
     signer,
   }) => {
-    const { universalRouterAddress } = config['11155111'];
+    const { universalRouterAddress } = contractConfig;
     const permitSingle: PermitSingle = {
       sigDeadline: 2000000000,
       spender: universalRouterAddress,
@@ -190,7 +186,7 @@ function SwapComp() {
 
   // 获取交易字节码
   const getSwapBytes = async (data: any) => {
-    const { ethAddress, wethAddress } = config['11155111'];
+    const { ethAddress, wethAddress } = contractConfig;
     const {
       amountIn,
       amountOut,
@@ -214,14 +210,23 @@ function SwapComp() {
       permit,
       signature,
     ];
-    console.log(getBytesParam);
 
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
         (tokenIn === ethAddress || tokenIn === wethAddress) &&
         (tokenOut === ethAddress || tokenOut === wethAddress)
       ) {
-        return await getSwapEthAndWeth.apply(null, getBytesParam);
+        return await getSwapEthAndWeth.apply(null, [
+          mockChainId,
+          provider,
+          tokenIn,
+          tokenOut,
+          new Decimal(amountIn),
+          new Decimal(amountOut),
+          recipientAddress,
+          permit,
+          signature,
+        ]);
       }
       if (currentInputToken.current === 'in') {
         return await getSwapExactInBytes.apply(null, getBytesParam);
@@ -237,7 +242,7 @@ function SwapComp() {
     });
 
     let etherValue = BigInt(0);
-    if (tokenIn === config['11155111'].ethAddress) {
+    if (tokenIn === contractConfig.ethAddress) {
       etherValue = BigInt((amountIn * 10 ** 18).toFixed(0));
     }
     return { commands, inputs, etherValue };
@@ -276,7 +281,7 @@ function SwapComp() {
   }) => {
     const chainId = localStorage.getItem('chainId');
     const { zeroAddress, universalRouterAddress, permit2Address } =
-      config[chainId || '11155111'];
+      contractConfig;
     const { tokenIn, amountIn } = data;
 
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -396,7 +401,7 @@ function SwapComp() {
             setAmountIn(v);
             if (currentInputToken.current !== 'in')
               currentInputToken.current = 'in';
-            getAmountDebounce('in', v, tokenIn, tokenOut);
+            getAmountDebounce('in', v);
           }}
         />
         <div className="token-info">
@@ -471,7 +476,6 @@ function SwapComp() {
       <SelectTokenModal
         open={openSelect}
         onChange={(data) => {
-          console.log(data);
           if (currentSetToken.current === 'in') {
             setTokenIn(data);
           } else {

@@ -12,16 +12,17 @@ export const getSwapEthAndWeth = async (
   tokenOutAddress: string,
   amountIn: Decimal,
   amountOut: Decimal,
-  recipient: string
+  recipient: string,
+  permit,
+  signature
 ) => {
-  const str = amountIn.toString();
-
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
   const planner = new RoutePlanner();
 
   const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
+    provider,
     tokenInAddress,
     tokenOutAddress,
     chainId,
@@ -45,7 +46,9 @@ export const getSwapEthAndWeth = async (
       tokenInAddress,
       amountInBigNumber,
       amountOutBigNumber,
-      recipient
+      recipient,
+      permit,
+      signature
     );
   }
   return planner;
