@@ -41,7 +41,6 @@ import { MessageAll } from './components/message.ts';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
-import Dapps from './pages/dapps/index.tsx';
 import { config } from './config/config.ts';
 import { ethers } from 'ethers';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
@@ -52,7 +51,7 @@ const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
 );
 const Index = React.lazy(() => import('./pages/index/index.tsx'));
-const Dapp = React.lazy(() => import('./pages/dapp/index.tsx'));
+const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Dapps = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Community = React.lazy(() => import('./pages/community/index.tsx'));
 const Active = React.lazy(() => import('./pages/activity/index.tsx'));
@@ -563,7 +562,7 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <div className={big ? 'bigCen' : ''} style={{ marginTop: '100px' }}>
+          <div className={big ? 'bigCen' : ''} style={{ marginTop: '70px' }}>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/re-register" element={<Index />} />
@@ -579,16 +578,8 @@ function Layout() {
               <Route path="/dapps/*" element={<Dapps />} />
             </Routes>
           </div>
-          <img
-            src="/bodyLeft.png"
-            alt=""
-            className='bodyLeftImg'
-          />
-          <img
-            src="/bodyRight.png"
-            alt=""
-            className='bodyRightImg'
-          />
+          <img src="/bodyLeft.png" alt="" className="bodyLeftImg" />
+          <img src="/bodyRight.png" alt="" className="bodyRightImg" />
         </CountContext.Provider>
       </Suspense>
     </ApolloProvider>
