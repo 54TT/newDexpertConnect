@@ -1,16 +1,16 @@
-import { useContext,  } from 'react';
+import { useContext } from 'react';
 import Right from './components/right.tsx';
 import { CountContext } from '../../Layout.tsx';
 import Left from './components/left.tsx';
 function Index() {
-  const { browser, }: any = useContext(CountContext);
+  const { browser }: any = useContext(CountContext);
   // window.open('www.baidu.com','','height=200,width=200,scrollbars=no,location=yes,status=yes,menubar=no,toolbar=no')
   return (
     <div
       style={{
         display: 'flex',
         justifyContent: 'space-between',
-        padding: '0 1%',
+        padding: '20px 1% 0 1%',
         flexDirection: browser ? 'row' : 'column',
       }}
     >
