@@ -1,0 +1,68 @@
+.dappsBox {
+  .top {
+    background-color: rgb(45, 48, 45);
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: -2;
+    padding: 12px 35%;
+    justify-content: space-between;
+    .item {
+      display: flex;
+      cursor: pointer;
+      position: relative;
+      z-index: 10;
+      align-items: center;
+      & > div {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        position: relative;
+        box-sizing: border-box;
+        img {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 12px;
+        }
+      }
+      & > span {
+        margin-left: 4px;
+      }
+    }
+  }
+}
+.buybotBox {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  width: 22%;
+  transform: translate(-50%, -50%);
+  & > div {
+    width: 80%;
+    margin: 0 auto;
+  }
+  .logo {
+    width: 50%;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: linear-gradient(
+      180.07deg,
+      rgba(134, 240, 151, 0.1) 0.06%,
+      rgba(15, 45, 20, 0.05) 83.51%,
+      rgba(134, 240, 151, 0.05) 101.85%
+    );
+    padding: 52px 45px;
+    img {
+      width: 100%;
+      display: block;
+    }
+  }
+  .link {
+    background-color: rgb(1, 136, 204);
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+  }
+}
