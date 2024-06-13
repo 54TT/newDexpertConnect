@@ -52,7 +52,8 @@ const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
 );
 const Index = React.lazy(() => import('./pages/index/index.tsx'));
-const Dapp = React.lazy(() => import('./pages/dappTools/index.tsx'));
+const Dapp = React.lazy(() => import('./pages/dapp/index.tsx'));
+const Dapps = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Community = React.lazy(() => import('./pages/community/index.tsx'));
 const Active = React.lazy(() => import('./pages/activity/index.tsx'));
 const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
@@ -570,6 +571,7 @@ function Layout() {
               <Route path="/newpairDetails/:id" element={<NewpairDetails />} />
               <Route path="/community/:tab" element={<Community />} />
               <Route path="/app/:id" element={<Dapp />} />
+              <Route path="/dapps/:id" element={<Dapps />} />
               <Route path="/activity" element={<Active />} />
               <Route path="/oauth/:id/callback" element={<Oauth />} />
               <Route path="/dpass/:id" element={<Dpass />} />
