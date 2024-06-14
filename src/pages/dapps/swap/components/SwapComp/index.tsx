@@ -16,7 +16,7 @@ import { debounce } from 'lodash';
 import './index.less';
 import SelectTokenModal from '@/components/SelectTokenModal';
 import Decimal from 'decimal.js';
-import AdvConfig from '../AdvConfig';
+import AdvConfig, { AdvConfigType } from '../AdvConfig';
 import { CountContext } from '@/Layout';
 import { PermitSingle, getPermitSignature } from '@utils/permit2';
 import { BigNumber, ethers } from 'ethers';
@@ -31,7 +31,7 @@ interface TokenInfoType {
 }
 const mockChainId = '11155111';
 function SwapComp() {
-  const { provider, contractConfig, changeConfig } = useContext(CountContext);
+  const { provider, contractConfig } = useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<TokenInfoType>();
@@ -39,6 +39,18 @@ function SwapComp() {
   const [openSelect, setOpenSelect] = useState(false);
   const currentSetToken = useRef<'in' | 'out'>('in');
   const currentInputToken = useRef<'in' | 'out'>('in');
+  /*   const [buttonDisable, setButtonDisable] = useState();
+  const [buttonDesc, setButtonDesc] = useState(); */
+
+  const initAdvConfig: AdvConfigType = {
+    slipType: '0',
+    slip: 0.02,
+    tradeDeadline: {
+      uint: 'm',
+      value: 30,
+    },
+  };
+  const [advConfig, setAdvConfig] = useState(initAdvConfig);
 
   useEffect(() => {
     getWeth();
@@ -87,13 +99,14 @@ function SwapComp() {
     setTokenOut(newTokenOut);
     setAmountIn(amountOut);
     setAmountOut(0);
+    getAmount('in', amountOut || 0);
   };
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
+    setLoading;
     let start = Date.now();
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
-    console.log(tokenIn, tokenOut);
-
+    const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
     const param = [
       '11155111',
       provider,
@@ -102,7 +115,7 @@ function SwapComp() {
       tokenIn.address,
       tokenOut.address,
       new Decimal(value),
-      new Decimal(0.02),
+      new Decimal(slip),
       0,
     ];
     if (type === 'in') {
@@ -279,11 +292,10 @@ function SwapComp() {
     tokenIn: any;
     tokenOut: any;
   }) => {
-    const chainId = localStorage.getItem('chainId');
     const { zeroAddress, universalRouterAddress, permit2Address } =
       contractConfig;
     const { tokenIn, amountIn } = data;
-
+    //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await web3Provider.getSigner();
     const signerAddress = await signer.getAddress();
@@ -378,7 +390,10 @@ function SwapComp() {
   return (
     <div className="swap-comp">
       <div>
-        <AdvConfig onClose={() => console.log('123123')} />
+        <AdvConfig
+          initData={initAdvConfig}
+          onClose={(data) => setAdvConfig(data)}
+        />
       </div>
       <div className="input-token send-token">
         <div className="dapp-sniper-right-token">

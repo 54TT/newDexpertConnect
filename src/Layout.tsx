@@ -74,6 +74,7 @@ function Layout() {
     const newConfig = config[chainId ?? '11155111'];
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
+    //@ts-ignore
     setProvider(rpcProvider);
   };
 

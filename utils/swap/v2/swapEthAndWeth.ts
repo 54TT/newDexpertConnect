@@ -7,7 +7,6 @@ export const ethToWeth = async (
   amountIn: BigNumber,
   recipient: string
 ) => {
-  const str = amountIn.toString();
   const wrapEthParams = [recipient, amountIn, false, 0];
 
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
@@ -20,8 +19,8 @@ export const wethToEth = async (
   amountIn: BigNumber,
   amountOutMin: BigNumber,
   recipient: string,
-  permit,
-  signature
+  permit: any,
+  signature: string
 ) => {
   const isFee = false;
   const feeType = 0;

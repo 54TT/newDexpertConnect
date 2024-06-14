@@ -19,7 +19,6 @@ export const erc20ToErc20 = async (
   signature: string
 ) => {
   const chainConfig = config[chainId];
-  const universalRouterAddress = chainConfig.universalRouterAddress;
   const wethAddress = chainConfig.wethAddress;
   const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
 
@@ -109,14 +108,12 @@ export const ethToErc20 = async (
   amountInMax: BigNumber,
   amountOut: BigNumber,
   recipient: string,
-  pairAddress: string,
   isFee: boolean,
   feeType: number
 ) => {
-  const chainConfig = config[chainId];
-  const ethAddress = chainConfig.ethAddress;
+  const { ethAddress, universalRouterAddress } = config[chainId];
   debugger;
-  const wrapEthParams = [pairAddress, amountInMax, isFee, feeType];
+  const wrapEthParams = [universalRouterAddress, amountInMax, isFee, feeType];
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
 
   let swapPath = [tokenIn, tokenOut];

@@ -1,7 +1,5 @@
-import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
-import { getERC20Contract, getUniswapV2Contract } from '../../contracts';
-import { RoutePlanner, CommandType } from '../../planner';
+import { RoutePlanner } from '../../planner';
 import { erc20ToETH, erc20ToErc20, ethToErc20 } from './swapExactIn';
 import { getPairAddress } from './getPairAddress';
 import { expandToDecimalsBN } from '../../utils';
