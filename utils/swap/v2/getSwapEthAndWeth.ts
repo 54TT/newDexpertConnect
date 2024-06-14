@@ -13,8 +13,8 @@ export const getSwapEthAndWeth = async (
   amountIn: Decimal,
   amountOut: Decimal,
   recipient: string,
-  permit,
-  signature
+  permit: any,
+  signature: string
 ) => {
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;

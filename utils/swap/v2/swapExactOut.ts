@@ -19,7 +19,6 @@ export const erc20ToErc20 = async (
   signature: string
 ) => {
   const chainConfig = config[chainId];
-  const universalRouterAddress = chainConfig.universalRouterAddress;
   const wethAddress = chainConfig.wethAddress;
   const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
 

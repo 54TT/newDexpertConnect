@@ -1,4 +1,4 @@
-import { Popconfirm, PopconfirmProps } from 'antd';
+import { Popconfirm } from 'antd';
 import { useState } from 'react';
 import './index.less';
 import { CloseOutlined } from '@ant-design/icons';
