@@ -29,7 +29,6 @@ interface TokenInfoType {
   symbol: string;
   name: string;
 }
-
 const mockChainId = '11155111';
 function SwapComp() {
   const { provider, contractConfig } = useContext(CountContext);
@@ -40,6 +39,8 @@ function SwapComp() {
   const [openSelect, setOpenSelect] = useState(false);
   const currentSetToken = useRef<'in' | 'out'>('in');
   const currentInputToken = useRef<'in' | 'out'>('in');
+  /*   const [buttonDisable, setButtonDisable] = useState();
+  const [buttonDesc, setButtonDesc] = useState(); */
 
   const initAdvConfig: AdvConfigType = {
     slipType: '0',
@@ -102,6 +103,7 @@ function SwapComp() {
   };
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
+    setLoading;
     let start = Date.now();
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
