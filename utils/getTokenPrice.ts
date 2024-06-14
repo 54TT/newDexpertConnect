@@ -5,11 +5,15 @@ import { getWethPrice } from './getWethPrice';
 import { reduceFromDecimalsBN } from './utils';
 import Decimal from 'decimal.js';
 
-export const getTokenPrice = async (provider: any, chainId: string, pairAddress: string) => {
+export const getTokenPrice = async (
+  provider: any,
+  chainId: string,
+  pairAddress: string
+) => {
   const chainConfig = config[chainId];
   const wethAddress = chainConfig.wethAddress;
 
-  const wethPrice = await getWethPrice(chainId);
+  const wethPrice = await getWethPrice(chainId, provider);
 
   const pairContract = await getUniswapV2Contract(chainId, pairAddress);
 
@@ -19,9 +23,15 @@ export const getTokenPrice = async (provider: any, chainId: string, pairAddress:
 
   const pairReserves = await pairContract.getReserves();
 
-  const pairToken0Contract = await getERC20Contract(provider, pairToken0Address);
+  const pairToken0Contract = await getERC20Contract(
+    provider,
+    pairToken0Address
+  );
 
-  const pairToken1Contract = await getERC20Contract(provider, pairToken1Address);
+  const pairToken1Contract = await getERC20Contract(
+    provider,
+    pairToken1Address
+  );
 
   const pairToken0Decimal = await pairToken0Contract.decimal();
 

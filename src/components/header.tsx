@@ -6,6 +6,7 @@ import { simplify } from '../../utils/change.ts';
 import Load from './allLoad/load.tsx';
 import HeaderModal from './headerModal.tsx';
 import { throttle } from 'lodash';
+import { CaretDownOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 export type I18N_Key = 'zh_CN' | 'en_US';
 function Header() {
@@ -43,7 +44,7 @@ function Header() {
           history('/');
           break;
         case 'DApps':
-          history('/app/create');
+          history('/dapps/swap');
           break;
       }
     },
@@ -78,52 +79,46 @@ function Header() {
   const collapseItems: any = [
     {
       key: '0',
-      label: t('Common.Market'),
+      label: (
+        <div>
+          <img src="/market.png" alt="" />
+          <span>{t('Common.Market')}</span>
+        </div>
+      ),
     },
     {
       key: '1',
-      label: 'Dapps',
+      label: (
+        <div>
+          <img src="/dappsLogo.png" alt="" />
+          <span>Dapps</span>
+        </div>
+      ),
       children: (
         <div className={'collapseChildeen'}>
           {[
-            { name: t('Dapps.Token Creation Bot'), img: '/tokenWhite.svg' },
+            { name: 'Swap', img: '/swapMore.png', key: 'swap' },
             {
-              name: t('Dapps.Sniper Bot'),
-              img: '/sniper.svg',
+              name: 'Sniping',
+              img: '/snipingMore.png',
+              key: 'sniping',
             },
-            { name: t('Dapps.Air drop Bot'), img: '/dropBot.svg' },
-            {
-              name: t('Dapps.Market maker'),
-              img: '/money.svg',
-            },
-            { name: t('Dapps.New Buy Notification'), img: '/news.svg' },
-            {
-              name: t('Dapps.Token Checker'),
-              img: '/checker.svg',
-            },
-            { name: 'Trending', img: '/trending.svg' },
-          ].map((i: any, ind: number) => {
+            { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
+          ].map((i: any) => {
             return (
               <p
-                key={ind}
+                key={i.key}
                 onClick={throttle(
                   function () {
-                    if (ind === 0) {
-                      history('/app/create');
-                      onClose();
-                    } else if (ind === 1) {
-                      history('/app/sniper');
-                      onClose();
-                    }
+                    history('/dapps/' + i.key);
+                    onClose();
                   },
                   1500,
                   { trailing: false }
                 )}
               >
                 <img src={i.img} alt="" loading={'lazy'} />
-                <span style={{ color: ind > 1 ? 'gray' : 'rgb(200,200,200)' }}>
-                  {i.name}
-                </span>
+                <span style={{ color: 'rgb(200,200,200)' }}>{i.name}</span>
               </p>
             );
           })}
@@ -132,7 +127,12 @@ function Header() {
     },
     {
       key: '2',
-      label: 'Community',
+      label: (
+        <div>
+          <img src="/community.png" alt="" />
+          <span>Community</span>
+        </div>
+      ),
       children: (
         <div className={'collapseChildeen'}>
           {[
@@ -418,6 +418,12 @@ function Header() {
         open={open}
       >
         <Collapse
+          expandIcon={({ isActive }) => (
+            <CaretDownOutlined
+              style={{ fontSize: '20px', color: 'rgb(134,240,151)' }}
+              rotate={isActive ? 90 : 0}
+            />
+          )}
           items={collapseItems}
           accordion
           className={'headerCollapse'}

@@ -28,7 +28,10 @@ function RightCard({ data, par, load }: any) {
   return (
     <div
       style={{
-        margin: '20px 0',
+        marginBottom: '15px',
+        backgroundColor: 'rgb(45,45,45)',
+        padding: '10px 0',
+        borderRadius: '10px',
         width: router.pathname.includes('/community/') ? '100%' : '32%',
       }}
     >
@@ -62,7 +65,7 @@ function RightCard({ data, par, load }: any) {
       >
         <div
           className="scrollStyle"
-          style={{ overflowY: 'auto', height: '30vh' }}
+          style={{ overflowY: 'auto', height: '20vh' }}
         >
           {titleValue === 'New Pairs' ? (
             wait ? (
