@@ -293,7 +293,7 @@ function SwapComp() {
     const { zeroAddress, universalRouterAddress, permit2Address } =
       contractConfig;
     const { tokenIn, amountIn } = data;
-
+    //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await web3Provider.getSigner();
     const signerAddress = await signer.getAddress();

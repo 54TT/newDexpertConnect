@@ -48,9 +48,9 @@ const mockTokenList: TokenItemData[] = [
   },
 ];
 function SelectToken({ onChange }: SelectTokenType) {
-  const [tokenList, setTokenList] = useState<TokenItemData[]>(mockTokenList);
-  const [searchList, setSearchList] = useState<TokenItemData[]>();
-  const [historyList, setHistoryList] = useState<TokenItemData[]>();
+  const [tokenList] = useState<TokenItemData[]>(mockTokenList);
+  /*   const [searchList, setSearchList] = useState<TokenItemData[]>();
+  const [historyList, setHistoryList] = useState<TokenItemData[]>(); */
 
   return (
     <div className="select-token">

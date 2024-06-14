@@ -108,7 +108,6 @@ export const ethToErc20 = async (
   amountInMax: BigNumber,
   amountOut: BigNumber,
   recipient: string,
-  pairAddress: string,
   isFee: boolean,
   feeType: number
 ) => {

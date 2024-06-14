@@ -74,6 +74,7 @@ function Layout() {
     const newConfig = config[chainId ?? '11155111'];
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
+    //@ts-ignore
     setProvider(rpcProvider);
   };
 
@@ -563,7 +564,10 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <div className={big ? 'bigCen' : ''} style={{ marginTop: '70px' ,overflow:'hidden'}}>
+          <div
+            className={big ? 'bigCen' : ''}
+            style={{ marginTop: '70px', overflow: 'hidden' }}
+          >
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/re-register" element={<Index />} />

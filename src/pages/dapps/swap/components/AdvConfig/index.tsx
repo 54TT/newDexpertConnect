@@ -120,7 +120,10 @@ export const SettingContent: ForwardRefExoticComponent<
     <div className="setting-content">
       <div className="setting-item">
         <span>Maximum Slip</span>
-        <Segmented options={segmentOptions} onChange={(v) => setSlipType(v)} />
+        <Segmented
+          options={segmentOptions}
+          onChange={(v: '0' | '1') => setSlipType(v)}
+        />
       </div>
       {slipType === '1' && (
         <div className="setting-item">
