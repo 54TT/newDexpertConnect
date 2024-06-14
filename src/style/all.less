@@ -158,8 +158,6 @@ body::-webkit-scrollbar-thumb {
 
 .indexBox {
   overflow: hidden;
-  margin-top: 10px;
-
   .indexTop {
     padding: 0.6% 2%;
     border-radius: 12px 12px 0 0;
@@ -224,7 +222,7 @@ body::-webkit-scrollbar-thumb {
     width: 100%;
 
     .indexNewPairTitle {
-      padding: 10px 8px 10px 15px;
+      padding: 10px 15px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -237,6 +235,10 @@ body::-webkit-scrollbar-thumb {
       .homeTableTittle {
         color: rgb(214, 223, 215);
         font-size: 14px;
+        margin: 0 5px;
+        span {
+          white-space: nowrap;
+        }
       }
     }
 
@@ -271,7 +273,7 @@ body::-webkit-scrollbar-thumb {
         background-color: rgb(25, 27, 25);
         cursor: pointer;
         border-bottom: 1.5px solid rgb(59, 59, 59);
-        padding: 4px 0 4px 15px;
+        padding: 4px 0 4px 20px;
 
         & > div:not(:first-child) {
           font-weight: 300;
@@ -321,7 +323,8 @@ body::-webkit-scrollbar-thumb {
 
 .headerBox {
   box-sizing: border-box;
-  padding: 7px 2.2%;
+  padding: 0 2.2%;
+  height: 50px;
   z-index: 10;
   display: flex;
   position: relative;
@@ -330,7 +333,6 @@ body::-webkit-scrollbar-thumb {
   background: rgb(18, 18, 18);
   border-bottom: 1px solid #687c69;
   border-radius: 0 0 10px 10px;
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -425,7 +427,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .tweetsBox {
-  margin-top: 4%;
+  margin-top: 2%;
   padding: 3%;
   background-color: rgb(45, 45, 45);
   border-radius: 12px;
@@ -613,7 +615,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .walletModalSmall {
-  width: 70% !important;
+  width: 86% !important;
 }
 
 .walletModalBig {
@@ -675,7 +677,7 @@ body::-webkit-scrollbar-thumb {
 
   .walletButton {
     cursor: pointer;
-    width: 25vw;
+    width: 80%;
     background-color: black;
     border: none;
     padding: 10px 0;
@@ -753,6 +755,22 @@ span {
   }
 }
 
+.bodyLeftImg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 50%;
+  display: block;
+}
+.bodyRightImg {
+  width: 50%;
+  display: block;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+}
 .textAlign {
   text-align: center;
 }
@@ -884,9 +902,7 @@ span {
 }
 
 .bigCen {
-  max-width: 1800px;
-  margin: 0 auto;
-
+  padding: 0 8%;
   & > div {
     width: 100%;
   }

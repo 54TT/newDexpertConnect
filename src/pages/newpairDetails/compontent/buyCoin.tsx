@@ -17,8 +17,7 @@ function BuyCoin({changStatus}: any) {
             setTwo(e.target.value)
         }
     }
-    const result =
-        throttle(    function (){
+    const result =   throttle(    function (){
             if (value && one && two) {
                 changStatus(true)
             }

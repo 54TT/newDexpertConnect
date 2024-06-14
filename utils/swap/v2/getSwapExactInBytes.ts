@@ -17,7 +17,9 @@ export const getSwapExactInBytes = async (
   amountOutMin: Decimal,
   recipient: string,
   isFee: boolean,
-  feeType: number
+  feeType: number,
+  permit: any,
+  signature: any
 ) => {
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
@@ -73,7 +75,9 @@ export const getSwapExactInBytes = async (
       amountOutBigNumber,
       recipient,
       isFee,
-      feeType
+      feeType,
+      permit,
+      signature
     );
   } else {
     await erc20ToErc20(
@@ -86,7 +90,9 @@ export const getSwapExactInBytes = async (
       amountOutBigNumber,
       recipient,
       isFee,
-      feeType
+      feeType,
+      permit,
+      signature
     );
   }
   return planner;

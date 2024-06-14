@@ -5,9 +5,7 @@ import cookie from 'js-cookie';
 import Request from './axios.tsx';
 import { throttle } from 'lodash';
 import { MessageAll } from './message.ts';
-import { DoubleLeftOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { QRCode } from 'antd';
 function HeaderModal() {
   const {
     browser,
@@ -18,17 +16,12 @@ function HeaderModal() {
     setIsModalSet,
     connect,
     setLoad,
-    setQRCodeLink,
     handleLogin,
     user,
-    QRCodeLink,
-    tgCodeLink,
-    setTGCodeLink,
     setUserPar,
     tonConnect,
   }: any = useContext(CountContext);
   const [list, setList] = useState<any>([]);
-  const [select, setSelect] = useState('one');
   function onAnnouncement(event?: any) {
     list.push(event?.detail);
     setList([...list]);
@@ -41,15 +34,10 @@ function HeaderModal() {
   }, []);
   const { t } = useTranslation();
   const { getAll } = Request();
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
   const handleCancel = () => {
     setIsModalOpen(false);
     setIsModalSet(false);
     setLoad(false);
-    setQRCodeLink('');
-    setTGCodeLink('');
   };
   const [value, setValue] = useState('');
   const changeName = (e: any) => {
@@ -138,56 +126,55 @@ function HeaderModal() {
       binding: 'ETH',
     },
   ];
-  const allConnect = async (i: any) => {
-    if (i.key === 'WalletConnect') {
-      onConnect();
-      setLoad(true);
-      setIsModalOpen(false);
-    } else if (i.key === 'Ton') {
-      tonConnect();
-      setLoad(true);
-    } else {
-      //  判断浏览器是否安装了  evm链钱包
-      const data = list.filter(
-        (item: any) =>
-          item?.info?.name === i?.key || item?.info?.rdns === i?.value
-      );
-      if (data.length > 0) {
-        //   判断是否是   phantom钱包  solana连接
-        connectWallet(data[0]);
+  const allConnect = throttle(async function (i: any) {
+      if (i.key === 'WalletConnect') {
+        onConnect();
         setLoad(true);
         setIsModalOpen(false);
+      } else if (i.key === 'Ton') {
+        tonConnect();
       } else {
-        if (i?.key === 'Phantom' || i.value === 'app.phantom') {
-          window.open(
-            'https://chromewebstore.google.com/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa?utm_source=ext_app_menu'
-          );
-        } else if (
-          i?.key === 'Coinbase Wallet' ||
-          i.value === 'com.coinbase.wallet'
-        ) {
-          window.open(
-            'https://chromewebstore.google.com/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad?utm_source=ext_app_menu'
-          );
-        } else if (
-          i?.key === 'Trust Wallet' ||
-          i.value === 'com.trustwallet.app'
-        ) {
-          window.open(
-            'https://chromewebstore.google.com/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph?utm_source=ext_app_menu'
-          );
-        } else if (i?.key === 'OKX Wallet' || i.value === 'com.okex.wallet') {
-          window.open(
-            'https://chromewebstore.google.com/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/mcohilncbfahbmgdjkbpemcciiolgcge?hl=en-US&utm_source=ext_sidebar'
-          );
-        } else if (i?.key === 'MetaMask' || i.value === 'io.metamask') {
-          window.open(
-            'https://chromewebstore.google.com/detail/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en-US&utm_source=ext_sidebar'
-          );
+        //  判断浏览器是否安装了  evm链钱包
+        const data = list.filter(
+          (item: any) =>
+            item?.info?.name === i?.key || item?.info?.rdns === i?.value
+        );
+        if (data.length > 0) {
+          //   判断是否是   phantom钱包  solana连接
+          connectWallet(data[0]);
+          setLoad(true);
+          setIsModalOpen(false);
+        } else {
+          if (i?.key === 'Phantom' || i.value === 'app.phantom') {
+            window.open(
+              'https://chromewebstore.google.com/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa?utm_source=ext_app_menu'
+            );
+          } else if (
+            i?.key === 'Coinbase Wallet' ||
+            i.value === 'com.coinbase.wallet'
+          ) {
+            window.open(
+              'https://chromewebstore.google.com/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad?utm_source=ext_app_menu'
+            );
+          } else if (
+            i?.key === 'Trust Wallet' ||
+            i.value === 'com.trustwallet.app'
+          ) {
+            window.open(
+              'https://chromewebstore.google.com/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph?utm_source=ext_app_menu'
+            );
+          } else if (i?.key === 'OKX Wallet' || i.value === 'com.okex.wallet') {
+            window.open(
+              'https://chromewebstore.google.com/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/mcohilncbfahbmgdjkbpemcciiolgcge?hl=en-US&utm_source=ext_sidebar'
+            );
+          } else if (i?.key === 'MetaMask' || i.value === 'io.metamask') {
+            window.open(
+              'https://chromewebstore.google.com/detail/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en-US&utm_source=ext_sidebar'
+            );
+          }
         }
       }
-    }
-  };
+    }, 1500,{ trailing: false })
   return (
     <Modal
       destroyOnClose={true}
@@ -197,40 +184,10 @@ function HeaderModal() {
       className={`walletModal ${browser ? 'walletModalBig' : 'walletModalSmall'}`}
       maskClosable={false}
       open={isModalOpen}
-      onOk={handleOk}
+      onOk={handleCancel}
       onCancel={handleCancel}
     >
-      {/* 判断是否 为二维码 */}
-      {QRCodeLink && tgCodeLink ? (
-        <>
-          <DoubleLeftOutlined
-            style={{
-              fontSize: '20px',
-              cursor: 'pointer',
-              color: 'white',
-              marginBottom: '10px',
-            }}
-            onClick={() => {
-              setQRCodeLink('');
-              setTGCodeLink('');
-            }}
-          />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '10px 0',
-            }}
-          >
-            <QRCode
-              value={select === 'one' ? tgCodeLink : QRCodeLink}
-              icon={select === 'one' ? '/tgLink.png' : '/tonconnect.png'}
-              color="white"
-              size={200}
-            />
-          </div>
-        </>
-      ) : isModalSet ? (
+      {isModalSet ? (
         <div className={'headerModalSetName'}>
           <p>{t('Common.new')}</p>
           <p>{t('Common.set')}</p>
@@ -266,26 +223,6 @@ function HeaderModal() {
               )
             );
           })}
-        </div>
-      )}
-      {QRCodeLink && tgCodeLink && (
-        <div className="selectQRlink">
-          <div
-            onClick={() => {
-              setSelect('one');
-            }}
-          >
-            <img src="/tgLink.png" alt="" />
-            <p>Wallet On Telegram</p>
-          </div>
-          <div
-            onClick={() => {
-              setSelect('two');
-            }}
-          >
-            <img src="/tonconnect.png" alt="" />
-            <p>TonKeeper</p>
-          </div>
         </div>
       )}
     </Modal>

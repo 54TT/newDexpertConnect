@@ -25,7 +25,7 @@ function Center({id}: any) {
             {/*    })*/}
             {/*}*/}
             {/*</div>*/}
-            <div style={{height: '90vh', overflowY: 'auto'}} className={'scrollStyle'}>
+            <div style={{height: '92vh', overflowY: 'auto'}} className={'scrollStyle'}>
                 <iframe
                     src={`https://dexscreener.com/ethereum/${id}?embed=1&theme=dark&info=0`}
                     style={{width: '100%', height: '100%', overflowY: 'auto'}}></iframe>

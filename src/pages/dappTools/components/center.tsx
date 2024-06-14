@@ -2,6 +2,7 @@
 import { useContext } from 'react';
 import { CountContext } from '../../../Layout.tsx';
 import { useLocation, useParams } from 'react-router-dom';
+import { throttle } from 'lodash';
 import { useTranslation } from 'react-i18next';
 const LINK_CREATE = [
   'https://drive.google.com/file/d/1ED7qadkVJMKJazvnqlgVARGR4-RYMCbc/view?usp=sharing',
@@ -50,17 +51,17 @@ function Center() {
         ].map((i: string, ind: number) => {
           return (
             <div
-              onClick={() => {
-                if (params?.id === 'sniper') {
-                  const { origin } = window.location;
-                  window.open(`${origin}/sniper`);
-                }
-                if (params?.id === 'create') {
-                  LINK_CREATE[ind] ? window.open(LINK_CREATE[ind]) : null;
-                } else {
-                  LINK_sniper[ind] ? window.open(LINK_sniper[ind]) : null;
-                }
-              }}
+              onClick={throttle(
+                async function () {
+                  if (params?.id === 'create') {
+                    LINK_CREATE[ind] ? window.open(LINK_CREATE[ind]) : null;
+                  } else {
+                    LINK_sniper[ind] ? window.open(LINK_sniper[ind]) : null;
+                  }
+                },
+                1500,
+                { trailing: false }
+              )}
               style={{
                 width: browser ? '28%' : '32%',
                 color: ind === 2 ? 'gray' : 'rgb(220, 220, 220)',
@@ -74,7 +75,7 @@ function Center() {
               {i}
               {ind === 2 && (
                 <span>
-                  <img src="/lock.png" alt=""  style={{width:'18px'}}/>
+                  <img src="/lock.png" alt="" style={{ width: '18px' }} />
                 </span>
               )}
             </div>

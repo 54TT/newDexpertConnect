@@ -17,7 +17,7 @@ function Loading({ status,browser }: any) {
     }
     return (
         <div className={'disCen'} style={{
-            marginTop: status === 'none' ? '0' : status === '20' ? '10%' : '50%',
+            marginTop: status === 'none' ? '0' : status === '20' ? '10%' : '40%',
             width: changeWidth()
         }}>
             <div className="animationDex">

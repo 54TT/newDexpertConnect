@@ -133,7 +133,7 @@ function Tweets({
         history(`/community/user?uid=${localData.user.uid}`)
     }, 1500, {'trailing': false})
 
-    const confirm = async (e: any) => {
+    const confirm = throttle(async function (e: any) {
         e.stopPropagation()
         const token = cookie.get('token')
         if (token) {
@@ -147,7 +147,8 @@ function Tweets({
                 setDel(localData?.postId)
             }
         }
-    }
+    }, 1500,{ trailing: false })
+
     return (
         <>
             <div className={classNames('tweetsBox', {'tweets-comment': type === 'comment'})} onClick={handleToDetail}>
