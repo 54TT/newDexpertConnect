@@ -103,7 +103,6 @@ function SwapComp() {
   };
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
-    setLoading;
     let start = Date.now();
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
