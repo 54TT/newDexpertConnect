@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
 import { RoutePlanner } from '../../planner';
 import { erc20ToETH, erc20ToErc20, ethToErc20 } from './swapExactOut';

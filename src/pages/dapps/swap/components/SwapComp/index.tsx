@@ -31,7 +31,7 @@ interface TokenInfoType {
 }
 const mockChainId = '11155111';
 function SwapComp() {
-  const { provider, contractConfig, changeConfig } = useContext(CountContext);
+  const { provider, contractConfig } = useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<TokenInfoType>();
