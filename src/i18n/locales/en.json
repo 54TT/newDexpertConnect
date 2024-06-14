@@ -77,6 +77,10 @@
     "fail": "fail"
   },
   "Market": {
+    "Submit":"Submit",
+    "cancel":"Cancel",
+    "here":"Nothing here",
+    "signature":"signature",
     "Favorites": "Favorites List",
     "Trading": "Popular Trading",
     "New": "New Pairs",

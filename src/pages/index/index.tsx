@@ -10,7 +10,7 @@ function Index() {
       style={{
         display: 'flex',
         justifyContent: 'space-between',
-        padding: '20px 1% 0 1%',
+        padding: '5px 1% 0 1%',
         flexDirection: browser ? 'row' : 'column',
       }}
     >
