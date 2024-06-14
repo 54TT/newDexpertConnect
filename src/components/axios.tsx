@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import cookie from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { MessageAll } from './message.ts';
@@ -68,7 +68,6 @@ const Request = () => {
         "x-app": "dexpert",
         "x-chainName": chainId ? ChainID_TO_ChainName[chainId as ChainId] : ChainID_TO_ChainName[chain as ChainId] || "eth",
       },
-      ...config,
     });
     if (abc?.status === 200) {
       return abc;

@@ -1,24 +1,23 @@
 @import url(../../style/all.less);
 
 .community-page {
-  height: 100vh;
   display: flex;
-  width: 100%;
+  width: 85%;
+  margin: 20px auto 0;
   max-width: 1800px;
   font-family: PingFang SC;
-  font-size: 16px;
   font-weight: 400;
-  line-height: 22.4px;
-  background-color: #060e0b;
-
   &-left {
-    height: 100%;
-    width: 18%;
-    background-color: #060e0b;
+    box-sizing: border-box;
+    padding: 0 2.5%;
+    padding-top: 15px;
+    border-radius: 10px 0 0 10px;
+    background-color: rgb(45, 45, 45);
   }
 
   &-content {
-    height: 100%;
+    background-color: rgb(45, 45, 45);
+    border-radius: 0 10px 0 0;
     overflow: hidden;
     border-left: 0.2px solid #687c69;
     border-right: 0.2px solid #687c69;
@@ -30,12 +29,12 @@
   }
 
   &-right {
-    width: 20%;
-    height: calc(100vh - 79px);
+    margin-left: 10px;
+    border-radius: 10px 10px 0 0;
+    width: 22%;
     overflow-y: auto;
     .ant-card {
       color: #d6dfd7;
-
       .ant-card-head-title {
         color: #d6dfd7 !important;
         font-size: 17px !important;
