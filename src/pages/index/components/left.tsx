@@ -49,7 +49,7 @@ function Left() {
       {/* top*/}
       <div ref={hei} className={`indexTop dis`}>
         <div className="disDis">
-          <ChooseChain />
+          <ChooseChain onChange={(v) => switchChain(v)} />
           <Select
             onChange={handleChange}
             value={select}

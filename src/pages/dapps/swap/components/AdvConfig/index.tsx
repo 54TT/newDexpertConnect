@@ -51,7 +51,6 @@ function AdvConfig({ onClose, initData }: AdvConfigProps) {
       <img
         style={{
           float: 'right',
-          margin: '0 10px 12px 0',
           padding: '4px',
           width: '20px',
           cursor: 'pointer',
