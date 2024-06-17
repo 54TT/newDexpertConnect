@@ -69,16 +69,16 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
-  const changeConfig = () => {
-    const chainId = localStorage.getItem('chainId');
+  const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '11155111'];
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
+    //@ts-ignore
     setProvider(rpcProvider);
   };
 
   useEffect(() => {
-    changeConfig();
+    changeConfig('1');
   }, []);
 
   const { open: openTonConnect } = useTonConnectModal();
@@ -161,6 +161,7 @@ function Layout() {
       }
     }
   }, [newAccount]);
+
   const createClient = async () => {
     try {
       const _client: any = await Client.init({
@@ -184,6 +185,9 @@ function Layout() {
     cookie.remove('jwt');
     if (tonConnectUI?.connected) {
       tonConnectUI.disconnect();
+    }
+    if (window?.ethereum?.isConnected?.()) {
+      await window?.ethereum.disconnect();
     }
     setTonWallet(null);
     setUserPar(null);
@@ -563,7 +567,10 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <div className={big ? 'bigCen' : ''} style={{ marginTop: '70px' ,overflow:'hidden'}}>
+          <div
+            className={big ? 'bigCen' : ''}
+            style={{ marginTop: '45px', overflow: 'hidden' }}
+          >
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/re-register" element={<Index />} />

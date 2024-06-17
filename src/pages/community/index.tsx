@@ -22,6 +22,7 @@ function Community() {
   const { t } = useTranslation();
   // 左侧选中的Tab
   const [activeUserTab, setActiveUserTab] = useState<string>('lastest');
+  //@ts-ignore
   const { browser, user } = useContext(CountContext || {}) as any;
   const history = useNavigate();
   const onActiveUserTabChange = (tab: string) => {
@@ -47,11 +48,11 @@ function Community() {
     user: <Profile />,
   };
   return (
-    <div className="community-page">
+    <div className="community-page" style={{width:browser?'85%':'96%'}}>
       {
         <div
           className="community-page-left"
-          style={{ width: !browser ? '0px' : '22%' }}
+          style={{ display: browser ? 'block' : 'none', }}
         >
           <UserInfo
             activeTab={activeUserTab}
@@ -60,8 +61,8 @@ function Community() {
         </div>
       }
       <div
-        className="community-page-content"
-        style={{ width: browser ? '56%' : '100%' }}
+        className="community-page-content" 
+        style={{ width: browser ? '56%' : '100%' ,borderRadius:browser?" 0 10px 0 0":'15px'}}
       >
         {ComponentMap[activeUserTab as ActiveTabType]}
       </div>

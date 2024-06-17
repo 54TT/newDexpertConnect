@@ -31,7 +31,7 @@ function Left() {
     if (hei && hei.current) {
       const h = hei.current.scrollHeight;
       const w = window.innerHeight;
-      const o: any = w - h - 120 + 25;
+      const o: any = w - h - 120 + 35;
       setTableHei(o);
     }
   }, []);
@@ -49,14 +49,15 @@ function Left() {
       {/* top*/}
       <div ref={hei} className={`indexTop dis`}>
         <div className="disDis">
-          <ChooseChain />
+          <ChooseChain onChange={(v) => switchChain(v)} />
           <Select
             onChange={handleChange}
             value={select}
+            suffixIcon={ <img src="/down.svg" alt="" width={'14px'} style={{marginTop:'3px'}}/>}
             className={'indexSelect'}
             popupClassName={'indexSelectPopup'}
             style={{
-              width: '130px',
+              width: '120px',
               border: '2px solid #3c453c',
               borderRadius: '7px',
               marginLeft: '7px',

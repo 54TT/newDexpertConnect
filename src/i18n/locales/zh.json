@@ -74,6 +74,10 @@
     "copy": "复制成功"
   },
   "Market": {
+    "Submit":"提交",
+    "cancel":"取消",
+    "here":"这里什么都没有！",
+    "signature":"签名",
     "Favorites": "收藏列表",
     "Trading": "热门交易",
     "New": "新交易对",

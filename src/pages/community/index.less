@@ -2,14 +2,14 @@
 
 .community-page {
   display: flex;
-  width: 85%;
   margin: 20px auto 0;
   max-width: 1800px;
   font-family: PingFang SC;
   font-weight: 400;
   &-left {
+    width: 18%;
     box-sizing: border-box;
-    padding: 0 2.5%;
+    padding: 0 1%;
     padding-top: 15px;
     border-radius: 10px 0 0 10px;
     background-color: rgb(45, 45, 45);
@@ -17,10 +17,8 @@
 
   &-content {
     background-color: rgb(45, 45, 45);
-    border-radius: 0 10px 0 0;
     overflow: hidden;
     border-left: 0.2px solid #687c69;
-    border-right: 0.2px solid #687c69;
     .tweetsBox {
       .post-item-img {
         margin: 0;
@@ -129,37 +127,60 @@
 .username-page {
   .back {
     display: flex;
-    padding: 2% 0 2% 3%;
+    padding: 10px 20px;
     align-items: center;
-
-    & > div {
-      & > p:first-child {
+    justify-content: space-between;
+    .left {
+      display: flex;
+      align-items: center;
+      .icon {
+        display: flex;
+        align-items: center;
         color: white;
         font-size: 18px;
-        margin-bottom: 4px;
-
         span {
           margin-right: 5px;
         }
       }
-
-      p:last-child {
-        color: rgb(135, 145, 136);
+      .logo {
+        color: rgb(214, 223, 215);
+        font-size: 20px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+    }
+    .img {
+      display: flex;
+      align-items: center;
+      img {
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+        cursor: pointer;
+        display: block;
+      }
+      .fir {
+        width: 16px;
+        height: 16px;
       }
     }
   }
 
   .hello {
-    margin: 0 8%;
+    margin: 5px 25px 15px 25px;
+    display: flex;
+    span {
+      margin-left: 3px;
+    }
+    align-items: center;
     color: rgb(213, 224, 215);
   }
 
   .tokenTop {
     display: flex;
     align-items: center;
-    padding: 2% 8%;
-    border-bottom: 1px solid rgb(104, 124, 105);
-
+    padding: 15px 25px;
+    border-top: 1px solid rgb(84, 84, 84);
     p {
       font-size: 18px;
       cursor: pointer;
@@ -171,7 +192,7 @@
   }
 
   .information {
-    margin: 24px 8%;
+    margin: 15px 25px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -213,8 +234,7 @@
     }
 
     & > .informationRight {
-      width: 60%;
-
+      width: 100%;
       & > div:first-child {
         margin-bottom: 10px;
       }
@@ -224,16 +244,16 @@
         align-items: center;
 
         & > div {
-          flex: 1;
           cursor: pointer;
         }
 
         div:first-child {
           display: flex;
           align-items: center;
-
           img {
-            width: 32px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
           }
 
           img:first-child {
@@ -258,8 +278,9 @@
           color: rgb(220, 220, 220);
           font-size: 13px;
           display: flex;
+          width: 27%;
           align-items: flex-start;
-
+          justify-content: flex-end;
           span {
             margin-right: 4px;
             color: white;
@@ -276,32 +297,47 @@
 }
 
 .profile-background {
-  position: relative;
-
-  > img {
+  .backGroundNow {
+    position: relative;
+    .profile-background-avatar-cover {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+  > img,
+  .profile-background-img {
     width: 100%;
-    aspect-ratio: 3 / 0.6;
+    aspect-ratio: 1 / 0.3;
     object-fit: cover;
   }
 
   &-info {
     display: flex;
+    padding: 0 20px 0 25px;
+    margin-top: -6%;
     justify-content: space-between;
     align-items: center;
-    position: absolute;
-    left: 8%;
-    right: 8%;
-    bottom: -64px;
   }
 
   &-avatar {
-    position: relative;
-    top: -40px;
-
-    img {
-      width: 121px;
-      height: 121px;
-      border-radius: 100%;
+    display: flex;
+    align-items: center;
+    .user {
+      display: flex;
+      margin-left: 10px;
+      font-size: 20px;
+      align-items: center;
+      color: #d6dfd7;
+      img {
+        width: 15px;
+      }
+    }
+    & > img {
+      width: 22%;
+      height: 22%;
+      border-radius: 50%;
     }
   }
 
@@ -313,12 +349,11 @@
 
 .follow-icon,
 .unfollow-icon {
-  align-items: center;
-  display: inline-block;
-  padding: 8px 12px;
-  background-color: rgb(24, 30, 28);
+  padding: 5px 22px;
+  font-size: 14px;
+  border: 1px solid rgb(134, 240, 151);
   border-radius: 8px;
-  color: #fff;
+  color: rgb(134, 240, 151);
   cursor: pointer;
 }
 
@@ -327,18 +362,30 @@
     padding: 12px 0;
 
     > button {
-      background: #879188;
-      border-radius: 100%;
-
-      &:hover {
-        background: #879188;
+      display: none;
+    }
+    .butClick {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 0 6%;
+      button {
+        width: 48%;
+        font-size: 18px;
+        height: 36px;
+        line-height: 1;
       }
-
-      span {
-        color: #000000;
+      button:last-child {
+        background-color: rgb(134, 240, 151);
+        border: none;
+      }
+      button:first-child {
+        color: rgb(134, 240, 151);
+        background: transparent;
+        border: 1px solid rgb(134, 240, 151);
       }
     }
-
     .user-info-form {
       margin-top: 24px;
     }
@@ -363,7 +410,6 @@
 
     .profile-background-info {
       bottom: -64px;
-
       .profile-background-avatar {
         &-img {
           background-color: #000000;
@@ -398,15 +444,18 @@
           }
 
           padding: 6px 10px;
-          border: 0.4px solid #687c69;
+          border: none;
           border-radius: 12px;
-          background: #000000;
+          background: rgb(38, 38, 38);
 
           input {
-            background: #000000;
+            background: rgb(38, 38, 38);
             border: none;
+            outline: none;
             color: #fff;
+            text-indent: 10px;
             padding: 0 !important;
+            box-shadow: none;
 
             &::placeholder {
               color: gray;
@@ -415,20 +464,14 @@
         }
       }
     }
-
-    .modify-form-submit {
-      background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
-      border: none;
-
-      &:hover {
-        background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
-      }
-    }
   }
 }
 
 .follow-list {
   padding: 10px 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  margin: 10px;
   cursor: pointer;
 }
 
@@ -476,46 +519,6 @@
           }
         }
       }
-    }
-  }
-
-  .profile-background {
-    > img {
-      width: 100%;
-      aspect-ratio: 3 / 1;
-    }
-
-    &-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: absolute;
-      left: 8%;
-      right: 8%;
-      bottom: -64px;
-    }
-
-    &-avatar {
-      position: relative;
-      top: -50px;
-
-      img {
-        width: 42px;
-        height: 42px;
-        border-radius: 100%;
-      }
-
-      &-cover {
-        width: auto !important;
-        padding: 0 2px !important;
-      }
-    }
-
-    &-button {
-      display: flex;
-      align-items: center;
-      position: relative;
-      top: -45px;
     }
   }
 }

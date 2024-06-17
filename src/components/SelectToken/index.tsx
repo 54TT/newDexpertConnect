@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from 'antd';
 import './index.less';
 import { formatAddress } from '@utils/utils';
+import {} from '../SelectTokenModal';
+import Request from '../axios';
+import Cookies from 'js-cookie';
 interface TokenItemData {
   symbol: string;
   name: string;
@@ -48,9 +51,29 @@ const mockTokenList: TokenItemData[] = [
   },
 ];
 function SelectToken({ onChange }: SelectTokenType) {
-  const [tokenList, setTokenList] = useState<TokenItemData[]>(mockTokenList);
-  const [searchList, setSearchList] = useState<TokenItemData[]>();
-  const [historyList, setHistoryList] = useState<TokenItemData[]>();
+  const [tokenList] = useState<TokenItemData[]>(mockTokenList);
+  /*   const [searchList, setSearchList] = useState<TokenItemData[]>();
+  const [historyList, setHistoryList] = useState<TokenItemData[]>(); */
+  const [page, setPage] = useState('1');
+  const { getAll } = Request();
+  const token = Cookies.get('token');
+  const chainId = localStorage.getItem('');
+  const getHotTradingToken = () => {
+    getAll({
+      method: 'post',
+      url: '/api/v1/dapp/hotTradingToken',
+      data: {
+        page,
+        pageSize: '10',
+      },
+      token,
+      chainId,
+    });
+  };
+
+  useEffect(() => {
+    getHotTradingToken();
+  }, [page]);
 
   return (
     <div className="select-token">

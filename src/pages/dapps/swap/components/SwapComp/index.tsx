@@ -12,16 +12,20 @@ import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
 } from '@utils/contracts';
-import { debounce } from 'lodash';
+import { chain, debounce } from 'lodash';
 import './index.less';
 import SelectTokenModal from '@/components/SelectTokenModal';
 import Decimal from 'decimal.js';
-import AdvConfig from '../AdvConfig';
+import AdvConfig, { AdvConfigType } from '../AdvConfig';
 import { CountContext } from '@/Layout';
 import { PermitSingle, getPermitSignature } from '@utils/permit2';
 import { BigNumber, ethers } from 'ethers';
 import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
+import useGetGasPrice from '@/hook/useGetGasPrice';
+import ChooseChain from '@/components/chooseChain';
+import { CHAIN_NAME_TO_CHAIN_ID } from '@utils/constants';
+import useButtonDesc from '@/hook/useButtonDesc';
 
 interface TokenInfoType {
   address: string;
@@ -29,9 +33,8 @@ interface TokenInfoType {
   symbol: string;
   name: string;
 }
-const mockChainId = '11155111';
 function SwapComp() {
-  const { provider, contractConfig } = useContext(CountContext);
+  const { provider, contractConfig, changeConfig } = useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<TokenInfoType>();
@@ -39,15 +42,57 @@ function SwapComp() {
   const [openSelect, setOpenSelect] = useState(false);
   const currentSetToken = useRef<'in' | 'out'>('in');
   const currentInputToken = useRef<'in' | 'out'>('in');
+  const [chainId, setChainId] = useState('1');
+  const [gasPrice, easyIn] = useGetGasPrice();
+  const [buttonDisable, setButtonDisable] = useState(false);
+  const [buttonDescId, setButtonDescId] = useState('1');
+  const [buttonDesc] = useButtonDesc(buttonDescId);
 
   useEffect(() => {
+    changeConfig(chainId);
+  }, [chainId]);
+
+  const initAdvConfig: AdvConfigType = {
+    slipType: '0',
+    slip: 0.02,
+    tradeDeadline: {
+      uint: 'm',
+      value: 30,
+    },
+  };
+  const [advConfig, setAdvConfig] = useState(initAdvConfig);
+  // 检测是否连接EVM钱包 或 是否有钱包环境
+  const isConnectEVMWallet = () => {
+    const chainId = localStorage.getItem('chainId');
+    const isConnect = !!window?.ethereum?.isConnected?.();
+
+    // 没登陆信息并且没有 连接EVM钱包
+    if (!chainId && !isConnect) {
+      setButtonDisable(true);
+      setButtonDescId('2');
+      return;
+    }
+    // 连接了 ton ｜ solana
+    if (chainId !== '1') {
+      setButtonDisable(true);
+      setButtonDescId('3');
+      return;
+    }
+
+    if (isConnect) {
+      setButtonDisable(false);
+      setButtonDescId('');
+    }
+  };
+  useEffect(() => {
     getWeth();
+    isConnectEVMWallet();
   }, []);
 
   const getWeth = async () => {
     console.log('-----------------');
     const param = [
-      '11155111',
+      chainId,
       provider,
       await getUniversalRouterContract(
         provider,
@@ -66,7 +111,7 @@ function SwapComp() {
     console.log(res.poolAddress);
 
     const a = await getSwapExactInBytesV3(
-      '11155111',
+      chainId,
       provider,
       '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
       '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
@@ -87,22 +132,22 @@ function SwapComp() {
     setTokenOut(newTokenOut);
     setAmountIn(amountOut);
     setAmountOut(0);
+    getAmount('in', amountOut || 0);
   };
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
     let start = Date.now();
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
-    console.log(tokenIn, tokenOut);
-
+    const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
     const param = [
-      '11155111',
+      chainId,
       provider,
       await getUniversalRouterContract(provider, universalRouterAddress),
       await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
       tokenIn.address,
       tokenOut.address,
       new Decimal(value),
-      new Decimal(0.02),
+      new Decimal(slip),
       0,
     ];
     if (type === 'in') {
@@ -169,7 +214,7 @@ function SwapComp() {
 
     const { eip712Domain, PERMIT2_PERMIT_TYPE, permit } =
       await getPermitSignature(
-        11155111,
+        Number(chainId),
         permitSingle,
         permit2Contract,
         signerAddress
@@ -198,7 +243,7 @@ function SwapComp() {
     } = data;
 
     const getBytesParam = [
-      mockChainId,
+      chainId,
       provider,
       tokenIn,
       tokenOut,
@@ -217,7 +262,7 @@ function SwapComp() {
         (tokenOut === ethAddress || tokenOut === wethAddress)
       ) {
         return await getSwapEthAndWeth.apply(null, [
-          mockChainId,
+          chainId,
           provider,
           tokenIn,
           tokenOut,
@@ -263,6 +308,10 @@ function SwapComp() {
     const universalRouterWriteContract =
       await universalRouterContract.connect(signer);
 
+    /*     const gasLimit = await universalRouterWriteContract.estimateGas[
+      'execute(bytes,bytes[],uint256)'
+    ](commands, inputs, BigInt(2000000000)); */
+
     const tx = await universalRouterWriteContract[
       'execute(bytes,bytes[],uint256)'
     ](commands, inputs, BigInt(2000000000), {
@@ -271,7 +320,6 @@ function SwapComp() {
     });
     console.log('swap-tx', tx);
   };
-
   // 触发交易流程
   const handleSwap = async (data: {
     amountIn: any;
@@ -279,11 +327,10 @@ function SwapComp() {
     tokenIn: any;
     tokenOut: any;
   }) => {
-    const chainId = localStorage.getItem('chainId');
     const { zeroAddress, universalRouterAddress, permit2Address } =
       contractConfig;
     const { tokenIn, amountIn } = data;
-
+    //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await web3Provider.getSigner();
     const signerAddress = await signer.getAddress();
@@ -377,8 +424,12 @@ function SwapComp() {
 
   return (
     <div className="swap-comp">
-      <div>
-        <AdvConfig onClose={() => console.log('123123')} />
+      <div className="swap-comp-config">
+        <ChooseChain onChange={(v) => setChainId(CHAIN_NAME_TO_CHAIN_ID[v])} />
+        <AdvConfig
+          initData={initAdvConfig}
+          onClose={(data) => setAdvConfig(data)}
+        />
       </div>
       <div className="input-token send-token">
         <div className="dapp-sniper-right-token">
@@ -453,7 +504,11 @@ function SwapComp() {
         </div>
         <div className="exchange-fee">
           <span>Estinated Fees</span>
-          <span>-</span>
+          <span className={easyIn && 'text-easy-in'}>
+            {`${
+              gasPrice?.div(ethers.BigNumber.from(10 ** 9))?.toString?.() || '-'
+            } Gwei`}
+          </span>
         </div>
         <div className="exchange-path">
           <span>Quote Path</span>
@@ -471,7 +526,7 @@ function SwapComp() {
           })
         }
       >
-        Swap
+        {buttonDesc}
       </Button>
       <SelectTokenModal
         open={openSelect}
