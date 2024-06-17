@@ -69,6 +69,7 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
+  const [loginChain, setLoginChain] = useState(1);
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '11155111'];
     setContractConfig(newConfig);
@@ -282,6 +283,7 @@ function Layout() {
           });
           if (bind?.status === 200) {
             getUserNow();
+            setLoginChain(chain === 'ton' ? '-2' : '1');
             MessageAll('success', t('person.bind'));
           }
         }

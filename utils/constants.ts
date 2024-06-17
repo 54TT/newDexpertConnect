@@ -137,6 +137,8 @@ export const DEFAULT_KADENA_METHODS = {
   KADENA_QUICKSIGN: 'kadena_quicksign_v1',
 };
 
+export const zeroAddress = '0x0000000000000000000000000000000000000000';
+
 export const DEFAULT_KADENA_EVENTS = {};
 
 export const CHAIN_NAME_TO_CHAIN_ID = {

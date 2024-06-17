@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 import { RoutePlanner, CommandType } from '../../planner';
 import { config } from '../../../src/config/config';
 import { getPairAddress } from './getPairAddress';
-import { zeroAddress } from 'viem';
+import { zeroAddress } from '@utils/constants';
 
 export const erc20ToErc20 = async (
   chainId: string,
