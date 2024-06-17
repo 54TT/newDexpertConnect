@@ -13,7 +13,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-
+    // 关闭严格模式
     /* Linting */
     "strict": false,
     "noUnusedLocals": true,

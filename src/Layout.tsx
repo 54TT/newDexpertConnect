@@ -69,7 +69,6 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
-  const [loginChain, setLoginChain] = useState(1);
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '11155111'];
     setContractConfig(newConfig);
@@ -212,6 +211,7 @@ function Layout() {
     cookie.remove('currentAddress');
     changeBindind.current = '';
     cookie.remove('jwt');
+    localStorage.clear();
     if (tonConnectUI?.connected) {
       tonConnectUI.disconnect();
     }
@@ -281,9 +281,9 @@ function Layout() {
             token: token,
             chainId: chain === 'ton' ? '-2' : '1',
           });
+
           if (bind?.status === 200) {
             getUserNow();
-            setLoginChain(chain === 'ton' ? '-2' : '1');
             MessageAll('success', t('person.bind'));
           }
         }
@@ -310,6 +310,7 @@ function Layout() {
           if (decodedToken && decodedToken?.uid) {
             const uid = decodedToken.sub.split('-')[1];
             getUser(uid, res.data?.accessToken, name, decodedToken);
+            localStorage.setItem('login-chain', chain === 'ton' ? '-2' : '1');
           }
         } else {
           setTonWallet(null);
