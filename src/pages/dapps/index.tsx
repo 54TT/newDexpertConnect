@@ -73,7 +73,6 @@ export default function index() {
           })}
         </div>
       </div>
-      {/* butbotLogo.svg */}
       {params?.id === 'swap' && <Swap />}
       {params?.id === 'sniping' && <p style={{ color: 'white' }}>2</p>}
       {params?.id === 'buyBot' && <BuyBot />}

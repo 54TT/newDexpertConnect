@@ -569,7 +569,7 @@ function Layout() {
           <Header />
           <div
             className={big ? 'bigCen' : ''}
-            style={{ marginTop: '70px', overflow: 'hidden' }}
+            style={{ marginTop: '45px', overflow: 'hidden' }}
           >
             <Routes>
               <Route path="/" element={<Index />} />

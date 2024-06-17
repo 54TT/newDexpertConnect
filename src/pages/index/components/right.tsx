@@ -60,7 +60,6 @@ function Right() {
                   )}
                   style={{
                     width: '100%',
-                    maxHeight: browser ? '200px' : '32vh',
                     borderRadius: '20px',
                     cursor: 'pointer',
                     display: 'block',

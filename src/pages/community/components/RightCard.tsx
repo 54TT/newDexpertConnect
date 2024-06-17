@@ -12,7 +12,6 @@ import { CountContext } from '../../../Layout.tsx';
 function RightCard({ data, par, load }: any) {
   const { tableDta, wait } = newPair() as any;
   const { browser }: any = useContext(CountContext);
-
   const { title, value: titleValue } = data;
   const router = useLocation();
   const { t } = useTranslation();

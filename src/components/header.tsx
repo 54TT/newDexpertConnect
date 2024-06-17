@@ -25,6 +25,7 @@ function Header() {
   const [open, setOpen] = useState(false);
   const showDrawer = throttle(
     function () {
+      
       setOpen(true);
     },
     1500,
@@ -351,7 +352,6 @@ function Header() {
                     src={user?.avatarUrl ? user?.avatarUrl : '/topLogo.png'}
                     style={{
                       width: '25px',
-                      margin: '0 15px',
                       display: 'block',
                       cursor: 'pointer',
                       borderRadius: '100%',
