@@ -12,7 +12,7 @@ import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
 } from '@utils/contracts';
-import { chain, debounce } from 'lodash';
+import { debounce } from 'lodash';
 import './index.less';
 import SelectTokenModal from '@/components/SelectTokenModal';
 import Decimal from 'decimal.js';
@@ -44,8 +44,8 @@ function SwapComp() {
   const currentInputToken = useRef<'in' | 'out'>('in');
   const [chainId, setChainId] = useState('1');
   const [gasPrice, easyIn] = useGetGasPrice();
-  const [buttonDisable, setButtonDisable] = useState(false);
-  const [buttonDescId, setButtonDescId] = useState('1');
+  /*   const [setButtonDisable] = useState(false); */
+  const [buttonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ function SwapComp() {
   };
   const [advConfig, setAdvConfig] = useState(initAdvConfig);
   // 检测是否连接EVM钱包 或 是否有钱包环境
-  const isConnectEVMWallet = () => {
+  /*   const isConnectEVMWallet = () => {
     const chainId = localStorage.getItem('chainId');
     const isConnect = !!window?.ethereum?.isConnected?.();
 
@@ -83,10 +83,10 @@ function SwapComp() {
       setButtonDisable(false);
       setButtonDescId('');
     }
-  };
+  }; */
   useEffect(() => {
     getWeth();
-    isConnectEVMWallet();
+    /*     isConnectEVMWallet(); */
   }, []);
 
   const getWeth = async () => {

@@ -89,6 +89,34 @@ function Layout() {
       tonConnect('login');
     }
   }, [userFriendlyAddress]);
+
+  // 初始化时同步钱包环境与登陆态
+  /*   const synchronizeWalletAndDexpert = async () => {
+    // 有 token 但没有 evm环境
+    if (chainId === '1' && !window?.ethereum?.isConnected?.()) {
+      cookie.remove('token');
+      cookie.remove('currentAddress');
+      changeBindind.current = '';
+      cookie.remove('jwt');
+      reset();
+      if (tonConnectUI?.connected) {
+        tonConnectUI.disconnect();
+      }
+      if (window?.ethereum?.isConnected?.()) {
+        await window?.ethereum.disconnect();
+      }
+      setTonWallet(null);
+      setUserPar(null);
+      setIsLogin(false);
+      setBindingAddress(null);
+      return;
+    }
+    // 如果有以太坊环境
+      if (!!window?.ethereum?.isConnected?.() && )
+  }; */
+
+  useEffect(() => {}, []);
+
   //ton钱包连接
   const tonConnect = async (log?: any) => {
     if (log) {
@@ -186,8 +214,10 @@ function Layout() {
     if (tonConnectUI?.connected) {
       tonConnectUI.disconnect();
     }
+    // @ts-ignore
     if (window?.ethereum?.isConnected?.()) {
-      await window?.ethereum.disconnect();
+      // @ts-ignore
+      await window?.ethereum?.disconnect?.();
     }
     setTonWallet(null);
     setUserPar(null);
