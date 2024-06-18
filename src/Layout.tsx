@@ -91,13 +91,17 @@ function Layout() {
   }, [userFriendlyAddress]);
 
   // 初始化时同步钱包环境与登陆态
-  /*   const synchronizeWalletAndDexpert = async () => {
+  const synchronizeWalletAndDexpert = async () => {
     // 有 token 但没有 evm环境
-    if (chainId === '1' && !window?.ethereum?.isConnected?.()) {
+    const loginChainId = localStorage.getItem('login-chain');
+    const isConnected = await checkConnection();
+
+    if (loginChainId === '1' && !isConnected) {
       cookie.remove('token');
       cookie.remove('currentAddress');
       changeBindind.current = '';
       cookie.remove('jwt');
+      localStorage.clear();
       reset();
       if (tonConnectUI?.connected) {
         tonConnectUI.disconnect();
@@ -111,11 +115,17 @@ function Layout() {
       setBindingAddress(null);
       return;
     }
-    // 如果有以太坊环境
-      if (!!window?.ethereum?.isConnected?.() && )
-  }; */
+    // 没有登陆过 但是有钱包环境
+    if (!loginChainId && isConnected) {
+      if (window?.ethereum?.isConnected?.()) {
+        await window?.ethereum.disconnect();
+      }
+    }
+  };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    synchronizeWalletAndDexpert();
+  }, []);
 
   //ton钱包连接
   const tonConnect = async (log?: any) => {
@@ -491,6 +501,20 @@ function Layout() {
     // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
     // })
   }, []);
+
+  function checkConnection() {
+    // 没有环境直接为未连接
+    if (!window?.ethereum?.request) return Promise.resolve(false);
+    return window.ethereum
+      .request({ method: 'eth_accounts' })
+      .then((res) => {
+        return res.length !== 0;
+      })
+      .catch((e) => {
+        return false;
+      });
+  }
+
   useEffect(() => {
     if (!client) {
       createClient();

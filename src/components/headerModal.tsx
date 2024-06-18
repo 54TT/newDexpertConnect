@@ -126,7 +126,8 @@ function HeaderModal() {
       binding: 'ETH',
     },
   ];
-  const allConnect = throttle(async function (i: any) {
+  const allConnect = throttle(
+    async function (i: any) {
       if (i.key === 'WalletConnect') {
         onConnect();
         setLoad(true);
@@ -174,7 +175,10 @@ function HeaderModal() {
           }
         }
       }
-    }, 1500,{ trailing: false })
+    },
+    1500,
+    { trailing: false }
+  );
   return (
     <Modal
       destroyOnClose={true}

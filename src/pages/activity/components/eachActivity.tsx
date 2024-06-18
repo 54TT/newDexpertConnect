@@ -241,7 +241,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     i: any,
     name?: any
   ) => {
-    const url = 
+    const url =
       name === 'daily'
         ? '/api/v1/campaign/jointly-common/daily-task/claim'
         : it?.operationSymbol?.includes('golden')
