@@ -1,14 +1,13 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
 import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
-import { getERC20Contract, getQuoterContract } from '../../contracts';
+import { getERC20Contract, getQuoterContract, getUniversalRouterContract } from '../../contracts';
 import { Decimal } from 'decimal.js';
 import { getPools } from './getPools';
 
 export const getV3AmountOut = async (
   chainId: string,
   provider: any,
-  universalRouterContract: any,
   tokenInAddress: string,
   tokenOutAddress: string,
   amountIn: Decimal,
@@ -21,24 +20,16 @@ export const getV3AmountOut = async (
   const quoterAddress = chainConfig.quoterAddress;
   const uniswapV3FactoryAddress = chainConfig.uniswapV3FactoryAddress;
   const uniswapV3FeeAmounts = chainConfig.uniswapV3FeeAmounts;
-
+  const universalRouterAddress = chainConfig.universalRouterAddress
   const quoterContract = await getQuoterContract(provider, quoterAddress);
-  console.log('---------128---------');
+  const universalRouterContract = await getUniversalRouterContract(provider, universalRouterAddress)
   let fee = new Decimal(0);
   if (payType == 0) {
-    console.log(universalRouterContract);
-
     const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
-
-    console.log(fastTradeFeeBps);
-
     const feeBaseBps = await universalRouterContract.feeBaseBps();
-
-    console.log(feeBaseBps);
 
     fee = new Decimal(fastTradeFeeBps / feeBaseBps);
   }
-  console.log('---------126---------');
   const tokenInContract = await getERC20Contract(provider, tokenInAddress);
   const tokenInDecimals = await tokenInContract.decimals();
 
@@ -48,14 +39,12 @@ export const getV3AmountOut = async (
   let quoteAmountOutBigNumber: BigNumber = BigNumber.from(0);
   let uniswapV3FeeAmount = BigNumber.from(0);
   let poolAddress = '';
-  console.log('---------127---------');
   const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);
   if (
     (ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
       wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()) ||
     wethAddress.toLowerCase() === tokenInAddress.toLowerCase()
   ) {
-    console.log('---------125---------');
     const pools = await getPools(
       provider,
       uniswapV3FactoryAddress,
@@ -97,7 +86,6 @@ export const getV3AmountOut = async (
       tokenOutAddress.toLowerCase() === ethAddress.toLowerCase()) ||
     wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
   ) {
-    console.log('---------124---------');
     const pools = await getPools(
       provider,
       uniswapV3FactoryAddress,
@@ -142,7 +130,6 @@ export const getV3AmountOut = async (
     wethAddress.toLowerCase() !== tokenInAddress.toLowerCase() &&
     wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
   ) {
-    console.log('---------123---------');
     const pools = await getPools(
       provider,
       uniswapV3FactoryAddress,
