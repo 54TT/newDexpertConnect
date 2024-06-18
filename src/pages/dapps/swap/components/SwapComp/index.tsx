@@ -29,6 +29,7 @@ import {
   CHAIN_NAME_TO_CHAIN_ID_HEX,
 } from '@utils/constants';
 import useButtonDesc from '@/hook/useButtonDesc';
+import UsePass from '@/components/UsePass';
 
 interface TokenInfoType {
   address: string;
@@ -50,6 +51,11 @@ function SwapComp() {
   const [buttonDisable, setButtonDisable] = useState(false);
   const [buttonDescId, setButtonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
+  const { isLogin } = useContext(CountContext);
+  const [openDpass, setOpenDpass] = useState(false);
+  const [inLoading, setInLoading] = useState(false);
+  const [outLoading, setOutLoading] = useState(false);
+  const payType = useRef('0');
 
   useEffect(() => {
     changeConfig(chainId);
@@ -82,8 +88,11 @@ function SwapComp() {
   };
   useEffect(() => {
     getWeth();
-    isConnectEVMWallet();
   }, []);
+
+  useEffect(() => {
+    isConnectEVMWallet();
+  }, [isLogin]);
 
   const getWeth = async () => {
     console.log('-----------------');
@@ -130,7 +139,9 @@ function SwapComp() {
   const getAmount = async (type: 'in' | 'out', value: number) => {
     let start = Date.now();
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
+
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
+
     const param = [
       chainId,
       provider,
@@ -143,12 +154,24 @@ function SwapComp() {
       0,
     ];
     if (type === 'in') {
-      const amount = await getAmountOut.apply(null, param);
-      setAmountOut(Number(amount.toString()));
+      setOutLoading(true);
+      try {
+        const amount = await getAmountOut.apply(null, param);
+        setAmountOut(Number(amount.toString()));
+      } catch (e) {
+        console.error(e);
+      }
+      setOutLoading(false);
     }
     if (type === 'out') {
-      const amount = await getAmountIn.apply(null, param);
-      setAmountIn(Number(amount.toString()));
+      setInLoading(true);
+      try {
+        const amount = await getAmountIn.apply(null, param);
+        setAmountIn(Number(amount.toString()));
+      } catch (e) {
+        console.error(e);
+      }
+      setInLoading(false);
     }
     console.log(`获取输入输出总耗时${(Date.now() - start) / 1000} 秒 `);
   };
@@ -242,8 +265,8 @@ function SwapComp() {
       new Decimal(amountIn),
       new Decimal(amountOut),
       recipientAddress,
-      true,
-      0,
+      payType.current == '0',
+      Number(payType.current),
       permit,
       signature,
     ];
@@ -441,13 +464,27 @@ function SwapComp() {
     }
   };
 
+  useEffect(() => {
+    if (tokenIn?.address && tokenOut?.address) {
+      if (currentInputToken.current === 'in' && amountIn !== 0) {
+        getAmount('in', amountIn);
+      }
+      if (currentInputToken.current === 'out' && amountOut !== 0) {
+        getAmount('out', amountOut);
+      }
+    }
+  }, [advConfig.slip, advConfig.slipType]);
+
   return (
     <div className="swap-comp">
       <div className="swap-comp-config">
         <ChooseChain onChange={(v) => changeWalletChain(v)} />
         <AdvConfig
           initData={initAdvConfig}
-          onClose={(data) => setAdvConfig(data)}
+          onClose={(data) => {
+            console.log(data);
+            setAdvConfig({ ...data });
+          }}
         />
       </div>
       <div className="input-token send-token">
@@ -467,6 +504,7 @@ function SwapComp() {
         </div>
         <ProInputNumber
           value={amountIn}
+          className={inLoading && 'inut-font-gray'}
           onChange={(v) => {
             setAmountIn(v);
             if (currentInputToken.current !== 'in')
@@ -504,6 +542,7 @@ function SwapComp() {
         </div>
         <ProInputNumber
           value={amountOut}
+          className={outLoading && 'inut-font-gray'}
           onChange={(v) => {
             setAmountOut(v);
             if (currentInputToken.current !== 'out')
@@ -537,14 +576,7 @@ function SwapComp() {
       <Button
         className="swap-button"
         disabled={buttonDisable}
-        onClick={() =>
-          handleSwap({
-            amountIn,
-            amountOut,
-            tokenIn: tokenIn.address,
-            tokenOut: tokenOut.address,
-          })
-        }
+        onClick={() => setOpenDpass(true)}
       >
         {buttonDesc}
       </Button>
@@ -559,6 +591,21 @@ function SwapComp() {
           setOpenSelect(false);
         }}
         onCancel={() => setOpenSelect(false)}
+      />
+      <UsePass
+        open={openDpass}
+        onClose={() => setOpenDpass(false)}
+        type="swap"
+        onChange={(v: string) => {
+          payType.current = v;
+          setOpenDpass(false);
+          handleSwap({
+            amountIn,
+            amountOut,
+            tokenIn: tokenIn.address,
+            tokenOut: tokenOut.address,
+          });
+        }}
       />
     </div>
   );

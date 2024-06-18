@@ -20,7 +20,7 @@ interface AdvConfigProps {
 function AdvConfig({ onClose, initData }: AdvConfigProps) {
   const [open, setOpen] = useState(false);
   const contentRef = useRef<SettingContentRef>();
-  const [] = useState();
+
   const Title = () => (
     <div
       style={{
@@ -45,6 +45,7 @@ function AdvConfig({ onClose, initData }: AdvConfigProps) {
       overlayClassName="adv-config-pop"
       title={<Title />}
       open={open}
+      placement="bottomRight"
       icon={null}
       description={<SettingContent initData={initData} ref={contentRef} />}
     >

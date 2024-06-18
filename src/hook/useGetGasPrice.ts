@@ -18,7 +18,7 @@ const useGetGasPrice = (): [BigNumber, boolean] => {
   };
 
   const getGasPriceInterval = () => {
-    timer.current = setInterval(getGasPrice, 8000);
+    timer.current = setInterval(getGasPrice, 6000);
   };
 
   useEffect(() => {

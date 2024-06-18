@@ -87,7 +87,11 @@ function SelectToken({ onChange, chainId }: SelectTokenType) {
       <div className="token-history-list"></div>
       <span className="popular-tokens">Popular tokens</span>
       {tokenList?.map?.((item: TokenItemData) => (
-        <div className="select-token-item" onClick={() => onChange(item)}>
+        <div
+          key={item.address}
+          className="select-token-item"
+          onClick={() => onChange(item)}
+        >
           <div className="select-token-item-info">
             <img src={item.icon} alt="" />
             <div>
