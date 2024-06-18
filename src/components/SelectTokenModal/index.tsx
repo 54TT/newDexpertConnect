@@ -5,7 +5,11 @@ interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;
 }
 
-function SelectTokenModal({ onChange, ...props }: SelectTokenModalType) {
+function SelectTokenModal({
+  onChange,
+  chainId,
+  ...props
+}: SelectTokenModalType) {
   return (
     <Modal
       {...props}
@@ -14,7 +18,7 @@ function SelectTokenModal({ onChange, ...props }: SelectTokenModalType) {
       title="Select Token"
       footer={null}
     >
-      <SelectToken onChange={onChange} />
+      <SelectToken onChange={onChange} chainId={chainId} />
     </Modal>
   );
 }

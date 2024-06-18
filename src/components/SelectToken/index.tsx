@@ -16,6 +16,7 @@ interface TokenItemData {
 
 interface SelectTokenType {
   onChange: (data: TokenItemData) => void;
+  chainId: string;
 }
 
 const { Search } = Input;
@@ -50,20 +51,19 @@ const mockTokenList: TokenItemData[] = [
     balance: '200',
   },
 ];
-function SelectToken({ onChange }: SelectTokenType) {
-  const [tokenList] = useState<TokenItemData[]>(mockTokenList);
+function SelectToken({ onChange, chainId }: SelectTokenType) {
+  const [tokenList, setTokenList] = useState<TokenItemData[]>(mockTokenList);
   /*   const [searchList, setSearchList] = useState<TokenItemData[]>();
   const [historyList, setHistoryList] = useState<TokenItemData[]>(); */
-  const [page] = useState('1');
+  const [page, setPage] = useState(1);
   const { getAll } = Request();
   const token = Cookies.get('token');
-  const chainId = localStorage.getItem('');
-  const getHotTradingToken = () => {
+  const getHotTradingToken = (page: number) => {
     getAll({
       method: 'post',
       url: '/api/v1/dapp/hotTradingToken',
       data: {
-        page,
+        page: page.toString(),
         pageSize: '10',
       },
       token,
@@ -71,9 +71,12 @@ function SelectToken({ onChange }: SelectTokenType) {
     });
   };
 
+  useEffect(() => {}, [page]);
+
   useEffect(() => {
-    getHotTradingToken();
-  }, [page]);
+    setPage(1);
+    getHotTradingToken(1);
+  }, [chainId]);
 
   return (
     <div className="select-token">
