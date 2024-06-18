@@ -90,10 +90,6 @@ function SwapComp() {
     const param = [
       chainId,
       provider,
-      await getUniversalRouterContract(
-        provider,
-        '0xD06CBe0ec2138c7aAFA8eAB031EA164f5c1C6bC1'
-      ),
       '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
       '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
       new Decimal(1000000000000),
