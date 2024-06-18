@@ -32,6 +32,7 @@ import useButtonDesc from '@/hook/useButtonDesc';
 import UsePass from '@/components/UsePass';
 import { getPairAddress } from '@utils/swap/v2/getPairAddress';
 import { getTokenPrice } from '@utils/getTokenPrice';
+import checkConnection from '@utils/checkConnect';
 
 interface TokenInfoType {
   address: string;
@@ -81,15 +82,14 @@ function SwapComp() {
   const [advConfig, setAdvConfig] = useState(initAdvConfig);
   // 检测是否连接EVM钱包 或 是否有钱包环境
   const isConnectEVMWallet = () => {
-    const loginChainId = localStorage.getItem('login-chain');
-    // 没登陆信息
-    if (!loginChainId) {
+    // 没登陆信息 Connect Wallet
+    if (!isLogin) {
       setButtonDisable(true);
       setButtonDescId('2');
       return;
     }
-    // 连接了 ton ｜ solana
-    if (loginChainId && loginChainId !== '1') {
+    // 登陆了但是没有钱包环境  不支持的链
+    if (isLogin && !checkConnection()) {
       setButtonDisable(true);
       setButtonDescId('3');
       return;
@@ -102,6 +102,8 @@ function SwapComp() {
   useEffect(() => {
     isConnectEVMWallet();
   }, [isLogin]);
+
+  useEffect(() => {}, [tokenIn, tokenOut, amountIn, amountOut]);
 
   const getWeth = async () => {
     console.log('-----------------');
@@ -170,6 +172,8 @@ function SwapComp() {
       new Decimal(slip),
       0,
     ];
+    console.log(provider);
+
     if (type === 'in') {
       setOutLoading(true);
       try {
@@ -197,6 +201,7 @@ function SwapComp() {
   const getAmountDebounce = useCallback(debounce(getAmount, 500), [
     tokenIn,
     tokenOut,
+    provider,
   ]);
   // 处理approve
   const handleApprove = async (
@@ -456,7 +461,7 @@ function SwapComp() {
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
     const loginChainId = localStorage.getItem('login-chain');
 
-    if (loginChainId !== '1') {
+    if (!isLogin) {
       changeConfig(evmChainId);
     } else {
       // 有evm钱包环境
@@ -480,6 +485,7 @@ function SwapComp() {
   // 获取 输入输出token价格
   const getTokenPriceInAndOut = async ({ tokenIn, tokenOut }) => {
     const { universalRouterAddress } = contractConfig;
+
     const pairAddress = await getPairAddress(
       provider,
       universalRouterAddress,
@@ -519,7 +525,10 @@ function SwapComp() {
 
   useEffect(() => {
     if (tokenIn?.address && tokenOut?.address) {
-      getTokenPriceInAndOut({ tokenIn, tokenOut });
+      getTokenPriceInAndOut({
+        tokenIn: tokenIn.address,
+        tokenOut: tokenOut.address,
+      });
     }
   }, [tokenIn, tokenOut]);
 
