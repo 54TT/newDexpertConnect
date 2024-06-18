@@ -148,7 +148,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const par: any = {
       '1': '/api/v1/oauth/twitter/link',
       '2': '/api/v1/oauth/telegram/chat/link',
-      '3': '/api/v1/oauth/telegram/chat/link',
+      '3': '/api/v1/oauth/discord/link',
     };
     if (token) {
       const res = await getAll({
