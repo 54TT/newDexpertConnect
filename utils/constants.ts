@@ -137,6 +137,8 @@ export const DEFAULT_KADENA_METHODS = {
   KADENA_QUICKSIGN: 'kadena_quicksign_v1',
 };
 
+export const zeroAddress = '0x0000000000000000000000000000000000000000';
+
 export const DEFAULT_KADENA_EVENTS = {};
 
 export const CHAIN_NAME_TO_CHAIN_ID = {
@@ -147,6 +149,16 @@ export const CHAIN_NAME_TO_CHAIN_ID = {
   Base: '8453',
   BSC: '56',
   Sepolia: '11155111',
+};
+
+export const CHAIN_NAME_TO_CHAIN_ID_HEX = {
+  Ethereum: '0x1',
+  Arbitrum: '0xa4b1',
+  Polygon: '0x89',
+  Optimism: '0xa',
+  Base: '0x2105',
+  BSC: '0x38',
+  Sepolia: '0xaa36a7',
 };
 
 export const CHAIN_ID_TO_CHAIN_NAME = () =>

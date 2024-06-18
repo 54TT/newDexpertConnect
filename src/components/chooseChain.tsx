@@ -13,6 +13,7 @@ function ChooseChain({ onChange }: ChooseChainType) {
     value: 'Ethereum',
     icon: '/EthereumChain.svg',
   });
+
   const [open, setOpen] = useState<any>(false);
   const click = throttle(
     function (i: any) {

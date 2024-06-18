@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { CountContext } from '@/Layout';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 
 const useGetGasPrice = (): [BigNumber, boolean] => {
   const { provider } = useContext(CountContext);

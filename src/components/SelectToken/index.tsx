@@ -54,7 +54,7 @@ function SelectToken({ onChange }: SelectTokenType) {
   const [tokenList] = useState<TokenItemData[]>(mockTokenList);
   /*   const [searchList, setSearchList] = useState<TokenItemData[]>();
   const [historyList, setHistoryList] = useState<TokenItemData[]>(); */
-  const [page, setPage] = useState('1');
+  const [page] = useState('1');
   const { getAll } = Request();
   const token = Cookies.get('token');
   const chainId = localStorage.getItem('');

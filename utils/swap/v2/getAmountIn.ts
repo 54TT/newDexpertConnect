@@ -3,7 +3,7 @@ import { config } from '../../../src/config/config';
 import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
 import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
-import { zeroAddress } from 'viem';
+import { zeroAddress } from '@utils/constants';
 import { getDecimals } from '@utils/getDecimals';
 
 export const getAmountIn = async (

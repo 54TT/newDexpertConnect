@@ -89,6 +89,44 @@ function Layout() {
       tonConnect('login');
     }
   }, [userFriendlyAddress]);
+
+  // 初始化时同步钱包环境与登陆态
+  const synchronizeWalletAndDexpert = async () => {
+    // 有 token 但没有 evm环境
+    const loginChainId = localStorage.getItem('login-chain');
+    const isConnected = await checkConnection();
+
+    if (loginChainId === '1' && !isConnected) {
+      cookie.remove('token');
+      cookie.remove('currentAddress');
+      changeBindind.current = '';
+      cookie.remove('jwt');
+      localStorage.clear();
+      reset();
+      if (tonConnectUI?.connected) {
+        tonConnectUI.disconnect();
+      }
+      if (window?.ethereum?.isConnected?.()) {
+        await window?.ethereum.disconnect();
+      }
+      setTonWallet(null);
+      setUserPar(null);
+      setIsLogin(false);
+      setBindingAddress(null);
+      return;
+    }
+    // 没有登陆过 但是有钱包环境
+    if (!loginChainId && isConnected) {
+      if (window?.ethereum?.isConnected?.()) {
+        await window?.ethereum.disconnect();
+      }
+    }
+  };
+
+  useEffect(() => {
+    synchronizeWalletAndDexpert();
+  }, []);
+
   //ton钱包连接
   const tonConnect = async (log?: any) => {
     if (log) {
@@ -183,11 +221,14 @@ function Layout() {
     cookie.remove('currentAddress');
     changeBindind.current = '';
     cookie.remove('jwt');
+    localStorage.clear();
     if (tonConnectUI?.connected) {
       tonConnectUI.disconnect();
     }
+    // @ts-ignore
     if (window?.ethereum?.isConnected?.()) {
-      await window?.ethereum.disconnect();
+      // @ts-ignore
+      await window?.ethereum?.disconnect?.();
     }
     setTonWallet(null);
     setUserPar(null);
@@ -250,6 +291,7 @@ function Layout() {
             token: token,
             chainId: chain === 'ton' ? '-2' : '1',
           });
+
           if (bind?.status === 200) {
             getUserNow();
             MessageAll('success', t('person.bind'));
@@ -278,6 +320,7 @@ function Layout() {
           if (decodedToken && decodedToken?.uid) {
             const uid = decodedToken.sub.split('-')[1];
             getUser(uid, res.data?.accessToken, name, decodedToken);
+            localStorage.setItem('login-chain', chain === 'ton' ? '-2' : '1');
           }
         } else {
           setTonWallet(null);
@@ -458,6 +501,20 @@ function Layout() {
     // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
     // })
   }, []);
+
+  function checkConnection() {
+    // 没有环境直接为未连接
+    if (!window?.ethereum?.request) return Promise.resolve(false);
+    return window.ethereum
+      .request({ method: 'eth_accounts' })
+      .then((res) => {
+        return res.length !== 0;
+      })
+      .catch((e) => {
+        return false;
+      });
+  }
+
   useEffect(() => {
     if (!client) {
       createClient();
