@@ -33,19 +33,14 @@ import UsePass from '@/components/UsePass';
 import { getPairAddress } from '@utils/swap/v2/getPairAddress';
 import { getTokenPrice } from '@utils/getTokenPrice';
 import checkConnection from '@utils/checkConnect';
+import { TokenItemData } from '@/components/SelectToken';
 
-interface TokenInfoType {
-  address: string;
-  icon: string;
-  symbol: string;
-  name: string;
-}
 function SwapComp() {
   const { provider, contractConfig, changeConfig } = useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
-  const [tokenIn, setTokenIn] = useState<TokenInfoType>();
-  const [tokenOut, setTokenOut] = useState<TokenInfoType>();
+  const [tokenIn, setTokenIn] = useState<TokenItemData>();
+  const [tokenOut, setTokenOut] = useState<TokenItemData>();
   const [openSelect, setOpenSelect] = useState(false);
   const currentSetToken = useRef<'in' | 'out'>('in');
   const currentInputToken = useRef<'in' | 'out'>('in');
@@ -459,10 +454,10 @@ function SwapComp() {
   const changeWalletChain = async (v: string) => {
     const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
-    const loginChainId = localStorage.getItem('login-chain');
 
     if (!isLogin) {
       changeConfig(evmChainId);
+      setChainId(evmChainId);
     } else {
       // 有evm钱包环境
       try {
@@ -554,7 +549,7 @@ function SwapComp() {
               setOpenSelect(true);
             }}
           >
-            <img className="eth-logo" src={tokenIn?.icon} alt="" />
+            <img className="eth-logo" src={tokenIn?.logoUrl} alt="" />
             <span>{tokenIn?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
@@ -592,7 +587,7 @@ function SwapComp() {
               setOpenSelect(true);
             }}
           >
-            <img className="eth-logo" src={tokenOut?.icon || ''} alt="" />
+            <img className="eth-logo" src={tokenOut?.logoUrl || ''} alt="" />
             <span>{tokenOut?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>

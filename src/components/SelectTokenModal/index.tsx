@@ -2,6 +2,7 @@ import { Modal, ModalProps } from 'antd';
 import SelectToken from '../SelectToken';
 import './index.less';
 import { ID_TO_CHAIN_NAME_LOW } from '@utils/constants';
+import { useMemo } from 'react';
 interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;
   chainId: string;
@@ -12,6 +13,9 @@ function SelectTokenModal({
   chainId,
   ...props
 }: SelectTokenModalType) {
+  const chainName = useMemo(() => ID_TO_CHAIN_NAME_LOW[chainId], [chainId]);
+  console.log(chainId);
+
   return (
     <Modal
       {...props}
@@ -20,10 +24,7 @@ function SelectTokenModal({
       title="Select Token"
       footer={null}
     >
-      <SelectToken
-        onChange={onChange}
-        chainName={ID_TO_CHAIN_NAME_LOW[chainId]}
-      />
+      <SelectToken onChange={onChange} chainName={chainName} />
     </Modal>
   );
 }
