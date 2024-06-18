@@ -34,7 +34,9 @@ function UsePass({ open, type, onChange, onClose }) {
   };
 
   useEffect(() => {
-    getPassInfo();
+    if (isLogin == true) {
+      getPassInfo();
+    }
   }, [isLogin, type]);
 
   const confirmPayType = () => {

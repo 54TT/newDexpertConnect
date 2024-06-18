@@ -1,8 +1,10 @@
 import { Modal, ModalProps } from 'antd';
 import SelectToken from '../SelectToken';
 import './index.less';
+import { ID_TO_CHAIN_NAME_LOW } from '@utils/constants';
 interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;
+  chainId: string;
 }
 
 function SelectTokenModal({
@@ -18,7 +20,10 @@ function SelectTokenModal({
       title="Select Token"
       footer={null}
     >
-      <SelectToken onChange={onChange} chainId={chainId} />
+      <SelectToken
+        onChange={onChange}
+        chainName={ID_TO_CHAIN_NAME_LOW[chainId]}
+      />
     </Modal>
   );
 }

@@ -30,6 +30,8 @@ import {
 } from '@utils/constants';
 import useButtonDesc from '@/hook/useButtonDesc';
 import UsePass from '@/components/UsePass';
+import { getPairAddress } from '@utils/swap/v2/getPairAddress';
+import { getTokenPrice } from '@utils/getTokenPrice';
 
 interface TokenInfoType {
   address: string;
@@ -55,6 +57,13 @@ function SwapComp() {
   const [openDpass, setOpenDpass] = useState(false);
   const [inLoading, setInLoading] = useState(false);
   const [outLoading, setOutLoading] = useState(false);
+  const [tokenPrice, setTokenPrice] = useState<{
+    inPrice: string;
+    outPrice: string;
+  }>({
+    inPrice: '-',
+    outPrice: '-',
+  });
   const payType = useRef('0');
 
   useEffect(() => {
@@ -137,6 +146,14 @@ function SwapComp() {
   };
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
+    if (value === 0) return;
+    if (
+      ((type === 'in' || type === 'out') && !tokenIn?.address) ||
+      !tokenOut?.address
+    ) {
+      return;
+    }
+
     let start = Date.now();
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
 
@@ -157,6 +174,7 @@ function SwapComp() {
       setOutLoading(true);
       try {
         const amount = await getAmountOut.apply(null, param);
+
         setAmountOut(Number(amount.toString()));
       } catch (e) {
         console.error(e);
@@ -296,10 +314,6 @@ function SwapComp() {
     };
 
     const { commands, inputs } = await getSwapBytesFn(tokenIn, tokenOut);
-    console.log('swap-code', {
-      commands,
-      inputs,
-    });
 
     let etherValue = BigInt(0);
     if (tokenIn === contractConfig.ethAddress) {
@@ -441,7 +455,6 @@ function SwapComp() {
     const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
     const loginChainId = localStorage.getItem('login-chain');
-    console.log(loginChainId);
 
     if (loginChainId !== '1') {
       changeConfig(evmChainId);
@@ -464,6 +477,35 @@ function SwapComp() {
     }
   };
 
+  // 获取 输入输出token价格
+  const getTokenPriceInAndOut = async ({ tokenIn, tokenOut }) => {
+    const { universalRouterAddress } = contractConfig;
+    const pairAddress = await getPairAddress(
+      provider,
+      universalRouterAddress,
+      tokenIn,
+      tokenOut
+    );
+    if (pairAddress) {
+      const res = await getTokenPrice(provider, chainId, pairAddress);
+      console.log(res);
+    }
+  };
+
+  useEffect(() => {
+    if (tokenIn?.address && tokenOut?.address && amountOut !== 0) {
+      currentInputToken.current = 'out';
+      getAmount('out', amountOut);
+    }
+  }, [tokenIn]);
+
+  useEffect(() => {
+    if (tokenOut?.address && tokenIn?.address && amountIn !== 0) {
+      currentInputToken.current = 'in';
+      getAmount('in', amountIn);
+    }
+  }, [tokenOut]);
+
   useEffect(() => {
     if (tokenIn?.address && tokenOut?.address) {
       if (currentInputToken.current === 'in' && amountIn !== 0) {
@@ -474,6 +516,12 @@ function SwapComp() {
       }
     }
   }, [advConfig.slip, advConfig.slipType]);
+
+  useEffect(() => {
+    if (tokenIn?.address && tokenOut?.address) {
+      getTokenPriceInAndOut({ tokenIn, tokenOut });
+    }
+  }, [tokenIn, tokenOut]);
 
   return (
     <div className="swap-comp">
@@ -582,11 +630,18 @@ function SwapComp() {
       </Button>
       <SelectTokenModal
         open={openSelect}
+        chainId={chainId}
         onChange={(data) => {
           if (currentSetToken.current === 'in') {
             setTokenIn(data);
           } else {
             setTokenOut(data);
+            setTimeout(() => {
+              if (tokenIn?.address && amountIn !== 0) {
+                currentInputToken.current = 'in';
+                getAmount('in', amountIn);
+              }
+            }, 0);
           }
           setOpenSelect(false);
         }}

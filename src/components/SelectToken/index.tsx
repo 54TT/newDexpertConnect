@@ -16,7 +16,7 @@ interface TokenItemData {
 
 interface SelectTokenType {
   onChange: (data: TokenItemData) => void;
-  chainId: string;
+  chainName: string;
 }
 
 const { Search } = Input;
@@ -51,7 +51,7 @@ const mockTokenList: TokenItemData[] = [
     balance: '200',
   },
 ];
-function SelectToken({ onChange, chainId }: SelectTokenType) {
+function SelectToken({ onChange, chainName }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>(mockTokenList);
   /*   const [searchList, setSearchList] = useState<TokenItemData[]>();
   const [historyList, setHistoryList] = useState<TokenItemData[]>(); */
@@ -65,9 +65,9 @@ function SelectToken({ onChange, chainId }: SelectTokenType) {
       data: {
         page: page.toString(),
         pageSize: '10',
+        chainName,
       },
       token,
-      chainId,
     });
   };
 
@@ -76,7 +76,7 @@ function SelectToken({ onChange, chainId }: SelectTokenType) {
   useEffect(() => {
     setPage(1);
     getHotTradingToken(1);
-  }, [chainId]);
+  }, [chainName]);
 
   return (
     <div className="select-token">
