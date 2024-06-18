@@ -151,6 +151,16 @@ export const CHAIN_NAME_TO_CHAIN_ID = {
   Sepolia: '11155111',
 };
 
+export const CHAIN_NAME_TO_CHAIN_ID_HEX = {
+  Ethereum: '0x1',
+  Arbitrum: '0xa4b1',
+  Polygon: '0x89',
+  Optimism: '0xa',
+  Base: '0x2105',
+  BSC: '0x38',
+  Sepolia: '0xaa36a7',
+};
+
 export const CHAIN_ID_TO_CHAIN_NAME = () =>
   Object.keys(CHAIN_NAME_TO_CHAIN_ID).reduce((prev, key) => {
     prev = {

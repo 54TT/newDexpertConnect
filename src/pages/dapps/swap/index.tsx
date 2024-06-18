@@ -10,9 +10,9 @@ function Swap() {
       style={{ height: 'calc(100vh - 90px)', justifyContent: 'center' }}
     >
       <div className="dapp-sniper">
-        <div className="dapp-sniper-left">
+        {/*         <div className="dapp-sniper-left">
           <PairPriceCharts />
-        </div>
+        </div> */}
         <div className="dapp-sniper-right">
           <SwapComp />
         </div>

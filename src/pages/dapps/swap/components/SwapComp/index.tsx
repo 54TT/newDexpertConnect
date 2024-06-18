@@ -24,7 +24,10 @@ import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
 import useGetGasPrice from '@/hook/useGetGasPrice';
 import ChooseChain from '@/components/chooseChain';
-import { CHAIN_NAME_TO_CHAIN_ID } from '@utils/constants';
+import {
+  CHAIN_NAME_TO_CHAIN_ID,
+  CHAIN_NAME_TO_CHAIN_ID_HEX,
+} from '@utils/constants';
 import useButtonDesc from '@/hook/useButtonDesc';
 
 interface TokenInfoType {
@@ -63,15 +66,15 @@ function SwapComp() {
   const [advConfig, setAdvConfig] = useState(initAdvConfig);
   // 检测是否连接EVM钱包 或 是否有钱包环境
   const isConnectEVMWallet = () => {
-    const chainId = localStorage.getItem('login-chain');
+    const loginChainId = localStorage.getItem('login-chain');
     // 没登陆信息
-    if (!chainId) {
+    if (!loginChainId) {
       setButtonDisable(true);
       setButtonDescId('2');
       return;
     }
     // 连接了 ton ｜ solana
-    if (chainId && chainId !== '1') {
+    if (loginChainId && loginChainId !== '1') {
       setButtonDisable(true);
       setButtonDescId('3');
       return;
@@ -415,10 +418,37 @@ function SwapComp() {
     }
   };
 
+  const changeWalletChain = async (v: string) => {
+    const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
+    const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
+    const loginChainId = localStorage.getItem('login-chain');
+    console.log(loginChainId);
+
+    if (loginChainId !== '1') {
+      changeConfig(evmChainId);
+    } else {
+      // 有evm钱包环境
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: evmChainIdHex,
+            },
+          ],
+        });
+        changeConfig(evmChainId);
+        setChainId(evmChainId);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
   return (
     <div className="swap-comp">
       <div className="swap-comp-config">
-        <ChooseChain onChange={(v) => setChainId(CHAIN_NAME_TO_CHAIN_ID[v])} />
+        <ChooseChain onChange={(v) => changeWalletChain(v)} />
         <AdvConfig
           initData={initAdvConfig}
           onClose={(data) => setAdvConfig(data)}
