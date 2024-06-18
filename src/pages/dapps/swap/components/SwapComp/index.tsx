@@ -44,8 +44,8 @@ function SwapComp() {
   const currentInputToken = useRef<'in' | 'out'>('in');
   const [chainId, setChainId] = useState('1');
   const [gasPrice, easyIn] = useGetGasPrice();
-  /*   const [setButtonDisable] = useState(false); */
-  const [buttonDescId] = useState('1');
+  const [buttonDisable, setButtonDisable] = useState(false);
+  const [buttonDescId, setButtonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
 
   useEffect(() => {
@@ -62,31 +62,24 @@ function SwapComp() {
   };
   const [advConfig, setAdvConfig] = useState(initAdvConfig);
   // 检测是否连接EVM钱包 或 是否有钱包环境
-  /*   const isConnectEVMWallet = () => {
-    const chainId = localStorage.getItem('chainId');
-    const isConnect = !!window?.ethereum?.isConnected?.();
-
-    // 没登陆信息并且没有 连接EVM钱包
-    if (!chainId && !isConnect) {
+  const isConnectEVMWallet = () => {
+    const chainId = localStorage.getItem('login-chain');
+    // 没登陆信息
+    if (!chainId) {
       setButtonDisable(true);
       setButtonDescId('2');
       return;
     }
     // 连接了 ton ｜ solana
-    if (chainId !== '1') {
+    if (chainId && chainId !== '1') {
       setButtonDisable(true);
       setButtonDescId('3');
       return;
     }
-
-    if (isConnect) {
-      setButtonDisable(false);
-      setButtonDescId('');
-    }
-  }; */
+  };
   useEffect(() => {
     getWeth();
-    /*     isConnectEVMWallet(); */
+    isConnectEVMWallet();
   }, []);
 
   const getWeth = async () => {
@@ -517,6 +510,7 @@ function SwapComp() {
       </div>
       <Button
         className="swap-button"
+        disabled={buttonDisable}
         onClick={() =>
           handleSwap({
             amountIn,
