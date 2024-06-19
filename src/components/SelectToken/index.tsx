@@ -25,7 +25,7 @@ function SelectToken({ onChange, chainName }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
   /*   const [searchList, setSearchList] = useState<TokenItemData[]>();
   const [historyList, setHistoryList] = useState<TokenItemData[]>(); */
-  const [page, setPage] = useState(1);
+  const [, setPage] = useState(1);
   const { getAll } = Request();
   const token = Cookies.get('token');
   const getHotTradingToken = async (page: number) => {
@@ -39,7 +39,7 @@ function SelectToken({ onChange, chainName }: SelectTokenType) {
       },
       token,
     });
-    const { tokens, totalTokens } = data;
+    const { tokens } = data;
     console.log(tokens);
 
     setTokenList(tokens);

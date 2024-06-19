@@ -1,7 +1,6 @@
 import './index.less';
 import SwapComp from './components/SwapComp';
 import './index.less';
-import PairPriceCharts from './components/PairPriceCharts';
 
 function Swap() {
   return (

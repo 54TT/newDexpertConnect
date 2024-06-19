@@ -1,5 +1,3 @@
-import { KeyOutlined } from '@ant-design/icons';
-
 export const DEFAULT_MAIN_CHAINS = [
   // mainnets
   'eip155:1',

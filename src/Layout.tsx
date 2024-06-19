@@ -99,7 +99,9 @@ function Layout() {
     const isConnected = await checkConnection();
     // 没有登陆过 但是有钱包环境
     if (!loginChainId && isConnected) {
+      //@ts-ignore
       if (window?.ethereum?.isConnected?.()) {
+        //@ts-ignore
         await window?.ethereum.disconnect();
       }
     }

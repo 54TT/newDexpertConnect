@@ -52,19 +52,19 @@ function SwapComp() {
   const [buttonDisable, setButtonDisable] = useState(false);
   const [buttonDescId, setButtonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
-  const [buttonLoading, setButtonLoading] = useState(false);
+  const [buttonLoading] = useState(false);
   const { isLogin } = useContext(CountContext);
   const [openDpass, setOpenDpass] = useState(false);
   const [inLoading, setInLoading] = useState(false);
   const [outLoading, setOutLoading] = useState(false);
   const { getAll } = Request();
-  const [tokenPrice, setTokenPrice] = useState<{
+  /*   const [tokenPrice, setTokenPrice] = useState<{
     inPrice: string;
     outPrice: string;
   }>({
     inPrice: '-',
     outPrice: '-',
-  });
+  }); */
   const payType = useRef('0');
 
   useEffect(() => {
@@ -516,6 +516,7 @@ function SwapComp() {
     } else {
       // 有evm钱包环境
       try {
+        //@ts-ignore
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
           params: [
