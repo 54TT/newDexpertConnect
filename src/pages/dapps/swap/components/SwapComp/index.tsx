@@ -87,12 +87,13 @@ function SwapComp() {
 
   const getWeth = async () => {
     console.log('-----------------');
+    const provider1 = new ethers.providers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC");
     const param = [
-      chainId,
-      provider,
-      '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
-      '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
-      new Decimal(1000000000000),
+      "11155111",
+      provider1,
+      '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
+      '0xb72bc8971d5e595776592e8290be6f31937097c6',
+      new Decimal(0.001),
       new Decimal(0.01),
       0,
     ];
@@ -103,17 +104,16 @@ function SwapComp() {
     console.log(res.poolAddress);
 
     const a = await getSwapExactInBytesV3(
-      chainId,
-      provider,
-      '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
-      '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
-      new Decimal(1000000000000),
-      new Decimal(res.quoteAmount),
+      "11155111",
+      provider1,
+      '0x0000000000000000000000000000000000000000',
+      '0xb72bc8971d5e595776592e8290be6f31937097c6',
+      new Decimal(0.001),
+      new Decimal(0),
       '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
-      false,
+      true,
       0,
-      Number(res.fee),
-      res.poolAddress
+      Number(res.fee)
     );
     console.log('----------aaaaa', a);
   };
