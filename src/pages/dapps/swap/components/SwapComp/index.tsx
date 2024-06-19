@@ -1,4 +1,11 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Button } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
@@ -6,8 +13,6 @@ import { getAmountOut } from '@utils/swap/v2/getAmountOut';
 import { getSwapEthAndWeth } from '@utils/swap/v2/getSwapEthAndWeth';
 import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
-import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
-import { getSwapExactInBytes as getSwapExactInBytesV3 } from '@utils/swap/v3/getSwapExactInBytes';
 import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
@@ -37,6 +42,7 @@ import { TokenItemData } from '@/components/SelectToken';
 import Request from '@/components/axios';
 import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
+import useInterval from '@/hook/useInterval';
 
 function SwapComp() {
   const { provider, contractConfig, changeConfig } = useContext(CountContext);
@@ -48,7 +54,7 @@ function SwapComp() {
   const currentSetToken = useRef<'in' | 'out'>('in');
   const currentInputToken = useRef<'in' | 'out'>('in');
   const [chainId, setChainId] = useState('1');
-  const [gasPrice, easyIn] = useGetGasPrice();
+
   const [buttonDisable, setButtonDisable] = useState(false);
   const [buttonDescId, setButtonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
@@ -66,6 +72,51 @@ function SwapComp() {
     outPrice: '-',
   }); */
   const payType = useRef('0');
+
+  const getGasPrice = async () => {
+    const gas: BigNumber = await provider.getGasPrice();
+    const gasGwei = gas.toNumber() / 10 ** 9;
+    return gasGwei < 0.0001
+      ? '< 0.0001'
+      : parseFloat(gasGwei.toFixed(4)).toString();
+  };
+
+  const getAmountExchangeRate = async (data) => {
+    if (!tokenIn?.contractAddress && !tokenOut?.contractAddress) {
+      return Promise.resolve('');
+    }
+    console.log(data);
+
+    const amount: Decimal = await getAmountOut.apply(null, data);
+    return amount.toNumber() < 0.000001
+      ? '< 0.000001'
+      : parseFloat(amount.toFixed(6)).toString();
+  };
+
+  const getExchangeRateAndGasPrice = useCallback(async () => {
+    const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
+    const data = [
+      chainId,
+      provider,
+      await getUniversalRouterContract(provider, universalRouterAddress),
+      await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
+      tokenIn.contractAddress,
+      tokenOut.contractAddress,
+      new Decimal(1),
+      new Decimal(0),
+      0,
+    ];
+    return Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
+  }, [provider, tokenIn?.contractAddress, tokenOut?.contractAddress]);
+
+  const [[gasPrice, exchangeRate], easyIn] = useInterval(
+    getExchangeRateAndGasPrice,
+    ['', ''],
+    10000,
+    [tokenIn, tokenOut]
+  );
+
+  /*   const [gasPrice, easyIn] = useGetGasPrice(); */
 
   useEffect(() => {
     changeConfig(chainId);
@@ -112,46 +163,10 @@ function SwapComp() {
       setButtonDisable(true);
     }
   };
-  useEffect(() => {
-    getWeth();
-  }, []);
 
   useEffect(() => {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut]);
-
-  const getWeth = async () => {
-    console.log('-----------------');
-    const param = [
-      chainId,
-      provider,
-      '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
-      '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
-      new Decimal(1000000000000),
-      new Decimal(0.01),
-      0,
-    ];
-    const res = await getV3AmountOut.apply(null, param);
-    console.log('res-----', res);
-    console.log(res.quoteAmount.toString());
-    console.log(res.fee);
-    console.log(res.poolAddress);
-
-    const a = await getSwapExactInBytesV3(
-      chainId,
-      provider,
-      '0x6f57e483790DAb7D40b0cBA14EcdFAE2E9aA2406',
-      '0xaA7024098a12e7E8bacb055eEcD03588d4A5d75d',
-      new Decimal(1000000000000),
-      new Decimal(res.quoteAmount),
-      '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
-      false,
-      0,
-      Number(res.fee),
-      res.poolAddress
-    );
-    console.log('----------aaaaa', a);
-  };
 
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
@@ -192,7 +207,6 @@ function SwapComp() {
       setOutLoading(true);
       try {
         const amount = await getAmountOut.apply(null, param);
-
         setAmountOut(Number(amount.toString()));
       } catch (e) {
         console.error(e);
@@ -534,7 +548,7 @@ function SwapComp() {
   };
 
   // 获取 输入输出token价格
-  const getTokenPriceInAndOut = async ({ tokenIn, tokenOut }) => {
+  /*   const getTokenPriceInAndOut = async ({ tokenIn, tokenOut }) => {
     const { universalRouterAddress } = contractConfig;
 
     const pairAddress = await getPairAddress(
@@ -547,7 +561,7 @@ function SwapComp() {
       const res = await getTokenPrice(provider, chainId, pairAddress);
       console.log(res);
     }
-  };
+  }; */
 
   useEffect(() => {
     if (
@@ -582,14 +596,22 @@ function SwapComp() {
     }
   }, [advConfig.slip, advConfig.slipType]);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
       getTokenPriceInAndOut({
         tokenIn: tokenIn.contractAddress,
         tokenOut: tokenOut.contractAddress,
       });
     }
-  }, [tokenIn, tokenOut]);
+  }, [tokenIn, tokenOut]); */
+
+  const tokenExchangeRate = useMemo(() => {
+    if (tokenIn?.contractAddress && tokenOut?.contractAddress && exchangeRate) {
+      return `1 ${tokenIn.symbol} = ${loading ? '-' : exchangeRate} ${tokenOut.symbol}`;
+    } else {
+      return '-';
+    }
+  }, [tokenIn, tokenOut, exchangeRate]);
 
   return (
     <div className="swap-comp">
@@ -598,7 +620,6 @@ function SwapComp() {
         <AdvConfig
           initData={initAdvConfig}
           onClose={(data) => {
-            console.log(data);
             setAdvConfig({ ...data });
           }}
         />
@@ -674,14 +695,12 @@ function SwapComp() {
       <div className="bottom-info">
         <div className="exchange-rate">
           <span>Reference Exchange Rate</span>
-          <span>-</span>
+          <span className={easyIn && 'text-easy-in'}>{tokenExchangeRate}</span>
         </div>
         <div className="exchange-fee">
           <span>Estinated Fees</span>
           <span className={easyIn && 'text-easy-in'}>
-            {`${
-              gasPrice?.div(ethers.BigNumber.from(10 ** 9))?.toString?.() || '-'
-            } Gwei`}
+            {`${gasPrice ? gasPrice + ' Gwei' : '-'} `}
           </span>
         </div>
         <div className="exchange-path">

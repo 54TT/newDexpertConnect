@@ -40,7 +40,6 @@ function SelectToken({ onChange, chainName }: SelectTokenType) {
       token,
     });
     const { tokens } = data;
-    console.log(tokens);
 
     setTokenList(tokens);
   };
