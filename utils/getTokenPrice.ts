@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { config } from '../src/config/config';
 import { getERC20Contract, getUniswapV2Contract } from './contracts';
 import { getWethPrice } from './getWethPrice';

@@ -42,6 +42,7 @@ import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
 import { config } from './config/config.ts';
+import checkConnection from '@utils/checkConnect.ts';
 import { ethers } from 'ethers';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
@@ -73,6 +74,7 @@ function Layout() {
     const newConfig = config[chainId ?? '11155111'];
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
+
     //@ts-ignore
     setProvider(rpcProvider);
   };
@@ -95,29 +97,11 @@ function Layout() {
     // 有 token 但没有 evm环境
     const loginChainId = localStorage.getItem('login-chain');
     const isConnected = await checkConnection();
-
-    if (loginChainId === '1' && !isConnected) {
-      cookie.remove('token');
-      cookie.remove('currentAddress');
-      changeBindind.current = '';
-      cookie.remove('jwt');
-      localStorage.clear();
-      reset();
-      if (tonConnectUI?.connected) {
-        tonConnectUI.disconnect();
-      }
-      if (window?.ethereum?.isConnected?.()) {
-        await window?.ethereum.disconnect();
-      }
-      setTonWallet(null);
-      setUserPar(null);
-      setIsLogin(false);
-      setBindingAddress(null);
-      return;
-    }
     // 没有登陆过 但是有钱包环境
     if (!loginChainId && isConnected) {
+      //@ts-ignore
       if (window?.ethereum?.isConnected?.()) {
+        //@ts-ignore
         await window?.ethereum.disconnect();
       }
     }
@@ -501,19 +485,6 @@ function Layout() {
     // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
     // })
   }, []);
-
-  function checkConnection() {
-    // 没有环境直接为未连接
-    if (!window?.ethereum?.request) return Promise.resolve(false);
-    return window.ethereum
-      .request({ method: 'eth_accounts' })
-      .then((res) => {
-        return res.length !== 0;
-      })
-      .catch((e) => {
-        return false;
-      });
-  }
 
   useEffect(() => {
     if (!client) {

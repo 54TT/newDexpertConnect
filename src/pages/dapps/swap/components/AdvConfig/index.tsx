@@ -20,7 +20,7 @@ interface AdvConfigProps {
 function AdvConfig({ onClose, initData }: AdvConfigProps) {
   const [open, setOpen] = useState(false);
   const contentRef = useRef<SettingContentRef>();
-  const [] = useState();
+
   const Title = () => (
     <div
       style={{
@@ -45,6 +45,7 @@ function AdvConfig({ onClose, initData }: AdvConfigProps) {
       overlayClassName="adv-config-pop"
       title={<Title />}
       open={open}
+      placement="bottomRight"
       icon={null}
       description={<SettingContent initData={initData} ref={contentRef} />}
     >
@@ -128,7 +129,8 @@ export const SettingContent: ForwardRefExoticComponent<
         <div className="setting-item">
           <span>Custom Slip</span>
           <Slider
-            style={{ width: '150px' }}
+            className="adv-slider"
+            /*             style={{ width: '100px' }} */
             value={slip}
             step={0.01}
             min={0}

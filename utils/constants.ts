@@ -161,11 +161,22 @@ export const CHAIN_NAME_TO_CHAIN_ID_HEX = {
   Sepolia: '0xaa36a7',
 };
 
+// 传给后端需要用这个map
+export const ID_TO_CHAIN_NAME_LOW = {
+  '1': 'eth',
+  '42161': 'arbitrum',
+  '137': 'polygon',
+  '10': 'optimism',
+  '8453': 'base',
+  '56': 'bsc',
+  '11155111': 'eth-sepolia',
+};
+
 export const CHAIN_ID_TO_CHAIN_NAME = () =>
   Object.keys(CHAIN_NAME_TO_CHAIN_ID).reduce((prev, key) => {
     prev = {
       ...prev,
-      [prev[key]]: key,
+      [CHAIN_NAME_TO_CHAIN_ID[key]]: key,
     };
     return prev;
   }, {});

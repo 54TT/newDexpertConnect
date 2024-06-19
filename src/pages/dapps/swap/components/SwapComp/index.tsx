@@ -29,19 +29,21 @@ import {
   CHAIN_NAME_TO_CHAIN_ID_HEX,
 } from '@utils/constants';
 import useButtonDesc from '@/hook/useButtonDesc';
+import UsePass from '@/components/UsePass';
+import { getPairAddress } from '@utils/swap/v2/getPairAddress';
+import { getTokenPrice } from '@utils/getTokenPrice';
+import checkConnection from '@utils/checkConnect';
+import { TokenItemData } from '@/components/SelectToken';
+import Request from '@/components/axios';
+import Loading from '@/components/allLoad/loading';
+import Cookies from 'js-cookie';
 
-interface TokenInfoType {
-  address: string;
-  icon: string;
-  symbol: string;
-  name: string;
-}
 function SwapComp() {
   const { provider, contractConfig, changeConfig } = useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
-  const [tokenIn, setTokenIn] = useState<TokenInfoType>();
-  const [tokenOut, setTokenOut] = useState<TokenInfoType>();
+  const [tokenIn, setTokenIn] = useState<TokenItemData>();
+  const [tokenOut, setTokenOut] = useState<TokenItemData>();
   const [openSelect, setOpenSelect] = useState(false);
   const currentSetToken = useRef<'in' | 'out'>('in');
   const currentInputToken = useRef<'in' | 'out'>('in');
@@ -50,6 +52,20 @@ function SwapComp() {
   const [buttonDisable, setButtonDisable] = useState(false);
   const [buttonDescId, setButtonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
+  const [buttonLoading] = useState(false);
+  const { isLogin } = useContext(CountContext);
+  const [openDpass, setOpenDpass] = useState(false);
+  const [inLoading, setInLoading] = useState(false);
+  const [outLoading, setOutLoading] = useState(false);
+  const { getAll } = Request();
+  /*   const [tokenPrice, setTokenPrice] = useState<{
+    inPrice: string;
+    outPrice: string;
+  }>({
+    inPrice: '-',
+    outPrice: '-',
+  }); */
+  const payType = useRef('0');
 
   useEffect(() => {
     changeConfig(chainId);
@@ -64,26 +80,45 @@ function SwapComp() {
     },
   };
   const [advConfig, setAdvConfig] = useState(initAdvConfig);
-  // 检测是否连接EVM钱包 或 是否有钱包环境
-  const isConnectEVMWallet = () => {
-    const loginChainId = localStorage.getItem('login-chain');
-    // 没登陆信息
-    if (!loginChainId) {
+  // 检测是否连接EVM钱包 或 是否有钱包环境, 设置按钮文案与是否可用
+  const setButtonDescAndDisable = () => {
+    // 没登陆信息 Connect Wallet
+    if (!isLogin) {
       setButtonDisable(true);
       setButtonDescId('2');
       return;
     }
-    // 连接了 ton ｜ solana
-    if (loginChainId && loginChainId !== '1') {
+    // 登陆了但是没有钱包环境  不支持的链
+    if (isLogin && !checkConnection()) {
       setButtonDisable(true);
       setButtonDescId('3');
       return;
     }
+
+    if (Loading) {
+      setButtonDisable(true);
+      setButtonDescId('1');
+    }
+
+    if (
+      tokenIn?.contractAddress &&
+      tokenOut?.contractAddress &&
+      amountIn &&
+      amountOut
+    ) {
+      setButtonDisable(false);
+      setButtonDescId('1');
+    } else {
+      setButtonDisable(true);
+    }
   };
   useEffect(() => {
     getWeth();
-    isConnectEVMWallet();
   }, []);
+
+  useEffect(() => {
+    setButtonDescAndDisable();
+  }, [isLogin, tokenIn, tokenOut, amountIn, amountOut]);
 
   const getWeth = async () => {
     console.log('-----------------');
@@ -128,27 +163,51 @@ function SwapComp() {
   };
 
   const getAmount = async (type: 'in' | 'out', value: number) => {
+    if (value === 0) return;
+    if (
+      ((type === 'in' || type === 'out') && !tokenIn?.contractAddress) ||
+      !tokenOut?.contractAddress
+    ) {
+      return;
+    }
+
     let start = Date.now();
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
+
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
+
     const param = [
       chainId,
       provider,
       await getUniversalRouterContract(provider, universalRouterAddress),
       await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
-      tokenIn.address,
-      tokenOut.address,
+      tokenIn.contractAddress,
+      tokenOut.contractAddress,
       new Decimal(value),
       new Decimal(slip),
       0,
     ];
+
     if (type === 'in') {
-      const amount = await getAmountOut.apply(null, param);
-      setAmountOut(Number(amount.toString()));
+      setOutLoading(true);
+      try {
+        const amount = await getAmountOut.apply(null, param);
+
+        setAmountOut(Number(amount.toString()));
+      } catch (e) {
+        console.error(e);
+      }
+      setOutLoading(false);
     }
     if (type === 'out') {
-      const amount = await getAmountIn.apply(null, param);
-      setAmountIn(Number(amount.toString()));
+      setInLoading(true);
+      try {
+        const amount = await getAmountIn.apply(null, param);
+        setAmountIn(Number(amount.toString()));
+      } catch (e) {
+        console.error(e);
+      }
+      setInLoading(false);
     }
     console.log(`获取输入输出总耗时${(Date.now() - start) / 1000} 秒 `);
   };
@@ -156,6 +215,7 @@ function SwapComp() {
   const getAmountDebounce = useCallback(debounce(getAmount, 500), [
     tokenIn,
     tokenOut,
+    provider,
   ]);
   // 处理approve
   const handleApprove = async (
@@ -242,8 +302,8 @@ function SwapComp() {
       new Decimal(amountIn),
       new Decimal(amountOut),
       recipientAddress,
-      true,
-      0,
+      payType.current == '0',
+      Number(payType.current),
       permit,
       signature,
     ];
@@ -273,16 +333,23 @@ function SwapComp() {
     };
 
     const { commands, inputs } = await getSwapBytesFn(tokenIn, tokenOut);
-    console.log('swap-code', {
-      commands,
-      inputs,
-    });
 
     let etherValue = BigInt(0);
     if (tokenIn === contractConfig.ethAddress) {
       etherValue = BigInt((amountIn * 10 ** 18).toFixed(0));
     }
     return { commands, inputs, etherValue };
+  };
+
+  const reportPayType = (tx) => {
+    const token = Cookies.get('token');
+    getAll({
+      method: 'get',
+      url: '/api/v1/d_pass/pay',
+      data: { payType: payType.current, tx },
+      token,
+      chainId,
+    });
   };
 
   // 发送交易
@@ -310,6 +377,9 @@ function SwapComp() {
       value: etherValue,
       gasLimit: 1030000,
     });
+    console.log(tx.hash);
+
+    reportPayType(tx.hash);
     console.log('swap-tx', tx);
   };
   // 触发交易流程
@@ -414,17 +484,39 @@ function SwapComp() {
     }
   };
 
+  useEffect(() => {
+    const { usdtAddress, ethAddress } = contractConfig;
+    const usdtToken: TokenItemData = {
+      name: 'USDT',
+      symbol: 'USDT',
+      logoUrl: '/usdt.svg',
+      contractAddress: usdtAddress,
+      balance: '0',
+    };
+    const ethToken: TokenItemData = {
+      name: 'ETH',
+      symbol: 'ETH',
+      logoUrl: '/eth-logo.svg',
+      contractAddress: ethAddress,
+      balance: '0',
+    };
+    setTokenIn(ethToken);
+    setTokenOut(usdtToken);
+    setAmountIn(0);
+    setAmountOut(0);
+  }, [contractConfig]);
+
   const changeWalletChain = async (v: string) => {
     const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
-    const loginChainId = localStorage.getItem('login-chain');
-    console.log(loginChainId);
 
-    if (loginChainId !== '1') {
+    if (!isLogin) {
       changeConfig(evmChainId);
+      setChainId(evmChainId);
     } else {
       // 有evm钱包环境
       try {
+        //@ts-ignore
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
           params: [
@@ -441,13 +533,74 @@ function SwapComp() {
     }
   };
 
+  // 获取 输入输出token价格
+  const getTokenPriceInAndOut = async ({ tokenIn, tokenOut }) => {
+    const { universalRouterAddress } = contractConfig;
+
+    const pairAddress = await getPairAddress(
+      provider,
+      universalRouterAddress,
+      tokenIn,
+      tokenOut
+    );
+    if (pairAddress) {
+      const res = await getTokenPrice(provider, chainId, pairAddress);
+      console.log(res);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      tokenIn?.contractAddress &&
+      tokenOut?.contractAddress &&
+      amountOut !== 0
+    ) {
+      currentInputToken.current = 'out';
+      getAmount('out', amountOut);
+    }
+  }, [tokenIn]);
+
+  useEffect(() => {
+    if (
+      tokenOut?.contractAddress &&
+      tokenIn?.contractAddress &&
+      amountIn !== 0
+    ) {
+      currentInputToken.current = 'in';
+      getAmount('in', amountIn);
+    }
+  }, [tokenOut]);
+
+  useEffect(() => {
+    if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
+      if (currentInputToken.current === 'in' && amountIn !== 0) {
+        getAmount('in', amountIn);
+      }
+      if (currentInputToken.current === 'out' && amountOut !== 0) {
+        getAmount('out', amountOut);
+      }
+    }
+  }, [advConfig.slip, advConfig.slipType]);
+
+  useEffect(() => {
+    if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
+      getTokenPriceInAndOut({
+        tokenIn: tokenIn.contractAddress,
+        tokenOut: tokenOut.contractAddress,
+      });
+    }
+  }, [tokenIn, tokenOut]);
+
   return (
     <div className="swap-comp">
       <div className="swap-comp-config">
         <ChooseChain onChange={(v) => changeWalletChain(v)} />
         <AdvConfig
           initData={initAdvConfig}
-          onClose={(data) => setAdvConfig(data)}
+          onClose={(data) => {
+            console.log(data);
+            setAdvConfig({ ...data });
+          }}
         />
       </div>
       <div className="input-token send-token">
@@ -460,13 +613,14 @@ function SwapComp() {
               setOpenSelect(true);
             }}
           >
-            <img className="eth-logo" src={tokenIn?.icon} alt="" />
+            <img className="eth-logo" src={tokenIn?.logoUrl} alt="" />
             <span>{tokenIn?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
         </div>
         <ProInputNumber
           value={amountIn}
+          className={inLoading && 'inut-font-gray'}
           onChange={(v) => {
             setAmountIn(v);
             if (currentInputToken.current !== 'in')
@@ -497,13 +651,14 @@ function SwapComp() {
               setOpenSelect(true);
             }}
           >
-            <img className="eth-logo" src={tokenOut?.icon || ''} alt="" />
+            <img className="eth-logo" src={tokenOut?.logoUrl || ''} alt="" />
             <span>{tokenOut?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
         </div>
         <ProInputNumber
           value={amountOut}
+          className={outLoading && 'inut-font-gray'}
           onChange={(v) => {
             setAmountOut(v);
             if (currentInputToken.current !== 'out')
@@ -537,28 +692,44 @@ function SwapComp() {
       <Button
         className="swap-button"
         disabled={buttonDisable}
-        onClick={() =>
-          handleSwap({
-            amountIn,
-            amountOut,
-            tokenIn: tokenIn.address,
-            tokenOut: tokenOut.address,
-          })
-        }
+        loading={buttonLoading}
+        onClick={() => setOpenDpass(true)}
       >
         {buttonDesc}
       </Button>
       <SelectTokenModal
         open={openSelect}
+        chainId={chainId}
         onChange={(data) => {
           if (currentSetToken.current === 'in') {
             setTokenIn(data);
           } else {
             setTokenOut(data);
+            setTimeout(() => {
+              if (tokenIn?.contractAddress && amountIn !== 0) {
+                currentInputToken.current = 'in';
+                getAmount('in', amountIn);
+              }
+            }, 0);
           }
           setOpenSelect(false);
         }}
         onCancel={() => setOpenSelect(false)}
+      />
+      <UsePass
+        open={openDpass}
+        onClose={() => setOpenDpass(false)}
+        type="swap"
+        onChange={(v: string) => {
+          payType.current = v;
+          setOpenDpass(false);
+          handleSwap({
+            amountIn,
+            amountOut,
+            tokenIn: tokenIn.contractAddress,
+            tokenOut: tokenOut.contractAddress,
+          });
+        }}
       />
     </div>
   );
