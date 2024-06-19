@@ -5,12 +5,12 @@ import { getERC20Contract, getQuoterContract, getUniversalRouterContract } from 
 import { Decimal } from 'decimal.js';
 import { getPools } from './getPools';
 
-export const getV3AmountOut = async (
+export const getV3AmountIn = async (
   chainId: string,
   provider: any,
   tokenInAddress: string,
   tokenOutAddress: string,
-  amountIn: Decimal,
+  amountOut: Decimal,
   slippage: Decimal,
   payType: number
 ) => {
@@ -35,10 +35,10 @@ export const getV3AmountOut = async (
   const tokenOutContract = await getERC20Contract(provider, tokenOutAddress);
   const tokenOutDecimals = await tokenOutContract.decimals();
 
-  let quoteAmountOutBigNumber: BigNumber = BigNumber.from(0);
+  let quoteAmountInBigNumber: BigNumber = BigNumber.from(0);
   let uniswapV3FeeAmount = BigNumber.from(0);
   let poolAddress = '';
-  const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);
+  const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenInDecimals);
   if (
     (ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
       wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()) ||
@@ -53,21 +53,21 @@ export const getV3AmountOut = async (
     );
     if (pools.length > 0) {
       for (const pool of pools) {
-        const quotedAmountOut =
-          await quoterContract.callStatic.quoteExactInputSingle(
+        const quotedAmountIn =
+          await quoterContract.callStatic.quoteExactOutputSingle(
             tokenInAddress,
             tokenOutAddress,
             pool.fee,
-            amountInBigNumber,
+            amountOutBigNumber,
             0
           );
-        if (quoteAmountOutBigNumber.isZero()) {
-          quoteAmountOutBigNumber = BigNumber.from(quotedAmountOut);
+        if (quoteAmountInBigNumber.isZero()) {
+          quoteAmountInBigNumber = BigNumber.from(quotedAmountIn);
           uniswapV3FeeAmount = BigNumber.from(pool.fee);
           poolAddress = pool.address;
         } else {
-          if (quotedAmountOut.gt(quoteAmountOutBigNumber)) {
-            quoteAmountOutBigNumber = BigNumber.from(quotedAmountOut);
+          if (quotedAmountIn.lt(quoteAmountInBigNumber)) {
+            quoteAmountInBigNumber = BigNumber.from(quotedAmountIn);
             uniswapV3FeeAmount = BigNumber.from(pool.fee);
             poolAddress = pool.address;
           }
@@ -96,21 +96,21 @@ export const getV3AmountOut = async (
       for (const pool of pools) {
         // const consult = await uniswapV3OracleLibraryContract.consult(pool.address, 300)
         // const quoteAmount = await uniswapV3OracleLibraryContract.getQuoteAtTick(consult.arithmeticMeanTick, amountInBigNumber, tokenInAddress, wethAddress)
-        const quotedAmountOut =
-          await quoterContract.callStatic.quoteExactInputSingle(
+        const quotedAmountIn =
+          await quoterContract.callStatic.quoteExactOutputSingle(
             tokenInAddress,
             tokenOutAddress,
             pool.fee,
-            amountInBigNumber,
+            amountOutBigNumber,
             0
           );
-        if (quoteAmountOutBigNumber.isZero()) {
-          quoteAmountOutBigNumber = BigNumber.from(quotedAmountOut);
+        if (quoteAmountInBigNumber.isZero()) {
+          quoteAmountInBigNumber = BigNumber.from(quotedAmountIn);
           uniswapV3FeeAmount = BigNumber.from(pool.fee);
           poolAddress = pool.address;
         } else {
-          if (quotedAmountOut.gt(quoteAmountOutBigNumber)) {
-            quoteAmountOutBigNumber = BigNumber.from(quotedAmountOut);
+          if (quotedAmountIn.lt(quoteAmountInBigNumber)) {
+            quoteAmountInBigNumber = BigNumber.from(quotedAmountIn);
             uniswapV3FeeAmount = BigNumber.from(pool.fee);
             poolAddress = pool.address;
           }
@@ -138,21 +138,21 @@ export const getV3AmountOut = async (
     );
     if (pools.length > 0) {
       for (const pool of pools) {
-        const quotedAmountOut =
-          await quoterContract.callStatic.quoteExactInputSingle(
+        const quotedAmountIn =
+          await quoterContract.callStatic.quoteExactOutputSingle(
             tokenInAddress,
             tokenOutAddress,
             pool.fee,
-            amountInBigNumber,
+            amountOutBigNumber,
             0
           );
-        if (quoteAmountOutBigNumber.isZero()) {
-          quoteAmountOutBigNumber = BigNumber.from(quotedAmountOut);
+        if (quoteAmountInBigNumber.isZero()) {
+          quoteAmountInBigNumber = BigNumber.from(quotedAmountIn);
           uniswapV3FeeAmount = BigNumber.from(pool.fee);
           poolAddress = pool.address;
         } else {
-          if (quotedAmountOut.gt(quoteAmountOutBigNumber)) {
-            quoteAmountOutBigNumber = BigNumber.from(quotedAmountOut);
+          if (quotedAmountIn.gt(quoteAmountInBigNumber)) {
+            quoteAmountInBigNumber = BigNumber.from(quotedAmountIn);
             uniswapV3FeeAmount = BigNumber.from(pool.fee);
             poolAddress = pool.address;
           }
@@ -166,16 +166,16 @@ export const getV3AmountOut = async (
       };
     }
   } else {
-    quoteAmountOutBigNumber = BigNumber.from(amountInBigNumber.toString());
+    quoteAmountInBigNumber = BigNumber.from(amountOutBigNumber.toString());
   }
 
-  let amount = reduceFromDecimalsBN(quoteAmountOutBigNumber, tokenOutDecimals);
+  let amount = reduceFromDecimalsBN(quoteAmountInBigNumber, tokenInDecimals);
 
   if (fee.greaterThan(0)) {
-    amount = amount.sub(amount.mul(fee));
+    amount = amount.add(amount.mul(fee));
   }
   if (slippage.greaterThan(0)) {
-    amount = amount.sub(amount.mul(slippage));
+    amount = amount.add(amount.mul(slippage));
   }
   return {
     quoteAmount: amount,

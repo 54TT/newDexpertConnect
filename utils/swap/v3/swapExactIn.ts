@@ -72,22 +72,21 @@ export const ethToErc20 = async (
     amountIn: BigNumber,
     amountOutMin: BigNumber,
     recipient: string,
-    pairAddress: string,
     isFee: boolean,
     feeType: number,
     uniswapV3Fee: number,
 ) => {
     const chainConfig = config[chainId];
     const ethAddress = chainConfig.ethAddress;
-
-    const wrapEthParams = [pairAddress, amountIn, isFee, feeType]
+    const universalRouterAddress = chainConfig.universalRouterAddress;
+    const wrapEthParams = [universalRouterAddress, amountIn, false, feeType]
     planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false)
 
     let swapPath = [tokenIn, tokenOut]
     const path = encodePathExactInput(swapPath, [uniswapV3Fee])
-    const payerIsUser = true;
-    const swapParams = [recipient, 0, amountOutMin, path, payerIsUser, false, feeType]
-    planner.addCommand(CommandType.V2_SWAP_EXACT_IN, swapParams, false)
+    const payerIsUser = false;
+    const swapParams = [recipient, amountIn, amountOutMin, path, payerIsUser, isFee, feeType]
+    planner.addCommand(CommandType.V3_SWAP_EXACT_IN, swapParams, false)
 
     const sweepParams = [ethAddress, recipient, 0]
     planner.addCommand(CommandType.SWEEP, sweepParams, false)
