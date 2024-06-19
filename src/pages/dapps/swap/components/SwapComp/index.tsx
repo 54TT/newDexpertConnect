@@ -34,6 +34,9 @@ import { getPairAddress } from '@utils/swap/v2/getPairAddress';
 import { getTokenPrice } from '@utils/getTokenPrice';
 import checkConnection from '@utils/checkConnect';
 import { TokenItemData } from '@/components/SelectToken';
+import Request from '@/components/axios';
+import Loading from '@/components/allLoad/loading';
+import Cookies from 'js-cookie';
 
 function SwapComp() {
   const { provider, contractConfig, changeConfig } = useContext(CountContext);
@@ -49,10 +52,12 @@ function SwapComp() {
   const [buttonDisable, setButtonDisable] = useState(false);
   const [buttonDescId, setButtonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const { isLogin } = useContext(CountContext);
   const [openDpass, setOpenDpass] = useState(false);
   const [inLoading, setInLoading] = useState(false);
   const [outLoading, setOutLoading] = useState(false);
+  const { getAll } = Request();
   const [tokenPrice, setTokenPrice] = useState<{
     inPrice: string;
     outPrice: string;
@@ -75,8 +80,8 @@ function SwapComp() {
     },
   };
   const [advConfig, setAdvConfig] = useState(initAdvConfig);
-  // 检测是否连接EVM钱包 或 是否有钱包环境
-  const isConnectEVMWallet = () => {
+  // 检测是否连接EVM钱包 或 是否有钱包环境, 设置按钮文案与是否可用
+  const setButtonDescAndDisable = () => {
     // 没登陆信息 Connect Wallet
     if (!isLogin) {
       setButtonDisable(true);
@@ -89,16 +94,31 @@ function SwapComp() {
       setButtonDescId('3');
       return;
     }
+
+    if (Loading) {
+      setButtonDisable(true);
+      setButtonDescId('1');
+    }
+
+    if (
+      tokenIn?.contractAddress &&
+      tokenOut?.contractAddress &&
+      amountIn &&
+      amountOut
+    ) {
+      setButtonDisable(false);
+      setButtonDescId('1');
+    } else {
+      setButtonDisable(true);
+    }
   };
   useEffect(() => {
     getWeth();
   }, []);
 
   useEffect(() => {
-    isConnectEVMWallet();
-  }, [isLogin]);
-
-  useEffect(() => {}, [tokenIn, tokenOut, amountIn, amountOut]);
+    setButtonDescAndDisable();
+  }, [isLogin, tokenIn, tokenOut, amountIn, amountOut]);
 
   const getWeth = async () => {
     console.log('-----------------');
@@ -145,8 +165,8 @@ function SwapComp() {
   const getAmount = async (type: 'in' | 'out', value: number) => {
     if (value === 0) return;
     if (
-      ((type === 'in' || type === 'out') && !tokenIn?.address) ||
-      !tokenOut?.address
+      ((type === 'in' || type === 'out') && !tokenIn?.contractAddress) ||
+      !tokenOut?.contractAddress
     ) {
       return;
     }
@@ -161,13 +181,12 @@ function SwapComp() {
       provider,
       await getUniversalRouterContract(provider, universalRouterAddress),
       await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
-      tokenIn.address,
-      tokenOut.address,
+      tokenIn.contractAddress,
+      tokenOut.contractAddress,
       new Decimal(value),
       new Decimal(slip),
       0,
     ];
-    console.log(provider);
 
     if (type === 'in') {
       setOutLoading(true);
@@ -322,6 +341,17 @@ function SwapComp() {
     return { commands, inputs, etherValue };
   };
 
+  const reportPayType = (tx) => {
+    const token = Cookies.get('token');
+    getAll({
+      method: 'get',
+      url: '/api/v1/d_pass/pay',
+      data: { payType: payType.current, tx },
+      token,
+      chainId,
+    });
+  };
+
   // 发送交易
   const sendSwap = async ({
     commands,
@@ -347,6 +377,9 @@ function SwapComp() {
       value: etherValue,
       gasLimit: 1030000,
     });
+    console.log(tx.hash);
+
+    reportPayType(tx.hash);
     console.log('swap-tx', tx);
   };
   // 触发交易流程
@@ -451,6 +484,28 @@ function SwapComp() {
     }
   };
 
+  useEffect(() => {
+    const { usdtAddress, ethAddress } = contractConfig;
+    const usdtToken: TokenItemData = {
+      name: 'USDT',
+      symbol: 'USDT',
+      logoUrl: '/usdt.svg',
+      contractAddress: usdtAddress,
+      balance: '0',
+    };
+    const ethToken: TokenItemData = {
+      name: 'ETH',
+      symbol: 'ETH',
+      logoUrl: '/eth-logo.svg',
+      contractAddress: ethAddress,
+      balance: '0',
+    };
+    setTokenIn(ethToken);
+    setTokenOut(usdtToken);
+    setAmountIn(0);
+    setAmountOut(0);
+  }, [contractConfig]);
+
   const changeWalletChain = async (v: string) => {
     const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
@@ -494,21 +549,29 @@ function SwapComp() {
   };
 
   useEffect(() => {
-    if (tokenIn?.address && tokenOut?.address && amountOut !== 0) {
+    if (
+      tokenIn?.contractAddress &&
+      tokenOut?.contractAddress &&
+      amountOut !== 0
+    ) {
       currentInputToken.current = 'out';
       getAmount('out', amountOut);
     }
   }, [tokenIn]);
 
   useEffect(() => {
-    if (tokenOut?.address && tokenIn?.address && amountIn !== 0) {
+    if (
+      tokenOut?.contractAddress &&
+      tokenIn?.contractAddress &&
+      amountIn !== 0
+    ) {
       currentInputToken.current = 'in';
       getAmount('in', amountIn);
     }
   }, [tokenOut]);
 
   useEffect(() => {
-    if (tokenIn?.address && tokenOut?.address) {
+    if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
       if (currentInputToken.current === 'in' && amountIn !== 0) {
         getAmount('in', amountIn);
       }
@@ -519,10 +582,10 @@ function SwapComp() {
   }, [advConfig.slip, advConfig.slipType]);
 
   useEffect(() => {
-    if (tokenIn?.address && tokenOut?.address) {
+    if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
       getTokenPriceInAndOut({
-        tokenIn: tokenIn.address,
-        tokenOut: tokenOut.address,
+        tokenIn: tokenIn.contractAddress,
+        tokenOut: tokenOut.contractAddress,
       });
     }
   }, [tokenIn, tokenOut]);
@@ -628,6 +691,7 @@ function SwapComp() {
       <Button
         className="swap-button"
         disabled={buttonDisable}
+        loading={buttonLoading}
         onClick={() => setOpenDpass(true)}
       >
         {buttonDesc}
@@ -641,7 +705,7 @@ function SwapComp() {
           } else {
             setTokenOut(data);
             setTimeout(() => {
-              if (tokenIn?.address && amountIn !== 0) {
+              if (tokenIn?.contractAddress && amountIn !== 0) {
                 currentInputToken.current = 'in';
                 getAmount('in', amountIn);
               }
@@ -661,8 +725,8 @@ function SwapComp() {
           handleSwap({
             amountIn,
             amountOut,
-            tokenIn: tokenIn.address,
-            tokenOut: tokenOut.address,
+            tokenIn: tokenIn.contractAddress,
+            tokenOut: tokenOut.contractAddress,
           });
         }}
       />

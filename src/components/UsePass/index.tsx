@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 function UsePass({ open, type, onChange, onClose }) {
   const { isLogin } = useContext(CountContext);
+  // 0 付钱 1 gloden 2 swap
   const [value, setValue] = useState<'1' | '2' | '0'>('0');
   const [dpassCount, setDapssCount] = useState('0'); // 剩余的dpass次数 需要区分swap snip limit
   const [glodenEndTime, setGlodenEndTime] = useState('0'); // 金卡到期时间

@@ -129,7 +129,8 @@ export const SettingContent: ForwardRefExoticComponent<
         <div className="setting-item">
           <span>Custom Slip</span>
           <Slider
-            style={{ width: '150px' }}
+            className="adv-slider"
+            /*             style={{ width: '100px' }} */
             value={slip}
             step={0.01}
             min={0}

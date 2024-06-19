@@ -14,7 +14,6 @@ function SelectTokenModal({
   ...props
 }: SelectTokenModalType) {
   const chainName = useMemo(() => ID_TO_CHAIN_NAME_LOW[chainId], [chainId]);
-  console.log(chainId);
 
   return (
     <Modal
