@@ -39,7 +39,6 @@ import { getTokenPrice } from '@utils/getTokenPrice';
 import checkConnection from '@utils/checkConnect';
 import { TokenItemData } from '@/components/SelectToken';
 import Request from '@/components/axios';
-import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
 import useInterval from '@/hook/useInterval';
 
@@ -111,12 +110,13 @@ function SwapComp() {
     return Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
   }, [provider, tokenIn?.contractAddress, tokenOut?.contractAddress]);
 
-  const [[gasPrice, exchangeRate], loading, showSkeleton] = useInterval(
+  const [data, loading, showSkeleton] = useInterval(
     getExchangeRateAndGasPrice,
-    ['', ''],
     10000,
     [tokenIn, tokenOut]
   );
+
+  const [gasPrice, exchangeRate] = data || ['', ''];
 
   useEffect(() => {
     changeConfig(chainId);
