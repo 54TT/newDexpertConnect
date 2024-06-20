@@ -735,7 +735,7 @@ function SwapComp() {
       <div className="exchange">
         <img
           className="exchange-img"
-          src="/exchange.png"
+          src="/exchange.svg"
           alt=""
           onClick={() => exchange()}
         />
