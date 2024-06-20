@@ -102,7 +102,7 @@ export const getAmountOut = async (
   let amount = reduceFromDecimalsBN(amountOutBigNumber, tokenOutDecimals);
 
   if (fee.greaterThan(0)) {
-    amount = amount.sub(amount.mul(fee));
+    amount = amount.sub(amount.add(amount.mul(fee)).mul(fee));
   }
   if (slippage.greaterThan(0)) {
     amount = amount.sub(amount.mul(slippage));

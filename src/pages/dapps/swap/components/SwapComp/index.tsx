@@ -8,6 +8,7 @@ import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
 import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
 import { getSwapExactInBytes as getSwapExactInBytesV3 } from '@utils/swap/v3/getSwapExactInBytes';
+import { getSwapExactOutBytes as getSwapExactOutBytesV3 } from '@utils/swap/v3/getSwapExactOutBytes';
 import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
@@ -126,9 +127,9 @@ function SwapComp() {
     const param = [
       "11155111",
       provider1,
-      '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
       '0xb72bc8971d5e595776592e8290be6f31937097c6',
-      new Decimal(0.001),
+      '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
+      new Decimal(10),
       new Decimal(0.01),
       0,
     ];
@@ -148,9 +149,27 @@ function SwapComp() {
       '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
       true,
       0,
-      Number(res.fee)
+      Number(res.fee),
+      null,
+      null
     );
     console.log('----------aaaaa', a);
+
+    const b = await getSwapExactOutBytesV3(
+      "11155111",
+      provider1,
+      '0x0000000000000000000000000000000000000000',
+      '0xb72bc8971d5e595776592e8290be6f31937097c6',
+      new Decimal(0.001),
+      new Decimal(0),
+      '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
+      true,
+      0,
+      Number(res.fee),
+      null,
+      null
+    )
+    console.log('----------bbb', b);
   };
 
   const exchange = () => {

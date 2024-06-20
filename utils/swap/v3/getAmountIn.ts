@@ -172,7 +172,7 @@ export const getV3AmountIn = async (
   let amount = reduceFromDecimalsBN(quoteAmountInBigNumber, tokenInDecimals);
 
   if (fee.greaterThan(0)) {
-    amount = amount.add(amount.mul(fee));
+    amount = amount.add(amount.add(amount.mul(fee)).mul(fee));
   }
   if (slippage.greaterThan(0)) {
     amount = amount.add(amount.mul(slippage));
