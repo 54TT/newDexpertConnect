@@ -71,7 +71,7 @@ function Layout() {
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
   const changeConfig = (chainId) => {
-    const newConfig = config[chainId ?? '11155111'];
+    const newConfig = config[chainId ?? '1'];
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
 
@@ -100,10 +100,8 @@ function Layout() {
     // 没有登陆过 但是有钱包环境
     if (!loginChainId && isConnected) {
       //@ts-ignore
-      if (window?.ethereum?.isConnected?.()) {
-        //@ts-ignore
-        await window?.ethereum.disconnect();
-      }
+      //@ts-ignore
+      await window?.ethereum.disconnect();
     }
   };
 

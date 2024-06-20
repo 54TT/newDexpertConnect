@@ -34,13 +34,14 @@ import {
 } from '@utils/constants';
 import useButtonDesc from '@/hook/useButtonDesc';
 import UsePass from '@/components/UsePass';
-import { getPairAddress } from '@utils/swap/v2/getPairAddress';
-import { getTokenPrice } from '@utils/getTokenPrice';
+/* import { getPairAddress } from '@utils/swap/v2/getPairAddress';
+import { getTokenPrice } from '@utils/getTokenPrice'; */
 import checkConnection from '@utils/checkConnect';
 import { TokenItemData } from '@/components/SelectToken';
 import Request from '@/components/axios';
 import Cookies from 'js-cookie';
 import useInterval from '@/hook/useInterval';
+import getBalanceRpc from '@utils/getBalanceRpc';
 
 function SwapComp() {
   const { provider, contractConfig, changeConfig, setIsModalOpen } =
@@ -62,6 +63,8 @@ function SwapComp() {
   const [openDpass, setOpenDpass] = useState(false);
   const [inLoading, setInLoading] = useState(false);
   const [outLoading, setOutLoading] = useState(false);
+  const [balanceIn, setBalanceIn] = useState<Decimal>(); // 需要用于计算
+  const [balanceOut, setBalanceOut] = useState<Decimal>();
   const { getAll } = Request();
   /*   const [tokenPrice, setTokenPrice] = useState<{
     inPrice: string;
@@ -92,10 +95,14 @@ function SwapComp() {
       : parseFloat(amount.toFixed(6)).toString();
   };
 
+  useEffect(() => {});
+
   const getExchangeRateAndGasPrice = useCallback(async () => {
     if (!tokenIn?.contractAddress || !tokenOut?.contractAddress)
       return Promise.resolve(['', '']);
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
+    console.log(chainId);
+
     const data = [
       chainId,
       provider,
@@ -597,7 +604,38 @@ function SwapComp() {
       currentInputToken.current = 'out';
       getAmount('out', amountOut);
     }
+    if (tokenIn?.contractAddress && isLogin) {
+    }
   }, [tokenIn]);
+
+  const getTokenBalance = useCallback(
+    async (token, dispatch) => {
+      const { wethAddress } = contractConfig;
+      if (checkConnection() && token) {
+        // @ts-ignore
+        const injectProvider = new ethers.providers.Web3Provider(
+          // @ts-ignore
+          window?.ethereum
+        );
+
+        const balance = await getBalanceRpc(injectProvider, token, wethAddress);
+        dispatch(balance);
+      }
+    },
+    [contractConfig]
+  );
+
+  useEffect(() => {
+    if (isLogin) {
+      getTokenBalance(tokenIn?.contractAddress, setBalanceIn);
+    }
+  }, [tokenIn, isLogin]);
+
+  useEffect(() => {
+    if (isLogin) {
+      getTokenBalance(tokenOut?.contractAddress, setBalanceOut);
+    }
+  }, [tokenOut, isLogin]);
 
   useEffect(() => {
     if (
@@ -684,7 +722,11 @@ function SwapComp() {
         />
         <div className="token-info">
           <div>1 USDT</div>
-          <div>Balance: 0</div>
+          {isLogin ? (
+            <div>Balance: {balanceIn?.toString?.() || '0'}</div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <div className="exchange">
@@ -722,7 +764,11 @@ function SwapComp() {
         />
         <div className="token-info">
           <div>1 USDT</div>
-          <div>Balance: 0</div>
+          {isLogin ? (
+            <div>Balance: {balanceOut?.toString?.() || '0'} </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <div className="bottom-info">
