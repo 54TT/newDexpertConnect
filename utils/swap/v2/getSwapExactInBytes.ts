@@ -34,8 +34,6 @@ export const getSwapExactInBytes = async (
 
   const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);
   const amountOutBigNumber = expandToDecimalsBN(amountOutMin, tokenOutDecimals);
-  console.log(amountInBigNumber.toString());
-  console.log(amountOutBigNumber.toString());
   if (
     tokenInAddress.toLowerCase() === ethAddress.toLowerCase() &&
     tokenOutAddress.toLowerCase() !== wethAddress.toLowerCase() &&

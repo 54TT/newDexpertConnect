@@ -7,6 +7,7 @@ const useButtonDesc = (id: string) => {
     '5': 'Waiting Approve',
     '6': 'Waiting Permit',
     '7': 'Calculating Amount',
+    '8': 'Waiting Confirm',
   };
   return [desc[id]];
 };

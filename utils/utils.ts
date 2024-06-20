@@ -22,7 +22,6 @@ export const formatAddress = (address: string) => {
 export function expandToDecimalsBN(n: Decimal, decimals: number): BigNumber {
   // use bn intermediately to allow decimals in intermediate calculations
   const amount = n.mul(new Decimal(10).pow(decimals)).toFixed(0);
-  console.log(amount);
 
   return BigNumber.from(amount);
 }

@@ -1,5 +1,12 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Button } from 'antd';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { Button, Skeleton } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
@@ -23,7 +30,6 @@ import { PermitSingle, getPermitSignature } from '@utils/permit2';
 import { BigNumber, ethers } from 'ethers';
 import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
-import useGetGasPrice from '@/hook/useGetGasPrice';
 import ChooseChain from '@/components/chooseChain';
 import {
   CHAIN_NAME_TO_CHAIN_ID,
@@ -38,9 +44,11 @@ import { TokenItemData } from '@/components/SelectToken';
 import Request from '@/components/axios';
 import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
+import useInterval from '@/hook/useInterval';
 
 function SwapComp() {
-  const { provider, contractConfig, changeConfig } = useContext(CountContext);
+  const { provider, contractConfig, changeConfig, setIsModalOpen } =
+    useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<TokenItemData>();
@@ -49,11 +57,11 @@ function SwapComp() {
   const currentSetToken = useRef<'in' | 'out'>('in');
   const currentInputToken = useRef<'in' | 'out'>('in');
   const [chainId, setChainId] = useState('1');
-  const [gasPrice, easyIn] = useGetGasPrice();
+
   const [buttonDisable, setButtonDisable] = useState(false);
   const [buttonDescId, setButtonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
-  const [buttonLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const { isLogin } = useContext(CountContext);
   const [openDpass, setOpenDpass] = useState(false);
   const [inLoading, setInLoading] = useState(false);
@@ -67,6 +75,51 @@ function SwapComp() {
     outPrice: '-',
   }); */
   const payType = useRef('0');
+
+  const getGasPrice = async () => {
+    const gas: BigNumber = await provider.getGasPrice();
+    const gasGwei = gas.toNumber() / 10 ** 9;
+    return gasGwei < 0.0001
+      ? '< 0.0001'
+      : parseFloat(gasGwei.toFixed(4)).toString();
+  };
+
+  const getAmountExchangeRate = async (data) => {
+    if (!tokenIn?.contractAddress && !tokenOut?.contractAddress) {
+      return Promise.resolve('');
+    }
+    console.log(data);
+
+    const amount: Decimal = await getAmountOut.apply(null, data);
+    return amount.toNumber() < 0.000001
+      ? '< 0.000001'
+      : parseFloat(amount.toFixed(6)).toString();
+  };
+
+  const getExchangeRateAndGasPrice = useCallback(async () => {
+    if (!tokenIn?.contractAddress || !tokenOut?.contractAddress)
+      return Promise.resolve(['', '']);
+    const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
+    const data = [
+      chainId,
+      provider,
+      await getUniversalRouterContract(provider, universalRouterAddress),
+      await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
+      tokenIn.contractAddress,
+      tokenOut.contractAddress,
+      new Decimal(1),
+      new Decimal(0),
+      0,
+    ];
+    return Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
+  }, [provider, tokenIn?.contractAddress, tokenOut?.contractAddress]);
+
+  const [[gasPrice, exchangeRate], loading, showSkeleton] = useInterval(
+    getExchangeRateAndGasPrice,
+    ['', ''],
+    10000,
+    [tokenIn, tokenOut]
+  );
 
   useEffect(() => {
     changeConfig(chainId);
@@ -85,7 +138,7 @@ function SwapComp() {
   const setButtonDescAndDisable = () => {
     // 没登陆信息 Connect Wallet
     if (!isLogin) {
-      setButtonDisable(true);
+      setButtonDisable(false);
       setButtonDescId('2');
       return;
     }
@@ -96,7 +149,7 @@ function SwapComp() {
       return;
     }
 
-    if (Loading) {
+    if (isLogin) {
       setButtonDisable(true);
       setButtonDescId('1');
     }
@@ -113,64 +166,10 @@ function SwapComp() {
       setButtonDisable(true);
     }
   };
-  useEffect(() => {
-    getWeth();
-  }, []);
 
   useEffect(() => {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut]);
-
-  const getWeth = async () => {
-    console.log('-----------------');
-    const provider1 = new ethers.providers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC");
-    const param = [
-      "11155111",
-      provider1,
-      '0xb72bc8971d5e595776592e8290be6f31937097c6',
-      '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
-      new Decimal(10),
-      new Decimal(0.01),
-      0,
-    ];
-    const res = await getV3AmountOut.apply(null, param);
-    console.log('res-----', res);
-    console.log(res.quoteAmount.toString());
-    console.log(res.fee);
-    console.log(res.poolAddress);
-
-    const a = await getSwapExactInBytesV3(
-      "11155111",
-      provider1,
-      '0x0000000000000000000000000000000000000000',
-      '0xb72bc8971d5e595776592e8290be6f31937097c6',
-      new Decimal(0.001),
-      new Decimal(0),
-      '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
-      true,
-      0,
-      Number(res.fee),
-      null,
-      null
-    );
-    console.log('----------aaaaa', a);
-
-    const b = await getSwapExactOutBytesV3(
-      "11155111",
-      provider1,
-      '0x0000000000000000000000000000000000000000',
-      '0xb72bc8971d5e595776592e8290be6f31937097c6',
-      new Decimal(0.001),
-      new Decimal(0),
-      '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89',
-      true,
-      0,
-      Number(res.fee),
-      null,
-      null
-    )
-    console.log('----------bbb', b);
-  };
 
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
@@ -211,7 +210,6 @@ function SwapComp() {
       setOutLoading(true);
       try {
         const amount = await getAmountOut.apply(null, param);
-
         setAmountOut(Number(amount.toString()));
       } catch (e) {
         console.error(e);
@@ -243,12 +241,20 @@ function SwapComp() {
     decimals: number
   ) => {
     const { permit2Address } = contractConfig;
-    const approveTx = await tokenContract.approve(
-      permit2Address,
-      BigInt((amountIn * 10 ** decimals).toFixed(0))
-    );
+    let approveTx;
+    try {
+      // 等待approve;
+      setButtonDescId('5');
+      setButtonLoading(true);
+      approveTx = await tokenContract.approve(
+        permit2Address,
+        BigInt((amountIn * 10 ** decimals).toFixed(0))
+      );
+    } catch (e) {
+      setButtonDescId('1');
+      setButtonLoading(false);
+    }
     console.log(approveTx, 'approve--tx');
-
     const recipent = await approveTx.wait();
     // 1 成功 2 失败
     return recipent.status === 1;
@@ -271,6 +277,8 @@ function SwapComp() {
     permit2Contract,
     signer,
   }) => {
+    setButtonLoading(true);
+    setButtonDescId('6');
     const { universalRouterAddress } = contractConfig;
     const permitSingle: PermitSingle = {
       sigDeadline: 2000000000,
@@ -282,22 +290,28 @@ function SwapComp() {
         nonce: 0,
       },
     };
+    let signatureData;
+    try {
+      const { eip712Domain, PERMIT2_PERMIT_TYPE, permit } =
+        await getPermitSignature(
+          Number(chainId),
+          permitSingle,
+          permit2Contract,
+          signerAddress
+        );
 
-    const { eip712Domain, PERMIT2_PERMIT_TYPE, permit } =
-      await getPermitSignature(
-        Number(chainId),
-        permitSingle,
-        permit2Contract,
-        signerAddress
+      const signature = await signer._signTypedData(
+        eip712Domain,
+        PERMIT2_PERMIT_TYPE,
+        permit
       );
+      signatureData = { permit, signature };
+    } catch (e) {
+      setButtonLoading(false);
+      setButtonDescId('1');
+    }
 
-    const signature = await signer._signTypedData(
-      eip712Domain,
-      PERMIT2_PERMIT_TYPE,
-      permit
-    );
-
-    return { signature, permit };
+    return signatureData;
   };
 
   // 获取交易字节码
@@ -379,6 +393,8 @@ function SwapComp() {
     signer,
     universalRouterAddress,
   }) => {
+    setButtonLoading(true);
+    setButtonDescId('8');
     const universalRouterContract = await getUniversalRouterContract(
       provider,
       universalRouterAddress
@@ -389,14 +405,21 @@ function SwapComp() {
     /*     const gasLimit = await universalRouterWriteContract.estimateGas[
       'execute(bytes,bytes[],uint256)'
     ](commands, inputs, BigInt(2000000000)); */
-
-    const tx = await universalRouterWriteContract[
-      'execute(bytes,bytes[],uint256)'
-    ](commands, inputs, BigInt(2000000000), {
-      value: etherValue,
-      gasLimit: 1030000,
-    });
-    console.log(tx.hash);
+    let tx;
+    try {
+      tx = await universalRouterWriteContract['execute(bytes,bytes[],uint256)'](
+        commands,
+        inputs,
+        BigInt(2000000000),
+        {
+          value: etherValue,
+          gasLimit: 1030000,
+        }
+      );
+    } catch (e) {
+      setButtonLoading(false);
+      setButtonDescId('1');
+    }
 
     reportPayType(tx.hash);
     console.log('swap-tx', tx);
@@ -553,7 +576,7 @@ function SwapComp() {
   };
 
   // 获取 输入输出token价格
-  const getTokenPriceInAndOut = async ({ tokenIn, tokenOut }) => {
+  /*   const getTokenPriceInAndOut = async ({ tokenIn, tokenOut }) => {
     const { universalRouterAddress } = contractConfig;
 
     const pairAddress = await getPairAddress(
@@ -566,7 +589,7 @@ function SwapComp() {
       const res = await getTokenPrice(provider, chainId, pairAddress);
       console.log(res);
     }
-  };
+  }; */
 
   useEffect(() => {
     if (
@@ -601,14 +624,30 @@ function SwapComp() {
     }
   }, [advConfig.slip, advConfig.slipType]);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
       getTokenPriceInAndOut({
         tokenIn: tokenIn.contractAddress,
         tokenOut: tokenOut.contractAddress,
       });
     }
-  }, [tokenIn, tokenOut]);
+  }, [tokenIn, tokenOut]); */
+
+  const tokenExchangeRate = useMemo(() => {
+    if (tokenIn?.contractAddress && tokenOut?.contractAddress && exchangeRate) {
+      return `1 ${tokenIn.symbol} = ${exchangeRate} ${tokenOut.symbol}`;
+    } else {
+      return '-';
+    }
+  }, [tokenIn, tokenOut, exchangeRate]);
+
+  const handleMainButton = () => {
+    if (!isLogin) {
+      setIsModalOpen(true);
+    } else {
+      setOpenDpass(true);
+    }
+  };
 
   return (
     <div className="swap-comp">
@@ -617,7 +656,6 @@ function SwapComp() {
         <AdvConfig
           initData={initAdvConfig}
           onClose={(data) => {
-            console.log(data);
             setAdvConfig({ ...data });
           }}
         />
@@ -693,15 +731,25 @@ function SwapComp() {
       <div className="bottom-info">
         <div className="exchange-rate">
           <span>Reference Exchange Rate</span>
-          <span>-</span>
+          {showSkeleton ? (
+            <Skeleton.Button active size="small" />
+          ) : (
+            !loading && (
+              <span className={'text-easy-in'}>{tokenExchangeRate}</span>
+            )
+          )}
         </div>
         <div className="exchange-fee">
           <span>Estinated Fees</span>
-          <span className={easyIn && 'text-easy-in'}>
-            {`${
-              gasPrice?.div(ethers.BigNumber.from(10 ** 9))?.toString?.() || '-'
-            } Gwei`}
-          </span>
+          {showSkeleton ? (
+            <Skeleton.Button active size="small" />
+          ) : (
+            !loading && (
+              <span className={'text-easy-in'}>
+                {`${gasPrice ? gasPrice + ' Gwei' : '-'} `}
+              </span>
+            )
+          )}
         </div>
         <div className="exchange-path">
           <span>Quote Path</span>
@@ -712,7 +760,7 @@ function SwapComp() {
         className="swap-button"
         disabled={buttonDisable}
         loading={buttonLoading}
-        onClick={() => setOpenDpass(true)}
+        onClick={handleMainButton}
       >
         {buttonDesc}
       </Button>

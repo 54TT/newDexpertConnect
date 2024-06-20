@@ -163,8 +163,6 @@ export const SettingContent: ForwardRefExoticComponent<
             options={selectOptions}
             value={tradeDeadline.uint}
             onChange={(v) => {
-              console.log(v);
-
               setTradeDeadline({
                 ...tradeDeadline,
                 uint: v,
