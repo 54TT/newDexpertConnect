@@ -47,7 +47,7 @@ import useInterval from '@/hook/useInterval';
 import getBalanceRpc from '@utils/getBalanceRpc';
 
 function SwapComp() {
-  const { provider, contractConfig, changeConfig, setIsModalOpen } =
+  const { provider, contractConfig, setIsModalOpen, chainId, setChainId } =
     useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
@@ -56,7 +56,6 @@ function SwapComp() {
   const [openSelect, setOpenSelect] = useState(false);
   const currentSetToken = useRef<'in' | 'out'>('in');
   const currentInputToken = useRef<'in' | 'out'>('in');
-  const [chainId, setChainId] = useState('1');
 
   const [buttonDisable, setButtonDisable] = useState(false);
   const [buttonDescId, setButtonDescId] = useState('1');
@@ -90,7 +89,6 @@ function SwapComp() {
     if (!tokenIn?.contractAddress && !tokenOut?.contractAddress) {
       return Promise.resolve('');
     }
-    console.log(data);
 
     const amount: Decimal = await getAmountOut.apply(null, data);
     return amount.toNumber() < 0.000001
@@ -98,13 +96,10 @@ function SwapComp() {
       : parseFloat(amount.toFixed(6)).toString();
   };
 
-  useEffect(() => {});
-
   const getExchangeRateAndGasPrice = useCallback(async () => {
     if (!tokenIn?.contractAddress || !tokenOut?.contractAddress)
       return Promise.resolve(['', '']);
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
-    console.log(chainId);
 
     const data = [
       chainId,
@@ -127,10 +122,6 @@ function SwapComp() {
   );
 
   const [gasPrice, exchangeRate] = data || ['', ''];
-
-  useEffect(() => {
-    changeConfig(chainId);
-  }, [chainId]);
 
   const initAdvConfig: AdvConfigType = {
     slipType: '0',
@@ -258,6 +249,7 @@ function SwapComp() {
         BigInt((amountIn * 10 ** decimals).toFixed(0))
       );
     } catch (e) {
+      console.error(e);
       setButtonDescId('1');
       setButtonLoading(false);
     }
@@ -427,7 +419,8 @@ function SwapComp() {
       setButtonLoading(false);
       setButtonDescId('1');
     }
-
+    setButtonLoading(false);
+    setButtonDescId('1');
     reportPayType(tx.hash);
     console.log('swap-tx', tx);
   };
@@ -560,7 +553,6 @@ function SwapComp() {
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
 
     if (!isLogin) {
-      changeConfig(evmChainId);
       setChainId(evmChainId);
     } else {
       // 有evm钱包环境
@@ -574,7 +566,6 @@ function SwapComp() {
             },
           ],
         });
-        changeConfig(evmChainId);
         setChainId(evmChainId);
       } catch (e) {
         console.log(e);
@@ -607,8 +598,6 @@ function SwapComp() {
       currentInputToken.current = 'out';
       getAmount('out', amountOut);
     }
-    if (tokenIn?.contractAddress && isLogin) {
-    }
   }, [tokenIn]);
 
   const getTokenBalance = useCallback(
@@ -622,6 +611,7 @@ function SwapComp() {
         );
 
         const balance = await getBalanceRpc(injectProvider, token, wethAddress);
+
         dispatch(balance);
       }
     },
@@ -690,7 +680,11 @@ function SwapComp() {
   return (
     <div className="swap-comp">
       <div className="swap-comp-config">
-        <ChooseChain onChange={(v) => changeWalletChain(v)} />
+        <ChooseChain
+          onChange={(v) => changeWalletChain(v)}
+          hideChain={true}
+          wrapClassName="swap-chooose-chain"
+        />
         <AdvConfig
           initData={initAdvConfig}
           onClose={(data) => {
@@ -818,12 +812,6 @@ function SwapComp() {
             setTokenIn(data);
           } else {
             setTokenOut(data);
-            setTimeout(() => {
-              if (tokenIn?.contractAddress && amountIn !== 0) {
-                currentInputToken.current = 'in';
-                getAmount('in', amountIn);
-              }
-            }, 0);
           }
           setOpenSelect(false);
         }}
