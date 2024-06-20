@@ -83,15 +83,20 @@
 
   .bottom-info {
     background-color: #2d2d2d;
-    padding: 12px 14px;
+    padding: 0px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     margin-top: -6px;
     border-radius: 15px;
     margin-bottom: 12px;
+
     > div {
-      margin: 16px 0 8px 0;
+      height: 40px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       span {
         color: @dark-font-color;
         font-weight: 300;

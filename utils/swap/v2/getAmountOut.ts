@@ -24,7 +24,6 @@ export const getAmountOut = async (
   let fee = new Decimal(0);
   if (payType == 0) {
     const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
-    console.log(fastTradeFeeBps);
 
     const feeBaseBps = await universalRouterContract.feeBaseBps();
 
@@ -53,7 +52,6 @@ export const getAmountOut = async (
       amountInBigNumber,
       swapPath
     );
-    console.log('amountsOut:', amountsOut);
     amountOutBigNumber = BigNumber.from(amountsOut[amountsOut.length - 1]);
   } else if (
     tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
