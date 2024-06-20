@@ -13,6 +13,9 @@ import { getAmountOut } from '@utils/swap/v2/getAmountOut';
 import { getSwapEthAndWeth } from '@utils/swap/v2/getSwapEthAndWeth';
 import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
+import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
+import { getSwapExactInBytes as getSwapExactInBytesV3 } from '@utils/swap/v3/getSwapExactInBytes';
+import { getSwapExactOutBytes as getSwapExactOutBytesV3 } from '@utils/swap/v3/getSwapExactOutBytes';
 import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
