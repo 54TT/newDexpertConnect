@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button } from 'antd';
+import { Button, Skeleton } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
@@ -27,7 +27,6 @@ import { PermitSingle, getPermitSignature } from '@utils/permit2';
 import { BigNumber, ethers } from 'ethers';
 import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
-import useGetGasPrice from '@/hook/useGetGasPrice';
 import ChooseChain from '@/components/chooseChain';
 import {
   CHAIN_NAME_TO_CHAIN_ID,
@@ -94,6 +93,8 @@ function SwapComp() {
   };
 
   const getExchangeRateAndGasPrice = useCallback(async () => {
+    if (!tokenIn?.contractAddress || !tokenOut?.contractAddress)
+      return Promise.resolve(['', '']);
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
     const data = [
       chainId,
@@ -109,12 +110,13 @@ function SwapComp() {
     return Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
   }, [provider, tokenIn?.contractAddress, tokenOut?.contractAddress]);
 
-  const [[gasPrice, exchangeRate], easyIn] = useInterval(
+  const [[gasPrice, exchangeRate], loading, showSkeleton] = useInterval(
     getExchangeRateAndGasPrice,
     ['', ''],
     10000,
     [tokenIn, tokenOut]
   );
+  console.log(showSkeleton);
 
   /*   const [gasPrice, easyIn] = useGetGasPrice(); */
 
@@ -146,7 +148,7 @@ function SwapComp() {
       return;
     }
 
-    if (Loading) {
+    if (isLogin) {
       setButtonDisable(true);
       setButtonDescId('1');
     }
@@ -607,11 +609,13 @@ function SwapComp() {
 
   const tokenExchangeRate = useMemo(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress && exchangeRate) {
-      return `1 ${tokenIn.symbol} = ${loading ? '-' : exchangeRate} ${tokenOut.symbol}`;
+      return `1 ${tokenIn.symbol} = ${exchangeRate} ${tokenOut.symbol}`;
     } else {
       return '-';
     }
   }, [tokenIn, tokenOut, exchangeRate]);
+
+  const showGasPrice = useMemo(() => {}, [loading, showSkeleton]);
 
   return (
     <div className="swap-comp">
@@ -695,13 +699,25 @@ function SwapComp() {
       <div className="bottom-info">
         <div className="exchange-rate">
           <span>Reference Exchange Rate</span>
-          <span className={easyIn && 'text-easy-in'}>{tokenExchangeRate}</span>
+          {showSkeleton ? (
+            <Skeleton.Button active size="small" />
+          ) : (
+            !loading && (
+              <span className={'text-easy-in'}>{tokenExchangeRate}</span>
+            )
+          )}
         </div>
         <div className="exchange-fee">
           <span>Estinated Fees</span>
-          <span className={easyIn && 'text-easy-in'}>
-            {`${gasPrice ? gasPrice + ' Gwei' : '-'} `}
-          </span>
+          {showSkeleton ? (
+            <Skeleton.Button active size="small" />
+          ) : (
+            !loading && (
+              <span className={'text-easy-in'}>
+                {`${gasPrice ? gasPrice + ' Gwei' : '-'} `}
+              </span>
+            )
+          )}
         </div>
         <div className="exchange-path">
           <span>Quote Path</span>
