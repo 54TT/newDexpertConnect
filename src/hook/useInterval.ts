@@ -26,11 +26,8 @@ const useInterval = (fn, initData, delay, depency): [any, boolean, boolean] => {
     }
   }, [data]);
 
-  useEffect(() => {
-    setDependencyChange(true);
-  }, depency);
-
   const getIntervalDataCallback = useCallback(() => {
+    setDependencyChange(true);
     getData();
     timer.current = setInterval(getData, delay);
   }, [...depency, delay]);

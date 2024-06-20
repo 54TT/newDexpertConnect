@@ -44,7 +44,8 @@ import Cookies from 'js-cookie';
 import useInterval from '@/hook/useInterval';
 
 function SwapComp() {
-  const { provider, contractConfig, changeConfig } = useContext(CountContext);
+  const { provider, contractConfig, changeConfig, setIsModalOpen } =
+    useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<TokenItemData>();
@@ -57,7 +58,7 @@ function SwapComp() {
   const [buttonDisable, setButtonDisable] = useState(false);
   const [buttonDescId, setButtonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
-  const [buttonLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const { isLogin } = useContext(CountContext);
   const [openDpass, setOpenDpass] = useState(false);
   const [inLoading, setInLoading] = useState(false);
@@ -116,9 +117,6 @@ function SwapComp() {
     10000,
     [tokenIn, tokenOut]
   );
-  console.log(showSkeleton);
-
-  /*   const [gasPrice, easyIn] = useGetGasPrice(); */
 
   useEffect(() => {
     changeConfig(chainId);
@@ -137,7 +135,7 @@ function SwapComp() {
   const setButtonDescAndDisable = () => {
     // 没登陆信息 Connect Wallet
     if (!isLogin) {
-      setButtonDisable(true);
+      setButtonDisable(false);
       setButtonDescId('2');
       return;
     }
@@ -240,12 +238,20 @@ function SwapComp() {
     decimals: number
   ) => {
     const { permit2Address } = contractConfig;
-    const approveTx = await tokenContract.approve(
-      permit2Address,
-      BigInt((amountIn * 10 ** decimals).toFixed(0))
-    );
+    let approveTx;
+    try {
+      // 等待approve;
+      setButtonDescId('5');
+      setButtonLoading(true);
+      approveTx = await tokenContract.approve(
+        permit2Address,
+        BigInt((amountIn * 10 ** decimals).toFixed(0))
+      );
+    } catch (e) {
+      setButtonDescId('1');
+      setButtonLoading(false);
+    }
     console.log(approveTx, 'approve--tx');
-
     const recipent = await approveTx.wait();
     // 1 成功 2 失败
     return recipent.status === 1;
@@ -268,6 +274,8 @@ function SwapComp() {
     permit2Contract,
     signer,
   }) => {
+    setButtonLoading(true);
+    setButtonDescId('6');
     const { universalRouterAddress } = contractConfig;
     const permitSingle: PermitSingle = {
       sigDeadline: 2000000000,
@@ -279,22 +287,28 @@ function SwapComp() {
         nonce: 0,
       },
     };
+    let signatureData;
+    try {
+      const { eip712Domain, PERMIT2_PERMIT_TYPE, permit } =
+        await getPermitSignature(
+          Number(chainId),
+          permitSingle,
+          permit2Contract,
+          signerAddress
+        );
 
-    const { eip712Domain, PERMIT2_PERMIT_TYPE, permit } =
-      await getPermitSignature(
-        Number(chainId),
-        permitSingle,
-        permit2Contract,
-        signerAddress
+      const signature = await signer._signTypedData(
+        eip712Domain,
+        PERMIT2_PERMIT_TYPE,
+        permit
       );
+      signatureData = { permit, signature };
+    } catch (e) {
+      setButtonLoading(false);
+      setButtonDescId('1');
+    }
 
-    const signature = await signer._signTypedData(
-      eip712Domain,
-      PERMIT2_PERMIT_TYPE,
-      permit
-    );
-
-    return { signature, permit };
+    return signatureData;
   };
 
   // 获取交易字节码
@@ -376,6 +390,8 @@ function SwapComp() {
     signer,
     universalRouterAddress,
   }) => {
+    setButtonLoading(true);
+    setButtonDescId('8');
     const universalRouterContract = await getUniversalRouterContract(
       provider,
       universalRouterAddress
@@ -386,14 +402,21 @@ function SwapComp() {
     /*     const gasLimit = await universalRouterWriteContract.estimateGas[
       'execute(bytes,bytes[],uint256)'
     ](commands, inputs, BigInt(2000000000)); */
-
-    const tx = await universalRouterWriteContract[
-      'execute(bytes,bytes[],uint256)'
-    ](commands, inputs, BigInt(2000000000), {
-      value: etherValue,
-      gasLimit: 1030000,
-    });
-    console.log(tx.hash);
+    let tx;
+    try {
+      tx = await universalRouterWriteContract['execute(bytes,bytes[],uint256)'](
+        commands,
+        inputs,
+        BigInt(2000000000),
+        {
+          value: etherValue,
+          gasLimit: 1030000,
+        }
+      );
+    } catch (e) {
+      setButtonLoading(false);
+      setButtonDescId('1');
+    }
 
     reportPayType(tx.hash);
     console.log('swap-tx', tx);
@@ -615,7 +638,13 @@ function SwapComp() {
     }
   }, [tokenIn, tokenOut, exchangeRate]);
 
-  const showGasPrice = useMemo(() => {}, [loading, showSkeleton]);
+  const handleMainButton = () => {
+    if (!isLogin) {
+      setIsModalOpen(true);
+    } else {
+      setOpenDpass(true);
+    }
+  };
 
   return (
     <div className="swap-comp">
@@ -728,7 +757,7 @@ function SwapComp() {
         className="swap-button"
         disabled={buttonDisable}
         loading={buttonLoading}
-        onClick={() => setOpenDpass(true)}
+        onClick={handleMainButton}
       >
         {buttonDesc}
       </Button>
