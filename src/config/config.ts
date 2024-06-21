@@ -2,8 +2,7 @@ type ChainIdList = '1' | '11155111';
 
 export const config: Record<ChainIdList, any> = {
   '1': {
-    rpcUrl:
-      'https://eth-mainnet.g.alchemy.com/v2/yvW_w6m8ti-CX4tjL7XQYU_6BbIUX3O7',
+    rpcUrl: 'https://eth.drpc.org',
     chainId: 1,
     verificationURL: 'https://api.etherscan.io/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
@@ -20,11 +19,10 @@ export const config: Record<ChainIdList, any> = {
     ethAddress: '0x0000000000000000000000000000000000000000',
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
-    quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
+    quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
   },
   '11155111': {
-    rpcUrl:
-      'https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC',
+    rpcUrl: 'https://sepolia.drpc.org',
     /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
     verificationURL: 'https://api-sepolia.etherscan.io/api',
     chainId: 11155111,
