@@ -89,7 +89,6 @@ export const ethToErc20 = async (
 
     let swapPath = [tokenIn, tokenOut]
     const path = encodePathExactOutput(swapPath, [uniswapV3Fee])
-    console.log("path:",path)
     const payerIsUser = false;
     const swapParams = [recipient, amountOut, amountInMax, path, payerIsUser, isFee, feeType]
     planner.addCommand(CommandType.V3_SWAP_EXACT_OUT, swapParams, false)

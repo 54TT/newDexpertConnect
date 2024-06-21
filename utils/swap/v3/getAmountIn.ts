@@ -151,7 +151,7 @@ export const getV3AmountIn = async (
           uniswapV3FeeAmount = BigNumber.from(pool.fee);
           poolAddress = pool.address;
         } else {
-          if (quotedAmountIn.gt(quoteAmountInBigNumber)) {
+          if (quotedAmountIn.lt(quoteAmountInBigNumber)) {
             quoteAmountInBigNumber = BigNumber.from(quotedAmountIn);
             uniswapV3FeeAmount = BigNumber.from(pool.fee);
             poolAddress = pool.address;
