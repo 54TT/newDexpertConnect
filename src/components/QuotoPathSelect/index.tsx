@@ -11,11 +11,11 @@ function QuotoPathSelect({ data, onChange }) {
       }}
     >
       <img
-        style={{ width: '24px', marginRight: '4px' }}
-        src="/uni.svg"
+        style={{ width: '24px', marginRight: '8px', marginBottom: '4px' }}
+        src="/uniswap-uni-logo.svg"
         alt=""
       />
-      {text}
+      <span style={{ display: 'inline-block', width: '80px' }}>{text}</span>
     </div>
   );
   const list: SelectCompItemType[] = [
