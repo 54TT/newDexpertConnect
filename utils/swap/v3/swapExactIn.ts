@@ -4,7 +4,7 @@ import { config } from '../../../src/config/config';
 import { encodePathExactInput } from '../../utils';
 
 export const erc20ToErc20 = async (
-  chainId: string,
+  _,
   planner: RoutePlanner,
   tokenIn: string,
   tokenOut: string,

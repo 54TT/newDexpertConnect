@@ -1,9 +1,10 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
 import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
-import { getERC20Contract, getQuoterContract, getUniversalRouterContract } from '../../contracts';
+import { getQuoterContract, getUniversalRouterContract } from '../../contracts';
 import { Decimal } from 'decimal.js';
 import { getPools } from './getPools';
+import { getDecimals } from '@utils/getDecimals';
 
 export const getV3AmountOut = async (
   chainId: string,
@@ -20,9 +21,13 @@ export const getV3AmountOut = async (
   const quoterAddress = chainConfig.quoterAddress;
   const uniswapV3FactoryAddress = chainConfig.uniswapV3FactoryAddress;
   const uniswapV3FeeAmounts = chainConfig.uniswapV3FeeAmounts;
-  const universalRouterAddress = chainConfig.universalRouterAddress
+  const universalRouterAddress = chainConfig.universalRouterAddress;
   const quoterContract = await getQuoterContract(provider, quoterAddress);
-  const universalRouterContract = await getUniversalRouterContract(provider, universalRouterAddress)
+  const universalRouterContract = await getUniversalRouterContract(
+    provider,
+    universalRouterAddress
+  );
+
   let fee = new Decimal(0);
   if (payType == 0) {
     const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
@@ -30,19 +35,23 @@ export const getV3AmountOut = async (
 
     fee = new Decimal(fastTradeFeeBps / feeBaseBps);
   }
-  const tokenInContract = await getERC20Contract(provider, tokenInAddress);
-  const tokenInDecimals = await tokenInContract.decimals();
-  const tokenOutContract = await getERC20Contract(provider, tokenOutAddress);
-  const tokenOutDecimals = await tokenOutContract.decimals();
+
+  const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
+    provider,
+    tokenInAddress,
+    tokenOutAddress,
+    chainId,
+  });
 
   let quoteAmountOutBigNumber: BigNumber = BigNumber.from(0);
   let uniswapV3FeeAmount = BigNumber.from(0);
   let poolAddress = '';
   const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);
   if (
-    (ethAddress.toLowerCase() === tokenInAddress.toLowerCase() &&
-      wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()) ||
-    wethAddress.toLowerCase() === tokenInAddress.toLowerCase()
+    (ethAddress.toLowerCase() === tokenInAddress.toLowerCase() ||
+      wethAddress.toLowerCase() === tokenInAddress.toLowerCase()) &&
+    wethAddress.toLowerCase() !== tokenOutAddress.toLowerCase() &&
+    ethAddress.toLowerCase() !== tokenOutAddress.toLowerCase()
   ) {
     const pools = await getPools(
       provider,
@@ -55,7 +64,7 @@ export const getV3AmountOut = async (
       for (const pool of pools) {
         const quotedAmountOut =
           await quoterContract.callStatic.quoteExactInputSingle(
-            tokenInAddress,
+            wethAddress,
             tokenOutAddress,
             pool.fee,
             amountInBigNumber,
@@ -81,9 +90,10 @@ export const getV3AmountOut = async (
       };
     }
   } else if (
-    (tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
-      tokenOutAddress.toLowerCase() === ethAddress.toLowerCase()) ||
-    wethAddress.toLowerCase() === tokenOutAddress.toLowerCase()
+    tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
+    tokenInAddress.toLowerCase() !== ethAddress.toLowerCase() &&
+    (tokenOutAddress.toLowerCase() === ethAddress.toLowerCase() ||
+      tokenOutAddress.toLowerCase() === wethAddress.toLowerCase())
   ) {
     const pools = await getPools(
       provider,
@@ -99,7 +109,7 @@ export const getV3AmountOut = async (
         const quotedAmountOut =
           await quoterContract.callStatic.quoteExactInputSingle(
             tokenInAddress,
-            tokenOutAddress,
+            wethAddress,
             pool.fee,
             amountInBigNumber,
             0
@@ -168,7 +178,6 @@ export const getV3AmountOut = async (
   } else {
     quoteAmountOutBigNumber = BigNumber.from(amountInBigNumber.toString());
   }
-
   let amount = reduceFromDecimalsBN(quoteAmountOutBigNumber, tokenOutDecimals);
 
   if (fee.greaterThan(0)) {
@@ -177,9 +186,12 @@ export const getV3AmountOut = async (
   if (slippage.greaterThan(0)) {
     amount = amount.sub(amount.mul(slippage));
   }
+
+  console.log(amount.toString(), 'v3');
+
   return {
     quoteAmount: amount,
     poolAddress: poolAddress,
-    fee: uniswapV3FeeAmount,
+    fee: uniswapV3FeeAmount.toNumber(),
   };
 };

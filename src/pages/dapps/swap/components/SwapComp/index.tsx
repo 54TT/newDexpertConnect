@@ -10,12 +10,13 @@ import { Button, Skeleton, notification } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
+import { getV3AmountIn } from '@utils/swap/v3/getAmountIn';
+import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
 import { getSwapEthAndWeth } from '@utils/swap/v2/getSwapEthAndWeth';
 import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
-/* import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
 import { getSwapExactInBytes as getSwapExactInBytesV3 } from '@utils/swap/v3/getSwapExactInBytes';
-import { getSwapExactOutBytes as getSwapExactOutBytesV3 } from '@utils/swap/v3/getSwapExactOutBytes'; */
+import { getSwapExactOutBytes as getSwapExactOutBytesV3 } from '@utils/swap/v3/getSwapExactOutBytes';
 import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
@@ -45,6 +46,7 @@ import Request from '@/components/axios';
 import Cookies from 'js-cookie';
 import useInterval from '@/hook/useInterval';
 import getBalanceRpc from '@utils/getBalanceRpc';
+import QuotoPathSelect from '@/components/QuotoPathSelect';
 
 function SwapComp() {
   const { provider, contractConfig, setIsModalOpen, chainId, setChainId } =
@@ -66,6 +68,11 @@ function SwapComp() {
   const [outLoading, setOutLoading] = useState(false);
   const [balanceIn, setBalanceIn] = useState<Decimal>(); // 需要用于计算
   const [balanceOut, setBalanceOut] = useState<Decimal>();
+  const [swapV3Pool, setSwapV3Pool] = useState({
+    fee: 0,
+    poolAddress: '',
+  }); // 如果是uniswap3 需要的数据
+  const [quotePath, setQuotePath] = useState('0'); // 0 uniswapV2 1 V3
   const { getAll } = Request();
   /*   const [tokenPrice, setTokenPrice] = useState<{
     inPrice: string;
@@ -88,8 +95,14 @@ function SwapComp() {
     if (!tokenIn?.contractAddress && !tokenOut?.contractAddress) {
       return Promise.resolve('');
     }
+    let amount: Decimal;
+    if (quotePath === '0') {
+      amount = await getAmountOut.apply(null, data);
+    } else {
+      const { quoteAmount } = await getV3AmountOut.apply(null, data);
+      amount = quoteAmount;
+    }
 
-    const amount: Decimal = await getAmountOut.apply(null, data);
     return amount.toNumber() < 0.000001
       ? '< 0.000001'
       : parseFloat(amount.toFixed(6)).toString();
@@ -103,21 +116,30 @@ function SwapComp() {
     const data = [
       chainId,
       provider,
-      await getUniversalRouterContract(provider, universalRouterAddress),
-      await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
+      quotePath === '0'
+        ? await getUniversalRouterContract(provider, universalRouterAddress)
+        : null,
+      quotePath === '0'
+        ? await getUniswapV2RouterContract(provider, uniswapV2RouterAddress)
+        : null,
       tokenIn.contractAddress,
       tokenOut.contractAddress,
       new Decimal(1),
       new Decimal(0),
       0,
-    ];
+    ].filter((item) => item !== null);
     return Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
-  }, [provider, tokenIn?.contractAddress, tokenOut?.contractAddress]);
+  }, [
+    provider,
+    tokenIn?.contractAddress,
+    tokenOut?.contractAddress,
+    quotePath,
+  ]);
 
   const [data, loading, showSkeleton] = useInterval(
     getExchangeRateAndGasPrice,
     10000,
-    [tokenIn, tokenOut]
+    [tokenIn, tokenOut, quotePath]
   );
 
   const [gasPrice, exchangeRate] = data || ['', ''];
@@ -174,10 +196,14 @@ function SwapComp() {
     setTokenOut(newTokenOut);
     setAmountIn(amountOut);
     setAmountOut(0);
-    getAmount('in', amountOut || 0);
+    getAmount('in', amountOut || 0, quotePath);
   };
 
-  const getAmount = async (type: 'in' | 'out', value: number) => {
+  const getAmount = async (
+    type: 'in' | 'out',
+    value: number,
+    quotePath: string
+  ) => {
     if (value === 0) return;
     if (
       ((type === 'in' || type === 'out') && !tokenIn?.contractAddress) ||
@@ -194,19 +220,32 @@ function SwapComp() {
     const param = [
       chainId,
       provider,
-      await getUniversalRouterContract(provider, universalRouterAddress),
-      await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
+      quotePath === '0'
+        ? await getUniversalRouterContract(provider, universalRouterAddress)
+        : null,
+      quotePath === '0'
+        ? await getUniswapV2RouterContract(provider, uniswapV2RouterAddress)
+        : null,
       tokenIn.contractAddress,
       tokenOut.contractAddress,
       new Decimal(value),
       new Decimal(slip),
       0,
-    ];
-
+    ].filter((item) => item !== null);
     if (type === 'in') {
       setOutLoading(true);
       try {
-        const amount = await getAmountOut.apply(null, param);
+        let amount;
+        if (quotePath === '0') {
+          amount = await getAmountOut.apply(null, param);
+        } else {
+          const { quoteAmount, ...poolInfo } = await getV3AmountOut.apply(
+            null,
+            param
+          );
+          amount = quoteAmount;
+          setSwapV3Pool(poolInfo);
+        }
         setAmountOut(Number(amount.toString()));
       } catch (e) {
         console.error(e);
@@ -216,7 +255,17 @@ function SwapComp() {
     if (type === 'out') {
       setInLoading(true);
       try {
-        const amount = await getAmountIn.apply(null, param);
+        let amount;
+        if (quotePath === '0') {
+          amount = await getAmountIn.apply(null, param);
+        } else {
+          const { quoteAmount, ...poolInfo } = await getV3AmountIn.apply(
+            null,
+            param
+          );
+          amount = quoteAmount;
+          setSwapV3Pool(poolInfo);
+        }
         setAmountIn(Number(amount.toString()));
       } catch (e) {
         console.error(e);
@@ -335,10 +384,10 @@ function SwapComp() {
       recipientAddress,
       payType == '0',
       Number(payType),
+      quotePath === '1' ? swapV3Pool?.fee : null,
       permit,
       signature,
-    ];
-    console.log(getBytesParam, payType);
+    ].filter((item) => item !== null);
 
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
@@ -358,13 +407,24 @@ function SwapComp() {
         ]);
       }
       if (currentInputToken.current === 'in') {
-        return await getSwapExactInBytes.apply(null, getBytesParam);
+        if (quotePath === '0') {
+          return await getSwapExactInBytes.apply(null, getBytesParam);
+        }
+        if (quotePath === '1') {
+          return await getSwapExactInBytesV3.apply(null, getBytesParam);
+        }
       } else {
-        return await getSwapExactOutBytes.apply(null, getBytesParam);
+        if (quotePath === '0') {
+          return await getSwapExactOutBytes.apply(null, getBytesParam);
+        }
+        if (quotePath === '1') {
+          return await getSwapExactOutBytesV3.apply(null, getBytesParam);
+        }
       }
     };
 
     const { commands, inputs } = await getSwapBytesFn(tokenIn, tokenOut);
+    console.log('byteCode', { commands, inputs });
 
     let etherValue = BigInt(0);
     if (tokenIn === contractConfig.ethAddress) {
@@ -401,7 +461,7 @@ function SwapComp() {
     const universalRouterWriteContract =
       await universalRouterContract.connect(signer);
     const { scan } = contractConfig;
-    /*     const gasLimit = await universalRouterWriteContract.estimateGas[
+    /*         const gasLimit = await universalRouterWriteContract[
       'execute(bytes,bytes[],uint256)'
     ](commands, inputs, BigInt(2000000000)); */
     let tx;
@@ -604,7 +664,7 @@ function SwapComp() {
       amountOut !== 0
     ) {
       currentInputToken.current = 'out';
-      getAmount('out', amountOut);
+      getAmount('out', amountOut, quotePath);
     }
   }, [tokenIn]);
 
@@ -645,17 +705,17 @@ function SwapComp() {
       amountIn !== 0
     ) {
       currentInputToken.current = 'in';
-      getAmount('in', amountIn);
+      getAmount('in', amountIn, quotePath);
     }
   }, [tokenOut]);
 
   useEffect(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
       if (currentInputToken.current === 'in' && amountIn !== 0) {
-        getAmount('in', amountIn);
+        getAmount('in', amountIn, quotePath);
       }
       if (currentInputToken.current === 'out' && amountOut !== 0) {
-        getAmount('out', amountOut);
+        getAmount('out', amountOut, quotePath);
       }
     }
   }, [advConfig.slip, advConfig.slipType]);
@@ -727,11 +787,11 @@ function SwapComp() {
             setAmountIn(v);
             if (currentInputToken.current !== 'in')
               currentInputToken.current = 'in';
-            getAmountDebounce('in', v);
+            getAmountDebounce('in', v, quotePath);
           }}
         />
         <div className="token-info">
-          {/*           <div>1 USDT</div> */}
+          <div></div>
           {isLogin ? (
             <div>Balance: {balanceIn?.toString?.() || '0'}</div>
           ) : (
@@ -769,11 +829,11 @@ function SwapComp() {
             setAmountOut(v);
             if (currentInputToken.current !== 'out')
               currentInputToken.current = 'out';
-            getAmountDebounce('out', v);
+            getAmountDebounce('out', v, quotePath);
           }}
         />
         <div className="token-info">
-          {/*           <div>1 USDT</div> */}
+          <div></div>
           {isLogin ? (
             <div>Balance: {balanceOut?.toString?.() || '0'} </div>
           ) : (
@@ -806,14 +866,22 @@ function SwapComp() {
         </div>
         <div className="exchange-path">
           <span>Quote Path</span>
-          <span>-</span>
+          <QuotoPathSelect
+            data={quotePath}
+            onChange={(key: string) => setQuotePath(key)}
+          />
         </div>
         <div className="service-fee">
           <span>Service Fees</span>
           <UsePass
             type="swap"
             payType={payType}
-            onChange={(v) => setPayType(v)}
+            onChange={(v) => {
+              setPayType(v);
+              const amount =
+                currentInputToken.current === 'in' ? amountIn : amountOut;
+              getAmount(currentInputToken.current, amount, quotePath);
+            }}
           />
         </div>
       </div>
