@@ -3,7 +3,6 @@ import type { MenuProps } from 'antd';
 import './index.less';
 import { DownOutlined } from '@ant-design/icons';
 import { useCallback, useMemo } from 'react';
-
 interface SelectCompType {
   list: MenuProps['items'];
   data: string;
