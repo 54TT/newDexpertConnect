@@ -99,23 +99,24 @@ export const rpcLink: any = {
 };
 
 export const chainParams = [
-  { value: 'Ethereum', icon: '/EthereumChain.svg' },
+  { value: 'Ethereum', icon: '/EthereumCoin.svg' },
   {
     value: 'Arbitrum',
     icon: '/Arbitrum.svg',
   },
-  { value: 'Avalanche', icon: '/AvalancheCoin.svg' },
+  { value: 'Avalanche', icon: '/AvalancheCoin.svg', hide: true },
   { value: 'BSC', icon: '/BNBChain.svg' },
   {
     value: 'Polygon',
     icon: '/PolygonCoin.svg',
+    hide: true,
   },
   { value: 'Optimism', icon: '/Optimism.svg' },
-  { value: 'Blast', icon: '/Blast.svg' },
+  { value: 'Blast', icon: '/Blast.svg', hide: true },
   {
     value: 'Base',
     icon: '/BASE.png',
   },
-  { value: 'Celo', icon: '/Celo.svg' },
+  { value: 'Celo', icon: '/Celo.svg', hide: true },
   { value: 'Sepolia', icon: '/unkonwLogo.png' },
 ];

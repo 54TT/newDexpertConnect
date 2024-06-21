@@ -2,9 +2,9 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { CountContext } from '@/Layout';
 
 // 定时任务的hook
-const useInterval = (fn, initData, delay, depency): [any, boolean, boolean] => {
+const useInterval = (fn, delay, depency): [any, boolean, boolean] => {
   const { provider } = useContext(CountContext);
-  const [data, setData] = useState<any>(initData);
+  const [data, setData] = useState<any>();
   const [loading, setLoading] = useState(false);
   const [dependencyChange, setDependencyChange] = useState(true);
   const timer = useRef(null);
@@ -17,7 +17,7 @@ const useInterval = (fn, initData, delay, depency): [any, boolean, boolean] => {
     } catch (e) {
       setLoading(false);
     }
-  }, depency);
+  }, [fn]);
 
   useEffect(() => {
     if (data) {
@@ -27,10 +27,9 @@ const useInterval = (fn, initData, delay, depency): [any, boolean, boolean] => {
   }, [data]);
 
   const getIntervalDataCallback = useCallback(() => {
-    setDependencyChange(true);
     getData();
     timer.current = setInterval(getData, delay);
-  }, [...depency, delay]);
+  }, [getData, delay]);
 
   useEffect(() => {
     if (timer.current !== null) {
@@ -39,6 +38,7 @@ const useInterval = (fn, initData, delay, depency): [any, boolean, boolean] => {
     }
     getIntervalDataCallback();
     return () => {
+      setDependencyChange(true);
       clearInterval(timer.current);
       timer.current = null;
     };

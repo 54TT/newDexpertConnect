@@ -6,12 +6,18 @@ import { chainParams } from '../../utils/judgeStablecoin.ts';
 
 interface ChooseChainType {
   onChange: (v: any) => void;
+  hideChain: boolean;
+  wrapClassName?: string;
 }
 
-function ChooseChain({ onChange }: ChooseChainType) {
+function ChooseChain({
+  onChange,
+  hideChain = false,
+  wrapClassName,
+}: ChooseChainType) {
   const [value, setValue] = useState<any>({
     value: 'Ethereum',
-    icon: '/EthereumChain.svg',
+    icon: '/EthereumCoin.svg',
   });
 
   const [open, setOpen] = useState<any>(false);
@@ -36,10 +42,15 @@ function ChooseChain({ onChange }: ChooseChainType) {
     setOpen(newOpen);
   };
   const chain = (
-    <div className={'headerChain dis'}>
+    <div className={`headerChain dis`}>
       {chainParams.map((i: any, ind: number) => {
         return (
-          <div key={ind} className={'chain disDis'} onClick={() => click(i)}>
+          <div
+            key={ind}
+            style={hideChain ? { display: i?.hide ? 'none' : 'flex' } : {}}
+            className={'chain disDis'}
+            onClick={() => click(i)}
+          >
             <img
               src={i?.icon}
               alt=""
@@ -67,9 +78,10 @@ function ChooseChain({ onChange }: ChooseChainType) {
       content={chain}
       title=""
       onOpenChange={handleOpenChange}
+      placement="bottom"
       open={open}
       trigger="click"
-      overlayClassName={'headerPopoverShow'}
+      overlayClassName={`headerPopoverShow ${wrapClassName}`}
     >
       <div className={'boxPopover disDis'}>
         <img src={value?.icon} alt="" style={{ width: '22px' }} />

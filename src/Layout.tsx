@@ -70,8 +70,9 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
+  const [chainId, setChainId] = useState('1'); // swap 链切换
   const changeConfig = (chainId) => {
-    const newConfig = config[chainId ?? '11155111'];
+    const newConfig = config[chainId ?? '1'];
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
 
@@ -80,8 +81,8 @@ function Layout() {
   };
 
   useEffect(() => {
-    changeConfig('1');
-  }, []);
+    changeConfig(chainId);
+  }, [chainId]);
 
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
@@ -100,10 +101,8 @@ function Layout() {
     // 没有登陆过 但是有钱包环境
     if (!loginChainId && isConnected) {
       //@ts-ignore
-      if (window?.ethereum?.isConnected?.()) {
-        //@ts-ignore
-        await window?.ethereum.disconnect();
-      }
+      //@ts-ignore
+      await window?.ethereum.disconnect();
     }
   };
 
@@ -183,6 +182,20 @@ function Layout() {
       }
     }
   }, [newAccount]);
+
+  useEffect(() => {
+    if (checkConnection() && isLogin) {
+      setChainId('1');
+      window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [
+          {
+            chainId: '0x1',
+          },
+        ],
+      });
+    }
+  }, [isLogin]);
 
   const createClient = async () => {
     try {
@@ -576,8 +589,9 @@ function Layout() {
     isCopy,
     setIsCopy,
     provider,
-    changeConfig,
     contractConfig,
+    chainId,
+    setChainId,
   };
 
   const clients = new ApolloClient({
