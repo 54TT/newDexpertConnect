@@ -140,7 +140,7 @@ function SwapComp() {
   const [data, loading, showSkeleton] = useInterval(
     getExchangeRateAndGasPrice,
     10000,
-    [tokenIn, tokenOut, quotePath]
+    [tokenIn, tokenOut, quotePath, chainId]
   );
 
   const [gasPrice, exchangeRate] = data || ['', ''];
@@ -191,18 +191,32 @@ function SwapComp() {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut]);
 
+  useEffect(() => {
+    if (isLogin) {
+      window?.ethereum?.request({
+        method: 'wallet_switchEthereumChain',
+        params: [
+          {
+            chainId: chainId.toString(16),
+          },
+        ],
+      });
+    }
+  }, [isLogin]);
+
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
     setTokenIn(newTokenIn);
     setTokenOut(newTokenOut);
     setAmountIn(amountOut);
     setAmountOut(0);
-    getAmount('in', amountOut || 0, quotePath);
+    getAmount('in', amountOut || 0, payType, quotePath);
   };
 
   const getAmount = async (
     type: 'in' | 'out',
     value: number,
+    payType: string,
     quotePath: string
   ) => {
     if (value === 0) return;
@@ -231,7 +245,7 @@ function SwapComp() {
       tokenOut.contractAddress,
       new Decimal(value),
       new Decimal(slip),
-      0,
+      Number(payType),
     ].filter((item) => item !== null);
     if (type === 'in') {
       setOutLoading(true);
@@ -666,7 +680,7 @@ function SwapComp() {
       amountOut !== 0
     ) {
       currentInputToken.current = 'out';
-      getAmount('out', amountOut, quotePath);
+      getAmount('out', amountOut, payType, quotePath);
     }
   }, [tokenIn]);
 
@@ -707,17 +721,17 @@ function SwapComp() {
       amountIn !== 0
     ) {
       currentInputToken.current = 'in';
-      getAmount('in', amountIn, quotePath);
+      getAmount('in', amountIn, payType, quotePath);
     }
   }, [tokenOut]);
 
   useEffect(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
       if (currentInputToken.current === 'in' && amountIn !== 0) {
-        getAmount('in', amountIn, quotePath);
+        getAmount('in', amountIn, payType, quotePath);
       }
       if (currentInputToken.current === 'out' && amountOut !== 0) {
-        getAmount('out', amountOut, quotePath);
+        getAmount('out', amountOut, payType, quotePath);
       }
     }
   }, [advConfig.slip, advConfig.slipType]);
@@ -791,7 +805,7 @@ function SwapComp() {
             setAmountIn(v);
             if (currentInputToken.current !== 'in')
               currentInputToken.current = 'in';
-            getAmountDebounce('in', v, quotePath);
+            getAmountDebounce('in', v, payType, quotePath);
           }}
         />
         <div className="token-info">
@@ -833,7 +847,7 @@ function SwapComp() {
             setAmountOut(v);
             if (currentInputToken.current !== 'out')
               currentInputToken.current = 'out';
-            getAmountDebounce('out', v, quotePath);
+            getAmountDebounce('out', v, payType, quotePath);
           }}
         />
         <div className="token-info">
@@ -872,7 +886,12 @@ function SwapComp() {
           <span>Quote Path</span>
           <QuotoPathSelect
             data={quotePath}
-            onChange={(key: string) => setQuotePath(key)}
+            onChange={(key: string) => {
+              setQuotePath(key);
+              const amount =
+                currentInputToken.current === 'in' ? amountIn : amountOut;
+              getAmount(currentInputToken.current, amount, payType, key);
+            }}
           />
         </div>
         <div className="service-fee">
@@ -884,7 +903,7 @@ function SwapComp() {
               setPayType(v);
               const amount =
                 currentInputToken.current === 'in' ? amountIn : amountOut;
-              getAmount(currentInputToken.current, amount, quotePath);
+              getAmount(currentInputToken.current, amount, v, quotePath);
             }}
           />
         </div>
@@ -899,6 +918,10 @@ function SwapComp() {
       </Button>
       <SelectTokenModal
         open={openSelect}
+        disabledTokens={[
+          tokenIn?.contractAddress?.toLowerCase?.(),
+          tokenOut?.contractAddress?.toLowerCase?.(),
+        ]}
         chainId={chainId}
         onChange={(data) => {
           if (currentSetToken.current === 'in') {
@@ -910,21 +933,6 @@ function SwapComp() {
         }}
         onCancel={() => setOpenSelect(false)}
       />
-      {/*       <UsePass
-        open={openDpass}
-        onClose={() => setOpenDpass(false)}
-        type="swap"
-        onChange={(v: string) => {
-          payType.current = v;
-          setOpenDpass(false);
-          handleSwap({
-            amountIn,
-            amountOut,
-            tokenIn: tokenIn.contractAddress,
-            tokenOut: tokenOut.contractAddress,
-          });
-        }}
-      /> */}
     </div>
   );
 }

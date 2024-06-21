@@ -17,11 +17,12 @@ export interface TokenItemData {
 interface SelectTokenType {
   onChange: (data: TokenItemData) => void;
   chainName: string;
+  disabledTokens: string[];
 }
 
 const { Search } = Input;
 
-function SelectToken({ onChange, chainName }: SelectTokenType) {
+function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
   /*   const [searchList, setSearchList] = useState<TokenItemData[]>();
   const [historyList, setHistoryList] = useState<TokenItemData[]>(); */
@@ -60,8 +61,15 @@ function SelectToken({ onChange, chainName }: SelectTokenType) {
       {tokenList?.map?.((item: TokenItemData) => (
         <div
           key={item.contractAddress}
-          className="select-token-item"
-          onClick={() => onChange(item)}
+          className={`select-token-item ${disabledTokens?.includes?.(item.contractAddress) ? 'disable-token' : ''}`}
+          onClick={() => {
+            if (
+              disabledTokens?.includes?.(item.contractAddress.toLowerCase())
+            ) {
+              return;
+            }
+            onChange(item);
+          }}
         >
           <div className="select-token-item-info">
             <DefaultTokenImg name={item.symbol} icon={item.logoUrl} />

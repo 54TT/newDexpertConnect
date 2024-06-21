@@ -6,11 +6,13 @@ import { useMemo } from 'react';
 interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;
   chainId: string;
+  disabledTokens: string[];
 }
 
 function SelectTokenModal({
   onChange,
   chainId,
+  disabledTokens,
   ...props
 }: SelectTokenModalType) {
   const chainName = useMemo(() => ID_TO_CHAIN_NAME_LOW[chainId], [chainId]);
@@ -23,7 +25,11 @@ function SelectTokenModal({
       title="Select Token"
       footer={null}
     >
-      <SelectToken onChange={onChange} chainName={chainName} />
+      <SelectToken
+        onChange={onChange}
+        chainName={chainName}
+        disabledTokens={disabledTokens}
+      />
     </Modal>
   );
 }
