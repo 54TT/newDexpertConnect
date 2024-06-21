@@ -112,7 +112,6 @@ export const ethToErc20 = async (
   feeType: number
 ) => {
   const { ethAddress, universalRouterAddress } = config[chainId];
-  debugger;
   const wrapEthParams = [universalRouterAddress, amountInMax, isFee, feeType];
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
 

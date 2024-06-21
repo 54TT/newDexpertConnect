@@ -2,9 +2,16 @@ import { Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 import './index.less';
 import { DownOutlined } from '@ant-design/icons';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+
+export interface SelectCompItemType {
+  key: string;
+  title: string | React.ReactNode;
+  label: string | React.ReactNode;
+}
+
 interface SelectCompType {
-  list: MenuProps['items'];
+  list: SelectCompItemType[];
   data: string;
   onChange: (v: string) => void;
 }
@@ -26,6 +33,7 @@ function SelectComp({ list, data, onChange }: SelectCompType) {
       className="drop-down-select"
       overlayClassName="drop-down-overlay"
       trigger={['click']}
+      // @ts-ignore
       menu={{ items: list, onClick: onDropdownItemChange }}
     >
       <a
