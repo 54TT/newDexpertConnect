@@ -10,11 +10,13 @@ import { useTranslation } from 'react-i18next';
 import { getGas } from '../../../../utils/getGas.ts';
 import Nodata from '../../../components/Nodata.tsx';
 import ChooseChain from '../../../components/chooseChain.tsx';
+import { chainParams } from '@utils/judgeStablecoin.ts';
 function Left() {
   const hei = useRef<any>();
   const { ethPrice, moreLoad, tableDta, setDta, wait, changePage } =
     newPair() as any;
-  const { browser, switchChain }: any = useContext(CountContext);
+  const { browser, switchChain, setSwitchChain }: any =
+    useContext(CountContext);
   const [tableHei, setTableHei] = useState('');
   const [select, setSelect] = useState('newPair');
   const time = '24h';
@@ -49,11 +51,22 @@ function Left() {
       {/* top*/}
       <div ref={hei} className={`indexTop dis`}>
         <div className="disDis">
-          <ChooseChain onChange={(v) => switchChain(v)} />
+          <ChooseChain
+            chainList={chainParams}
+            disabledChain={true}
+            onChange={(v) => setSwitchChain(v)}
+          />
           <Select
             onChange={handleChange}
             value={select}
-            suffixIcon={ <img src="/down.svg" alt="" width={'14px'} style={{marginTop:'3px'}}/>}
+            suffixIcon={
+              <img
+                src="/down.svg"
+                alt=""
+                width={'14px'}
+                style={{ marginTop: '3px' }}
+              />
+            }
             className={'indexSelect'}
             popupClassName={'indexSelectPopup'}
             style={{

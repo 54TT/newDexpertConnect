@@ -2,17 +2,20 @@ import { Popover } from 'antd';
 import './index.less';
 import { useState } from 'react';
 import { throttle } from 'lodash';
-import { chainParams } from '../../utils/judgeStablecoin.ts';
 
 interface ChooseChainType {
   onChange: (v: any) => void;
   hideChain?: boolean;
+  disabledChain?: boolean;
   wrapClassName?: string;
+  chainList: any[];
 }
 
 function ChooseChain({
   onChange,
+  chainList,
   hideChain = false,
+  disabledChain = false,
   wrapClassName,
 }: ChooseChainType) {
   const [value, setValue] = useState<any>({
@@ -24,6 +27,11 @@ function ChooseChain({
   const click = throttle(
     function (i: any) {
       if (value !== i) {
+        if (i?.disabled && disabledChain) {
+          console.log('rr');
+
+          return;
+        }
         if (
           i?.value !== 'Avalanche' &&
           i?.value !== 'Blast' &&
@@ -43,7 +51,7 @@ function ChooseChain({
   };
   const chain = (
     <div className={`headerChain dis`}>
-      {chainParams.map((i: any, ind: number) => {
+      {chainList.map((i: any, ind: number) => {
         return (
           <div
             key={ind}
@@ -58,12 +66,7 @@ function ChooseChain({
             />
             <span
               style={{
-                color:
-                  i?.value !== 'Avalanche' &&
-                  i?.value !== 'Blast' &&
-                  i?.value !== 'Celo'
-                    ? 'white'
-                    : 'gray',
+                color: disabledChain && i.disabled === true ? 'gray' : 'white',
               }}
             >
               {i?.value === 'BSC' ? 'BNB Chain' : i?.value}

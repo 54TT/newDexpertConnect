@@ -47,6 +47,7 @@ import Cookies from 'js-cookie';
 import useInterval from '@/hook/useInterval';
 import getBalanceRpc from '@utils/getBalanceRpc';
 import QuotoPathSelect from '@/components/QuotoPathSelect';
+import { swapChain } from '@utils/judgeStablecoin';
 
 function SwapComp() {
   const { provider, contractConfig, setIsModalOpen, chainId, setChainId } =
@@ -755,6 +756,8 @@ function SwapComp() {
     <div className="swap-comp">
       <div className="swap-comp-config">
         <ChooseChain
+          disabledChain={true}
+          chainList={swapChain}
           onChange={(v) => changeWalletChain(v)}
           hideChain={true}
           wrapClassName="swap-chooose-chain"
