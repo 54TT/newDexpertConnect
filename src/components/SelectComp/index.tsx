@@ -26,7 +26,7 @@ function SelectComp({ list, data, onChange }: SelectCompType) {
     <Dropdown
       className="drop-down-select"
       overlayClassName="drop-down-overlay"
-      trigger={['click', 'hover']}
+      trigger={['click']}
       menu={{ items: list, onClick: onDropdownItemChange }}
     >
       <a
