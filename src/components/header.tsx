@@ -2,11 +2,11 @@ import { useContext, useState } from 'react';
 import { Collapse, Drawer, Dropdown } from 'antd';
 import { CountContext } from '../Layout.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { simplify } from '../../utils/change.ts';
+import { simplify } from '@/../utils/change.ts';
 import Load from './allLoad/load.tsx';
 import HeaderModal from './headerModal.tsx';
 import { throttle } from 'lodash';
-import { CaretDownOutlined } from '@ant-design/icons';
+// import { CaretDownOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 export type I18N_Key = 'zh_CN' | 'en_US';
 function Header() {
@@ -352,6 +352,7 @@ function Header() {
                     src={user?.avatarUrl ? user?.avatarUrl : '/topLogo.png'}
                     style={{
                       width: '25px',
+                      margin: '0 15px',
                       display: 'block',
                       cursor: 'pointer',
                       borderRadius: '100%',
@@ -418,12 +419,6 @@ function Header() {
         open={open}
       >
         <Collapse
-          expandIcon={({ isActive }) => (
-            <CaretDownOutlined
-              style={{ fontSize: '20px', color: 'rgb(134,240,151)' }}
-              rotate={isActive ? 90 : 0}
-            />
-          )}
           items={collapseItems}
           accordion
           className={'headerCollapse'}

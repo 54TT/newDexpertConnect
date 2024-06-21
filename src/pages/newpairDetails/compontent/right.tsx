@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { CountContext } from '../../../Layout.tsx';
+import { CountContext } from '@/Layout.tsx';
 function Right() {
   const { browser }: any = useContext(CountContext);
 

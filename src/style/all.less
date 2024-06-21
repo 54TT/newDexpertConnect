@@ -8,6 +8,13 @@ img {
   display: block;
 }
 
+.activePersonChain {
+  color: rgb(118, 128, 118);
+  font-size: 17px;
+  word-wrap: break-word;
+  box-sizing: border-box;
+  padding: 0 6px;
+}
 .disDis {
   display: flex;
   align-items: center;
@@ -18,11 +25,92 @@ img {
   align-items: center;
   justify-content: center;
 }
+.dpassChangeImgOne {
+  position: absolute;
+  right: -60px;
+  top: 50%;
+  display: block;
+  transform: translate(0, -50%);
+  cursor: pointer;
+}
+.dappRightCardBox {
+  margin-bottom: 15px;
+  background-color: rgb(45, 45, 45);
+  padding: 10px 0;
+  border-radius: 10px;
+  .dappRightCardBoxText {
+    color: rgb(134, 240, 151);
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+}
+.dpassChangeImgTwo {
+  position: absolute;
+  left: -60px;
+  top: 50%;
+  display: block;
+  transform: translate(0, -50%);
+  cursor: pointer;
+}
+.dappComCenter {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dappSwapImg {
+  float: right;
+  margin: 0 10px 12px 0;
+  padding: 4px;
+  width: 20px;
+  cursor: pointer;
+}
+.dappRightNext {
+  color: rgb(135, 145, 136);
+  text-align: center;
+  margin: 6px 0;
+  cursor: pointer;
+}
+.dappComingSoon {
+  font-size: 10px;
+  margin-left: 5px;
+  background-color: rgb(40, 40, 40);
+  padding: 4px;
+  display: block;
+  border-radius: 6px;
+  white-space: nowrap;
+}
 
+.dpassPageShow {
+  margin-top: 20px;
+  color: gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .disLeft {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+}
+.allTooltipClass {
+  .ant-tooltip-arrow::before {
+    background: rgb(99, 99, 99) !important;
+  }
+  .ant-tooltip-content {
+    .ant-tooltip-inner {
+      min-height: auto;
+      padding: 4px 8px;
+      background-color: rgb(99, 99, 99);
+      .eth {
+        span {
+          text-align: center;
+          display: block;
+        }
+      }
+    }
+  }
 }
 
 @font-face {
@@ -41,7 +129,7 @@ p {
 
 body {
   background-color: rgb(22, 25, 22);
-  font-family: 'tt', 'Microsoft YaHei', serif;
+  font-family: 'tt', 'PingFang SC';
 }
 
 body::-webkit-scrollbar {
@@ -184,6 +272,10 @@ body::-webkit-scrollbar-thumb {
     }
 
     .indexSelect {
+      width: 120px;
+      border: 2px solid #3c453c;
+      border-radius: 7px;
+      margin-left: 7px;
       .ant-select-selector {
         background: transparent !important;
         border: none !important;
@@ -211,10 +303,13 @@ body::-webkit-scrollbar-thumb {
           margin-right: 3px;
         }
 
-        span {
+        p {
           font-size: 15px;
           letter-spacing: -1px;
           color: rgb(214, 223, 215);
+          span {
+            color: rgb(86, 173, 216);
+          }
         }
       }
     }
@@ -224,7 +319,7 @@ body::-webkit-scrollbar-thumb {
     width: 100%;
 
     .indexNewPairTitle {
-      padding: 7px 10px 7px 20px;
+      padding: 10px 10px 10px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -235,10 +330,25 @@ body::-webkit-scrollbar-thumb {
       }
 
       .homeTableTittle {
+        display: flex;
+        align-items: center;
         color: rgb(214, 223, 215);
         font-size: 15px;
         span {
           white-space: nowrap;
+        }
+        .hint {
+          display: block;
+          width: 12px;
+          cursor: pointer;
+          height: 12px;
+          border-radius: 50%;
+          text-align: center;
+          font-size: 12px;
+          color: black;
+          margin-left: 3px;
+          font-weight: bold;
+          background-color: #85c88f;
         }
       }
     }
@@ -317,6 +427,13 @@ body::-webkit-scrollbar-thumb {
 
       .indexNewPairBodyData:hover {
         background-color: rgb(34, 36, 34) !important;
+        .indexTableLogo {
+          div {
+            p {
+              color: rgb(134, 240, 151) !important;
+            }
+          }
+        }
       }
     }
   }
@@ -353,9 +470,11 @@ body::-webkit-scrollbar-thumb {
     .headLine {
       display: flex;
       align-items: center;
+      margin-right: -8px;
+      z-index: 10;
+      border-radius: 100%;
     }
   }
-
   .headerCenter {
     // width: 34%;
     span {
@@ -404,6 +523,7 @@ body::-webkit-scrollbar-thumb {
         .ant-segmented-item-label {
           color: white;
           font-size: 17px;
+          padding: 2px 0;
         }
       }
 
@@ -432,7 +552,6 @@ body::-webkit-scrollbar-thumb {
   margin-top: 2%;
   padding: 3%;
   background-color: rgb(45, 45, 45);
-  border-radius: 12px;
   cursor: pointer;
 
   .post-item-img {
@@ -482,7 +601,7 @@ body::-webkit-scrollbar-thumb {
 
       span {
         color: rgb(200, 200, 200);
-        margin-left: 10%;
+        margin-left: 3px;
         font-size: 14px;
       }
 
@@ -511,11 +630,6 @@ body::-webkit-scrollbar-thumb {
       span:first-child {
         color: white;
         margin-bottom: 4%;
-      }
-
-      span:last-child {
-        color: rgb(214, 223, 215);
-        font-size: 14px;
       }
     }
   }

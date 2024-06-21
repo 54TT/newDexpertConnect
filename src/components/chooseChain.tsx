@@ -3,7 +3,7 @@ import './index.less';
 import { useContext, useState } from 'react'
 import { CountContext } from "../Layout.tsx";
 import { throttle } from "lodash";
-import { chainParams } from '../../utils/judgeStablecoin.ts'
+import { chainParams } from '@/../utils/judgeStablecoin.ts'
 function ChooseChain() {
     const { setSwitchChain }: any = useContext(CountContext);
 

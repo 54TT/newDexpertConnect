@@ -77,6 +77,12 @@
     "fail": "fail"
   },
   "Market": {
+    "liquidity":"Displays the total liquidity in the current pool. Liquidity refers to the total value of all cryptocurrencies deposited in the pool.",
+    "swap":"The number of swap operations that have occurred in this liquidity pool.",
+    "pooled":"Liquidity pools are a core concept in decentralized exchanges. Users can deposit their cryptocurrencies into the pool to provide liquidity for trading.",
+    "eth":"TX:",
+    "uni2":"Buy on Uniswap v2",
+    "bluur":"Check locked liquidity",
     "Submit":"Submit",
     "cancel":"Cancel",
     "here":"Nothing here",

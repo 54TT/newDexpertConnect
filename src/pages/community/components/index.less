@@ -8,7 +8,8 @@
     > div {
       display: flex;
       margin-bottom: 20px;
-      padding: 5px 0 5px 10px;
+      align-items: center;
+      padding: 8px 0 8px 10px;
     }
 
     &-active {
@@ -31,16 +32,17 @@
   &-button {
     .ant-btn {
       width: 80%;
-      height: 40px;
+      height: 36px;
+      font-size: 16px;
       background: transparent;
       border: 2px solid rgb(134, 240, 151);
       color: rgb(134, 240, 151);
 
       &.ant-btn-default {
         &:hover {
-          background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
+          background:rgb(134, 240, 151);
           color: #000;
-          filter: brightness(0.8);
+      border: 2px solid rgb(134, 240, 151);
         }
       }
     }
@@ -122,7 +124,7 @@
   &-post {
     .rightTweetBox {
       .tweetsBox {
-        border-bottom: 0.4px solid #687c69;
+        border-bottom: 0.4px solid rgb(84,84,84);
         padding: 15px 20px;
         margin-top: 0;
       }
@@ -224,25 +226,24 @@
 
   &-button {
     button {
-      background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
+      background-color: rgb(134, 240, 151);
       border: none;
       width: 75px;
       padding: 0 !important;
       font-size: 18px;
       height: auto;
-
+      color: black;
       &:hover {
-        background: linear-gradient(90deg, #86f097 0%, #00ff47 100%) !important;
         filter: brightness(1.2);
         color: #000 !important;
       }
 
       &:active {
-        background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
+        background-color: rgb(134, 240, 151);
       }
 
       &:disabled {
-        background: linear-gradient(90deg, #86f097 0%, #00ff47 100%);
+        background-color: rgb(134, 240, 151);
       }
     }
   }
@@ -295,7 +296,7 @@
 }
 
 .post-send-imgList {
-  border-bottom: 0.4px solid #687c69;
+  border-bottom: 0.4px solid rgb(84,84,84);
   padding: 10px;
 
   img {

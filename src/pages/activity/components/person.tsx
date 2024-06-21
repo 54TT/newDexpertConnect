@@ -1,19 +1,19 @@
 import './index.less';
 import { useContext, useEffect, useState } from 'react';
-import { CountContext } from '../../../Layout.tsx';
-import Copy from '../../../components/copy.tsx';
-import { simplify } from '../../../../utils/change.ts';
+import { CountContext } from '@/Layout.tsx';
+import Copy from '@/components/copy.tsx';
+import { simplify } from '@/../utils/change.ts';
 import dayjs from 'dayjs';
 import { Popover } from 'antd';
-import Request from '../../../components/axios.tsx';
+import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
-import Loading from '../../../components/allLoad/loading.tsx';
-import Load from '../../../components/allLoad/load.tsx';
-import Nodata from '../../../components/Nodata.tsx';
+import Loading from '@/components/allLoad/loading.tsx';
+import Load from '@/components/allLoad/load.tsx';
+import Nodata from '@/components/Nodata.tsx';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { throttle } from 'lodash';
-import { MessageAll } from '../../../components/message.ts';
+import { MessageAll } from '@/components/message.ts';
 import copy from 'copy-to-clipboard';
 export default function person() {
   const { getAll } = Request();
@@ -192,13 +192,9 @@ export default function person() {
                 </p>
               </div>
               <p
+                className="activePersonChain"
                 style={{
-                  color: 'rgb(118,128,118)',
-                  fontSize: '17px',
-                  wordWrap: 'break-word',
                   width: browser ? '70%' : '50%',
-                  boxSizing: 'border-box',
-                  padding: '0 6px',
                 }}
               >
                 {i?.address || ''}
@@ -307,7 +303,8 @@ export default function person() {
   );
   const [value, setValue] = useState('');
   const [isValue, setIsValue] = useState(false);
-  const verifyInvite = throttle( async function () {
+  const verifyInvite = throttle(
+    async function () {
       if (value) {
         const token = cookie.get('token');
         if (token) {
@@ -326,7 +323,10 @@ export default function person() {
           }
         }
       }
-    }, 1500,{ trailing: false });
+    },
+    1500,
+    { trailing: false }
+  );
   const change = (e: any) => {
     setValue(e.target.value);
   };

@@ -283,7 +283,6 @@ function SwapComp() {
     });
     console.log('swap-tx', tx);
   };
-
   // 触发交易流程
   const handleSwap = async (data: {
     amountIn: any;
@@ -385,7 +384,6 @@ function SwapComp() {
       });
     }
   };
-
   return (
     <div className="swap-comp">
       <div>

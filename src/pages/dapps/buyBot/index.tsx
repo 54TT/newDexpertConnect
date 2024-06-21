@@ -1,6 +1,6 @@
 import '../in.less';
 import { useContext } from 'react';
-import { CountContext } from '../../../Layout';
+import { CountContext } from '@/Layout';
 export default function index() {
   const { browser }: any = useContext(CountContext);
   return (

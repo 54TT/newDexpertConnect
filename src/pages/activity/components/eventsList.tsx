@@ -1,10 +1,10 @@
 import './eventsList.less'
 import cookie from "js-cookie";
 import { useTranslation } from "react-i18next";
-import { CountContext } from "../../../Layout.tsx";
+import { CountContext } from "@/Layout.tsx";
 import { useContext, useEffect, useState } from "react";
-import Request from "../../../components/axios.tsx";
-import { MessageAll } from '../../../components/message.ts'
+import Request from "@/components/axios.tsx";
+import { MessageAll } from '@/components/message.ts'
 import EachActivity from './eachActivity.tsx'
 import { throttle, } from "lodash";
 

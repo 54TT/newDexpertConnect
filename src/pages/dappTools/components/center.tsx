@@ -1,6 +1,5 @@
-// import Conyent from "../../community/components/PostContent.tsx";
 import { useContext } from 'react';
-import { CountContext } from '../../../Layout.tsx';
+import { CountContext } from '@/Layout.tsx';
 import { useLocation, useParams } from 'react-router-dom';
 import { throttle } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -62,13 +61,10 @@ function Center() {
                 1500,
                 { trailing: false }
               )}
+              className='dappComCenter'
               style={{
                 width: browser ? '28%' : '32%',
                 color: ind === 2 ? 'gray' : 'rgb(220, 220, 220)',
-                fontSize: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
               }}
               key={ind}
             >

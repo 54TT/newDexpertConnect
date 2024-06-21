@@ -3,7 +3,7 @@ import BuyBot from './buyBot';
 import { useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swap from './swap';
-import { CountContext } from '../../Layout';
+import { CountContext } from '@/Layout';
 export default function index() {
   const params: any = useParams();
   const { browser }: any = useContext(CountContext);

@@ -49,13 +49,7 @@ function AdvConfig({ onClose, initData }: AdvConfigProps) {
       description={<SettingContent initData={initData} ref={contentRef} />}
     >
       <img
-        style={{
-          float: 'right',
-          margin: '0 10px 12px 0',
-          padding: '4px',
-          width: '20px',
-          cursor: 'pointer',
-        }}
+        className="dappSwapImg"
         src="/setting.svg"
         alt=""
         onClick={() => setOpen(true)}
@@ -162,8 +156,6 @@ export const SettingContent: ForwardRefExoticComponent<
             options={selectOptions}
             value={tradeDeadline.uint}
             onChange={(v) => {
-              console.log(v);
-
               setTradeDeadline({
                 ...tradeDeadline,
                 uint: v,

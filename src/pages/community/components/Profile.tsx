@@ -1,26 +1,24 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import TWeetHome from '../../../components/tweetHome.tsx';
+import TWeetHome from '@/components/tweetHome.tsx';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
-import Request from '../../../components/axios.tsx';
+import Request from '@/components/axios.tsx';
 import Cookies from 'js-cookie';
 import cookie from 'js-cookie';
-import { formatAddress, getQueryParams } from '../../../../utils/utils.ts';
-import CommonModal from '../../../components/CommonModal/index.tsx';
+import { formatAddress, getQueryParams } from '@/../utils/utils.ts';
+import CommonModal from '@/components/CommonModal/index.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { throttle } from 'lodash';
-import { MessageAll } from '../../../components/message.ts';
+import { MessageAll } from '@/components/message.ts';
 import { useTranslation } from 'react-i18next';
-import { CountContext } from '../../../Layout.tsx';
+import { CountContext } from '@/Layout.tsx';
 
 function Profie() {
   const { getAll } = Request();
   const { t } = useTranslation();
   const history = useNavigate();
-  const { user, setUserPar, browser } = useContext(CountContext) as any;
-  const topRef = useRef<any>();
+  const { user, setUserPar,  } = useContext(CountContext) as any;
   const [options, setOptions] = useState('Community');
-  const [hei, setHei] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState<any>({});
   const inputRef = useRef<HTMLInputElement>(null);
@@ -34,14 +32,6 @@ function Profie() {
   const loginId = user?.uid || '';
   const { pathname } = useLocation();
   const [isFollowed, setIsFollowed] = useState(false);
-  useEffect(() => {
-    if (topRef && topRef.current) {
-      const h = topRef.current.scrollHeight;
-      const w = window.innerHeight;
-      const o: any = w - h - 90;
-      setHei(o.toString());
-    }
-  }, [topRef]);
   const handleOk = () => {
     setIsModalOpen(false);
   };
@@ -329,7 +319,7 @@ function Profie() {
   );
   return (
     <div className={'username-page'}>
-      <div ref={topRef}>
+      <div >
         <div className={`back`}>
           <div className="left">
             <ArrowLeftOutlined
@@ -340,7 +330,19 @@ function Profie() {
             />
             <div className="icon">
               <span>{data?.username ? formatAddress(data.username) : ''}</span>
-              <img src="/certification.svg" alt="" loading={'lazy'} />
+              {Number(data?.user?.level) ? (
+                <img
+                  src={
+                    Number(data?.user?.level) === 2
+                      ? '/goldLogo.svg'
+                      : '/solverLogo.svg'
+                  }
+                  alt=""
+                  loading={'lazy'}
+                />
+              ) : (
+                ''
+              )}
             </div>
           </div>
           <div className="img">
@@ -399,7 +401,19 @@ function Profie() {
             />
             <div className="user">
               <span>{data?.username ? formatAddress(data.username) : ''}</span>
-              <img loading={'lazy'} src="/certification.svg" alt="" />
+              {Number(data?.user?.level) ? (
+                <img
+                  style={{ marginLeft: '4px' }}
+                  src={
+                    Number(data?.user?.level) === 2
+                      ? '/goldLogo.svg'
+                      : '/solverLogo.svg'
+                  }
+                  alt=""
+                />
+              ) : (
+                ''
+              )}
             </div>
           </div>
           <div className="profile-background-button">
@@ -512,7 +526,7 @@ function Profie() {
       <div
         id="profileScroll"
         style={{
-          height: browser ? Number(hei) + 'px' : Number(hei) - 50 + 'px',
+          height: '34.4vh',
           overflowY: 'auto',
         }}
         className={`scrollStyle community-content-post`}

@@ -7,8 +7,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PostDetail from './components/PostDetail';
 import Profile from './components/Profile.tsx';
 import ContactList from './components/ContactList.tsx';
-import { CountContext } from '../../Layout.tsx';
-import { MessageAll } from '../../components/message.ts';
+import { CountContext } from '@/Layout.tsx';
+import { MessageAll } from '@/components/message.ts';
 import { useTranslation } from 'react-i18next';
 import cookie from 'js-cookie';
 type ActiveTabType =
@@ -48,7 +48,7 @@ function Community() {
     user: <Profile />,
   };
   return (
-    <div className="community-page" style={{width:browser?'85%':'96%'}}>
+    <div className="community-page" style={{width:browser?'90%':'98%'}}>
       {
         <div
           className="community-page-left"

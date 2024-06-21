@@ -2,12 +2,34 @@
   position: relative;
 
   .activeBack {
-    background-image: url("/badsada.svg");
+    background-image: url('/badsada.svg');
     padding: 3.3% 0 6.5%;
     background-repeat: space;
     position: relative;
+    .activeBackOrder {
+      width: 72%;
+      margin: 0 auto;
+      color: rgb(212, 223, 214);
+      line-height: 1.1;
+      text-align: center;
+    }
+    .activeBackEach {
+      width: 72%;
+      margin: 0 auto;
+      color: rgb(212, 223, 214);
+      line-height: 1.1;
+      text-align: center;
+      margin-top: 5%;
+      margin-bottom: 10px;
+    }
+    .activeBackJian {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      cursor: pointer;
+    }
   }
-
 
   .topTitle {
     text-align: center;
@@ -18,7 +40,11 @@
     text-align: center;
     margin: 2% 0 15px;
     font-size: 26px;
-    background: linear-gradient(90deg, rgb(133, 240, 150) 0%, rgb(1, 255, 72) 100%);
+    background: linear-gradient(
+      90deg,
+      rgb(133, 240, 150) 0%,
+      rgb(1, 255, 72) 100%
+    );
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -44,7 +70,7 @@
       }
     }
 
-    &>p:last-child {
+    & > p:last-child {
       background-color: rgb(134, 240, 151);
       border-radius: 5px;
       font-size: 15px;
@@ -56,14 +82,19 @@
   .p2 {
     text-align: center;
     font-size: 32px;
-    background-image: -webkit-gradient(linear, left 0, right 0, from(rgb(130, 240, 150)), to(rgb(2, 255, 72)));
+    background-image: -webkit-gradient(
+      linear,
+      left 0,
+      right 0,
+      from(rgb(130, 240, 150)),
+      to(rgb(2, 255, 72))
+    );
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .allTime {
     margin: 0 auto 14px;
-
 
     .setImg {
       width: 30%;
@@ -87,7 +118,7 @@
       }
 
       p {
-        color: #D6DFD7;
+        color: #d6dfd7;
         font-size: 18px;
         margin: 10px auto;
       }
@@ -101,7 +132,7 @@
 
   .frosted {
     filter: blur(5px);
-    background-color: #1A1F1B;
+    background-color: #1a1f1b;
   }
 
   .point {
@@ -129,18 +160,18 @@
     }
 
     .youPoint {
-      &>div {
+      & > div {
         display: flex;
         justify-content: center;
         padding: 15px 0 20px;
         flex-direction: column;
 
-        &>span:first-child {
+        & > span:first-child {
           text-align: center;
           color: rgb(214, 223, 215);
         }
 
-        &>p {
+        & > p {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -153,28 +184,27 @@
             margin-left: 10px;
           }
 
-          &>span {
+          & > span {
             text-align: center;
-            color: #86F097;
+            color: #86f097;
           }
         }
 
-        &>span:last-child {
+        & > span:last-child {
           text-align: center;
           font-size: 25px;
           margin-top: 20px;
-          color: #86F097;
+          color: #86f097;
         }
 
         flex: 1;
       }
 
-      &>div:nth-child(2) {
+      & > div:nth-child(2) {
         border-left: 2px solid rgb(60, 69, 60);
         border-right: 2px solid rgb(60, 69, 60);
       }
     }
-
   }
 
   .p3 {
@@ -198,7 +228,11 @@
           display: flex;
           align-items: center;
           cursor: pointer;
-          background: linear-gradient(to right, rgb(30, 30, 30), rgb(38, 45, 38));
+          background: linear-gradient(
+            to right,
+            rgb(30, 30, 30),
+            rgb(38, 45, 38)
+          );
 
           img {
             width: 28px;
@@ -206,7 +240,6 @@
             display: block;
           }
         }
-
       }
 
       div:last-child {

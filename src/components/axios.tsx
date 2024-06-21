@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { MessageAll } from './message.ts';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { ChainID_TO_ChainName, ChainId } from '../../utils/constants.ts';
-
+import { ChainID_TO_ChainName, ChainId } from '@/../utils/constants.ts';
 const requestA = axios.create({
   baseURL:
     import.meta.env.MODE === 'development'

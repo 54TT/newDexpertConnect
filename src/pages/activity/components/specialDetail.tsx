@@ -6,10 +6,10 @@ import cookie from "js-cookie";
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom'
 import { Statistic } from 'antd'
-import { CountContext } from "../../../Layout.tsx";
-import Loading from '../../../components/allLoad/loading.tsx';
-import Request from "../../../components/axios.tsx";
-import { setMany } from '../../../../utils/change.ts'
+import { CountContext } from "@/Layout.tsx";
+import Loading from '@/components/allLoad/loading.tsx';
+import Request from "@/components/axios.tsx";
+import { setMany } from '@/../utils/change.ts'
 const { Countdown } = Statistic;
 
 function SpecialActive() {
