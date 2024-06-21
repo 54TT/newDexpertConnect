@@ -186,6 +186,7 @@ function Layout() {
   useEffect(() => {
     if (checkConnection() && isLogin) {
       setChainId('1');
+      // @ts-ignore
       window.ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [

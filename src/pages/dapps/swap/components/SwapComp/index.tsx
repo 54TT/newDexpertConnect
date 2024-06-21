@@ -6,16 +6,16 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button, Skeleton, message, notification } from 'antd';
+import { Button, Skeleton, notification } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
 import { getSwapEthAndWeth } from '@utils/swap/v2/getSwapEthAndWeth';
 import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
-import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
+/* import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
 import { getSwapExactInBytes as getSwapExactInBytesV3 } from '@utils/swap/v3/getSwapExactInBytes';
-import { getSwapExactOutBytes as getSwapExactOutBytesV3 } from '@utils/swap/v3/getSwapExactOutBytes';
+import { getSwapExactOutBytes as getSwapExactOutBytesV3 } from '@utils/swap/v3/getSwapExactOutBytes'; */
 import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
@@ -62,7 +62,6 @@ function SwapComp() {
   const [buttonDesc] = useButtonDesc(buttonDescId);
   const [buttonLoading, setButtonLoading] = useState(false);
   const { isLogin } = useContext(CountContext);
-  const [openDpass, setOpenDpass] = useState(false);
   const [inLoading, setInLoading] = useState(false);
   const [outLoading, setOutLoading] = useState(false);
   const [balanceIn, setBalanceIn] = useState<Decimal>(); // 需要用于计算
@@ -732,7 +731,7 @@ function SwapComp() {
           }}
         />
         <div className="token-info">
-          <div>1 USDT</div>
+          {/*           <div>1 USDT</div> */}
           {isLogin ? (
             <div>Balance: {balanceIn?.toString?.() || '0'}</div>
           ) : (
@@ -774,7 +773,7 @@ function SwapComp() {
           }}
         />
         <div className="token-info">
-          <div>1 USDT</div>
+          {/*           <div>1 USDT</div> */}
           {isLogin ? (
             <div>Balance: {balanceOut?.toString?.() || '0'} </div>
           ) : (

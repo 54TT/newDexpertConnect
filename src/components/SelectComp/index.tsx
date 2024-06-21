@@ -1,8 +1,8 @@
-import { Dropdown, Space } from 'antd';
+import { Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 import './index.less';
 import { DownOutlined } from '@ant-design/icons';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 interface SelectCompType {
   list: MenuProps['items'];
   data: string;
@@ -13,7 +13,7 @@ function SelectComp({ list, data, onChange }: SelectCompType) {
   const RenderItem = useCallback(() => {
     const selectedItem = list.find((item) => item.key === data);
     console.log(selectedItem, list);
-
+    // @ts-ignore
     return selectedItem?.title ?? <>-</>;
   }, [data, list]);
 

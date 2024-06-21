@@ -6,7 +6,7 @@ import { chainParams } from '../../utils/judgeStablecoin.ts';
 
 interface ChooseChainType {
   onChange: (v: any) => void;
-  hideChain: boolean;
+  hideChain?: boolean;
   wrapClassName?: string;
 }
 
