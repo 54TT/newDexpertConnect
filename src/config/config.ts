@@ -20,6 +20,7 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
+    scan: 'https://etherscan.io/tx/',
   },
   '11155111': {
     rpcUrl: 'https://sepolia.drpc.org',
@@ -43,5 +44,6 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x20893BBb093b0fdc669991236F6170ceCD101737',
+    scan: 'https://sepolia.etherscan.io/tx/',
   },
 };
