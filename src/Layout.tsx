@@ -42,6 +42,7 @@ import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
 import { config } from './config/config.ts';
+import checkConnection from '@utils/checkConnect.ts';
 import { ethers } from 'ethers';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
@@ -69,9 +70,9 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
-  const changeConfig = () => {
-    const chainId = localStorage.getItem('chainId');
-    const newConfig = config[chainId ?? '11155111'];
+  const [chainId, setChainId] = useState('1'); // swap 链切换
+  const changeConfig = (chainId) => {
+    const newConfig = config[chainId ?? '1'];
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
     //@ts-ignore
@@ -79,8 +80,8 @@ function Layout() {
   };
 
   useEffect(() => {
-    changeConfig();
-  }, []);
+    changeConfig(chainId);
+  }, [chainId]);
 
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
@@ -90,6 +91,7 @@ function Layout() {
       tonConnect('login');
     }
   }, [userFriendlyAddress]);
+
   //ton钱包连接
   const tonConnect = async (log?: any) => {
     if (log) {
@@ -162,6 +164,22 @@ function Layout() {
       }
     }
   }, [newAccount]);
+
+  useEffect(() => {
+    if (checkConnection() && isLogin) {
+      setChainId('1');
+      // @ts-ignore
+      window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [
+          {
+            chainId: '0x1',
+          },
+        ],
+      });
+    }
+  }, [isLogin]);
+
   const createClient = async () => {
     try {
       const _client: any = await Client.init({
@@ -183,8 +201,14 @@ function Layout() {
     cookie.remove('currentAddress');
     changeBindind.current = '';
     cookie.remove('jwt');
+    localStorage.clear();
     if (tonConnectUI?.connected) {
       tonConnectUI.disconnect();
+    }
+    // @ts-ignore
+    if (window?.ethereum?.isConnected?.()) {
+      // @ts-ignore
+      await window?.ethereum?.disconnect?.();
     }
     setTonWallet(null);
     setUserPar(null);
@@ -247,6 +271,7 @@ function Layout() {
             token: token,
             chainId: chain === 'ton' ? '-2' : '1',
           });
+
           if (bind?.status === 200) {
             getUserNow();
             MessageAll('success', t('person.bind'));
@@ -275,6 +300,7 @@ function Layout() {
           if (decodedToken && decodedToken?.uid) {
             const uid = decodedToken.sub.split('-')[1];
             getUser(uid, res.data?.accessToken, name, decodedToken);
+            localStorage.setItem('login-chain', chain === 'ton' ? '-2' : '1');
           }
         } else {
           setTonWallet(null);
@@ -455,6 +481,7 @@ function Layout() {
     // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
     // })
   }, []);
+
   useEffect(() => {
     if (!client) {
       createClient();
@@ -545,8 +572,9 @@ function Layout() {
     isCopy,
     setIsCopy,
     provider,
-    changeConfig,
     contractConfig,
+    chainId,
+    setChainId,
   };
 
   const clients = new ApolloClient({

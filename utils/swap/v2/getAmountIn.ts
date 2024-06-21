@@ -3,7 +3,7 @@ import { config } from '../../../src/config/config';
 import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
 import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
-import { zeroAddress } from 'viem';
+import { zeroAddress } from '@utils/constants';
 import { getDecimals } from '@utils/getDecimals';
 
 export const getAmountIn = async (
@@ -101,7 +101,7 @@ export const getAmountIn = async (
   let amount = reduceFromDecimalsBN(amountInBigNumber, tokenInDecimals);
 
   if (fee.greaterThan(0)) {
-    amount = amount.add(amount.mul(fee));
+    amount = amount.add(amount.add(amount.mul(fee)).mul(fee));
   }
   if (slippage.greaterThan(0)) {
     amount = amount.add(amount.mul(slippage));

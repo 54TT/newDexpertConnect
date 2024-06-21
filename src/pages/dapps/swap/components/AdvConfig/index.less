@@ -23,6 +23,9 @@
     .ant-popconfirm-buttons {
       display: none;
     }
+    .adv-slider {
+      width: 150px;
+    }
   }
 }
 
@@ -38,6 +41,17 @@
     &-back {
       background: #1e1e1e;
       border-radius: 20px;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .adv-config-pop {
+    width: 80%;
+    .ant-popover-content {
+      .adv-slider {
+        width: 100px;
+      }
     }
   }
 }

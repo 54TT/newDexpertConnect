@@ -82,16 +82,21 @@
   }
 
   .bottom-info {
+    width: 400px;
     background-color: #2d2d2d;
-    padding: 12px 14px;
-
+    padding: 0 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     margin-top: -6px;
     border-radius: 15px;
     margin-bottom: 12px;
+
     > div {
-      margin: 16px 0 8px 0;
+      height: 40px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       span {
         color: @dark-font-color;
         font-weight: 300;
@@ -103,7 +108,7 @@
 .exchange {
   position: relative;
   z-index: 2;
-  height: 0px;
+  height: 0;
   bottom: -25px;
   .exchange-img {
     width: 16px;
@@ -112,5 +117,47 @@
     bottom: 16px;
     padding: 4px;
     left: calc(50% - 12px);
+  }
+}
+
+.swap-comp {
+  &-config {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    > div {
+      margin-right: 12px;
+    }
+  }
+  .inut-font-gray {
+    input {
+      color: #666;
+    }
+  }
+  .boxPopover {
+    border: none;
+    background-color: #1e1e1e;
+    padding: 4px 12px;
+    border-radius: 15px;
+  }
+}
+
+@media (max-width: 500px) {
+  .dapp-sniper-right {
+    .receive-token {
+      width: 300px;
+    }
+    .send-token {
+      width: 300px;
+      margin-bottom: -28px;
+      .token-info {
+        margin-bottom: 42px;
+      }
+    }
+    .bottom-info {
+      width: 300px;
+    }
   }
 }

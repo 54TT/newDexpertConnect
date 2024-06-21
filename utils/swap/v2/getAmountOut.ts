@@ -3,7 +3,7 @@ import { config } from '../../../src/config/config';
 import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
 import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
-import { zeroAddress } from 'viem';
+import { zeroAddress } from '@utils/constants';
 import { getDecimals } from '@utils/getDecimals';
 
 export const getAmountOut = async (
@@ -24,7 +24,6 @@ export const getAmountOut = async (
   let fee = new Decimal(0);
   if (payType == 0) {
     const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
-    console.log(fastTradeFeeBps);
 
     const feeBaseBps = await universalRouterContract.feeBaseBps();
 
@@ -53,7 +52,6 @@ export const getAmountOut = async (
       amountInBigNumber,
       swapPath
     );
-    console.log('amountsOut:', amountsOut);
     amountOutBigNumber = BigNumber.from(amountsOut[amountsOut.length - 1]);
   } else if (
     tokenInAddress.toLowerCase() !== wethAddress.toLowerCase() &&
@@ -102,7 +100,7 @@ export const getAmountOut = async (
   let amount = reduceFromDecimalsBN(amountOutBigNumber, tokenOutDecimals);
 
   if (fee.greaterThan(0)) {
-    amount = amount.sub(amount.mul(fee));
+    amount = amount.sub(amount.add(amount.mul(fee)).mul(fee));
   }
   if (slippage.greaterThan(0)) {
     amount = amount.sub(amount.mul(slippage));

@@ -2,8 +2,7 @@ type ChainIdList = '1' | '11155111';
 
 export const config: Record<ChainIdList, any> = {
   '1': {
-    rpcUrl:
-      'https://eth-mainnet.g.alchemy.com/v2/yvW_w6m8ti-CX4tjL7XQYU_6BbIUX3O7',
+    rpcUrl: 'https://eth.drpc.org',
     chainId: 1,
     verificationURL: 'https://api.etherscan.io/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
@@ -19,10 +18,12 @@ export const config: Record<ChainIdList, any> = {
     usdtDecimal: 6,
     ethAddress: '0x0000000000000000000000000000000000000000',
     zeroAddress: '0x0000000000000000000000000000000000000000',
+    uniswapV3FeeAmounts: [500, 3000, 10000],
+    quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
+    scan: 'https://etherscan.io/tx/',
   },
   '11155111': {
-    rpcUrl:
-      'https://eth-sepolia.g.alchemy.com/v2/9XFPPIAIzHPbfcr7BV6hPwNeMS65beJC',
+    rpcUrl: 'https://sepolia.drpc.org',
     /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
     verificationURL: 'https://api-sepolia.etherscan.io/api',
     chainId: 11155111,
@@ -33,7 +34,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FactoryAddress: '0x0227628f3F023bb0B980b67D528571c95c6DaC1c',
     uniswapV3OracleLibraryAddress: '0xA4896b3573333Ad215E6F4B76439eEe14eE46a9D',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
-    universalRouterAddress: '0xfd6c6a83898dc2440722b9289d32f3cd2be5e4fb',
+    universalRouterAddress: '0xc20F5ADedD850D74862Bdee426d0dDB53Cd8Af66',
     wethAddress: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
     wethUsdtPairAddress: '0x77f1a0ab2b0af8343640490264c65be6581bde3c',
     wethDecimal: 18,
@@ -43,5 +44,6 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x20893BBb093b0fdc669991236F6170ceCD101737',
+    scan: 'https://sepolia.etherscan.io/tx/',
   },
 };

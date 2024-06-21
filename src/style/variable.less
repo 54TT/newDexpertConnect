@@ -18,3 +18,52 @@
 .right-top-halo {
   background-color: #8b0505;
 }
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-ms-keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.text-easy-in {
+  animation: fade-in 2s ease 0s 1; /*调用名称为fade-in的动画，全程动画显示时间1S，进入方式为ease，延时0S进入，播放次数1次*/
+  -webkit-animation: fade-in 2s ease 0s 1;
+  -moz-animation: fade-in 2s ease 0s 1;
+  -o-animation: fade-in 2s ease 0s 1;
+  -ms-animation: fade-in 2s ease 0s 1;
+}

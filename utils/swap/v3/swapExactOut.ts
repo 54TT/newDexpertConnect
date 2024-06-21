@@ -13,21 +13,23 @@ export const erc20ToErc20 = async (
     recipient: string,
     isFee: boolean,
     feeType: number,
-    uniswapV3Fee: number
+    uniswapV3Fee: number,
+    permit: any,
+    signature: string
 ) => {
     const chainConfig = config[chainId];
     const universalRouterAddress = chainConfig.universalRouterAddress;
     const wethAddress = chainConfig.wethAddress;
 
-    const transferParams = [tokenIn, universalRouterAddress, amountInMax]
-    planner.addCommand(CommandType.TRANSFER_FROM, transferParams, false)
+    const permit2PermitParams = [permit, signature];
+    planner.addCommand(CommandType.PERMIT2_PERMIT, permit2PermitParams, false);
 
     let swapPath = [tokenIn, tokenOut]
     const path = encodePathExactOutput(swapPath, [uniswapV3Fee])
 
     const payerIsUser = false;
     const swapParams = [recipient, amountOut, amountInMax, path, payerIsUser, isFee, feeType]
-    planner.addCommand(CommandType.V2_SWAP_EXACT_OUT, swapParams, false)
+    planner.addCommand(CommandType.V3_SWAP_EXACT_OUT, swapParams, false)
 
     const sweepParam = [tokenIn, recipient, 0]
     planner.addCommand(CommandType.SWEEP, sweepParam, false)
@@ -43,19 +45,21 @@ export const erc20ToETH = async (
     recipient: string,
     isFee: boolean,
     feeType: number,
-    uniswapV3Fee: number
+    uniswapV3Fee: number,
+    permit: any,
+    signature: string
 ) => {
     const chainConfig = config[chainId];
     const universalRouterAddress = chainConfig.universalRouterAddress;
 
-    const transferParams = [tokenIn, universalRouterAddress, amountInMax]
-    planner.addCommand(CommandType.TRANSFER_FROM, transferParams, false)
+    const permit2PermitParams = [permit, signature];
+    planner.addCommand(CommandType.PERMIT2_PERMIT, permit2PermitParams, false);
 
     let swapPath = [tokenIn, tokenOut]
     const path = encodePathExactOutput(swapPath, [uniswapV3Fee])
     const payerIsUser = false;
     const swapParams = [universalRouterAddress, amountOut, amountInMax, path, payerIsUser, isFee, feeType]
-    planner.addCommand(CommandType.V2_SWAP_EXACT_IN, swapParams, false)
+    planner.addCommand(CommandType.V3_SWAP_EXACT_OUT, swapParams, false)
 
     const unWrapEthParams = [recipient, 0]
     planner.addCommand(CommandType.UNWRAP_WETH, unWrapEthParams, false)
@@ -72,22 +76,22 @@ export const ethToErc20 = async (
     amountInMax: BigNumber,
     amountOut: BigNumber,
     recipient: string,
-    pairAddress: string,
     isFee: boolean,
     feeType: number,
     uniswapV3Fee: number
 ) => {
     const chainConfig = config[chainId];
     const ethAddress = chainConfig.ethAddress;
+    const universalRouterAddress = chainConfig.uniswapV2RouterAddress
 
-    const wrapEthParams = [pairAddress, amountInMax, isFee, feeType]
+    const wrapEthParams = [universalRouterAddress, amountInMax, false, feeType]
     planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false)
 
     let swapPath = [tokenIn, tokenOut]
     const path = encodePathExactOutput(swapPath, [uniswapV3Fee])
-    const payerIsUser = true;
-    const swapParams = [recipient, amountOut, amountInMax, path, payerIsUser, false, feeType]
-    planner.addCommand(CommandType.V2_SWAP_EXACT_IN, swapParams, false)
+    const payerIsUser = false;
+    const swapParams = [recipient, amountOut, amountInMax, path, payerIsUser, isFee, feeType]
+    planner.addCommand(CommandType.V3_SWAP_EXACT_OUT, swapParams, false)
 
     const sweepParams = [ethAddress, recipient, 0]
     planner.addCommand(CommandType.SWEEP, sweepParams, false)

@@ -57,7 +57,7 @@ function Left() {
         }}
       >
         <div className="disDis">
-          <ChooseChain />
+          <ChooseChain onChange={(v) => switchChain(v)} />
           <Select
             onChange={handleChange}
             value={select}

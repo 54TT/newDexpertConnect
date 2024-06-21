@@ -1,56 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from 'antd';
 import './index.less';
 import { formatAddress } from '@utils/utils';
-interface TokenItemData {
+import {} from '../SelectTokenModal';
+import Request from '../axios';
+import Cookies from 'js-cookie';
+import DefaultTokenImg from '../DefaultTokenImg';
+export interface TokenItemData {
   symbol: string;
   name: string;
-  address: string;
-  id: string;
-  icon: string;
+  contractAddress: string;
+  logoUrl: string;
   balance: string;
 }
 
 interface SelectTokenType {
   onChange: (data: TokenItemData) => void;
+  chainName: string;
 }
 
 const { Search } = Input;
 
-const mockTokenETH = '0x0000000000000000000000000000000000000000';
-const mockTokenWETH = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
-const mockTokenUSDT = '0xb72bc8971d5e595776592e8290be6f31937097c6';
-
-const mockTokenList: TokenItemData[] = [
-  {
-    symbol: 'ETH',
-    name: 'ETH',
-    address: mockTokenETH,
-    id: '0',
-    icon: '/eth1.svg',
-    balance: '0.1',
-  },
-  {
-    symbol: 'WETH',
-    name: 'WETH',
-    address: mockTokenWETH,
-    id: '1',
-    icon: '/powEth.svg',
-    balance: '0.02',
-  },
-  {
-    symbol: 'USDT',
-    name: 'USDT',
-    address: mockTokenUSDT,
-    id: '2',
-    icon: '/usdt.svg',
-    balance: '200',
-  },
-];
-function SelectToken({ onChange }: SelectTokenType) {
-  const [tokenList] = useState<TokenItemData[]>(mockTokenList);
+function SelectToken({ onChange, chainName }: SelectTokenType) {
+  const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
   /*   const [searchList, setSearchList] = useState<TokenItemData[]>();
   const [historyList, setHistoryList] = useState<TokenItemData[]>(); */
+  const [, setPage] = useState(1);
+  const { getAll } = Request();
+  const token = Cookies.get('token');
+  const getHotTradingToken = async (page: number) => {
+    const { data } = await getAll({
+      method: 'post',
+      url: '/api/v1/dapp/hotTradingToken',
+      data: {
+        page: page.toString(),
+        pageSize: '5',
+        chainName,
+      },
+      token,
+    });
+    const { tokens } = data;
+
+    setTokenList(tokens);
+  };
+
+  useEffect(() => {
+    setPage(1);
+    getHotTradingToken(1);
+  }, [chainName]);
 
   return (
     <div className="select-token">
@@ -61,15 +58,19 @@ function SelectToken({ onChange }: SelectTokenType) {
       <div className="token-history-list"></div>
       <span className="popular-tokens">Popular tokens</span>
       {tokenList?.map?.((item: TokenItemData) => (
-        <div className="select-token-item" onClick={() => onChange(item)}>
+        <div
+          key={item.contractAddress}
+          className="select-token-item"
+          onClick={() => onChange(item)}
+        >
           <div className="select-token-item-info">
-            <img src={item.icon} alt="" />
-            <div>
+            <DefaultTokenImg name={item.symbol} icon={item.logoUrl} />
+            <div className="token-item-info-box">
               <span className="select-token-item-info-symbol">
                 {item.symbol}
               </span>
               <span className="select-token-item-info-address">
-                {formatAddress(item.address)}
+                {formatAddress(item.contractAddress)}
               </span>
             </div>
           </div>
