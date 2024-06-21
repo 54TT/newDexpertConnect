@@ -96,6 +96,18 @@ export const ethToErc20 = async (
   feeType: number,
   uniswapV3Fee: number
 ) => {
+  debugger;
+  console.log('ethToErc20', {
+    planner,
+    tokenIn,
+    tokenOut,
+    amountInMax: amountInMax.toString(),
+    amountOut: amountOut.toString(),
+    recipient,
+    isFee,
+    feeType,
+    uniswapV3Fee,
+  });
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const universalRouterAddress = chainConfig.uniswapV2RouterAddress;

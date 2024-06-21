@@ -373,7 +373,6 @@ function SwapComp() {
       signature,
       recipientAddress,
     } = data;
-
     const getBytesParam = [
       chainId,
       provider,
@@ -584,6 +583,8 @@ function SwapComp() {
         ...data,
         recipientAddress: signerAddress,
       });
+      console.log(etherValue);
+
       sendSwap({
         commands,
         inputs,
