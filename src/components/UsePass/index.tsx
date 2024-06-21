@@ -28,7 +28,7 @@ function UsePass({ type, onChange, payType }) {
         setGlodenEndTime(stopTs); */
         let list = [
           {
-            label: 'pay for fees',
+            label: 'Pay 0.2% for fees',
             key: '0',
             title: (
               <>

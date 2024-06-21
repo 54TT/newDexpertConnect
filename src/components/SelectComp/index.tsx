@@ -24,7 +24,12 @@ function SelectComp({ list, data, onChange }: SelectCompType) {
   };
 
   return (
-    <Dropdown menu={{ items: list, onClick: onDropdownItemChange }}>
+    <Dropdown
+      className="drop-down-select"
+      overlayClassName="drop-down-overlay"
+      trigger={['click', 'hover']}
+      menu={{ items: list, onClick: onDropdownItemChange }}
+    >
       <a
         onClick={(e) => {
           e.preventDefault();
