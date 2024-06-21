@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button, Skeleton } from 'antd';
+import { Button, Skeleton, message, notification } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
@@ -75,7 +75,7 @@ function SwapComp() {
     inPrice: '-',
     outPrice: '-',
   }); */
-  const payType = useRef('0');
+  const [payType, setPayType] = useState('0');
 
   const getGasPrice = async () => {
     const gas: BigNumber = await provider.getGasPrice();
@@ -334,11 +334,12 @@ function SwapComp() {
       new Decimal(amountIn),
       new Decimal(amountOut),
       recipientAddress,
-      payType.current == '0',
-      Number(payType.current),
+      payType == '0',
+      Number(payType),
       permit,
       signature,
     ];
+    console.log(getBytesParam, payType);
 
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
@@ -378,7 +379,7 @@ function SwapComp() {
     getAll({
       method: 'get',
       url: '/api/v1/d_pass/pay',
-      data: { payType: payType.current, tx },
+      data: { payType, tx },
       token,
       chainId,
     });
@@ -400,7 +401,7 @@ function SwapComp() {
     );
     const universalRouterWriteContract =
       await universalRouterContract.connect(signer);
-
+    const { scan } = contractConfig;
     /*     const gasLimit = await universalRouterWriteContract.estimateGas[
       'execute(bytes,bytes[],uint256)'
     ](commands, inputs, BigInt(2000000000)); */
@@ -415,6 +416,14 @@ function SwapComp() {
           gasLimit: 1030000,
         }
       );
+      notification.success({
+        message: 'Transaction submitted successfully',
+        description: (
+          <a href={`${scan}${tx.hash}`} target="_blank">
+            Click here to view on etherscan
+          </a>
+        ),
+      });
     } catch (e) {
       setButtonLoading(false);
       setButtonDescId('1');
@@ -673,7 +682,12 @@ function SwapComp() {
     if (!isLogin) {
       setIsModalOpen(true);
     } else {
-      setOpenDpass(true);
+      handleSwap({
+        amountIn,
+        amountOut,
+        tokenIn: tokenIn.contractAddress,
+        tokenOut: tokenOut.contractAddress,
+      });
     }
   };
 
@@ -795,6 +809,14 @@ function SwapComp() {
           <span>Quote Path</span>
           <span>-</span>
         </div>
+        <div className="service-fee">
+          <span>Service Fees</span>
+          <UsePass
+            type="swap"
+            payType={payType}
+            onChange={(v) => setPayType(v)}
+          />
+        </div>
       </div>
       <Button
         className="swap-button"
@@ -817,7 +839,7 @@ function SwapComp() {
         }}
         onCancel={() => setOpenSelect(false)}
       />
-      <UsePass
+      {/*       <UsePass
         open={openDpass}
         onClose={() => setOpenDpass(false)}
         type="swap"
@@ -831,7 +853,7 @@ function SwapComp() {
             tokenOut: tokenOut.contractAddress,
           });
         }}
-      />
+      /> */}
     </div>
   );
 }

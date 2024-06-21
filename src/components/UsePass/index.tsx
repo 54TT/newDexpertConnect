@@ -1,18 +1,16 @@
-import PassCardRadioItem from './components/PassCardRadioItem';
 import './index.less';
-import classnames from 'classnames';
 import { useContext, useEffect, useState } from 'react';
-import { Button, Modal } from 'antd';
-import dayjs from 'dayjs';
 import Request from '../axios';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
-function UsePass({ open, type, onChange, onClose }) {
+import SelectComp from '@/components/SelectComp';
+import { Tag } from 'antd';
+function UsePass({ type, onChange, payType }) {
   const { isLogin } = useContext(CountContext);
   // 0 付钱 1 gloden 2 swap
-  const [value, setValue] = useState<'1' | '2' | '0'>('0');
-  const [dpassCount, setDapssCount] = useState('0'); // 剩余的dpass次数 需要区分swap snip limit
-  const [glodenEndTime, setGlodenEndTime] = useState('0'); // 金卡到期时间
+  /*   const [dpassCount, setDapssCount] = useState('0'); // 剩余的dpass次数 需要区分swap snip limit
+  const [glodenEndTime, setGlodenEndTime] = useState('0'); // 金卡到期时间 */
+  const [payTypeList, setPayTypeList] = useState([]);
   const { getAll } = Request();
 
   const getPassInfo = async () => {
@@ -26,8 +24,51 @@ function UsePass({ open, type, onChange, onClose }) {
         token,
       });
       if (type === 'swap') {
-        setDapssCount(sniperBotSwapCnt);
-        setGlodenEndTime(stopTs);
+        /*         setDapssCount(sniperBotSwapCnt);
+        setGlodenEndTime(stopTs); */
+        let list = [
+          {
+            label: 'pay for fees',
+            key: '0',
+            title: (
+              <>
+                <Tag color="#aaa" style={{ color: 'black' }}>
+                  0.2% fees
+                </Tag>
+              </>
+            ),
+          },
+        ];
+        if (sniperBotSwapCnt) {
+          const data = {
+            label: 'D pass',
+            key: '2',
+            title: (
+              <>
+                <Tag color="#86F097" style={{ color: 'black' }}>
+                  D Pass (free)
+                </Tag>
+              </>
+            ),
+          };
+          list.unshift(data);
+        }
+        if (stopTs != '0') {
+          const data = {
+            label: 'gloden pass',
+            key: '1',
+            title: (
+              <>
+                <Tag color="#FFE380" style={{ color: 'black' }}>
+                  Gloden Pass (free)
+                </Tag>
+              </>
+            ),
+          };
+          list.unshift(data);
+        }
+
+        setPayTypeList(list);
       }
     } catch (e) {
       console.log(e);
@@ -40,77 +81,7 @@ function UsePass({ open, type, onChange, onClose }) {
     }
   }, [isLogin, type]);
 
-  const confirmPayType = () => {
-    onChange(value);
-  };
-
-  return (
-    <Modal
-      className="dpass-modal"
-      centered
-      open={open}
-      title="D pass"
-      footer={null}
-      onCancel={onClose}
-    >
-      <div className="use-pass-page">
-        <>
-          <PassCardRadioItem
-            radioValue="1"
-            checked={value === '1'}
-            disable={glodenEndTime === '0'}
-            src="/GlodenPass.png"
-            desc={
-              glodenEndTime !== '0'
-                ? dayjs.unix(Number(glodenEndTime || 0)).format('YYYY-MM-DD')
-                : "Common.You don't have Gloden Pass"
-            }
-            name="Gloden Pass"
-            className={classnames('gloden-card')}
-            onClick={(v) => {
-              setValue(v);
-            }}
-          />
-          <PassCardRadioItem
-            radioValue="2"
-            checked={value === '2'}
-            disable={dpassCount === '0'}
-            src="/DpassToken.png"
-            name="Dpass"
-            desc={
-              dpassCount !== '0'
-                ? `${'Common.Balance'}:${dpassCount}`
-                : "Common.You don't have D Pass"
-            }
-            className={classnames('normal-card')}
-            onClick={(v) => {
-              setValue(v);
-            }}
-          />
-          <PassCardRadioItem
-            radioValue="0"
-            checked={value === '0'}
-            src=""
-            name={`${'Common.Pay transaction fees using Eth'}.`}
-            desc=""
-            className={classnames('pay-for-fee')}
-            onClick={(v) => {
-              setValue(v);
-            }}
-          />
-          <div className="disCen" style={{ marginTop: '20px' }}>
-            <Button
-              style={{ width: '80%', borderRadius: '10px' }}
-              className="action-button"
-              onClick={confirmPayType}
-            >
-              Confirm
-            </Button>
-          </div>
-        </>
-      </div>
-    </Modal>
-  );
+  return <SelectComp list={payTypeList} data={payType} onChange={onChange} />;
 }
 
 export default UsePass;
