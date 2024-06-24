@@ -475,13 +475,15 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
 
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
-        (tokenIn === ethAddress || tokenIn === wethAddress) &&
-        (tokenOut === ethAddress || tokenOut === wethAddress)
+        (tokenIn.contractAddress === ethAddress ||
+          tokenIn.contractAddress === wethAddress) &&
+        (tokenOut.contractAddress === ethAddress ||
+          tokenOut.contractAddress === wethAddress)
       ) {
         return await getSwapEthAndWeth.apply(null, [
           chainId,
-          [tokenIn.contractAddress, tokenIn.decimals],
-          [tokenOut.contractAddress, tokenOut.decimals],
+          [tokenIn.contractAddress, Number(tokenIn.decimals)],
+          [tokenOut.contractAddress, Number(tokenOut.decimals)],
           new Decimal(amountIn),
           new Decimal(amountOut),
           recipientAddress,
@@ -510,7 +512,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     console.log('byteCode', { commands, inputs });
 
     let etherValue = BigInt(0);
-    if (tokenIn === contractConfig.ethAddress) {
+    if (tokenIn.contractAddress === contractConfig.ethAddress) {
       etherValue = BigInt((amountIn * 10 ** 18).toFixed(0));
     }
     return { commands, inputs, etherValue };
