@@ -1,20 +1,22 @@
-import { Select } from 'antd';
+import { Select, Tooltip } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Loading from '../../../components/allLoad/loading.tsx';
-import Load from '../../../components/allLoad/load.tsx';
+import Loading from '@/components/allLoad/loading.tsx';
+import Load from '@/components/allLoad/load.tsx';
 import NewPair from './newPairDate.tsx';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { CountContext } from '../../../Layout.tsx';
-import newPair from '../../../components/getNewPair.tsx';
+import { CountContext } from '@/Layout.tsx';
+import newPair from '@/components/getNewPair.tsx';
 import { useTranslation } from 'react-i18next';
 import { getGas } from '../../../../utils/getGas.ts';
 import Nodata from '../../../components/Nodata.tsx';
 import ChooseChain from '../../../components/chooseChain.tsx';
+import { chainParams } from '@utils/judgeStablecoin.ts';
 function Left() {
   const hei = useRef<any>();
   const { ethPrice, moreLoad, tableDta, setDta, wait, changePage } =
     newPair() as any;
-  const { browser, switchChain }: any = useContext(CountContext);
+  const { browser, switchChain, setSwitchChain }: any =
+    useContext(CountContext);
   const [tableHei, setTableHei] = useState('');
   const [select, setSelect] = useState('newPair');
   const time = '24h';
@@ -47,21 +49,35 @@ function Left() {
   return (
     <div className={'indexBox'} style={{ width: browser ? '74%' : 'auto' }}>
       {/* top*/}
-      <div ref={hei} className={`indexTop dis`}>
+      <div
+        ref={hei}
+        className={`indexTop`}
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'space-between',
+        }}
+      >
         <div className="disDis">
-          <ChooseChain onChange={(v) => switchChain(v)} />
+          <ChooseChain
+            chainList={chainParams}
+            disabledChain={true}
+            onChange={(v) => setSwitchChain(v)}
+          />
           <Select
             onChange={handleChange}
             value={select}
-            suffixIcon={ <img src="/down.svg" alt="" width={'14px'} style={{marginTop:'3px'}}/>}
+            suffixIcon={
+              <img
+                src="/down.svg"
+                alt=""
+                width={'14px'}
+                style={{ marginTop: '3px' }}
+              />
+            }
             className={'indexSelect'}
             popupClassName={'indexSelectPopup'}
-            style={{
-              width: '120px',
-              border: '2px solid #3c453c',
-              borderRadius: '7px',
-              marginLeft: '7px',
-            }}
+          
             options={[
               { value: 'newPair', label: t('Market.New') },
               { value: 'trading', label: t('Market.Trading'), disabled: true },
@@ -83,11 +99,11 @@ function Left() {
               loading={'lazy'}
               alt=""
             />
-            {wait ? <Load /> : <span>$:{ethPrice}</span>}
+            {wait ? <Load /> : <p>$ : <span>{ethPrice}</span></p>}
           </div>
           <div className="div">
             <img loading={'lazy'} src="/gas.svg" alt="" />
-            {gasLoad ? <Load /> : <span>{gas}</span>}
+            {gasLoad ? <Load /> : <p>Gas : <span>{gas}</span></p>}
           </div>
         </div>
       </div>
@@ -99,21 +115,20 @@ function Left() {
           className={`indexNewPair`}
           style={{ width: browser ? '100%' : '170%' }}
         >
-          {/*tittle*/}
           <div className={'indexNewPairTitle'}>
             {[
-              t('Market.Name'),
-              `${t('Market.Price')}($)`,
-              time + ' Change',
-              t('Market.Create Time'),
-              t('Market.Pooled Amt'),
-              t('Market.Swap Count'),
-              t('Market.Liquidity'),
-              t('Market.Links'),
-            ].map((i: string, ind: number) => {
+              { name: t('Market.Name'), key: 'name' },
+              { name: `${t('Market.Price')}($)`, key: 'price' },
+              { name: time + ' Change', key: 'change' },
+              { name: t('Market.Create Time'), key: 'time' },
+              { name: t('Market.Pooled Amt'), key: 'pooled' },
+              { name: t('Market.Swap Count'), key: 'swap' },
+              { name: t('Market.Liquidity'), key: 'Liquidity' },
+              { name: t('Market.Links'), key: 'link' },
+            ].map((i: any, ind: number) => {
               return (
                 <p className={` homeTableTittle`} key={ind}>
-                  {ind === 0 && (
+                  {i.key === 'name' && (
                     <img
                       loading={'lazy'}
                       src="/collect.svg"
@@ -122,7 +137,23 @@ function Left() {
                       width={'15px'}
                     />
                   )}
-                  <span>{i}</span>
+                  <span>{i.name}</span>
+                  {(i.key === 'pooled' ||
+                    i.key === 'swap' ||
+                    i.key === 'Liquidity') && (
+                    <Tooltip
+                      title={
+                        i.key === 'pooled'
+                          ? t('Market.pooled')
+                          : i.key === 'swap'
+                            ? t('Market.swap')
+                            : t('Market.liquidity')
+                      }
+                      rootClassName="allTooltipClass"
+                    >
+                      <span className="hint">!</span>
+                    </Tooltip>
+                  )}
                 </p>
               );
             })}

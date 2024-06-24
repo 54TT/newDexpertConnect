@@ -75,7 +75,6 @@ function Layout() {
     const newConfig = config[chainId ?? '1'];
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
-
     //@ts-ignore
     setProvider(rpcProvider);
   };
@@ -92,23 +91,6 @@ function Layout() {
       tonConnect('login');
     }
   }, [userFriendlyAddress]);
-
-  // 初始化时同步钱包环境与登陆态
-  const synchronizeWalletAndDexpert = async () => {
-    // 有 token 但没有 evm环境
-    const loginChainId = localStorage.getItem('login-chain');
-    const isConnected = await checkConnection();
-    // 没有登陆过 但是有钱包环境
-    if (!loginChainId && isConnected) {
-      //@ts-ignore
-      //@ts-ignore
-      await window?.ethereum.disconnect();
-    }
-  };
-
-  useEffect(() => {
-    synchronizeWalletAndDexpert();
-  }, []);
 
   //ton钱包连接
   const tonConnect = async (log?: any) => {
@@ -186,6 +168,7 @@ function Layout() {
   useEffect(() => {
     if (checkConnection() && isLogin) {
       setChainId('1');
+      // @ts-ignore
       window.ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [

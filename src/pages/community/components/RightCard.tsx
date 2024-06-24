@@ -1,14 +1,14 @@
 import { Card } from 'antd';
-import { setMany, simplify } from '../../../../utils/change.ts';
-import newPair from '../../../components/getNewPair.tsx';
-import Loading from '../../../components/allLoad/loading.tsx';
+import { setMany, simplify } from '@/../utils/change.ts';
+import newPair from '@/components/getNewPair.tsx';
+import Loading from '@/components/allLoad/loading.tsx';
 import { DownOutlined } from '@ant-design/icons';
 import { useEffect, useState, useContext } from 'react';
 import { throttle } from 'lodash';
 import { useLocation } from 'react-router-dom';
-import Nodata from '../../../components/Nodata.tsx';
+import Nodata from '@/components/Nodata.tsx';
 import { useTranslation } from 'react-i18next';
-import { CountContext } from '../../../Layout.tsx';
+import { CountContext } from '@/Layout.tsx';
 function RightCard({ data, par, load }: any) {
   const { tableDta, wait } = newPair() as any;
   const { browser }: any = useContext(CountContext);
@@ -26,24 +26,12 @@ function RightCard({ data, par, load }: any) {
 
   return (
     <div
+      className="dappRightCardBox"
       style={{
-        marginBottom: '15px',
-        backgroundColor: 'rgb(45,45,45)',
-        padding: '10px 0',
-        borderRadius: '10px',
         width: router.pathname.includes('/community/') ? '100%' : '32%',
       }}
     >
-      <p
-        style={{
-          color: 'white',
-          textAlign: 'center',
-          fontSize: '20px',
-          marginBottom: '5px',
-        }}
-      >
-        {title}
-      </p>
+      <p className="dappRightCardBoxText">{title}</p>
       <Card
         title={
           <div
@@ -64,7 +52,7 @@ function RightCard({ data, par, load }: any) {
       >
         <div
           className="scrollStyle"
-          style={{ overflowY: 'auto', height: '20vh' }}
+          style={{ overflowY: 'auto', height: '25vh' }}
         >
           {titleValue === 'New Pairs' ? (
             wait ? (
@@ -107,12 +95,7 @@ function RightCard({ data, par, load }: any) {
                 })}
                 {params.length > 0 && newPage < 5 && (
                   <p
-                    style={{
-                      color: 'rgb(135,145,136)',
-                      textAlign: 'center',
-                      margin: '6px 0',
-                      cursor: 'pointer',
-                    }}
+                    className="dappRightNext"
                     onClick={throttle(
                       async function () {
                         setNewPage(newPage + 1);
@@ -175,12 +158,7 @@ function RightCard({ data, par, load }: any) {
               })}
               {page !== 3 && !(par.length % 5) && (
                 <p
-                  style={{
-                    color: 'rgb(135,145,136)',
-                    textAlign: 'center',
-                    margin: '6px 0',
-                    cursor: 'pointer',
-                  }}
+                  className="dappRightNext"
                   onClick={throttle(
                     function () {
                       setPage((res) => res + 1);

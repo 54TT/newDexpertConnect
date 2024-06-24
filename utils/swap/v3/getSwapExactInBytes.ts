@@ -1,5 +1,4 @@
 import { config } from '../../../src/config/config';
-import { getERC20Contract } from '../../contracts';
 import { RoutePlanner } from '../../planner';
 import { erc20ToETH, erc20ToErc20, ethToErc20 } from './swapExactIn';
 import { expandToDecimalsBN } from '../../utils';
@@ -68,7 +67,7 @@ export const getSwapExactInBytes = async (
       feeType,
       uniswapV3Fee,
       permit,
-      signature,
+      signature
     );
   } else {
     await erc20ToErc20(

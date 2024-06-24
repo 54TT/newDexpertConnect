@@ -1,4 +1,4 @@
-import {CountContext} from "../../../Layout.tsx";
+import {CountContext} from "@/Layout.tsx";
 import {useContext} from 'react'
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Autoplay, EffectCoverflow, Navigation, Pagination,} from "swiper/modules";

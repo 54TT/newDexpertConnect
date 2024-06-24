@@ -3,7 +3,7 @@ import BuyBot from './buyBot';
 import { useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swap from './swap';
-import { CountContext } from '../../Layout';
+import { CountContext } from '@/Layout';
 export default function index() {
   const params: any = useParams();
   const { browser }: any = useContext(CountContext);
@@ -74,7 +74,7 @@ export default function index() {
         </div>
       </div>
       {params?.id === 'swap' && <Swap />}
-      {params?.id === 'sniping' && <p style={{ color: 'white' }}>2</p>}
+      {params?.id === 'sniping' && <p style={{ color: 'white' }}>Comming Soon</p>}
       {params?.id === 'buyBot' && <BuyBot />}
     </div>
   );

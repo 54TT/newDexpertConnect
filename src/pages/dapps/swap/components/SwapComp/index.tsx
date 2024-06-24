@@ -6,14 +6,15 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button, Skeleton, message, notification } from 'antd';
+import { Button, Skeleton, notification } from 'antd';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
+import { getV3AmountIn } from '@utils/swap/v3/getAmountIn';
+import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
 import { getSwapEthAndWeth } from '@utils/swap/v2/getSwapEthAndWeth';
 import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
-import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
 import { getSwapExactInBytes as getSwapExactInBytesV3 } from '@utils/swap/v3/getSwapExactInBytes';
 import { getSwapExactOutBytes as getSwapExactOutBytesV3 } from '@utils/swap/v3/getSwapExactOutBytes';
 import {
@@ -32,6 +33,7 @@ import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
 import ChooseChain from '@/components/chooseChain';
 import {
+  CHAIN_ID_TO_CHAIN_NAME,
   CHAIN_NAME_TO_CHAIN_ID,
   CHAIN_NAME_TO_CHAIN_ID_HEX,
 } from '@utils/constants';
@@ -45,8 +47,15 @@ import Request from '@/components/axios';
 import Cookies from 'js-cookie';
 import useInterval from '@/hook/useInterval';
 import getBalanceRpc from '@utils/getBalanceRpc';
+import QuotoPathSelect from '@/components/QuotoPathSelect';
+import { swapChain } from '@utils/judgeStablecoin';
+interface SwapCompType {
+  changeAble: boolean; // 是否可修改Token || 网络
+  initChainId: string; // 初始化的chainId;
+  initToken: [tokenIn: TokenItemData, toeknOut: TokenItemData]; // 初始化的token
+}
 
-function SwapComp() {
+function SwapComp({ initChainId, initToken }: SwapCompType) {
   const { provider, contractConfig, setIsModalOpen, chainId, setChainId } =
     useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
@@ -62,11 +71,15 @@ function SwapComp() {
   const [buttonDesc] = useButtonDesc(buttonDescId);
   const [buttonLoading, setButtonLoading] = useState(false);
   const { isLogin } = useContext(CountContext);
-  const [openDpass, setOpenDpass] = useState(false);
   const [inLoading, setInLoading] = useState(false);
   const [outLoading, setOutLoading] = useState(false);
-  const [balanceIn, setBalanceIn] = useState<Decimal>(); // 需要用于计算
-  const [balanceOut, setBalanceOut] = useState<Decimal>();
+  const [balanceIn, setBalanceIn] = useState<Decimal>(new Decimal(0)); // 需要用于计算
+  const [balanceOut, setBalanceOut] = useState<Decimal>(new Decimal(0));
+  const [swapV3Pool, setSwapV3Pool] = useState({
+    fee: 0,
+    poolAddress: '',
+  }); // 如果是uniswap3 需要的数据
+  const [quotePath, setQuotePath] = useState('0'); // 0 uniswapV2 1 V3
   const { getAll } = Request();
   /*   const [tokenPrice, setTokenPrice] = useState<{
     inPrice: string;
@@ -76,6 +89,24 @@ function SwapComp() {
     outPrice: '-',
   }); */
   const [payType, setPayType] = useState('0');
+
+  const initData = () => {
+    if (initToken?.length) {
+      const [initTokenIn, initTokenOut] = initToken;
+      setTokenIn(initTokenIn);
+      setTokenOut(initTokenOut);
+      setAmountIn(0);
+      setAmountOut(0);
+    }
+    if (initChainId) {
+      const chianName = CHAIN_ID_TO_CHAIN_NAME[initChainId];
+      changeWalletChain(chianName);
+    }
+  };
+
+  useEffect(() => {
+    initData();
+  }, []);
 
   const getGasPrice = async () => {
     const gas: BigNumber = await provider.getGasPrice();
@@ -89,8 +120,14 @@ function SwapComp() {
     if (!tokenIn?.contractAddress && !tokenOut?.contractAddress) {
       return Promise.resolve('');
     }
+    let amount: Decimal;
+    if (quotePath === '0') {
+      amount = await getAmountOut.apply(null, data);
+    } else {
+      const { quoteAmount } = await getV3AmountOut.apply(null, data);
+      amount = quoteAmount;
+    }
 
-    const amount: Decimal = await getAmountOut.apply(null, data);
     return amount.toNumber() < 0.000001
       ? '< 0.000001'
       : parseFloat(amount.toFixed(6)).toString();
@@ -104,21 +141,30 @@ function SwapComp() {
     const data = [
       chainId,
       provider,
-      await getUniversalRouterContract(provider, universalRouterAddress),
-      await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
+      quotePath === '0'
+        ? await getUniversalRouterContract(provider, universalRouterAddress)
+        : null,
+      quotePath === '0'
+        ? await getUniswapV2RouterContract(provider, uniswapV2RouterAddress)
+        : null,
       tokenIn.contractAddress,
       tokenOut.contractAddress,
       new Decimal(1),
       new Decimal(0),
       0,
-    ];
+    ].filter((item) => item !== null);
     return Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
-  }, [provider, tokenIn?.contractAddress, tokenOut?.contractAddress]);
+  }, [
+    provider,
+    tokenIn?.contractAddress,
+    tokenOut?.contractAddress,
+    quotePath,
+  ]);
 
   const [data, loading, showSkeleton] = useInterval(
     getExchangeRateAndGasPrice,
     10000,
-    [tokenIn, tokenOut]
+    [tokenIn, tokenOut, quotePath, chainId]
   );
 
   const [gasPrice, exchangeRate] = data || ['', ''];
@@ -148,15 +194,25 @@ function SwapComp() {
     }
 
     if (isLogin) {
-      setButtonDisable(true);
+      setButtonDisable(false);
       setButtonDescId('1');
+    }
+
+    const amountInDecimal = new Decimal(amountIn || 0);
+    if (amountInDecimal.lessThan(balanceIn)) {
+      setButtonDisable(false);
+      setButtonDescId('1');
+    } else {
+      setButtonDisable(true);
+      setButtonDescId('4');
     }
 
     if (
       tokenIn?.contractAddress &&
       tokenOut?.contractAddress &&
       amountIn &&
-      amountOut
+      amountOut &&
+      amountInDecimal.lessThan(balanceIn)
     ) {
       setButtonDisable(false);
       setButtonDescId('1');
@@ -167,7 +223,20 @@ function SwapComp() {
 
   useEffect(() => {
     setButtonDescAndDisable();
-  }, [isLogin, tokenIn, tokenOut, amountIn, amountOut]);
+  }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
+
+  useEffect(() => {
+    if (isLogin) {
+      (window as any)?.ethereum?.request({
+        method: 'wallet_switchEthereumChain',
+        params: [
+          {
+            chainId: chainId.toString(16),
+          },
+        ],
+      });
+    }
+  }, [isLogin]);
 
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
@@ -175,10 +244,15 @@ function SwapComp() {
     setTokenOut(newTokenOut);
     setAmountIn(amountOut);
     setAmountOut(0);
-    getAmount('in', amountOut || 0);
+    getAmount('in', amountOut || 0, payType, quotePath);
   };
 
-  const getAmount = async (type: 'in' | 'out', value: number) => {
+  const getAmount = async (
+    type: 'in' | 'out',
+    value: number,
+    payType: string,
+    quotePath: string
+  ) => {
     if (value === 0) return;
     if (
       ((type === 'in' || type === 'out') && !tokenIn?.contractAddress) ||
@@ -186,6 +260,9 @@ function SwapComp() {
     ) {
       return;
     }
+
+    setButtonLoading(true);
+    setButtonDescId('7');
 
     let start = Date.now();
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
@@ -195,19 +272,32 @@ function SwapComp() {
     const param = [
       chainId,
       provider,
-      await getUniversalRouterContract(provider, universalRouterAddress),
-      await getUniswapV2RouterContract(provider, uniswapV2RouterAddress),
+      quotePath === '0'
+        ? await getUniversalRouterContract(provider, universalRouterAddress)
+        : null,
+      quotePath === '0'
+        ? await getUniswapV2RouterContract(provider, uniswapV2RouterAddress)
+        : null,
       tokenIn.contractAddress,
       tokenOut.contractAddress,
       new Decimal(value),
       new Decimal(slip),
-      0,
-    ];
-
+      Number(payType),
+    ].filter((item) => item !== null);
     if (type === 'in') {
       setOutLoading(true);
       try {
-        const amount = await getAmountOut.apply(null, param);
+        let amount;
+        if (quotePath === '0') {
+          amount = await getAmountOut.apply(null, param);
+        } else {
+          const { quoteAmount, ...poolInfo } = await getV3AmountOut.apply(
+            null,
+            param
+          );
+          amount = quoteAmount;
+          setSwapV3Pool(poolInfo);
+        }
         setAmountOut(Number(amount.toString()));
       } catch (e) {
         console.error(e);
@@ -217,13 +307,25 @@ function SwapComp() {
     if (type === 'out') {
       setInLoading(true);
       try {
-        const amount = await getAmountIn.apply(null, param);
+        let amount;
+        if (quotePath === '0') {
+          amount = await getAmountIn.apply(null, param);
+        } else {
+          const { quoteAmount, ...poolInfo } = await getV3AmountIn.apply(
+            null,
+            param
+          );
+          amount = quoteAmount;
+          setSwapV3Pool(poolInfo);
+        }
         setAmountIn(Number(amount.toString()));
       } catch (e) {
         console.error(e);
       }
       setInLoading(false);
     }
+    setButtonLoading(false);
+    setButtonDescId('1');
     console.log(`获取输入输出总耗时${(Date.now() - start) / 1000} 秒 `);
   };
 
@@ -325,7 +427,6 @@ function SwapComp() {
       signature,
       recipientAddress,
     } = data;
-
     const getBytesParam = [
       chainId,
       provider,
@@ -336,10 +437,10 @@ function SwapComp() {
       recipientAddress,
       payType == '0',
       Number(payType),
+      quotePath === '1' ? swapV3Pool?.fee : null,
       permit,
       signature,
-    ];
-    console.log(getBytesParam, payType);
+    ].filter((item) => item !== null);
 
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
@@ -359,13 +460,24 @@ function SwapComp() {
         ]);
       }
       if (currentInputToken.current === 'in') {
-        return await getSwapExactInBytes.apply(null, getBytesParam);
+        if (quotePath === '0') {
+          return await getSwapExactInBytes.apply(null, getBytesParam);
+        }
+        if (quotePath === '1') {
+          return await getSwapExactInBytesV3.apply(null, getBytesParam);
+        }
       } else {
-        return await getSwapExactOutBytes.apply(null, getBytesParam);
+        if (quotePath === '0') {
+          return await getSwapExactOutBytes.apply(null, getBytesParam);
+        }
+        if (quotePath === '1') {
+          return await getSwapExactOutBytesV3.apply(null, getBytesParam);
+        }
       }
     };
 
     const { commands, inputs } = await getSwapBytesFn(tokenIn, tokenOut);
+    console.log('byteCode', { commands, inputs });
 
     let etherValue = BigInt(0);
     if (tokenIn === contractConfig.ethAddress) {
@@ -393,7 +505,6 @@ function SwapComp() {
     signer,
     universalRouterAddress,
   }) => {
-    setButtonLoading(true);
     setButtonDescId('8');
     const universalRouterContract = await getUniversalRouterContract(
       provider,
@@ -402,7 +513,7 @@ function SwapComp() {
     const universalRouterWriteContract =
       await universalRouterContract.connect(signer);
     const { scan } = contractConfig;
-    /*     const gasLimit = await universalRouterWriteContract.estimateGas[
+    /*         const gasLimit = await universalRouterWriteContract[
       'execute(bytes,bytes[],uint256)'
     ](commands, inputs, BigInt(2000000000)); */
     let tx;
@@ -443,6 +554,8 @@ function SwapComp() {
     const { zeroAddress, universalRouterAddress, permit2Address } =
       contractConfig;
     const { tokenIn, amountIn } = data;
+    setButtonLoading(true);
+    setButtonDescId('9');
     //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await web3Provider.getSigner();
@@ -525,6 +638,8 @@ function SwapComp() {
         ...data,
         recipientAddress: signerAddress,
       });
+      console.log(etherValue);
+
       sendSwap({
         commands,
         inputs,
@@ -605,7 +720,7 @@ function SwapComp() {
       amountOut !== 0
     ) {
       currentInputToken.current = 'out';
-      getAmount('out', amountOut);
+      getAmount('out', amountOut, payType, quotePath);
     }
   }, [tokenIn]);
 
@@ -646,17 +761,17 @@ function SwapComp() {
       amountIn !== 0
     ) {
       currentInputToken.current = 'in';
-      getAmount('in', amountIn);
+      getAmount('in', amountIn, payType, quotePath);
     }
   }, [tokenOut]);
 
   useEffect(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
       if (currentInputToken.current === 'in' && amountIn !== 0) {
-        getAmount('in', amountIn);
+        getAmount('in', amountIn, payType, quotePath);
       }
       if (currentInputToken.current === 'out' && amountOut !== 0) {
-        getAmount('out', amountOut);
+        getAmount('out', amountOut, payType, quotePath);
       }
     }
   }, [advConfig.slip, advConfig.slipType]);
@@ -695,6 +810,8 @@ function SwapComp() {
     <div className="swap-comp">
       <div className="swap-comp-config">
         <ChooseChain
+          disabledChain={true}
+          chainList={swapChain}
           onChange={(v) => changeWalletChain(v)}
           hideChain={true}
           wrapClassName="swap-chooose-chain"
@@ -728,11 +845,11 @@ function SwapComp() {
             setAmountIn(v);
             if (currentInputToken.current !== 'in')
               currentInputToken.current = 'in';
-            getAmountDebounce('in', v);
+            getAmountDebounce('in', v, payType, quotePath);
           }}
         />
         <div className="token-info">
-          <div>1 USDT</div>
+          <div></div>
           {isLogin ? (
             <div>Balance: {balanceIn?.toString?.() || '0'}</div>
           ) : (
@@ -770,11 +887,11 @@ function SwapComp() {
             setAmountOut(v);
             if (currentInputToken.current !== 'out')
               currentInputToken.current = 'out';
-            getAmountDebounce('out', v);
+            getAmountDebounce('out', v, payType, quotePath);
           }}
         />
         <div className="token-info">
-          <div>1 USDT</div>
+          <div></div>
           {isLogin ? (
             <div>Balance: {balanceOut?.toString?.() || '0'} </div>
           ) : (
@@ -807,14 +924,27 @@ function SwapComp() {
         </div>
         <div className="exchange-path">
           <span>Quote Path</span>
-          <span>-</span>
+          <QuotoPathSelect
+            data={quotePath}
+            onChange={(key: string) => {
+              setQuotePath(key);
+              const amount =
+                currentInputToken.current === 'in' ? amountIn : amountOut;
+              getAmount(currentInputToken.current, amount, payType, key);
+            }}
+          />
         </div>
         <div className="service-fee">
           <span>Service Fees</span>
           <UsePass
             type="swap"
             payType={payType}
-            onChange={(v) => setPayType(v)}
+            onChange={(v) => {
+              setPayType(v);
+              const amount =
+                currentInputToken.current === 'in' ? amountIn : amountOut;
+              getAmount(currentInputToken.current, amount, v, quotePath);
+            }}
           />
         </div>
       </div>
@@ -828,6 +958,10 @@ function SwapComp() {
       </Button>
       <SelectTokenModal
         open={openSelect}
+        disabledTokens={[
+          tokenIn?.contractAddress?.toLowerCase?.(),
+          tokenOut?.contractAddress?.toLowerCase?.(),
+        ]}
         chainId={chainId}
         onChange={(data) => {
           if (currentSetToken.current === 'in') {
@@ -839,21 +973,6 @@ function SwapComp() {
         }}
         onCancel={() => setOpenSelect(false)}
       />
-      {/*       <UsePass
-        open={openDpass}
-        onClose={() => setOpenDpass(false)}
-        type="swap"
-        onChange={(v: string) => {
-          payType.current = v;
-          setOpenDpass(false);
-          handleSwap({
-            amountIn,
-            amountOut,
-            tokenIn: tokenIn.contractAddress,
-            tokenOut: tokenOut.contractAddress,
-          });
-        }}
-      /> */}
     </div>
   );
 }

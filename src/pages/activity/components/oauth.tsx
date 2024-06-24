@@ -1,9 +1,9 @@
 import { useEffect, useContext } from "react";
 import { useNavigate, useParams, useSearchParams, } from "react-router-dom";
-import Loading from '../../../components/allLoad/loading.tsx'
-import Request from "../../../components/axios.tsx";
+import Loading from '@/components/allLoad/loading.tsx'
+import Request from "@/components/axios.tsx";
 import cookie from "js-cookie";
-import { CountContext } from '../../../Layout.tsx'
+import { CountContext } from '@/Layout.tsx'
 function Oauth() {
     const {
         browser,

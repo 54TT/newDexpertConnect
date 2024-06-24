@@ -4,7 +4,7 @@ import Right from './compontent/right.tsx';
 import './compontent/all.less';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { CountContext } from '../../Layout.tsx';
+import { CountContext } from '@/Layout.tsx';
 import { gql, useQuery } from '@apollo/client';
 function Index() {
   const { browser }: any = useContext(CountContext);

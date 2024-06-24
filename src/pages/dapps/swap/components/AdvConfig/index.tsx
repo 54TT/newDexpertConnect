@@ -50,12 +50,7 @@ function AdvConfig({ onClose, initData }: AdvConfigProps) {
       description={<SettingContent initData={initData} ref={contentRef} />}
     >
       <img
-        style={{
-          float: 'right',
-          padding: '4px',
-          width: '20px',
-          cursor: 'pointer',
-        }}
+        className="dappSwapImg"
         src="/setting.svg"
         alt=""
         onClick={() => setOpen(true)}

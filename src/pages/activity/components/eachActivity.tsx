@@ -1,18 +1,18 @@
 import { Modal, Table } from 'antd';
 import { useLocation, useParams } from 'react-router-dom';
-import { CountContext } from '../../../Layout.tsx';
+import { CountContext } from '@/Layout.tsx';
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { throttle } from 'lodash';
 import TwitterRelease from './twitterRelease.tsx';
 import Revalidate from './revalidate.tsx';
 import cookie from 'js-cookie';
-import Load from '../../../components/allLoad/load.tsx';
-import Nodata from '../../../components/Nodata.tsx';
-import { MessageAll } from '../../../components/message.ts';
-import Request from '../../../components/axios.tsx';
+import Load from '@/components/allLoad/load.tsx';
+import Nodata from '@/components/Nodata.tsx';
+import { MessageAll } from '@/components/message.ts';
+import Request from '@/components/axios.tsx';
 import SpecialOrPass from '../components/specialOrPass.tsx';
-import { simplify } from '../../../../utils/change.ts';
+import { simplify } from '@/../utils/change.ts';
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   const par = data.length > 0 ? data : data?.campaign ? [data] : [];
   const { browser, languageChange, isLogin, setUserPar, user }: any =

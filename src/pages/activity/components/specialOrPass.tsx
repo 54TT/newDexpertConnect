@@ -1,11 +1,11 @@
 import './eventsList.less'
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next"
-import Nodata from '../../../components/Nodata'
+import Nodata from '@/components/Nodata'
 import cookie from "js-cookie";
-import Loading from '../../../components/allLoad/loading.tsx';
-import Request from "../../../components/axios.tsx";
-import { CountContext } from "../../../Layout.tsx";
+import Loading from '@/components/allLoad/loading.tsx';
+import Request from "@/components/axios.tsx";
+import { CountContext } from "@/Layout.tsx";
 import { useEffect, useState, useContext } from 'react';
 export default function specialOrPass({ option, data }: any) {
   const { browser }: any = useContext(CountContext);

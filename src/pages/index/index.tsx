@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import Right from './components/right.tsx';
-import { CountContext } from '../../Layout.tsx';
+import { CountContext } from '@/Layout.tsx';
 import Left from './components/left.tsx';
 function Index() {
   const { browser }: any = useContext(CountContext);

@@ -1,10 +1,10 @@
 function checkConnection() {
   // 没有环境直接为未连接
   //@ts-ignore
-  if (!window?.ethereum?.request) return Promise.resolve(false);
+  if (!window?.ethereum) return null;
   //@ts-ignore
-  return window.ethereum
-    .request({ method: 'eth_accounts' })
+  return (window as any)?.ethereum
+    ?.request({ method: 'eth_accounts' })
     .then((res) => {
       return res.length !== 0;
     })

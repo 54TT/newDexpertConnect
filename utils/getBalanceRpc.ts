@@ -22,11 +22,8 @@ const getBalanceRpcEther = async (
   ) {
     decimals = await erc20Contract.decimals();
   }
-
   const address = await signer.getAddress();
-
   const balance: BigNumber = await erc20Contract.balanceOf(address);
-
   if (balance.isZero()) return new Decimal(balance.toString());
   return new Decimal(balance.toString()).div(new Decimal(10 ** decimals));
 };

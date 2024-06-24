@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { useContext, useEffect, useState } from "react";
 import { cloneDeep, differenceBy } from "lodash";
-import { judgeStablecoin } from '../../utils/judgeStablecoin.ts'
+import { judgeStablecoin } from '@/../utils/judgeStablecoin.ts'
 import { CountContext } from "../Layout.tsx";
 
 function GetNewPair() {

@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useState,useContext } from 'react';
-import Tweets from '../../../components/tweets';
+import Tweets from '@/components/tweets';
 import SendPost from './SendPost';
-import Request from '../../../components/axios.tsx';
+import Request from '@/components/axios.tsx';
 import Cookies from 'js-cookie';
-import Loading from '../../../components/allLoad/loading.tsx';
+import Loading from '@/components/allLoad/loading.tsx';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { getQueryParams } from '../../../../utils/utils'
+import { getQueryParams } from '@/../utils/utils'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useNavigate } from "react-router-dom";
 import { throttle } from "lodash";
-import Nodata from "../../../components/Nodata.tsx";
-import {CountContext} from '../../../Layout.tsx'
+import Nodata from "@/components/Nodata.tsx";
+import {CountContext} from '@/Layout.tsx'
 // 渲染单条评论
 const RenderCommentTweet = ({ data = {}, type }: any) => {
     const renderData = {
@@ -92,7 +92,7 @@ const PostDetail = () => {
     }, [reply])
     const CommentTweets = useCallback(() => reply ?
         <Tweets type={reply ? 'reply' : 'comment'} name={localReplyDetail} onPublish={getCommentOrReplyData} /> : <></>, [localReplyDetail, reply])
-    return <div id='scrollabelDetail' style={{ height: 'calc(100vh - 54px )', overflow: 'auto' }}>
+    return <div id='scrollabelDetail' style={{ height: 'calc(100vh - 54px)', overflow: 'auto' }}>
         <p style={{ padding: '20px 20px 0' }}><ArrowLeftOutlined
             style={{ fontSize: '20px', color: 'white', cursor: 'pointer' }} onClick={
                 throttle(function () {

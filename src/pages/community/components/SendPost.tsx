@@ -1,14 +1,14 @@
 import { Button, Input, Popover } from 'antd';
-import Request from '../../../components/axios.tsx';
+import Request from '@/components/axios.tsx';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { CloseOutlined } from '@ant-design/icons';
 import Cookies from 'js-cookie';
 import Picker from '@emoji-mart/react';
 import emojiData from '@emoji-mart/data';
 import { throttle } from 'lodash';
-import { MessageAll } from '../../../components/message.ts';
+import { MessageAll } from '@/components/message.ts';
 import { useTranslation } from 'react-i18next';
-import { CountContext } from '../../../Layout.tsx';
+import { CountContext } from '@/Layout.tsx';
 
 const { TextArea } = Input;
 

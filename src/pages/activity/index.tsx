@@ -1,12 +1,12 @@
 import './index.less';
 import { useContext, useEffect, useState } from "react";
 import { throttle } from "lodash";
-import Request from "../../components/axios.tsx";
+import Request from "@/components/axios.tsx";
 import { useNavigate, } from "react-router-dom";
 import cookie from "js-cookie";
-import Loading from '../../components/allLoad/loading.tsx'
-import Load from '../../components/allLoad/load.tsx'
-import { CountContext } from "../../Layout.tsx";
+import Loading from '@/components/allLoad/loading.tsx'
+import Load from '@/components/allLoad/load.tsx'
+import { CountContext } from "@/Layout.tsx";
 import { useTranslation } from "react-i18next";
 import EventsList from './components/eventsList.tsx'
 function Index() {
@@ -108,7 +108,7 @@ function Index() {
                                 </div>
                                 <div>
                                     <span style={{ fontSize: browser ? '18px' : '16px' }}>{t('Active.pass')}</span>
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px', cursor: 'pointer' }} onClick={throttle(function () {
+                                    <div className='activeBackJian' onClick={throttle(function () {
                                         history('/activityPerson')
                                     }, 1500, { 'trailing': false })}>
                                         {
@@ -133,23 +133,10 @@ function Index() {
                             </div>
                         </div>
                         <EventsList getParams={getParams} select={select} setSelect={setSelect} params={['special', 'ranking', 'd']} data={data} />
-                        <p style={{
-                            width: '72%',
-                            margin: '0 auto',
-                            color: 'rgb(212,223,214)',
-                            lineHeight: '1.1',
-                            textAlign: 'center',
-                            marginTop: '5%', marginBottom: '10px'
-                        }}>
+                        <p className='activeBackEach'>
                             {t('Active.Each')}
                         </p>
-                        <p style={{
-                            width: '72%',
-                            margin: '0 auto',
-                            color: 'rgb(212,223,214)',
-                            lineHeight: '1.1',
-                            textAlign: 'center',
-                        }}> {t('Active.order')}</p>
+                        <p className='activeBackOrder'> {t('Active.order')}</p>
                     </div>
                     <div className='backgroundColor' style={{ top: '15vh', background: '#86F097', left: "0" }}></div>
                     <div className='backgroundColor' style={{ top: '10vh', background: '#0FF', right: '0' }}></div>

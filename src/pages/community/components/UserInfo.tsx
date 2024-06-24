@@ -3,7 +3,7 @@ import './index.less';
 import { Button, FloatButton } from 'antd';
 import { useContext, useState } from 'react';
 import PostSendModal from './PostModal';
-import { CountContext } from '../../../Layout';
+import { CountContext } from '@/Layout';
 import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 

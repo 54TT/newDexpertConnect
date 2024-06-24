@@ -41,7 +41,7 @@ function UsePass({ type, onChange, payType }) {
         ];
         if (sniperBotSwapCnt) {
           const data = {
-            label: 'D pass',
+            label: 'D Pass',
             key: '2',
             title: (
               <>
@@ -55,7 +55,7 @@ function UsePass({ type, onChange, payType }) {
         }
         if (stopTs != '0') {
           const data = {
-            label: 'gloden pass',
+            label: 'Gloden Pass',
             key: '1',
             title: (
               <>
@@ -71,7 +71,7 @@ function UsePass({ type, onChange, payType }) {
         setPayTypeList(list);
       }
     } catch (e) {
-      console.log(e);
+      return null
     }
   };
 

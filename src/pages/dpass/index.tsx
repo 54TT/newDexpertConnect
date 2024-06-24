@@ -1,15 +1,15 @@
 import Cookies from 'js-cookie';
 import './index.less';
-import Request from '../../components/axios';
+import Request from '@/components/axios';
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CaretDownOutlined } from '@ant-design/icons';
-import Load from '../../components/allLoad/load.tsx';
-import { CountContext } from '../../Layout';
-import { MessageAll } from '../../components/message.ts';
+import Load from '@/components/allLoad/load.tsx';
+import { CountContext } from '@/Layout';
+import { MessageAll } from '@/components/message.ts';
 import { useParams } from 'react-router-dom';
-import Loading from '../../components/allLoad/loading.tsx';
-import Nodata from '../../components/Nodata.tsx';
+import Loading from '@/components/allLoad/loading.tsx';
+import Nodata from '@/components/Nodata.tsx';
 import dayjs from 'dayjs';
 import { throttle, find } from 'lodash';
 
@@ -262,28 +262,14 @@ function Dpass() {
                   src="/Rectangle1.svg"
                   alt=""
                   onClick={() => setImg(-1)}
-                  style={{
-                    position: 'absolute',
-                    left: '-60px',
-                    top: '50%',
-                    display: 'block',
-                    transform: 'translate(0,-50%)',
-                    cursor: 'pointer',
-                  }}
+                  className="dpassChangeImgTwo"
                 />
                 <img className="dapss-card" src={changeImg('img')} alt="" />
                 <img
                   src="/Rectangle111.svg"
                   alt=""
                   onClick={() => setImg(1)}
-                  style={{
-                    position: 'absolute',
-                    right: '-60px',
-                    top: '50%',
-                    display: 'block',
-                    transform: 'translate(0,-50%)',
-                    cursor: 'pointer',
-                  }}
+                  className="dpassChangeImgOne"
                 />
               </div>
               <img className="dpass-light" src={'/light.png'} alt="" />
@@ -388,15 +374,7 @@ function Dpass() {
                 <Loading status={'20'} browser={browser} />
               )}
               {!isShow && (
-                <div
-                  style={{
-                    marginTop: '20px',
-                    color: 'gray',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
+                <div className="dpassPageShow">
                   <span onClick={nextPass} style={{ cursor: 'pointer' }}>
                     {t('Common.Next')}
                   </span>

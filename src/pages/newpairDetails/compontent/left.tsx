@@ -1,14 +1,14 @@
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
 import { useContext, useState } from 'react';
-import { setMany, simplify } from '../../../../utils/change.ts';
-import Copy from '../../../components/copy.tsx';
+import { setMany, simplify } from '@/../utils/change.ts';
+import Copy from '@/components/copy.tsx';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { throttle } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { judgeStablecoin } from '../../../../utils/judgeStablecoin.ts';
-import { CountContext } from '../../../Layout.tsx';
+import { judgeStablecoin } from '@/../utils/judgeStablecoin.ts';
+import { CountContext } from '@/Layout.tsx';
 dayjs.extend(relativeTime); // 使用相对时间插件
 function Left({ par }: any) {
   const h = window.innerHeight - 25 - 54 + 21;
