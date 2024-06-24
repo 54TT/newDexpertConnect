@@ -50,9 +50,9 @@ import getBalanceRpc from '@utils/getBalanceRpc';
 import QuotoPathSelect from '@/components/QuotoPathSelect';
 import { swapChain } from '@utils/judgeStablecoin';
 interface SwapCompType {
-  changeAble: boolean; // 是否可修改Token || 网络
-  initChainId: string; // 初始化的chainId;
-  initToken: [tokenIn: TokenItemData, toeknOut: TokenItemData]; // 初始化的token
+  changeAble?: boolean; // 是否可修改Token || 网络
+  initChainId?: string; // 初始化的chainId;
+  initToken?: [tokenIn: TokenItemData, toeknOut: TokenItemData]; // 初始化的token
 }
 
 function SwapComp({ initChainId, initToken }: SwapCompType) {
@@ -153,12 +153,16 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       new Decimal(0),
       0,
     ].filter((item) => item !== null);
-    return Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
+    console.log(data[0], 'send chainId');
+
+    const res = await Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
+    return res;
   }, [
     provider,
     tokenIn?.contractAddress,
     tokenOut?.contractAddress,
     quotePath,
+    chainId,
   ]);
 
   const [data, loading, showSkeleton] = useInterval(
@@ -226,17 +230,34 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
   useEffect(() => {
+    const onChainChange = (targetChainId) => {
+      console.log('Chain Changed', targetChainId.toString());
+      setChainId(Number(targetChainId).toString());
+    };
     if (isLogin) {
       (window as any)?.ethereum?.request({
         method: 'wallet_switchEthereumChain',
         params: [
           {
-            chainId: chainId.toString(16),
+            chainId: `0x${Number(chainId).toString(16)}`,
           },
         ],
       });
+      try {
+        (window.ethereum as any).on('chainChanged', onChainChange);
+      } catch (e) {
+        console.log(e);
+      }
     }
+    return () => {
+      (window.ethereum as any).removeListener('chainChanged', onChainChange);
+    };
   }, [isLogin]);
+
+  useEffect(() => {
+    console.log(chainId);
+    console.log(provider);
+  }, [chainId, provider]);
 
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
@@ -690,7 +711,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
             },
           ],
         });
-        setChainId(evmChainId);
       } catch (e) {
         console.log(e);
       }
