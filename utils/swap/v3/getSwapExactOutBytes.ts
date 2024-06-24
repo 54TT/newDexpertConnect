@@ -3,13 +3,12 @@ import { RoutePlanner } from '../../planner';
 import { erc20ToETH, erc20ToErc20, ethToErc20 } from './swapExactOut';
 import { expandToDecimalsBN } from '../../utils';
 import Decimal from 'decimal.js';
-import { getDecimals } from '../../getDecimals';
 
 export const getSwapExactOutBytes = async (
   chainId: string,
-  provider: any,
-  tokenInAddress: string,
-  tokenOutAddress: string,
+  _: any,
+  [tokenInAddress, tokenInDecimals]: [string, number],
+  [tokenOutAddress, tokenOutDecimals]: [string, number],
   amountInMax: Decimal,
   amountOut: Decimal,
   recipient: string,
@@ -23,13 +22,6 @@ export const getSwapExactOutBytes = async (
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
   const planner = new RoutePlanner();
-
-  const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
-    provider,
-    tokenInAddress,
-    tokenOutAddress,
-    chainId,
-  });
 
   const amountInBigNumber = expandToDecimalsBN(amountInMax, tokenInDecimals);
   const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenOutDecimals);

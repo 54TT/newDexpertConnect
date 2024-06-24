@@ -4,39 +4,23 @@ import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
 import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
 import { zeroAddress } from '@utils/constants';
-import { getDecimals } from '@utils/getDecimals';
 
 export const getAmountOut = async (
   chainId: string,
   provider: any,
-  universalRouterContract: any,
   uniswapV2RouterContract: any,
-  tokenInAddress: string,
-  tokenOutAddress: string,
+  [tokenInAddress, tokenInDecimals]: [string, number],
+  [tokenOutAddress, tokenOutDecimals]: [string, number],
   amountIn: Decimal,
   slippage: Decimal,
-  payType: number
+  fee: Decimal
 ) => {
+  let start = Date.now();
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
   const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
-  let fee = new Decimal(0);
-  if (payType == 0) {
-    const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
-
-    const feeBaseBps = await universalRouterContract.feeBaseBps();
-
-    fee = new Decimal(fastTradeFeeBps / feeBaseBps);
-  }
-
-  const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
-    provider,
-    tokenInAddress,
-    tokenOutAddress,
-    chainId,
-  });
-
+  console.log(`进入AmountOut${(Date.now() - start) / 1000} 秒 `);
   let amountOutBigNumber: BigNumber = BigNumber.from(0);
 
   const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);
@@ -105,5 +89,6 @@ export const getAmountOut = async (
   if (slippage.greaterThan(0)) {
     amount = amount.sub(amount.mul(slippage));
   }
+  console.log(`方法执行完成时间${(Date.now() - start) / 1000} 秒 `);
   return amount;
 };

@@ -44,6 +44,7 @@ import { chain } from '../utils/judgeStablecoin.ts';
 import { config } from './config/config.ts';
 import checkConnection from '@utils/checkConnect.ts';
 import { ethers } from 'ethers';
+import Decimal from 'decimal.js';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
   () => import('./pages/activity/components/person.tsx')
@@ -155,6 +156,9 @@ function Layout() {
   const [browser, setBrowser] = useState<any>(false);
   const [big, setBig] = useState<any>(false);
   const [activityOptions, setActivityOptions] = useState('');
+  const [transactionFee, setTransactionFee] = useState({
+    swap: new Decimal(0),
+  });
   // copy
   const [isCopy, setIsCopy] = useState(false);
   useEffect(() => {
@@ -575,6 +579,8 @@ function Layout() {
     contractConfig,
     chainId,
     setChainId,
+    transactionFee,
+    setTransactionFee,
   };
 
   const clients = new ApolloClient({

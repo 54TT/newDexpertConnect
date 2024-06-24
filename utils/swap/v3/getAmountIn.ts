@@ -1,19 +1,18 @@
 import { BigNumber } from 'ethers';
 import { config } from '../../../src/config/config';
 import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
-import { getQuoterContract, getUniversalRouterContract } from '../../contracts';
+import { getQuoterContract } from '../../contracts';
 import { Decimal } from 'decimal.js';
 import { getPools } from './getPools';
-import { getDecimals } from '@utils/getDecimals';
 
 export const getV3AmountIn = async (
   chainId: string,
   provider: any,
-  tokenInAddress: string,
-  tokenOutAddress: string,
+  [tokenInAddress, tokenInDecimals]: [string, number],
+  [tokenOutAddress, tokenOutDecimals]: [string, number],
   amountOut: Decimal,
   slippage: Decimal,
-  payType: number
+  fee: Decimal
 ) => {
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
@@ -21,25 +20,7 @@ export const getV3AmountIn = async (
   const quoterAddress = chainConfig.quoterAddress;
   const uniswapV3FactoryAddress = chainConfig.uniswapV3FactoryAddress;
   const uniswapV3FeeAmounts = chainConfig.uniswapV3FeeAmounts;
-  const universalRouterAddress = chainConfig.universalRouterAddress;
   const quoterContract = await getQuoterContract(provider, quoterAddress);
-  const universalRouterContract = await getUniversalRouterContract(
-    provider,
-    universalRouterAddress
-  );
-  let fee = new Decimal(0);
-  if (payType == 0) {
-    const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
-    const feeBaseBps = await universalRouterContract.feeBaseBps();
-
-    fee = new Decimal(fastTradeFeeBps / feeBaseBps);
-  }
-  const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
-    provider,
-    tokenInAddress,
-    tokenOutAddress,
-    chainId,
-  });
 
   let quoteAmountInBigNumber: BigNumber = BigNumber.from(0);
   let uniswapV3FeeAmount = BigNumber.from(0);

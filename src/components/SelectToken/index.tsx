@@ -12,6 +12,7 @@ export interface TokenItemData {
   contractAddress: string;
   logoUrl: string;
   balance: string;
+  decimals: string;
 }
 
 interface SelectTokenType {
