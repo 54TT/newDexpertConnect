@@ -1,17 +1,25 @@
-import { useEffect, useState } from 'react';
-import { Input } from 'antd';
+import {
+  ChangeEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Input, notification } from 'antd';
 import './index.less';
 import { formatAddress } from '@utils/utils';
 import {} from '../SelectTokenModal';
 import Request from '../axios';
 import Cookies from 'js-cookie';
 import DefaultTokenImg from '../DefaultTokenImg';
+import { CountContext } from '@/Layout';
+import { getERC20Contract } from '@utils/contracts';
 export interface TokenItemData {
   symbol: string;
   name: string;
   contractAddress: string;
-  logoUrl: string;
-  balance: string;
+  logoUrl?: string;
+  balance?: string;
   decimals: string;
 }
 
@@ -25,8 +33,8 @@ const { Search } = Input;
 
 function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
-  /*   const [searchList, setSearchList] = useState<TokenItemData[]>();
-  const [historyList, setHistoryList] = useState<TokenItemData[]>(); */
+  const { provider } = useContext(CountContext);
+  const historyList = useRef<TokenItemData[]>([]);
   const [, setPage] = useState(1);
   const { getAll } = Request();
   const token = Cookies.get('token');
@@ -51,11 +59,45 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     getHotTradingToken(1);
   }, [chainName]);
 
+  const onSearch: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const { value } = e?.target;
+    if (value.length === 42) {
+      /* notification.warning({
+        message: 'please input address correctly',
+      });
+      return; */
+      const tokenContract = await getERC20Contract(provider, value);
+      try {
+        const getSymbolAsync = tokenContract.symbol();
+        const getNameAsync = tokenContract.name();
+        const getDecimalsAsync = tokenContract.name();
+        const [symbol, name, decimals] = await Promise.all([
+          getSymbolAsync,
+          getNameAsync,
+          getDecimalsAsync,
+        ]);
+        const searchToken = {
+          symbol,
+          name,
+          decimals,
+          contractAddress: value,
+        };
+        historyList.current = tokenList;
+        setTokenList([searchToken]);
+      } catch (e) {
+        notification.warning({
+          message: 'please input address correctly',
+        });
+      }
+    }
+  };
+
   return (
     <div className="select-token">
       <Search
         className="select-token-search"
         placeholder="Token Contract Address"
+        onChange={onSearch}
       />
       <div className="token-history-list"></div>
       <span className="popular-tokens">Popular tokens</span>

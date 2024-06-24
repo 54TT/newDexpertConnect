@@ -50,6 +50,7 @@ import getBalanceRpc from '@utils/getBalanceRpc';
 import QuotoPathSelect from '@/components/QuotoPathSelect';
 import { swapChain } from '@utils/judgeStablecoin';
 import { getSwapFee } from '@utils/getSwapFee';
+import DefaultTokenImg from '@/components/DefaultTokenImg';
 interface SwapCompType {
   changeAble?: boolean; // 是否可修改Token || 网络
   initChainId?: string; // 初始化的chainId;
@@ -556,7 +557,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
         BigInt(2000000000),
         {
           value: etherValue,
-          gasLimit: 1030000,
         }
       );
       notification.success({
@@ -874,7 +874,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
               setOpenSelect(true);
             }}
           >
-            <img className="eth-logo" src={tokenIn?.logoUrl} alt="" />
+            <DefaultTokenImg name={tokenIn?.symbol} icon={tokenIn?.logoUrl} />
             <span>{tokenIn?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
@@ -916,7 +916,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
               setOpenSelect(true);
             }}
           >
-            <img className="eth-logo" src={tokenOut?.logoUrl || ''} alt="" />
+            <DefaultTokenImg name={tokenOut?.name} icon={tokenOut?.logoUrl} />
             <span>{tokenOut?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
