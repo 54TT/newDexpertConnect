@@ -33,6 +33,7 @@ import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
 import ChooseChain from '@/components/chooseChain';
 import {
+  CHAIN_ID_TO_CHAIN_NAME,
   CHAIN_NAME_TO_CHAIN_ID,
   CHAIN_NAME_TO_CHAIN_ID_HEX,
 } from '@utils/constants';
@@ -48,8 +49,13 @@ import useInterval from '@/hook/useInterval';
 import getBalanceRpc from '@utils/getBalanceRpc';
 import QuotoPathSelect from '@/components/QuotoPathSelect';
 import { swapChain } from '@utils/judgeStablecoin';
+interface SwapCompType {
+  changeAble: boolean; // 是否可修改Token || 网络
+  initChainId: string; // 初始化的chainId;
+  initToken: [tokenIn: TokenItemData, toeknOut: TokenItemData]; // 初始化的token
+}
 
-function SwapComp() {
+function SwapComp({ initChainId, initToken }: SwapCompType) {
   const { provider, contractConfig, setIsModalOpen, chainId, setChainId } =
     useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
@@ -67,8 +73,8 @@ function SwapComp() {
   const { isLogin } = useContext(CountContext);
   const [inLoading, setInLoading] = useState(false);
   const [outLoading, setOutLoading] = useState(false);
-  const [balanceIn, setBalanceIn] = useState<Decimal>(); // 需要用于计算
-  const [balanceOut, setBalanceOut] = useState<Decimal>();
+  const [balanceIn, setBalanceIn] = useState<Decimal>(new Decimal(0)); // 需要用于计算
+  const [balanceOut, setBalanceOut] = useState<Decimal>(new Decimal(0));
   const [swapV3Pool, setSwapV3Pool] = useState({
     fee: 0,
     poolAddress: '',
@@ -83,6 +89,24 @@ function SwapComp() {
     outPrice: '-',
   }); */
   const [payType, setPayType] = useState('0');
+
+  const initData = () => {
+    if (initToken?.length) {
+      const [initTokenIn, initTokenOut] = initToken;
+      setTokenIn(initTokenIn);
+      setTokenOut(initTokenOut);
+      setAmountIn(0);
+      setAmountOut(0);
+    }
+    if (initChainId) {
+      const chianName = CHAIN_ID_TO_CHAIN_NAME[initChainId];
+      changeWalletChain(chianName);
+    }
+  };
+
+  useEffect(() => {
+    initData();
+  }, []);
 
   const getGasPrice = async () => {
     const gas: BigNumber = await provider.getGasPrice();
@@ -170,15 +194,25 @@ function SwapComp() {
     }
 
     if (isLogin) {
-      setButtonDisable(true);
+      setButtonDisable(false);
       setButtonDescId('1');
+    }
+
+    const amountInDecimal = new Decimal(amountIn || 0);
+    if (amountInDecimal.lessThan(balanceIn)) {
+      setButtonDisable(false);
+      setButtonDescId('1');
+    } else {
+      setButtonDisable(true);
+      setButtonDescId('4');
     }
 
     if (
       tokenIn?.contractAddress &&
       tokenOut?.contractAddress &&
       amountIn &&
-      amountOut
+      amountOut &&
+      amountInDecimal.lessThan(balanceIn)
     ) {
       setButtonDisable(false);
       setButtonDescId('1');
@@ -189,7 +223,7 @@ function SwapComp() {
 
   useEffect(() => {
     setButtonDescAndDisable();
-  }, [isLogin, tokenIn, tokenOut, amountIn, amountOut]);
+  }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
   useEffect(() => {
     if (isLogin) {
@@ -226,6 +260,9 @@ function SwapComp() {
     ) {
       return;
     }
+
+    setButtonLoading(true);
+    setButtonDescId('7');
 
     let start = Date.now();
     const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
@@ -287,6 +324,8 @@ function SwapComp() {
       }
       setInLoading(false);
     }
+    setButtonLoading(false);
+    setButtonDescId('1');
     console.log(`获取输入输出总耗时${(Date.now() - start) / 1000} 秒 `);
   };
 
@@ -466,7 +505,6 @@ function SwapComp() {
     signer,
     universalRouterAddress,
   }) => {
-    setButtonLoading(true);
     setButtonDescId('8');
     const universalRouterContract = await getUniversalRouterContract(
       provider,
@@ -516,6 +554,8 @@ function SwapComp() {
     const { zeroAddress, universalRouterAddress, permit2Address } =
       contractConfig;
     const { tokenIn, amountIn } = data;
+    setButtonLoading(true);
+    setButtonDescId('9');
     //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await web3Provider.getSigner();
