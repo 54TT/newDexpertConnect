@@ -1,15 +1,13 @@
 import { config } from '../../../src/config/config';
 import { RoutePlanner } from '../../planner';
 import { ethToWeth, wethToEth } from './swapEthAndWeth';
-import { getDecimals } from '@utils/getDecimals';
 import Decimal from 'decimal.js';
 import { expandToDecimalsBN } from '../../utils';
 
 export const getSwapEthAndWeth = async (
   chainId: string,
-  provider: any,
-  tokenInAddress: string,
-  tokenOutAddress: string,
+  [tokenInAddress, tokenInDecimals]: [string, number],
+  [tokenOutAddress, tokenOutDecimals]: [string, number],
   amountIn: Decimal,
   amountOut: Decimal,
   recipient: string,
@@ -20,13 +18,6 @@ export const getSwapEthAndWeth = async (
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
   const planner = new RoutePlanner();
-
-  const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
-    provider,
-    tokenInAddress,
-    tokenOutAddress,
-    chainId,
-  });
 
   const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);
   const amountOutBigNumber = expandToDecimalsBN(amountOut, tokenOutDecimals);

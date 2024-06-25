@@ -2,13 +2,15 @@ type ChainIdList = '1' | '11155111';
 
 export const config: Record<ChainIdList, any> = {
   '1': {
-    rpcUrl: 'https://eth.drpc.org',
+    rpcUrl:
+      'https://eth-mainnet.g.alchemy.com/v2/_zR9i2vahgYv3nbxS8bxZccBY6gn9N1M',
     chainId: 1,
     verificationURL: 'https://api.etherscan.io/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
     uncxAddress: '0x663A5C229c09b049E36dCc11a9B0d4a8Eb9db214',
     uniswapV2RouterAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
     uniswapV2FactoryAddress: '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f',
+    uniswapV3FactoryAddress: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
     universalRouterAddress: '0x2299422d7631731dA6116d1C3b6691348Df27671',
     wethAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',

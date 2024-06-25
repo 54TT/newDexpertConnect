@@ -4,38 +4,21 @@ import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
 import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
 import { zeroAddress } from '@utils/constants';
-import { getDecimals } from '@utils/getDecimals';
 
 export const getAmountIn = async (
   chainId: string,
   provider: any,
-  universalRouterContract: any,
   uniswapV2RouterContract: any,
-  tokenInAddress: string,
-  tokenOutAddress: string,
+  [tokenInAddress, tokenInDecimals]: [string, number],
+  [tokenOutAddress, tokenOutDecimals]: [string, number],
   amountOut: Decimal,
   slippage: Decimal,
-  payType: number
+  fee: Decimal
 ) => {
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
   const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
-
-  let fee = new Decimal(0);
-  if (payType == 0) {
-    const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
-    const feeBaseBps = await universalRouterContract.feeBaseBps();
-
-    fee = new Decimal(fastTradeFeeBps / feeBaseBps);
-  }
-
-  const { tokenInDecimals, tokenOutDecimals } = await getDecimals({
-    provider,
-    tokenInAddress,
-    tokenOutAddress,
-    chainId,
-  });
 
   let amountInBigNumber: BigNumber = BigNumber.from(0);
 

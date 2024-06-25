@@ -6,7 +6,7 @@ function DefaultTokenImg({ name, icon }: { name: string; icon: string }) {
         <img src={icon} alt="" />
       ) : (
         <div className="token-name-img">
-          <span>{name.charAt(0)}</span>
+          <span>{name?.charAt?.(0) || ''}</span>
         </div>
       )}
     </div>
