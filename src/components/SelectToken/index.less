@@ -47,8 +47,9 @@
       border-radius: 10px 0 0 10px !important;
       background-color: transparent !important;
       border: 1px solid @search-border-color !important;
-      color: #fff;
+      color: #fff !important;
       border-right: none !important;
+      padding-left: 12px !important;
       font-size: 16px;
       font-weight: 300;
       &:focus {
@@ -85,5 +86,25 @@
     font-size: 16px;
     color: #fff;
     margin: 12px 0;
+  }
+  .ant-input-affix-wrapper {
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+  }
+  .ant-input-suffix {
+    background-color: transparent;
+    border-top: 1px solid #777;
+    border-bottom: 1px solid #777;
+    padding: 0;
+    margin-inline-start: 0;
+  }
+  .ant-input-outlined {
+    border: none;
+    box-shadow: none;
+  }
+  .anticon-close-circle {
+    color: #888;
+    padding-left: 2px;
   }
 }

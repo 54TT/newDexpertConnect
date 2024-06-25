@@ -1,10 +1,4 @@
-import {
-  ChangeEventHandler,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Input, notification } from 'antd';
 import './index.less';
 import { formatAddress } from '@utils/utils';
@@ -59,36 +53,49 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     getHotTradingToken(1);
   }, [chainName]);
 
-  const onSearch: ChangeEventHandler<HTMLInputElement> = async (e) => {
-    const { value } = e?.target;
-    if (value.length === 42) {
-      /* notification.warning({
+  const clearSearch = () => {
+    if (historyList?.current?.length) {
+      setTokenList(historyList.current);
+    }
+  };
+
+  const onSearch = async (value: string) => {
+    if (value === '') {
+      clearSearch();
+      return;
+    }
+
+    if (value.length !== 42) {
+      console.log('123123');
+
+      notification.warning({
         message: 'please input address correctly',
       });
-      return; */
-      const tokenContract = await getERC20Contract(provider, value);
-      try {
-        const getSymbolAsync = tokenContract.symbol();
-        const getNameAsync = tokenContract.name();
-        const getDecimalsAsync = tokenContract.name();
-        const [symbol, name, decimals] = await Promise.all([
-          getSymbolAsync,
-          getNameAsync,
-          getDecimalsAsync,
-        ]);
-        const searchToken = {
-          symbol,
-          name,
-          decimals,
-          contractAddress: value,
-        };
-        historyList.current = tokenList;
-        setTokenList([searchToken]);
-      } catch (e) {
-        notification.warning({
-          message: 'please input address correctly',
-        });
-      }
+      return;
+    }
+    const tokenContract = await getERC20Contract(provider, value);
+    try {
+      const getSymbolAsync = tokenContract.symbol();
+      const getNameAsync = tokenContract.name();
+      const getDecimalsAsync = tokenContract.decimals();
+      const [symbol, name, decimals] = await Promise.all([
+        getSymbolAsync,
+        getNameAsync,
+        getDecimalsAsync,
+      ]);
+      const searchToken = {
+        symbol,
+        name,
+        decimals,
+        contractAddress: value,
+      };
+      historyList.current = tokenList;
+
+      setTokenList([searchToken]);
+    } catch (e) {
+      notification.warning({
+        message: 'please input address correctly',
+      });
     }
   };
 
@@ -97,7 +104,8 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
       <Search
         className="select-token-search"
         placeholder="Token Contract Address"
-        onChange={onSearch}
+        onSearch={onSearch}
+        allowClear
       />
       <div className="token-history-list"></div>
       <span className="popular-tokens">Popular tokens</span>

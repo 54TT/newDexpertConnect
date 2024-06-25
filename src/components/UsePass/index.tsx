@@ -56,7 +56,7 @@ function UsePass({ type, onChange, payType }) {
         if (stopTs != '0') {
           const data = {
             label: 'Gloden Pass',
-            key: '1',
+            key: '4',
             title: (
               <>
                 <Tag color="#FFE380" style={{ color: 'black' }}>
