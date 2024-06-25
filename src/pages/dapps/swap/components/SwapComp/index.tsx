@@ -525,9 +525,7 @@ function SwapComp() {
       Permit2Abi,
       signer
     );
-
     const tokenInContract = new ethers.Contract(tokenIn, ERC20Abi, signer);
-
     if (tokenIn !== zeroAddress) {
       const balance: BigNumber = await queryAllowance(
         tokenInContract,

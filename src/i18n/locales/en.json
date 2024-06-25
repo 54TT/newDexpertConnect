@@ -68,6 +68,7 @@
     "Following": "Following"
   },
   "Alert": {
+    "Not":"Not owned",
     "please connect your wallet": "please connect your wallet",
     "Please enter the purchase quantity": "Please enter the purchase quantity",
     "not": "Not enough points",

@@ -15,7 +15,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-
 import {
   useTonConnectUI,
   useTonAddress,
@@ -60,6 +59,7 @@ const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
   () => import('./pages/activity/components/specialDetail.tsx')
 );
+
 const web3Modal = new Web3Modal({
   projectId: DEFAULT_PROJECT_ID,
   themeMode: 'dark',
@@ -70,15 +70,16 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
-  const [chainId, setChainId] = useState('1'); // swap 链切换
+  const [chainId, setChainId] = useState('11155111'); // swap 链切换
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
+    console.log(newConfig)
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
+    console.log(newConfig)
     //@ts-ignore
     setProvider(rpcProvider);
   };
-
   useEffect(() => {
     changeConfig(chainId);
   }, [chainId]);
@@ -167,7 +168,7 @@ function Layout() {
 
   useEffect(() => {
     if (checkConnection() && isLogin) {
-      setChainId('1');
+      // setChainId('1');
       // @ts-ignore
       window.ethereum.request({
         method: 'wallet_switchEthereumChain',
@@ -576,7 +577,6 @@ function Layout() {
     chainId,
     setChainId,
   };
-
   const clients = new ApolloClient({
     uri: chain[switchChain],
     cache: new InMemoryCache(),

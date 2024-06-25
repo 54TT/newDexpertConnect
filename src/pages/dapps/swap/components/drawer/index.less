@@ -1,0 +1,154 @@
+.dappsSwapHistory {
+  position: fixed;
+  transition: width 0.5s;
+  overflow: hidden;
+  top: 0;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  right: 0;
+  height: 100vh;
+  .leftBox {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    .center {
+      width: 45px;
+      position: relative;
+      height: 45px;
+      background-color: rgb(62, 66, 64);
+      border-radius: 50% 0 0 50%;
+      transform: translate(30%, 0);
+      cursor: pointer;
+      box-sizing: border-box;
+      .po {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+    .bor {
+      width: 10px;
+      transform: translate(0px, 0);
+      height: 10px;
+      background-color: rgb(62, 66, 64);
+      div {
+        width: 100%;
+        background-color: rgb(22, 25, 22);
+        height: 100%;
+        border-radius: 0 0 10px 0;
+      }
+    }
+    .bot {
+      div {
+        border-radius: 0 10px 0 0;
+      }
+    }
+  }
+  .box {
+    width: 100%;
+    height: 95vh;
+    background: linear-gradient(0deg, #3e4240, #3e4240);
+    border-radius: 20px 0 0 20px;
+    padding: 20px;
+    .user {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      & > img {
+        cursor: pointer;
+        width: 20px;
+      }
+      & > div {
+        display: flex;
+        p {
+          font-size: 14px;
+          color: white;
+          margin-left: 15px;
+          margin-right: 5px;
+        }
+        align-items: center;
+        img:first-child {
+          width: 40px;
+        }
+        img:last-child {
+          width: 15px;
+          cursor: pointer;
+        }
+      }
+    }
+    .price {
+      font-size: 34px;
+      color: white;
+      text-align: center;
+      margin: 40px 0;
+    }
+    .select {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgb(81, 85, 81);
+      border-radius: 15px;
+      margin-bottom: 25px;
+      overflow: hidden;
+      div {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        cursor: pointer;
+        border-radius: 15px;
+        padding: 10px;
+        p {
+          color: rgb(115, 124, 116);
+          font-size: 15px;
+          margin-top: 7px;
+        }
+      }
+      .back {
+        p {
+          color: black;
+        }
+        background-color: rgb(134, 240, 151);
+      }
+    }
+    .dpass {
+      .pass {
+        border-radius: 15px;
+        cursor: pointer;
+        background-color: rgb(76, 86, 76);
+        margin-bottom: 10px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        .left {
+          width: 40px;
+          height: 40px;
+          box-sizing: border-box;
+          border-radius: 50%;
+          position: relative;
+
+          img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+          }
+        }
+        .right {
+          margin-left: 10px;
+          p:first-child {
+            color: white;
+            font-size: 18px;
+          }
+          p:last-child {
+            color: rgb(142, 178, 175);
+            font-size: 15px;
+          }
+        }
+      }
+    }
+  }
+}

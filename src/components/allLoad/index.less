@@ -72,21 +72,23 @@
   justify-content: center;
   align-items: center;
 
-  p:nth-child(2) {
+  p:nth-child(2),
+  img::nth-child(2) {
     margin: 0 3px;
   }
-
   .deep {
     background-color: rgb(134, 240, 151);
   }
   .Shallow {
     background-color: rgb(182, 246, 193);
   }
-
   .light {
     background-color: rgb(219, 251, 224);
   }
-
+  img {
+    width: 8px;
+    background-color: transparent;
+  }
   p {
     width: 6px;
     height: 6px;

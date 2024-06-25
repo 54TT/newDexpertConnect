@@ -1,7 +1,7 @@
 import './index.less';
 import SwapComp from './components/SwapComp';
 import './index.less';
-
+import Drawer from './components/drawer'
 function Swap() {
   return (
     <div
@@ -15,6 +15,7 @@ function Swap() {
         <div className="dapp-sniper-right">
           <SwapComp />
         </div>
+        <Drawer />
       </div>
     </div>
   );

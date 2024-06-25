@@ -1,5 +1,4 @@
 type ChainIdList = '1' | '11155111';
-
 export const config: Record<ChainIdList, any> = {
   '1': {
     rpcUrl: 'https://eth.drpc.org',

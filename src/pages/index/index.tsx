@@ -4,6 +4,10 @@ import { CountContext } from '@/Layout.tsx';
 import Left from './components/left.tsx';
 function Index() {
   const { browser }: any = useContext(CountContext);
+
+  // const aa = /^(http|https):\/\/(\S+)$/;
+  // const ay = aa.test('https://dsadasd');
+
   // window.open('www.baidu.com','','height=200,width=200,scrollbars=no,location=yes,status=yes,menubar=no,toolbar=no')
   return (
     <div

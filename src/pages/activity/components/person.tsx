@@ -92,7 +92,7 @@ export default function person() {
       name: 'Golden Pass:',
       data: Number(userPass?.stopTs)
         ? dayjs.unix(userPass?.stopTs).format('YYYY-MM-DD')
-        : 'Not owned',
+        : t('Alert.Not'),
     },
     { name: 'Fast Trade Pass:', data: userPass?.sniperBotSwapCnt || 0 },
     { name: 'Sniper Bot Pass:', data: userPass?.sniperBotPreswapCnt || 0 },
