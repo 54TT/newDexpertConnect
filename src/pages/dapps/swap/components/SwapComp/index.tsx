@@ -468,7 +468,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       new Decimal(amountOut),
       recipientAddress,
       payType == '0',
-      Number(payType),
+      0,
       quotePath === '1' ? swapV3Pool?.fee : null,
       permit,
       signature,
@@ -521,10 +521,15 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
 
   const reportPayType = (tx) => {
     const token = Cookies.get('token');
+    const payTypeMap = {
+      0: 0, // pay fee
+      1: 4, // glodenPass
+      2: 2, // dpass
+    };
     getAll({
       method: 'get',
       url: '/api/v1/d_pass/pay',
-      data: { payType, tx },
+      data: { payType: payTypeMap[payType], tx },
       token,
       chainId,
     });
