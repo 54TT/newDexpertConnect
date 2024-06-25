@@ -288,7 +288,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     value: number,
     quotePath: string
   ) => {
-    if (value === 0) return;
+    if (value == null || value === 0) return;
     if (
       ((type === 'in' || type === 'out') && !tokenIn?.contractAddress) ||
       !tokenOut?.contractAddress
@@ -568,6 +568,10 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
         ),
       });
     } catch (e) {
+      notification.error({
+        message: 'Transaction error',
+      });
+      console.error(e);
       setButtonLoading(false);
       setButtonDescId('1');
     }
@@ -883,7 +887,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           value={amountIn}
           className={inLoading && 'inut-font-gray'}
           onChange={(v) => {
-            setAmountIn(v);
+            setAmountIn(v || 0);
             if (currentInputToken.current !== 'in')
               currentInputToken.current = 'in';
             getAmountDebounce('in', v, quotePath);
@@ -925,7 +929,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           value={amountOut}
           className={outLoading && 'inut-font-gray'}
           onChange={(v) => {
-            setAmountOut(v);
+            setAmountOut(v || 0);
             if (currentInputToken.current !== 'out')
               currentInputToken.current = 'out';
             getAmountDebounce('out', v, quotePath);
