@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Input, notification } from 'antd';
 import './index.less';
 import { formatAddress } from '@utils/utils';
@@ -8,7 +8,6 @@ import Cookies from 'js-cookie';
 import DefaultTokenImg from '../DefaultTokenImg';
 import { CountContext } from '@/Layout';
 import { getERC20Contract } from '@utils/contracts';
-import InfinitieScroll from 'react-infinite-scroll-component';
 export interface TokenItemData {
   symbol: string;
   name: string;
