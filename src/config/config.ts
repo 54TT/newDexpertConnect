@@ -36,7 +36,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FactoryAddress: '0x0227628f3F023bb0B980b67D528571c95c6DaC1c',
     uniswapV3OracleLibraryAddress: '0xA4896b3573333Ad215E6F4B76439eEe14eE46a9D',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
-    universalRouterAddress: '0xf44F6b6dbfF8E145646F5A042ff3346dEF8fEE19',
+    universalRouterAddress: '0x956a0d3cf9c3840c8a6c207c8c5361811fe1fbac',
     wethAddress: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
     wethUsdtPairAddress: '0x77f1a0ab2b0af8343640490264c65be6581bde3c',
     wethDecimal: 18,
