@@ -20,6 +20,7 @@ function SelectTokenModal({
   return (
     <Modal
       {...props}
+      destroyOnClose
       centered
       wrapClassName="select-token-modal"
       title="Select Token"
