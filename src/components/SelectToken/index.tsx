@@ -8,6 +8,8 @@ import Cookies from 'js-cookie';
 import DefaultTokenImg from '../DefaultTokenImg';
 import { CountContext } from '@/Layout';
 import { getERC20Contract } from '@utils/contracts';
+import { getHistoryToken, addHistoryToken } from '@utils/indexDBfn';
+import { ethers } from 'ethers';
 export interface TokenItemData {
   symbol: string;
   name: string;
@@ -27,9 +29,10 @@ const { Search } = Input;
 
 function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
-  const { provider } = useContext(CountContext);
-  const historyList = useRef<TokenItemData[]>([]);
-  const historyTotal = useRef<number>(0);
+  const { provider, isLogin, chainId } = useContext(CountContext);
+  const [historyItems, setHistoryItems] = useState([]);
+  const memoryTokenList = useRef<TokenItemData[]>([]);
+  const memoryTokenTotal = useRef<number>(0);
   const [page, setPage] = useState(1);
   const [totalTokens, setTotalTokens] = useState(0);
   const { getAll } = Request();
@@ -46,11 +49,9 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
       token,
     });
     const { tokens, totalTokens } = data;
-
     if (page === 1) {
       setTokenList(tokens || []);
       setTotalTokens(totalTokens);
-      console.log(totalTokens);
     } else {
       setTokenList(tokenList.concat(tokens));
     }
@@ -67,9 +68,9 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   };
 
   const clearSearch = () => {
-    if (historyList?.current?.length) {
-      setTokenList(historyList.current);
-      setTotalTokens(historyTotal.current);
+    if (memoryTokenList?.current?.length) {
+      setTokenList(memoryTokenList.current);
+      setTotalTokens(memoryTokenTotal.current);
     }
   };
 
@@ -80,8 +81,6 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     }
 
     if (value.length !== 42) {
-      console.log('123123');
-
       notification.warning({
         message: 'please input address correctly',
       });
@@ -103,8 +102,8 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
         decimals,
         contractAddress: value,
       };
-      historyList.current = tokenList;
-      historyTotal.current = totalTokens;
+      memoryTokenList.current = tokenList;
+      memoryTokenTotal.current = totalTokens;
 
       setTokenList([searchToken]);
       setTotalTokens(1);
@@ -118,8 +117,6 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   useEffect(() => {
     if (tokenList.length && totalTokens > tokenList.length) {
       const observeFn = (dom) => {
-        console.log(dom, tokenList);
-
         if (dom[0].isIntersecting && page >= 1) {
           next();
         }
@@ -132,6 +129,55 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     }
   }, [tokenList]);
 
+  const getHistoryTokenList = async () => {
+    const provider = new ethers.providers.Web3Provider(window?.ethereum);
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+    const historyToken = await getHistoryToken({ address, chainId });
+    console.log(historyToken);
+
+    setHistoryItems(historyToken || []);
+  };
+
+  useEffect(() => {
+    if (isLogin) {
+      getHistoryTokenList();
+    } else {
+      setHistoryItems([]);
+    }
+  }, [isLogin, chainId]);
+
+  const memoClickTokenHistory = async (data) => {
+    if (!isLogin) return;
+    const findIndex = historyItems.findIndex(
+      (item) => item.contractAddress === data.contractAddress
+    );
+    const provider = new ethers.providers.Web3Provider(window?.ethereum);
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+    if (findIndex == -1) {
+      const newItem = [data, ...historyItems];
+      if (newItem.length > 6) {
+        newItem.pop();
+      }
+      setHistoryItems(newItem);
+      addHistoryToken({ address, chainId }, newItem);
+    } else {
+      const item = historyItems.splice(findIndex, 1);
+      const newItem = [...item, ...historyItems];
+      setHistoryItems(newItem);
+      addHistoryToken({ address, chainId }, newItem);
+    }
+  };
+
+  const handleTokenSelect = (item: TokenItemData) => {
+    if (disabledTokens?.includes?.(item.contractAddress.toLowerCase())) {
+      return;
+    }
+    memoClickTokenHistory(item);
+    onChange(item);
+  };
+
   return (
     <div className="select-token">
       <Search
@@ -140,8 +186,25 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
         onSearch={onSearch}
         allowClear
       />
-      <div className="token-history-list"></div>
-      <span className="popular-tokens">Popular tokens</span>
+      {isLogin && historyItems?.length ? (
+        <div className="token-history-list">
+          <span className="token-list-title">History tokens</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            {historyItems.map((item) => (
+              <div
+                className={`history-token-item ${disabledTokens?.includes?.(item.contractAddress) ? 'disable-token' : ''}`}
+                onClick={() => handleTokenSelect(item)}
+              >
+                <DefaultTokenImg name={item.symbol} icon={item.logoUrl} />
+                <span>{item.symbol}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
+      <span className="popular-tokens token-list-title">Popular tokens</span>
       <div id="scrollTarget">
         <>
           {tokenList?.map?.((item: TokenItemData) => (
@@ -149,12 +212,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
               key={item.contractAddress}
               className={`select-token-item ${disabledTokens?.includes?.(item.contractAddress) ? 'disable-token' : ''}`}
               onClick={() => {
-                if (
-                  disabledTokens?.includes?.(item.contractAddress.toLowerCase())
-                ) {
-                  return;
-                }
-                onChange(item);
+                handleTokenSelect(item);
               }}
             >
               <div className="select-token-item-info">

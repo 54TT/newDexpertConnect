@@ -81,7 +81,7 @@
       }
     }
   }
-  .popular-tokens {
+  .token-list-title {
     display: inline-block;
     font-size: 16px;
     color: #fff;
@@ -111,5 +111,34 @@
     height: 300px;
     overflow-y: auto;
     .beautiful-scroll();
+  }
+  .history-token-item {
+    display: flex;
+    align-items: center;
+    &.disable-token {
+      filter: brightness(0.5);
+    }
+    padding: 4px 8px;
+    margin-bottom: 8px;
+    border: 1px solid #484848;
+    background-color: #3a3a3a;
+    margin-right: 6px;
+    border-radius: 20px;
+    justify-content: space-between;
+    cursor: pointer;
+    color: #fff;
+    span {
+      margin-left: 6px;
+    }
+    .default-token-img {
+      img {
+        width: 24px;
+        height: 24px;
+      }
+      span {
+        width: 24px;
+        height: 24px;
+      }
+    }
   }
 }
