@@ -416,8 +416,15 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     setButtonLoading(true);
     setButtonDescId('6');
     const { universalRouterAddress } = contractConfig;
+    const { tradeDeadline } = advConfig;
+    const { uint, value } = tradeDeadline;
+    const intervalTime = uint === 'h' ? value * 3600 : value * 30;
+    const dateTimeStamp =
+      Number(String(Date.now()).slice(0, 10)) + intervalTime;
+    console.log(dateTimeStamp);
+
     const permitSingle: PermitSingle = {
-      sigDeadline: 2000000000,
+      sigDeadline: dateTimeStamp,
       spender: universalRouterAddress,
       details: {
         token,
@@ -557,12 +564,19 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     /*         const gasLimit = await universalRouterWriteContract[
       'execute(bytes,bytes[],uint256)'
     ](commands, inputs, BigInt(2000000000)); */
+    const { tradeDeadline } = advConfig;
+    const { uint, value } = tradeDeadline;
+    const intervalTime = uint === 'h' ? value * 3600 : value * 60;
+    const dateTimeStamp =
+      Number(String(Date.now()).slice(0, 10)) + intervalTime;
+    console.log(dateTimeStamp);
+
     let tx;
     try {
       tx = await universalRouterWriteContract['execute(bytes,bytes[],uint256)'](
         commands,
         inputs,
-        BigInt(2000000000),
+        dateTimeStamp,
         {
           value: etherValue,
         }
