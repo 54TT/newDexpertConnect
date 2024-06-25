@@ -130,6 +130,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   }, [tokenList]);
 
   const getHistoryTokenList = async () => {
+    // @ts-ignore
     const provider = new ethers.providers.Web3Provider(window?.ethereum);
     const signer = await provider.getSigner();
     const address = await signer.getAddress();
@@ -152,6 +153,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     const findIndex = historyItems.findIndex(
       (item) => item.contractAddress === data.contractAddress
     );
+    // @ts-ignore
     const provider = new ethers.providers.Web3Provider(window?.ethereum);
     const signer = await provider.getSigner();
     const address = await signer.getAddress();
