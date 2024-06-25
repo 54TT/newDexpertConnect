@@ -114,6 +114,11 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
   };
 
   useEffect(() => {
+    const amount = currentInputToken.current === 'in' ? amountIn : amountOut;
+    getAmount(currentInputToken.current, amount, quotePath);
+  }, [transactionFee.swap]);
+
+  useEffect(() => {
     initData();
   }, []);
 
@@ -249,7 +254,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
 
   useEffect(() => {
     const onChainChange = (targetChainId) => {
-      console.log('Chain Changed', targetChainId.toString());
       setChainId(Number(targetChainId).toString());
     };
     if (isLogin) {
@@ -295,7 +299,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     ) {
       return;
     }
-
     setButtonLoading(true);
     setButtonDescId('7');
 
@@ -991,9 +994,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
             payType={payType}
             onChange={(v) => {
               setPayType(v);
-              const amount =
-                currentInputToken.current === 'in' ? amountIn : amountOut;
-              getAmount(currentInputToken.current, amount, quotePath);
             }}
           />
         </div>
