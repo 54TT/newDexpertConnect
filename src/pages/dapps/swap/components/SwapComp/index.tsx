@@ -253,6 +253,12 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       setChainId(Number(targetChainId).toString());
     };
     if (isLogin) {
+      try {
+        // @ts-ignore
+        (window?.ethereum as any)?.on('chainChanged', onChainChange);
+      } catch (e) {
+        console.log(e);
+      }
       (window as any)?.ethereum?.request({
         method: 'wallet_switchEthereumChain',
         params: [
@@ -261,12 +267,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           },
         ],
       });
-      try {
-        // @ts-ignore
-        (window.ethereum as any).on('chainChanged', onChainChange);
-      } catch (e) {
-        console.log(e);
-      }
     }
     return () => {
       // @ts-ignore
