@@ -166,8 +166,6 @@ export const getV3AmountOut = async (
     amount = amount.sub(amount.mul(slippage));
   }
 
-  console.log(amount.toString(), 'v3');
-
   return {
     quoteAmount: amount,
     poolAddress: poolAddress,

@@ -20,7 +20,6 @@ export const getAmountOut = async (
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
   const uniswapV2FactoryAddress = chainConfig.uniswapV2FactoryAddress;
-  console.log(`进入AmountOut${(Date.now() - start) / 1000} 秒 `);
   let amountOutBigNumber: BigNumber = BigNumber.from(0);
 
   const amountInBigNumber = expandToDecimalsBN(amountIn, tokenInDecimals);
@@ -89,6 +88,5 @@ export const getAmountOut = async (
   if (slippage.greaterThan(0)) {
     amount = amount.sub(amount.mul(slippage));
   }
-  console.log(`方法执行完成时间${(Date.now() - start) / 1000} 秒 `);
   return amount;
 };

@@ -38,7 +38,6 @@ export const getV3AmountIn = async (
       wethAddress,
       tokenOutAddress
     );
-    console.log(amountOutBigNumber.toString());
     if (pools.length > 0) {
       for (const pool of pools) {
         const quotedAmountIn =
