@@ -13,8 +13,8 @@ export const erc20ToErc20 = async (
   amountInMax: BigNumber,
   amountOut: BigNumber,
   recipient: string,
-  isFee: boolean,
-  feeType: number,
+  level: number,
+  swapType: number,
   permit: any,
   signature: string
 ) => {
@@ -52,8 +52,8 @@ export const erc20ToErc20 = async (
     amountInMax,
     swapPath,
     payerIsUser,
-    isFee,
-    feeType,
+    level,
+    swapType,
   ];
   planner.addCommand(CommandType.V2_SWAP_EXACT_OUT, swapParams, false);
 
@@ -69,8 +69,8 @@ export const erc20ToETH = async (
   amountInMax: BigNumber,
   amountOut: BigNumber,
   recipient: string,
-  isFee: boolean,
-  feeType: number,
+  level: number,
+  swapType: number,
   permit: any,
   signature: string
 ) => {
@@ -88,8 +88,8 @@ export const erc20ToETH = async (
     amountInMax,
     swapPath,
     payerIsUser,
-    isFee,
-    feeType,
+    level,
+    swapType,
   ];
   planner.addCommand(CommandType.V2_SWAP_EXACT_OUT, swapParams, false);
 
@@ -108,11 +108,11 @@ export const ethToErc20 = async (
   amountInMax: BigNumber,
   amountOut: BigNumber,
   recipient: string,
-  isFee: boolean,
-  feeType: number
+  level: number,
+  swapType: number
 ) => {
   const { wethAddress, universalRouterAddress } = config[chainId];
-  const wrapEthParams = [universalRouterAddress, amountInMax, isFee, feeType];
+  const wrapEthParams = [universalRouterAddress, amountInMax, level, swapType];
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
   let swapPath = [tokenIn, tokenOut];
   const payerIsUser = false;
@@ -123,7 +123,7 @@ export const ethToErc20 = async (
     swapPath,
     payerIsUser,
     false,
-    feeType,
+    swapType,
   ];
   planner.addCommand(CommandType.V2_SWAP_EXACT_OUT, swapParams, false);
 

@@ -4,9 +4,6 @@ export const UniversalRouterAbi = [
       {
         components: [
           { internalType: 'address', name: 'feeRecipient', type: 'address' },
-          { internalType: 'uint256', name: 'fastTradeFeeBps', type: 'uint256' },
-          { internalType: 'uint256', name: 'sniperFeeBps', type: 'uint256' },
-          { internalType: 'uint256', name: 'limitFeeBps', type: 'uint256' },
           { internalType: 'uint256', name: 'feeBaseBps', type: 'uint256' },
           { internalType: 'address', name: 'permit2', type: 'address' },
           { internalType: 'address', name: 'weth9', type: 'address' },
@@ -59,15 +56,13 @@ export const UniversalRouterAbi = [
     type: 'error',
   },
   {
-    inputs: [
-      { internalType: 'uint256', name: 'fastTradeFeeBps', type: 'uint256' },
-    ],
-    name: 'InvalidFastTradeFeeBps',
+    inputs: [{ internalType: 'uint256', name: 'feeBaseBps', type: 'uint256' }],
+    name: 'InvalidFeeBaseBps',
     type: 'error',
   },
   {
-    inputs: [{ internalType: 'uint256', name: 'feeBase', type: 'uint256' }],
-    name: 'InvalidFeeBase',
+    inputs: [{ internalType: 'uint256', name: 'feeBps', type: 'uint256' }],
+    name: 'InvalidFeeBps',
     type: 'error',
   },
   {
@@ -75,21 +70,14 @@ export const UniversalRouterAbi = [
     name: 'InvalidFeeType',
     type: 'error',
   },
-  {
-    inputs: [{ internalType: 'uint256', name: 'limitFeeBps', type: 'uint256' }],
-    name: 'InvalidLimitFeeBps',
-    type: 'error',
-  },
   { inputs: [], name: 'InvalidPath', type: 'error' },
   { inputs: [], name: 'InvalidReserves', type: 'error' },
+  { inputs: [], name: 'InvalidSpender', type: 'error' },
   {
-    inputs: [
-      { internalType: 'uint256', name: 'sniperFeeBps', type: 'uint256' },
-    ],
-    name: 'InvalidSniperFeeBps',
+    inputs: [{ internalType: 'uint256', name: 'value', type: 'uint256' }],
+    name: 'InvalidValue',
     type: 'error',
   },
-  { inputs: [], name: 'InvalidSpender', type: 'error' },
   { inputs: [], name: 'LengthMismatch', type: 'error' },
   { inputs: [], name: 'SliceOutOfBounds', type: 'error' },
   { inputs: [], name: 'TransactionDeadlinePassed', type: 'error' },
@@ -102,25 +90,6 @@ export const UniversalRouterAbi = [
   { inputs: [], name: 'V3InvalidSwap', type: 'error' },
   { inputs: [], name: 'V3TooLittleReceived', type: 'error' },
   { inputs: [], name: 'V3TooMuchRequested', type: 'error' },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'msgSender',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'fastTradeFeeBps',
-        type: 'uint256',
-      },
-    ],
-    name: 'FastTradeFeeBpsUpdated',
-    type: 'event',
-  },
   {
     anonymous: false,
     inputs: [
@@ -151,12 +120,24 @@ export const UniversalRouterAbi = [
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'feeRecipient',
-        type: 'address',
+        internalType: 'uint256',
+        name: 'level',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'swapType',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'feeBps',
+        type: 'uint256',
       },
     ],
-    name: 'FeeRecipientUpdated',
+    name: 'FeeBpsUpdated',
     type: 'event',
   },
   {
@@ -170,12 +151,12 @@ export const UniversalRouterAbi = [
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'limitFeeBps',
-        type: 'uint256',
+        internalType: 'address',
+        name: 'feeRecipient',
+        type: 'address',
       },
     ],
-    name: 'LimitFeeBpsUpdated',
+    name: 'FeeRecipientUpdated',
     type: 'event',
   },
   {
@@ -200,20 +181,9 @@ export const UniversalRouterAbi = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'msgSender',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'sniperFeeBps',
-        type: 'uint256',
-      },
+      { indexed: false, internalType: 'int256', name: 'a', type: 'int256' },
     ],
-    name: 'SniperFeeBpsUpdated',
+    name: 'Permit2Error',
     type: 'event',
   },
   {
@@ -239,14 +209,17 @@ export const UniversalRouterAbi = [
   },
   {
     inputs: [],
-    name: 'fastTradeFeeBps',
+    name: 'feeBaseBps',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'feeBaseBps',
+    inputs: [
+      { internalType: 'uint256', name: 'level', type: 'uint256' },
+      { internalType: 'uint256', name: 'swapType', type: 'uint256' },
+    ],
+    name: 'feeBps',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
@@ -255,13 +228,6 @@ export const UniversalRouterAbi = [
     inputs: [],
     name: 'feeRecipient',
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'limitFeeBps',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -280,15 +246,19 @@ export const UniversalRouterAbi = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint256', name: 'feeBps', type: 'uint256' }],
-    name: 'setFastTradeFeeBps',
+    inputs: [{ internalType: 'uint256', name: 'feeBaseBps', type: 'uint256' }],
+    name: 'setFeeBaseBps',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint256', name: 'feeBaseBps', type: 'uint256' }],
-    name: 'setFeeBaseBps',
+    inputs: [
+      { internalType: 'uint256', name: 'level', type: 'uint256' },
+      { internalType: 'uint256', name: 'swapType', type: 'uint256' },
+      { internalType: 'uint256', name: 'feeBps', type: 'uint256' },
+    ],
+    name: 'setFeeBps',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -300,27 +270,6 @@ export const UniversalRouterAbi = [
     name: 'setFeeRecipient',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: 'feeBps', type: 'uint256' }],
-    name: 'setLimitFeeBps',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: 'feeBps', type: 'uint256' }],
-    name: 'setSniperFeeBps',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'sniperFeeBps',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
     type: 'function',
   },
   {

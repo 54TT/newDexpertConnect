@@ -12,8 +12,8 @@ export const getSwapExactOutBytes = async (
   amountInMax: Decimal,
   amountOut: Decimal,
   recipient: string,
-  isFee: boolean,
-  feeType: number,
+  level: number,
+  swapType: number,
   uniswapV3Fee: number,
   permit: any,
   signature: string
@@ -39,8 +39,8 @@ export const getSwapExactOutBytes = async (
       amountInBigNumber,
       amountOutBigNumber,
       recipient,
-      isFee,
-      feeType,
+      level,
+      swapType,
       uniswapV3Fee
     );
   } else if (
@@ -56,8 +56,8 @@ export const getSwapExactOutBytes = async (
       amountInBigNumber,
       amountOutBigNumber,
       recipient,
-      isFee,
-      feeType,
+      level,
+      swapType,
       uniswapV3Fee,
       permit,
       signature
@@ -71,8 +71,8 @@ export const getSwapExactOutBytes = async (
       amountInBigNumber,
       amountOutBigNumber,
       recipient,
-      isFee,
-      feeType,
+      level,
+      swapType,
       uniswapV3Fee,
       permit,
       signature

@@ -22,8 +22,8 @@ export const wethToEth = async (
   permit: any,
   signature: string
 ) => {
-  const isFee = false;
-  const feeType = 0;
+  const level = 0;
+  const swapType = 0;
   const chainConfig = config[chainId];
   const universalRouterAddress = chainConfig.universalRouterAddress;
 
@@ -34,8 +34,8 @@ export const wethToEth = async (
     tokenIn,
     universalRouterAddress,
     amountIn,
-    isFee,
-    feeType,
+    level,
+    swapType,
   ];
   planner.addCommand(CommandType.PERMIT2_TRANSFER_FROM, transferParams, false);
 

@@ -57,7 +57,7 @@ interface SwapCompType {
   initToken?: [tokenIn: TokenItemData, toeknOut: TokenItemData]; // 初始化的token
 }
 
-function SwapComp({ initChainId, initToken }: SwapCompType) {
+function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   const {
     provider,
     contractConfig,
@@ -89,6 +89,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     poolAddress: '',
   }); // 如果是uniswap3 需要的数据
   const [quotePath, setQuotePath] = useState('0'); // 0 uniswapV2 1 V3
+  const [refreshPass, setRefreshPass] = useState(false);
   const { getAll } = Request();
   /*   const [tokenPrice, setTokenPrice] = useState<{
     inPrice: string;
@@ -123,7 +124,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
   }, []);
 
   const getTransactionFee = async (data) => {
-    const fee = await getSwapFee(data);
+    const fee = await getSwapFee({ ...data, swapType: 0 });
     setTransactionFee({
       swap: fee,
     });
@@ -175,7 +176,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       new Decimal(0),
       transactionFee.swap,
     ].filter((item) => item !== null);
-    console.log(transactionFee.swap);
 
     const res = await Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
     return res;
@@ -477,7 +477,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       new Decimal(amountIn),
       new Decimal(amountOut),
       recipientAddress,
-      payType == '0',
+      payType == '0' ? 1 : 0,
       0,
       quotePath === '1' ? swapV3Pool?.fee : null,
       permit,
@@ -502,6 +502,8 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           signature,
         ]);
       }
+      console.log(getBytesParam);
+
       if (currentInputToken.current === 'in') {
         if (quotePath === '0') {
           return await getSwapExactInBytes.apply(null, getBytesParam);
@@ -529,14 +531,14 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     return { commands, inputs, etherValue };
   };
 
-  const reportPayType = (tx) => {
+  const reportPayType = async (tx) => {
     const token = Cookies.get('token');
     const payTypeMap = {
       0: 0, // pay fee
       1: 4, // glodenPass
       2: 2, // dpass
     };
-    getAll({
+    return getAll({
       method: 'get',
       url: '/api/v1/d_pass/pay',
       data: { payType: payTypeMap[payType], tx },
@@ -569,7 +571,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     const intervalTime = uint === 'h' ? value * 3600 : value * 60;
     const dateTimeStamp =
       Number(String(Date.now()).slice(0, 10)) + intervalTime;
-    console.log(dateTimeStamp);
 
     let tx;
     try {
@@ -599,9 +600,19 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     }
     setButtonLoading(false);
     setButtonDescId('1');
-    reportPayType(tx.hash);
+    await reportPayType(tx.hash);
+    setPayType('0');
+    setAmountIn(0);
+    setAmountOut(0);
+    setRefreshPass(true);
     console.log('swap-tx', tx);
   };
+
+  useEffect(() => {
+    if (refreshPass) {
+      setRefreshPass(false);
+    }
+  }, [refreshPass]);
   // 触发交易流程
   const handleSwap = async (data: {
     amountIn: any;
@@ -881,6 +892,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           chainList={swapChain}
           onChange={(v) => changeWalletChain(v)}
           hideChain={true}
+          disabled={!changeAble}
           wrapClassName="swap-chooose-chain"
         />
         <AdvConfig
@@ -897,12 +909,17 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
             className="dapp-sniper-right-token-icon"
             onClick={() => {
               currentSetToken.current = 'in';
+              if (!changeAble) {
+                return;
+              }
               setOpenSelect(true);
             }}
           >
             <DefaultTokenImg name={tokenIn?.symbol} icon={tokenIn?.logoUrl} />
             <span>{tokenIn?.symbol}</span>
-            <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
+            {changeAble && (
+              <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
+            )}
           </div>
         </div>
         <ProInputNumber
@@ -938,13 +955,18 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           <div
             className="dapp-sniper-right-token-icon"
             onClick={() => {
+              if (!changeAble) {
+                return;
+              }
               currentSetToken.current = 'out';
               setOpenSelect(true);
             }}
           >
             <DefaultTokenImg name={tokenOut?.name} icon={tokenOut?.logoUrl} />
             <span>{tokenOut?.symbol}</span>
-            <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
+            {changeAble && (
+              <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
+            )}
           </div>
         </div>
         <ProInputNumber
@@ -1009,6 +1031,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
             onChange={(v) => {
               setPayType(v);
             }}
+            refreshPass={refreshPass}
           />
         </div>
       </div>
@@ -1022,6 +1045,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       </Button>
       <SelectTokenModal
         open={openSelect}
+        disabled={!changeAble}
         disabledTokens={[
           tokenIn?.contractAddress?.toLowerCase?.(),
           tokenOut?.contractAddress?.toLowerCase?.(),

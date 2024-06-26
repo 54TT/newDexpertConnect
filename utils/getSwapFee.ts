@@ -1,7 +1,7 @@
 import { config } from '../src/config/config';
 import { getUniversalRouterContract } from './contracts';
 import Decimal from 'decimal.js';
-export const getSwapFee = async ({ chainId, provider, payType }) => {
+export const getSwapFee = async ({ chainId, provider, payType, swapType }) => {
   let fee = new Decimal(0);
 
   if (payType == 0) {
@@ -10,13 +10,13 @@ export const getSwapFee = async ({ chainId, provider, payType }) => {
       provider,
       universalRouterAddress
     );
-    console.log(universalRouterAddress);
-
-    const fastTradeFeeBps = await universalRouterContract.fastTradeFeeBps();
-    console.log(fastTradeFeeBps);
+    const level = payType == 0 ? 1 : 0;
+    const fastTradeFeeBps = await universalRouterContract.feeBps(
+      level,
+      swapType
+    );
 
     const feeBaseBps = await universalRouterContract.feeBaseBps();
-    console.log(feeBaseBps);
     fee = new Decimal(fastTradeFeeBps / feeBaseBps);
   }
   return fee;

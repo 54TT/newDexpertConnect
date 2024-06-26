@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import SelectComp from '@/components/SelectComp';
 import { Tag } from 'antd';
-function UsePass({ type, onChange, payType }) {
+function UsePass({ type, onChange, payType, refreshPass }) {
   const { isLogin } = useContext(CountContext);
   // 0 付钱 1 gloden 2 swap
   /*   const [dpassCount, setDapssCount] = useState('0'); // 剩余的dpass次数 需要区分swap snip limit
@@ -53,7 +53,7 @@ function UsePass({ type, onChange, payType }) {
           };
           list.unshift(data);
         }
-        if (stopTs != '0') {
+        if (stopTs !== '0') {
           const data = {
             label: 'Gloden Pass',
             key: '1',
@@ -67,7 +67,6 @@ function UsePass({ type, onChange, payType }) {
           };
           list.unshift(data);
         }
-
         setPayTypeList(list);
       }
     } catch (e) {
@@ -76,10 +75,16 @@ function UsePass({ type, onChange, payType }) {
   };
 
   useEffect(() => {
-    if (isLogin == true) {
+    if (isLogin) {
       getPassInfo();
     }
   }, [isLogin, type]);
+
+  useEffect(() => {
+    if (isLogin && refreshPass) {
+      getPassInfo();
+    }
+  }, [refreshPass]);
 
   return <SelectComp list={payTypeList} data={payType} onChange={onChange} />;
 }

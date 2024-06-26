@@ -13,8 +13,8 @@ export const getSwapExactInBytes = async (
   amountIn: Decimal,
   amountOutMin: Decimal,
   recipient: string,
-  isFee: boolean,
-  feeType: number,
+  level: number,
+  swapType: number,
   permit: any,
   signature: any
 ) => {
@@ -46,8 +46,8 @@ export const getSwapExactInBytes = async (
       amountOutBigNumber,
       recipient,
       pairAddress,
-      isFee,
-      feeType
+      level,
+      swapType
     );
   } else if (
     tokenInAddress.toLowerCase() !== ethAddress.toLowerCase() &&
@@ -62,8 +62,8 @@ export const getSwapExactInBytes = async (
       amountInBigNumber,
       amountOutBigNumber,
       recipient,
-      isFee,
-      feeType,
+      level,
+      swapType,
       permit,
       signature
     );
@@ -77,8 +77,8 @@ export const getSwapExactInBytes = async (
       amountInBigNumber,
       amountOutBigNumber,
       recipient,
-      isFee,
-      feeType,
+      level,
+      swapType,
       permit,
       signature
     );

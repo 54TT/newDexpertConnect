@@ -7,12 +7,14 @@ interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;
   chainId: string;
   disabledTokens: string[];
+  disabled: boolean;
 }
 
 function SelectTokenModal({
   onChange,
   chainId,
   disabledTokens,
+  disabled,
   ...props
 }: SelectTokenModalType) {
   const chainName = useMemo(() => ID_TO_CHAIN_NAME_LOW[chainId], [chainId]);
