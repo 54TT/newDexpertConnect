@@ -20,14 +20,13 @@ export const erc20ToErc20 = async (
   /*     const chainConfig = config[chainId];
     const universalRouterAddress = chainConfig.universalRouterAddress;
     const wethAddress = chainConfig.wethAddress; */
-
   const permit2PermitParams = [permit, signature];
   planner.addCommand(CommandType.PERMIT2_PERMIT, permit2PermitParams, false);
 
   let swapPath = [tokenIn, tokenOut];
   const path = encodePathExactOutput(swapPath, [uniswapV3Fee]);
 
-  const payerIsUser = false;
+  const payerIsUser = true;
   const swapParams = [
     recipient,
     amountOut,
@@ -65,7 +64,7 @@ export const erc20ToETH = async (
 
   let swapPath = [tokenIn, tokenOut];
   const path = encodePathExactOutput(swapPath, [uniswapV3Fee]);
-  const payerIsUser = false;
+  const payerIsUser = true;
   const swapParams = [
     universalRouterAddress,
     amountOut,
