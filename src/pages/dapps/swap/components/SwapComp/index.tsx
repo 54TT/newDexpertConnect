@@ -114,6 +114,11 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
   };
 
   useEffect(() => {
+    const amount = currentInputToken.current === 'in' ? amountIn : amountOut;
+    getAmount(currentInputToken.current, amount, quotePath);
+  }, [transactionFee.swap]);
+
+  useEffect(() => {
     initData();
   }, []);
 
@@ -249,10 +254,15 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
 
   useEffect(() => {
     const onChainChange = (targetChainId) => {
-      console.log('Chain Changed', targetChainId.toString());
       setChainId(Number(targetChainId).toString());
     };
     if (isLogin) {
+      try {
+        // @ts-ignore
+        (window?.ethereum as any)?.on('chainChanged', onChainChange);
+      } catch (e) {
+        console.log(e);
+      }
       (window as any)?.ethereum?.request({
         method: 'wallet_switchEthereumChain',
         params: [
@@ -261,12 +271,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           },
         ],
       });
-      try {
-        // @ts-ignore
-        (window.ethereum as any).on('chainChanged', onChainChange);
-      } catch (e) {
-        console.log(e);
-      }
     }
     return () => {
       // @ts-ignore
@@ -288,14 +292,13 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     value: number,
     quotePath: string
   ) => {
-    if (value === 0) return;
+    if (value == null || value === 0) return;
     if (
       ((type === 'in' || type === 'out') && !tokenIn?.contractAddress) ||
       !tokenOut?.contractAddress
     ) {
       return;
     }
-
     setButtonLoading(true);
     setButtonDescId('7');
 
@@ -413,8 +416,15 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     setButtonLoading(true);
     setButtonDescId('6');
     const { universalRouterAddress } = contractConfig;
+    const { tradeDeadline } = advConfig;
+    const { uint, value } = tradeDeadline;
+    const intervalTime = uint === 'h' ? value * 3600 : value * 30;
+    const dateTimeStamp =
+      Number(String(Date.now()).slice(0, 10)) + intervalTime;
+    console.log(dateTimeStamp);
+
     const permitSingle: PermitSingle = {
-      sigDeadline: 2000000000,
+      sigDeadline: dateTimeStamp,
       spender: universalRouterAddress,
       details: {
         token,
@@ -468,7 +478,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       new Decimal(amountOut),
       recipientAddress,
       payType == '0',
-      Number(payType),
+      0,
       quotePath === '1' ? swapV3Pool?.fee : null,
       permit,
       signature,
@@ -521,10 +531,15 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
 
   const reportPayType = (tx) => {
     const token = Cookies.get('token');
+    const payTypeMap = {
+      0: 0, // pay fee
+      1: 4, // glodenPass
+      2: 2, // dpass
+    };
     getAll({
       method: 'get',
       url: '/api/v1/d_pass/pay',
-      data: { payType, tx },
+      data: { payType: payTypeMap[payType], tx },
       token,
       chainId,
     });
@@ -549,12 +564,19 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
     /*         const gasLimit = await universalRouterWriteContract[
       'execute(bytes,bytes[],uint256)'
     ](commands, inputs, BigInt(2000000000)); */
+    const { tradeDeadline } = advConfig;
+    const { uint, value } = tradeDeadline;
+    const intervalTime = uint === 'h' ? value * 3600 : value * 60;
+    const dateTimeStamp =
+      Number(String(Date.now()).slice(0, 10)) + intervalTime;
+    console.log(dateTimeStamp);
+
     let tx;
     try {
       tx = await universalRouterWriteContract['execute(bytes,bytes[],uint256)'](
         commands,
         inputs,
-        BigInt(2000000000),
+        dateTimeStamp,
         {
           value: etherValue,
         }
@@ -568,6 +590,10 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
         ),
       });
     } catch (e) {
+      notification.error({
+        message: 'Transaction error',
+      });
+      console.error(e);
       setButtonLoading(false);
       setButtonDescId('1');
     }
@@ -883,7 +909,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           value={amountIn}
           className={inLoading && 'inut-font-gray'}
           onChange={(v) => {
-            setAmountIn(v);
+            setAmountIn(v || 0);
             if (currentInputToken.current !== 'in')
               currentInputToken.current = 'in';
             getAmountDebounce('in', v, quotePath);
@@ -925,7 +951,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           value={amountOut}
           className={outLoading && 'inut-font-gray'}
           onChange={(v) => {
-            setAmountOut(v);
+            setAmountOut(v || 0);
             if (currentInputToken.current !== 'out')
               currentInputToken.current = 'out';
             getAmountDebounce('out', v, quotePath);
@@ -982,9 +1008,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
             payType={payType}
             onChange={(v) => {
               setPayType(v);
-              const amount =
-                currentInputToken.current === 'in' ? amountIn : amountOut;
-              getAmount(currentInputToken.current, amount, quotePath);
             }}
           />
         </div>
