@@ -305,7 +305,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonLoading(true);
     setButtonDescId('7');
 
-    let start = Date.now();
     const { uniswapV2RouterAddress } = contractConfig;
 
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;

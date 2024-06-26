@@ -30,7 +30,7 @@ const { Search } = Input;
 function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
   const { provider, isLogin, chainId } = useContext(CountContext);
-  const [showSearch, setShowSearch] = useState(false);
+  /*   const [showSearch, setShowSearch] = useState(false); */
   const [historyItems, setHistoryItems] = useState([]);
   const memoryTokenList = useRef<TokenItemData[]>([]);
   const memoryTokenTotal = useRef<number>(0);

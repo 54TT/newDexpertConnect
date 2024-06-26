@@ -15,7 +15,6 @@ export const getAmountOut = async (
   slippage: Decimal,
   fee: Decimal
 ) => {
-  let start = Date.now();
   const chainConfig = config[chainId];
   const ethAddress = chainConfig.ethAddress;
   const wethAddress = chainConfig.wethAddress;
