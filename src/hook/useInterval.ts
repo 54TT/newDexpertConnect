@@ -28,7 +28,7 @@ const useInterval = (fn, delay, depency): [any, boolean, boolean] => {
 
   const getIntervalDataCallback = useCallback(() => {
     getData();
-    /* timer.current = setInterval(getData, delay); */
+    timer.current = setInterval(getData, delay);
   }, [getData, delay]);
 
   useEffect(() => {

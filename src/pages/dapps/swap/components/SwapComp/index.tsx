@@ -114,6 +114,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
   };
 
+  console.log(balanceIn.toNumber(), balanceOut.toNumber());
+
   useEffect(() => {
     const amount = currentInputToken.current === 'in' ? amountIn : amountOut;
     getAmount(currentInputToken.current, amount, quotePath);
@@ -252,10 +254,13 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
+  const onChainChange = (targetChainId) => {
+    console.log(targetChainId);
+
+    setChainId(Number(targetChainId).toString());
+  };
+
   useEffect(() => {
-    const onChainChange = (targetChainId) => {
-      setChainId(Number(targetChainId).toString());
-    };
     if (isLogin) {
       try {
         // @ts-ignore
@@ -724,25 +729,9 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   };
 
   useEffect(() => {
-    const { usdtAddress, ethAddress } = contractConfig;
-    const usdtToken: TokenItemData = {
-      name: 'USDT',
-      symbol: 'USDT',
-      logoUrl: '/usdt.svg',
-      contractAddress: usdtAddress,
-      balance: '0',
-      decimals: '6',
-    };
-    const ethToken: TokenItemData = {
-      name: 'ETH',
-      symbol: 'ETH',
-      logoUrl: '/eth-logo.svg',
-      contractAddress: ethAddress,
-      balance: '0',
-      decimals: '18',
-    };
-    setTokenIn(ethToken);
-    setTokenOut(usdtToken);
+    const { defaultTokenIn, defaultTokenOut } = contractConfig;
+    setTokenIn(defaultTokenIn);
+    setTokenOut(defaultTokenOut);
     setAmountIn(0);
     setAmountOut(0);
   }, [contractConfig]);
