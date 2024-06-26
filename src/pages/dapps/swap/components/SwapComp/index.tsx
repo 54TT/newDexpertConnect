@@ -51,6 +51,7 @@ import QuotoPathSelect from '@/components/QuotoPathSelect';
 import { swapChain } from '@utils/judgeStablecoin';
 import { getSwapFee } from '@utils/getSwapFee';
 import DefaultTokenImg from '@/components/DefaultTokenImg';
+import { expandToDecimalsBN } from '@utils/utils';
 interface SwapCompType {
   changeAble?: boolean; // 是否可修改Token || 网络
   initChainId?: string; // 初始化的chainId;
@@ -226,7 +227,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
 
     const amountInDecimal = new Decimal(amountIn || 0);
-    if (amountInDecimal.lessThan(balanceIn)) {
+    if (amountInDecimal.lessThanOrEqualTo(balanceIn)) {
       setButtonDisable(false);
       setButtonDescId('1');
     } else {
@@ -239,7 +240,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       tokenOut?.contractAddress &&
       amountIn &&
       amountOut &&
-      amountInDecimal.lessThan(balanceIn)
+      amountInDecimal.lessThanOrEqualTo(balanceIn)
     ) {
       setButtonDisable(false);
       setButtonDescId('1');
@@ -252,10 +253,11 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
+  const onChainChange = (targetChainId) => {
+    setChainId(Number(targetChainId).toString());
+  };
+
   useEffect(() => {
-    const onChainChange = (targetChainId) => {
-      setChainId(Number(targetChainId).toString());
-    };
     if (isLogin) {
       try {
         // @ts-ignore
@@ -263,6 +265,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       } catch (e) {
         console.log(e);
       }
+
       (window as any)?.ethereum?.request({
         method: 'wallet_switchEthereumChain',
         params: [
@@ -302,7 +305,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonLoading(true);
     setButtonDescId('7');
 
-    let start = Date.now();
     const { uniswapV2RouterAddress } = contractConfig;
 
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
@@ -361,7 +363,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
     setButtonLoading(false);
     setButtonDescId('1');
-    console.log(`获取输入输出总耗时${(Date.now() - start) / 1000} 秒 `);
   };
 
   const getAmountDebounce = useCallback(debounce(getAmount, 500), [
@@ -383,7 +384,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       setButtonLoading(true);
       approveTx = await tokenContract.approve(
         permit2Address,
-        BigInt((amountIn * 10 ** decimals).toFixed(0))
+        expandToDecimalsBN(new Decimal(amountIn), decimals)
       );
     } catch (e) {
       console.error(e);
@@ -421,7 +422,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     const intervalTime = uint === 'h' ? value * 3600 : value * 30;
     const dateTimeStamp =
       Number(String(Date.now()).slice(0, 10)) + intervalTime;
-    console.log(dateTimeStamp);
 
     const permitSingle: PermitSingle = {
       sigDeadline: dateTimeStamp,
@@ -502,7 +502,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           signature,
         ]);
       }
-      console.log(getBytesParam);
 
       if (currentInputToken.current === 'in') {
         if (quotePath === '0') {
@@ -522,11 +521,10 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     };
 
     const { commands, inputs } = await getSwapBytesFn(tokenIn, tokenOut);
-    console.log('byteCode', { commands, inputs });
 
-    let etherValue = BigInt(0);
+    let etherValue: any = BigNumber.from(0);
     if (tokenIn.contractAddress === contractConfig.ethAddress) {
-      etherValue = BigInt((amountIn * 10 ** 18).toFixed(0));
+      etherValue = expandToDecimalsBN(new Decimal(amountIn), 18);
     }
     return { commands, inputs, etherValue };
   };
@@ -605,7 +603,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setAmountIn(0);
     setAmountOut(0);
     setRefreshPass(true);
-    console.log('swap-tx', tx);
   };
 
   useEffect(() => {
@@ -628,6 +625,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await web3Provider.getSigner();
+
     const signerAddress = await signer.getAddress();
     const permit2Contract = new ethers.Contract(
       permit2Address,
@@ -651,7 +649,9 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       if (
         balance.isZero() ||
         balance.lte(
-          BigNumber.from(new Decimal(amountIn * 10 ** decimals).toFixed(0))
+          BigNumber.from(
+            new Decimal(amountIn).mul(new Decimal(10 ** decimals)).toFixed(0)
+          )
         )
       ) {
         // 余额为0 或者余额 小于amount 需要approve
@@ -664,7 +664,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           const { permit, signature } = await signPermit({
             signerAddress,
             token: tokenIn.contractAddress,
-            amount: BigInt((amountIn * 10 ** decimals).toFixed(0)),
+            amount: expandToDecimalsBN(new Decimal(amountIn), decimals),
             permit2Contract,
             signer,
           });
@@ -688,7 +688,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         const { permit, signature } = await signPermit({
           signerAddress,
           token: tokenIn.contractAddress,
-          amount: BigInt((amountIn * 10 ** decimals).toFixed(0)),
+          amount: expandToDecimalsBN(new Decimal(amountIn), decimals),
           permit2Contract,
           signer,
         });
@@ -711,7 +711,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         ...data,
         recipientAddress: signerAddress,
       });
-      console.log(etherValue);
 
       sendSwap({
         commands,
@@ -724,25 +723,9 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   };
 
   useEffect(() => {
-    const { usdtAddress, ethAddress } = contractConfig;
-    const usdtToken: TokenItemData = {
-      name: 'USDT',
-      symbol: 'USDT',
-      logoUrl: '/usdt.svg',
-      contractAddress: usdtAddress,
-      balance: '0',
-      decimals: '6',
-    };
-    const ethToken: TokenItemData = {
-      name: 'ETH',
-      symbol: 'ETH',
-      logoUrl: '/eth-logo.svg',
-      contractAddress: ethAddress,
-      balance: '0',
-      decimals: '18',
-    };
-    setTokenIn(ethToken);
-    setTokenOut(usdtToken);
+    const { defaultTokenIn, defaultTokenOut } = contractConfig;
+    setTokenIn(defaultTokenIn);
+    setTokenOut(defaultTokenOut);
     setAmountIn(0);
     setAmountOut(0);
   }, [contractConfig]);
@@ -807,7 +790,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           // @ts-ignore
           window?.ethereum
         );
-
         const balance = await getBalanceRpc(injectProvider, token, wethAddress);
 
         dispatch(balance);
@@ -820,13 +802,13 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     if (isLogin) {
       getTokenBalance(tokenIn?.contractAddress, setBalanceIn);
     }
-  }, [tokenIn, isLogin]);
+  }, [tokenIn, isLogin, chainId]);
 
   useEffect(() => {
     if (isLogin) {
       getTokenBalance(tokenOut?.contractAddress, setBalanceOut);
     }
-  }, [tokenOut, isLogin]);
+  }, [tokenOut, isLogin, chainId]);
 
   useEffect(() => {
     if (

@@ -30,6 +30,7 @@ const { Search } = Input;
 function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
   const { provider, isLogin, chainId } = useContext(CountContext);
+  /*   const [showSearch, setShowSearch] = useState(false); */
   const [historyItems, setHistoryItems] = useState([]);
   const memoryTokenList = useRef<TokenItemData[]>([]);
   const memoryTokenTotal = useRef<number>(0);
@@ -135,7 +136,6 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     const signer = await provider.getSigner();
     const address = await signer.getAddress();
     const historyToken = await getHistoryToken({ address, chainId });
-    console.log(historyToken);
 
     setHistoryItems(historyToken || []);
   };
