@@ -8,7 +8,7 @@ interface ChooseChainType {
   disabledChain?: boolean;
   wrapClassName?: string;
   chainList: any[];
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 function ChooseChain({

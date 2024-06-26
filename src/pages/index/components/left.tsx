@@ -77,7 +77,6 @@ function Left() {
             }
             className={'indexSelect'}
             popupClassName={'indexSelectPopup'}
-          
             options={[
               { value: 'newPair', label: t('Market.New') },
               { value: 'trading', label: t('Market.Trading'), disabled: true },
@@ -99,11 +98,23 @@ function Left() {
               loading={'lazy'}
               alt=""
             />
-            {wait ? <Load /> : <p>$ : <span>{ethPrice}</span></p>}
+            {wait ? (
+              <Load />
+            ) : (
+              <p>
+                $ : <span>{ethPrice}</span>
+              </p>
+            )}
           </div>
           <div className="div">
             <img loading={'lazy'} src="/gas.svg" alt="" />
-            {gasLoad ? <Load /> : <p>Gas : <span>{gas}</span></p>}
+            {gasLoad ? (
+              <Load />
+            ) : (
+              <p>
+                Gas : <span>{gas}</span>
+              </p>
+            )}
           </div>
         </div>
       </div>
