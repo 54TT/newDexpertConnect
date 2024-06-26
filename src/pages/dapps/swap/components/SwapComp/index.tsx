@@ -268,6 +268,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       } catch (e) {
         console.log(e);
       }
+      console.log(`0x${Number(chainId).toString(16)}`);
+
       (window as any)?.ethereum?.request({
         method: 'wallet_switchEthereumChain',
         params: [
@@ -633,6 +635,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await web3Provider.getSigner();
+
     const signerAddress = await signer.getAddress();
     const permit2Contract = new ethers.Contract(
       permit2Address,
@@ -796,7 +799,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           // @ts-ignore
           window?.ethereum
         );
-
         const balance = await getBalanceRpc(injectProvider, token, wethAddress);
 
         dispatch(balance);
@@ -809,13 +811,13 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     if (isLogin) {
       getTokenBalance(tokenIn?.contractAddress, setBalanceIn);
     }
-  }, [tokenIn, isLogin]);
+  }, [tokenIn, isLogin, chainId]);
 
   useEffect(() => {
     if (isLogin) {
       getTokenBalance(tokenOut?.contractAddress, setBalanceOut);
     }
-  }, [tokenOut, isLogin]);
+  }, [tokenOut, isLogin, chainId]);
 
   useEffect(() => {
     if (

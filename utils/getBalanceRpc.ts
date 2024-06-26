@@ -2,6 +2,7 @@ import { BigNumber } from 'ethers';
 import { zeroAddress } from './constants';
 import { getERC20Contract } from './contracts';
 import Decimal from 'decimal.js';
+
 const getBalanceRpcEther = async (
   injectProvider,
   token,
@@ -9,6 +10,7 @@ const getBalanceRpcEther = async (
 ): Promise<Decimal> => {
   // 需要用钱包对象查
   const signer = await injectProvider.getSigner();
+
   let decimals = 18;
   if (!token) return;
   if (token === zeroAddress) {
@@ -22,7 +24,12 @@ const getBalanceRpcEther = async (
   ) {
     decimals = await erc20Contract.decimals();
   }
-  const address = await signer.getAddress();
+  let address;
+  try {
+    address = await signer.getAddress();
+  } catch (e) {
+    console.log(e);
+  }
   const balance: BigNumber = await erc20Contract.balanceOf(address);
   if (balance.isZero()) return new Decimal(balance.toString());
   return new Decimal(balance.toString()).div(new Decimal(10 ** decimals));
