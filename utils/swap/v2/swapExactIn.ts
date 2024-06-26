@@ -118,8 +118,6 @@ export const ethToErc20 = async (
   const wrapEthParams = [pairAddress, amountIn, isFee, feeType];
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
   let swapPath = [tokenIn, tokenOut];
-  console.log("isFee:",isFee)
-  console.log("feeType:",feeType)
   const payerIsUser = true;
   const swapParams = [
     recipient,

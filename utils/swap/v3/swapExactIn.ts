@@ -95,7 +95,7 @@ export const ethToErc20 = async (
   const chainConfig = config[chainId];
   const wethAddress = chainConfig.wethAddress;
   const universalRouterAddress = chainConfig.universalRouterAddress;
-  const wrapEthParams = [universalRouterAddress, amountIn, isFee, feeType];
+  const wrapEthParams = [universalRouterAddress, amountIn, false, feeType];
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
 
   let swapPath = [tokenIn, tokenOut];
@@ -107,7 +107,7 @@ export const ethToErc20 = async (
     amountOutMin,
     path,
     payerIsUser,
-    false,
+    isFee,
     feeType,
   ];
   planner.addCommand(CommandType.V3_SWAP_EXACT_IN, swapParams, false);

@@ -1,4 +1,4 @@
-type ChainIdList = '1' | '11155111';
+type ChainIdList = '1' | '11155111' | '8453';
 
 export const config: Record<ChainIdList, any> = {
   '1': {
@@ -7,7 +7,6 @@ export const config: Record<ChainIdList, any> = {
     chainId: 1,
     verificationURL: 'https://api.etherscan.io/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
-    uncxAddress: '0x663A5C229c09b049E36dCc11a9B0d4a8Eb9db214',
     uniswapV2RouterAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
     uniswapV2FactoryAddress: '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f',
     uniswapV3FactoryAddress: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
@@ -30,11 +29,9 @@ export const config: Record<ChainIdList, any> = {
     verificationURL: 'https://api-sepolia.etherscan.io/api',
     chainId: 11155111,
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
-    uncxAddress: '0xdc5adc1c05fd9e46200349258f74761b0a75baa7',
     uniswapV2RouterAddress: '0xb22ce52905d25987321d6bf73d1705886f1cc4f4',
     uniswapV2FactoryAddress: '0xce71f5957f481a77161f368ad6dfc61d694cf171',
     uniswapV3FactoryAddress: '0x0227628f3F023bb0B980b67D528571c95c6DaC1c',
-    uniswapV3OracleLibraryAddress: '0xA4896b3573333Ad215E6F4B76439eEe14eE46a9D',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
     universalRouterAddress: '0x956a0d3cf9c3840c8a6c207c8c5361811fe1fbac',
     wethAddress: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
@@ -47,5 +44,27 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x20893BBb093b0fdc669991236F6170ceCD101737',
     scan: 'https://sepolia.etherscan.io/tx/',
+  },
+  '8453': {
+    rpcUrl: 'https://mainnet.base.org',
+    /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
+    verificationURL: 'https://api.basescan.org/api',
+    chainId: 8453,
+    verificationApiKey: '26DA1KNJPI4SMP8GUDAUA4611JIHQK16AD',
+    uniswapV2RouterAddress: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
+    uniswapV2FactoryAddress: '0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6',
+    uniswapV3FactoryAddress: '0x33128a8fC17869897dcE68Ed026d694621f6FDfD',
+    permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
+    universalRouterAddress: '0x772f7687fC4A104057C046cc3114e5d7e779cEE1',
+    wethAddress: '0x4200000000000000000000000000000000000006',
+    wethUsdtPairAddress: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C',
+    wethDecimal: 18,
+    usdtAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    usdtDecimal: 6,
+    ethAddress: '0x0000000000000000000000000000000000000000',
+    zeroAddress: '0x0000000000000000000000000000000000000000',
+    uniswapV3FeeAmounts: [500, 3000, 10000],
+    quoterAddress: '0x2121136F02acb8162e4E7C74Cc8A064e3C40A10c',
+    scan: 'https://basescan.org/tx/',
   },
 };
