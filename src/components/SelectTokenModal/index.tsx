@@ -31,7 +31,6 @@ function SelectTokenModal({
       <SelectToken
         onChange={onChange}
         chainName={chainName}
-        disabled={disabled}
         disabledTokens={disabledTokens}
       />
     </Modal>
