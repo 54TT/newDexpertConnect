@@ -89,6 +89,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     poolAddress: '',
   }); // 如果是uniswap3 需要的数据
   const [quotePath, setQuotePath] = useState('0'); // 0 uniswapV2 1 V3
+  const [refreshPass, setRefreshPass] = useState(false);
   const { getAll } = Request();
   /*   const [tokenPrice, setTokenPrice] = useState<{
     inPrice: string;
@@ -501,6 +502,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           signature,
         ]);
       }
+      console.log(getBytesParam);
+
       if (currentInputToken.current === 'in') {
         if (quotePath === '0') {
           return await getSwapExactInBytes.apply(null, getBytesParam);
@@ -528,14 +531,14 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     return { commands, inputs, etherValue };
   };
 
-  const reportPayType = (tx) => {
+  const reportPayType = async (tx) => {
     const token = Cookies.get('token');
     const payTypeMap = {
       0: 0, // pay fee
       1: 4, // glodenPass
       2: 2, // dpass
     };
-    getAll({
+    return getAll({
       method: 'get',
       url: '/api/v1/d_pass/pay',
       data: { payType: payTypeMap[payType], tx },
@@ -568,7 +571,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     const intervalTime = uint === 'h' ? value * 3600 : value * 60;
     const dateTimeStamp =
       Number(String(Date.now()).slice(0, 10)) + intervalTime;
-    console.log(dateTimeStamp);
 
     let tx;
     try {
@@ -598,9 +600,19 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
     setButtonLoading(false);
     setButtonDescId('1');
-    reportPayType(tx.hash);
+    await reportPayType(tx.hash);
+    setPayType('0');
+    setAmountIn(0);
+    setAmountOut(0);
+    setRefreshPass(true);
     console.log('swap-tx', tx);
   };
+
+  useEffect(() => {
+    if (refreshPass) {
+      setRefreshPass(false);
+    }
+  }, [refreshPass]);
   // 触发交易流程
   const handleSwap = async (data: {
     amountIn: any;
@@ -1019,6 +1031,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
             onChange={(v) => {
               setPayType(v);
             }}
+            refreshPass={refreshPass}
           />
         </div>
       </div>
