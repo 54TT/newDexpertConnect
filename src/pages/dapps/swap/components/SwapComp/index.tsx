@@ -228,7 +228,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
 
     const amountInDecimal = new Decimal(amountIn || 0);
-    if (amountInDecimal.lessThan(balanceIn)) {
+    if (amountInDecimal.lessThanOrEqualTo(balanceIn)) {
       setButtonDisable(false);
       setButtonDescId('1');
     } else {
