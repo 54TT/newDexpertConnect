@@ -49,7 +49,21 @@
     "Run Tips": "在Uniswap协议设计中，开发团队不会从交易中提取费用，所有交易中的费用都会返还给提供流动性的提供者。",
     "Fee": "费用"
   },
+
   "Slider": {
+    "Hour":"小时",
+    "Min":"分钟",
+    "Auto":"自动",
+    "Customize":"自定义",
+    "Gas":"Gas 价格",
+    "Order":"订单期限",
+    "Trade":"交易期限",
+    "Maximum":"最大滑点",
+    "Total":"代币总量",
+    "Confirm":"确认",
+    "Sniper":"狙击数量",
+    "Token":"代币信息",
+    "address":"地址",
     "New Pairs": "新交易对",
     "Trending": "趋势",
     "Name": "名称",

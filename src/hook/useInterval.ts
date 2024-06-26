@@ -9,7 +9,7 @@ const useInterval = (fn, delay, depency): [any, boolean, boolean] => {
   const [dependencyChange, setDependencyChange] = useState(true);
   const timer = useRef(null);
 
-  const getData = useCallback(async () => {
+  const getData = async () => {
     try {
       const data = await fn();
       setLoading(true);
@@ -17,7 +17,7 @@ const useInterval = (fn, delay, depency): [any, boolean, boolean] => {
     } catch (e) {
       setLoading(false);
     }
-  }, [fn]);
+  };
 
   useEffect(() => {
     if (data) {
@@ -32,10 +32,11 @@ const useInterval = (fn, delay, depency): [any, boolean, boolean] => {
   }, [getData, delay]);
 
   useEffect(() => {
-    if (timer.current !== null) {
+    if (timer.current) {
       clearInterval(timer.current);
       timer.current = null;
     }
+    setData(null);
     getIntervalDataCallback();
     return () => {
       setDependencyChange(true);

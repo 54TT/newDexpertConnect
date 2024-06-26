@@ -36,13 +36,14 @@ import {
   getRequiredNamespaces,
 } from '../utils/default';
 import _ from 'lodash';
-import { MessageAll } from './components/message.ts';
+import NotificationChange from './components/message';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
 import { config } from './config/config.ts';
 import checkConnection from '@utils/checkConnect.ts';
 import { ethers } from 'ethers';
+import Decimal from 'decimal.js';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
   () => import('./pages/activity/components/person.tsx')
@@ -73,10 +74,8 @@ function Layout() {
   const [chainId, setChainId] = useState('11155111'); // swap 链切换
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
-    console.log(newConfig)
     setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
-    console.log(newConfig)
     //@ts-ignore
     setProvider(rpcProvider);
   };
@@ -156,6 +155,9 @@ function Layout() {
   const [browser, setBrowser] = useState<any>(false);
   const [big, setBig] = useState<any>(false);
   const [activityOptions, setActivityOptions] = useState('');
+  const [transactionFee, setTransactionFee] = useState({
+    swap: new Decimal(0),
+  });
   // copy
   const [isCopy, setIsCopy] = useState(false);
   useEffect(() => {
@@ -275,7 +277,7 @@ function Layout() {
 
           if (bind?.status === 200) {
             getUserNow();
-            MessageAll('success', t('person.bind'));
+            NotificationChange('success', t('person.bind'));
           }
         }
       } else {
@@ -338,7 +340,7 @@ function Layout() {
           return null;
         }
       } else {
-        MessageAll('warning', t('Market.log'));
+        NotificationChange('warning', t('Market.log'));
         setLoad(false);
       }
     } catch (err) {
@@ -576,6 +578,8 @@ function Layout() {
     contractConfig,
     chainId,
     setChainId,
+    transactionFee,
+    setTransactionFee,
   };
   const clients = new ApolloClient({
     uri: chain[switchChain],

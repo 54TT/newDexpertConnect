@@ -1,16 +1,22 @@
 import Load from '@/components/allLoad/load.tsx';
 import Copy from '@/components/copy';
 import './index.less';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Request from '@/components/axios.tsx';
 import Dpass from './components/dpass';
+import { CountContext } from '@/Layout.tsx';
+import { FloatingBubble } from 'antd-mobile';
 import History from './components/history';
 import cookie from 'js-cookie';
 export default function index() {
+  const { user, browser }: any = useContext(CountContext);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>(null);
   const { getAll } = Request();
   const [select, setSelect] = useState('pass');
+  const [offset, setOffset] = useState<any>();
+  //  左还是右
+  const [position, setPosition] = useState('right');
   const swapPerson = [
     {
       img: select === 'pass' ? '/swapDpssAc.svg' : '/swapDpass.svg',
@@ -31,7 +37,11 @@ export default function index() {
   useEffect(() => {
     getUserPass();
   }, []);
-
+  useEffect(() => {
+    if (!open) {
+      setSelect('pass');
+    }
+  }, [open]);
   const getUserPass = async () => {
     const token = cookie.get('token');
     const res = await getAll({
@@ -45,34 +55,86 @@ export default function index() {
     }
   };
   return (
-    <div className="dappsSwapHistory" style={{ width: open ? '30vw' : '65px' }}>
-      <div className="leftBox">
-        <div className="bor">
+    <div
+      className={`dappsSwapHistory ${position === 'left' ? 'leftPo' : 'rightPo'}`}
+      style={{
+        width: open ? (browser ? '30vw' : '80vw') : browser ? '65px' : '0',
+      }}
+    >
+      {browser && (
+        <div className="leftBox">
+          <div className="bor">
+            <div></div>
+          </div>
+          <div
+            className="center"
+            onClick={() => {
+              setOpen(!open);
+            }}
+          >
+            <div className="po">
+              <Load show={open ? 'down' : 'up'} />
+            </div>
+          </div>
+          <div className="bor bot">
+            <div></div>
+          </div>
           <div></div>
         </div>
-        <div
-          className="center"
-          onClick={() => {
-            setOpen(!open);
+      )}
+      {!browser && !open && (
+        <FloatingBubble
+          axis="xy"
+          offset={offset}
+          magnetic="x"
+          style={{
+            '--initial-position-bottom': '50%',
+            '--initial-position-right': '0',
+            '--background': 'none',
+            '--edge-distance': '-6px',
+            '--border-radius': '0',
+            '--size': 'auto',
+            '--z-index': '0',
+          }}
+          onOffsetChange={(offset: any) => {
+            const at = parseInt(offset?.x);
+            const win = window.innerWidth;
+            if (35 - win == at) {
+              setPosition('left');
+            }
+            if (at === -0) {
+              setPosition('right');
+            }
+            setOffset(offset);
           }}
         >
-          <div className="po">
-            <Load show={open ? 'down' : 'up'} />
-          </div>
-        </div>
-        <div className="bor bot">
-          <div></div>
-        </div>
-        <div></div>
-      </div>
+          <img
+            src={
+              position === 'left' ? '/swapSideImg2.svg' : '/swapSideImg1.svg'
+            }
+            onClick={() => setOpen(!open)}
+            alt=""
+            width={'35px'}
+          />
+        </FloatingBubble>
+      )}
       <div className="box">
         <div className="user">
           <div>
-            <img src="/copySwap.svg" alt="" />
+            <img
+              src={user?.avatarUrl ? user?.avatarUrl : '/topLogo.png'}
+              alt=""
+            />
             <p>sdadasdsad</p>
             <Copy name="dsadasdsad" img="/copySwap.svg" />
           </div>
-          <img src="/closeSwap.svg" alt="" onClick={() => setOpen(!open)} />
+          <img
+            src="/closeSwap.svg"
+            alt=""
+            onClick={() => {
+              setOpen(!open);
+            }}
+          />
         </div>
         <p className="price">dsdada</p>
         <div className="select">

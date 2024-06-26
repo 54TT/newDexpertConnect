@@ -33,6 +33,7 @@ import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
 import ChooseChain from '@/components/chooseChain';
 import {
+  CHAIN_ID_TO_CHAIN_NAME,
   CHAIN_NAME_TO_CHAIN_ID,
   CHAIN_NAME_TO_CHAIN_ID_HEX,
 } from '@utils/constants';
@@ -48,10 +49,24 @@ import useInterval from '@/hook/useInterval';
 import getBalanceRpc from '@utils/getBalanceRpc';
 import QuotoPathSelect from '@/components/QuotoPathSelect';
 import { swapChain } from '@utils/judgeStablecoin';
+import { getSwapFee } from '@utils/getSwapFee';
+import DefaultTokenImg from '@/components/DefaultTokenImg';
+interface SwapCompType {
+  changeAble?: boolean; // 是否可修改Token || 网络
+  initChainId?: string; // 初始化的chainId;
+  initToken?: [tokenIn: TokenItemData, toeknOut: TokenItemData]; // 初始化的token
+}
 
-function SwapComp() {
-  const { provider, contractConfig, setIsModalOpen, chainId, setChainId } =
-    useContext(CountContext);
+function SwapComp({ initChainId, initToken }: SwapCompType) {
+  const {
+    provider,
+    contractConfig,
+    setIsModalOpen,
+    chainId,
+    setChainId,
+    transactionFee,
+    setTransactionFee,
+  } = useContext(CountContext);
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<TokenItemData>();
@@ -67,8 +82,8 @@ function SwapComp() {
   const { isLogin } = useContext(CountContext);
   const [inLoading, setInLoading] = useState(false);
   const [outLoading, setOutLoading] = useState(false);
-  const [balanceIn, setBalanceIn] = useState<Decimal>(); // 需要用于计算
-  const [balanceOut, setBalanceOut] = useState<Decimal>();
+  const [balanceIn, setBalanceIn] = useState<Decimal>(new Decimal(0)); // 需要用于计算
+  const [balanceOut, setBalanceOut] = useState<Decimal>(new Decimal(0));
   const [swapV3Pool, setSwapV3Pool] = useState({
     fee: 0,
     poolAddress: '',
@@ -84,6 +99,31 @@ function SwapComp() {
   }); */
   const [payType, setPayType] = useState('0');
 
+  const initData = () => {
+    if (initToken?.length) {
+      const [initTokenIn, initTokenOut] = initToken;
+      setTokenIn(initTokenIn);
+      setTokenOut(initTokenOut);
+      setAmountIn(0);
+      setAmountOut(0);
+    }
+    if (initChainId) {
+      const chianName = CHAIN_ID_TO_CHAIN_NAME[initChainId];
+      changeWalletChain(chianName);
+    }
+  };
+
+  useEffect(() => {
+    initData();
+  }, []);
+
+  const getTransactionFee = async (data) => {
+    const fee = await getSwapFee(data);
+    setTransactionFee({
+      swap: fee,
+    });
+  };
+
   const getGasPrice = async () => {
     const gas: BigNumber = await provider.getGasPrice();
     const gasGwei = gas.toNumber() / 10 ** 9;
@@ -93,7 +133,11 @@ function SwapComp() {
   };
 
   const getAmountExchangeRate = async (data) => {
-    if (!tokenIn?.contractAddress && !tokenOut?.contractAddress) {
+    if (
+      !tokenIn?.contractAddress &&
+      !tokenOut?.contractAddress &&
+      !transactionFee?.swap
+    ) {
       return Promise.resolve('');
     }
     let amount: Decimal;
@@ -112,35 +156,35 @@ function SwapComp() {
   const getExchangeRateAndGasPrice = useCallback(async () => {
     if (!tokenIn?.contractAddress || !tokenOut?.contractAddress)
       return Promise.resolve(['', '']);
-    const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
+    const { uniswapV2RouterAddress } = contractConfig;
 
     const data = [
       chainId,
       provider,
       quotePath === '0'
-        ? await getUniversalRouterContract(provider, universalRouterAddress)
-        : null,
-      quotePath === '0'
         ? await getUniswapV2RouterContract(provider, uniswapV2RouterAddress)
         : null,
-      tokenIn.contractAddress,
-      tokenOut.contractAddress,
+      [tokenIn.contractAddress, Number(tokenIn.decimals)],
+      [tokenOut.contractAddress, Number(tokenOut.decimals)],
       new Decimal(1),
       new Decimal(0),
-      0,
+      transactionFee.swap,
     ].filter((item) => item !== null);
-    return Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
+    const res = await Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
+    return res;
   }, [
     provider,
     tokenIn?.contractAddress,
     tokenOut?.contractAddress,
     quotePath,
+    chainId,
+    transactionFee.swap,
   ]);
 
   const [data, loading, showSkeleton] = useInterval(
     getExchangeRateAndGasPrice,
     10000,
-    [tokenIn, tokenOut, quotePath, chainId]
+    [tokenIn, tokenOut, quotePath, chainId, transactionFee.swap]
   );
 
   const [gasPrice, exchangeRate] = data || ['', ''];
@@ -170,15 +214,25 @@ function SwapComp() {
     }
 
     if (isLogin) {
-      setButtonDisable(true);
+      setButtonDisable(false);
       setButtonDescId('1');
+    }
+
+    const amountInDecimal = new Decimal(amountIn || 0);
+    if (amountInDecimal.lessThan(balanceIn)) {
+      setButtonDisable(false);
+      setButtonDescId('1');
+    } else {
+      setButtonDisable(true);
+      setButtonDescId('4');
     }
 
     if (
       tokenIn?.contractAddress &&
       tokenOut?.contractAddress &&
       amountIn &&
-      amountOut
+      amountOut &&
+      amountInDecimal.lessThan(balanceIn)
     ) {
       setButtonDisable(false);
       setButtonDescId('1');
@@ -189,19 +243,32 @@ function SwapComp() {
 
   useEffect(() => {
     setButtonDescAndDisable();
-  }, [isLogin, tokenIn, tokenOut, amountIn, amountOut]);
+  }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
   useEffect(() => {
+    const onChainChange = (targetChainId) => {
+      setChainId(Number(targetChainId).toString());
+    };
     if (isLogin) {
       (window as any)?.ethereum?.request({
         method: 'wallet_switchEthereumChain',
         params: [
           {
-            chainId: chainId.toString(16),
+            chainId: `0x${Number(chainId).toString(16)}`,
           },
         ],
       });
+      try {
+        // @ts-ignore
+        (window.ethereum as any).on('chainChanged', onChainChange);
+      } catch (e) {
+        return null
+      }
     }
+    return () => {
+      // @ts-ignore
+      (window.ethereum as any).removeListener('chainChanged', onChainChange);
+    };
   }, [isLogin]);
 
   const exchange = () => {
@@ -210,13 +277,12 @@ function SwapComp() {
     setTokenOut(newTokenOut);
     setAmountIn(amountOut);
     setAmountOut(0);
-    getAmount('in', amountOut || 0, payType, quotePath);
+    getAmount('in', amountOut || 0, quotePath);
   };
 
   const getAmount = async (
     type: 'in' | 'out',
     value: number,
-    payType: string,
     quotePath: string
   ) => {
     if (value === 0) return;
@@ -227,25 +293,21 @@ function SwapComp() {
       return;
     }
 
-    let start = Date.now();
-    const { universalRouterAddress, uniswapV2RouterAddress } = contractConfig;
-
+    setButtonLoading(true);
+    setButtonDescId('7');
+    const { uniswapV2RouterAddress } = contractConfig;
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
-
     const param = [
       chainId,
       provider,
       quotePath === '0'
-        ? await getUniversalRouterContract(provider, universalRouterAddress)
-        : null,
-      quotePath === '0'
         ? await getUniswapV2RouterContract(provider, uniswapV2RouterAddress)
         : null,
-      tokenIn.contractAddress,
-      tokenOut.contractAddress,
+      [tokenIn.contractAddress, Number(tokenIn.decimals)],
+      [tokenOut.contractAddress, Number(tokenOut.decimals)],
       new Decimal(value),
       new Decimal(slip),
-      Number(payType),
+      transactionFee.swap,
     ].filter((item) => item !== null);
     if (type === 'in') {
       setOutLoading(true);
@@ -263,7 +325,7 @@ function SwapComp() {
         }
         setAmountOut(Number(amount.toString()));
       } catch (e) {
-        console.error(e);
+        return null
       }
       setOutLoading(false);
     }
@@ -283,11 +345,12 @@ function SwapComp() {
         }
         setAmountIn(Number(amount.toString()));
       } catch (e) {
-        console.error(e);
+        return null
       }
       setInLoading(false);
     }
-    console.log(`获取输入输出总耗时${(Date.now() - start) / 1000} 秒 `);
+    setButtonLoading(false);
+    setButtonDescId('1');
   };
 
   const getAmountDebounce = useCallback(debounce(getAmount, 500), [
@@ -312,11 +375,10 @@ function SwapComp() {
         BigInt((amountIn * 10 ** decimals).toFixed(0))
       );
     } catch (e) {
-      console.error(e);
       setButtonDescId('1');
       setButtonLoading(false);
+      return null
     }
-    console.log(approveTx, 'approve--tx');
     const recipent = await approveTx.wait();
     // 1 成功 2 失败
     return recipent.status === 1;
@@ -391,8 +453,8 @@ function SwapComp() {
     const getBytesParam = [
       chainId,
       provider,
-      tokenIn,
-      tokenOut,
+      [tokenIn.contractAddress, tokenIn.decimals],
+      [tokenOut.contractAddress, tokenOut.decimals],
       new Decimal(amountIn),
       new Decimal(amountOut),
       recipientAddress,
@@ -405,14 +467,15 @@ function SwapComp() {
 
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
-        (tokenIn === ethAddress || tokenIn === wethAddress) &&
-        (tokenOut === ethAddress || tokenOut === wethAddress)
+        (tokenIn.contractAddress === ethAddress ||
+          tokenIn.contractAddress === wethAddress) &&
+        (tokenOut.contractAddress === ethAddress ||
+          tokenOut.contractAddress === wethAddress)
       ) {
         return await getSwapEthAndWeth.apply(null, [
           chainId,
-          provider,
-          tokenIn,
-          tokenOut,
+          [tokenIn.contractAddress, Number(tokenIn.decimals)],
+          [tokenOut.contractAddress, Number(tokenOut.decimals)],
           new Decimal(amountIn),
           new Decimal(amountOut),
           recipientAddress,
@@ -438,10 +501,8 @@ function SwapComp() {
     };
 
     const { commands, inputs } = await getSwapBytesFn(tokenIn, tokenOut);
-    console.log('byteCode', { commands, inputs });
-
     let etherValue = BigInt(0);
-    if (tokenIn === contractConfig.ethAddress) {
+    if (tokenIn.contractAddress === contractConfig.ethAddress) {
       etherValue = BigInt((amountIn * 10 ** 18).toFixed(0));
     }
     return { commands, inputs, etherValue };
@@ -466,7 +527,6 @@ function SwapComp() {
     signer,
     universalRouterAddress,
   }) => {
-    setButtonLoading(true);
     setButtonDescId('8');
     const universalRouterContract = await getUniversalRouterContract(
       provider,
@@ -486,7 +546,6 @@ function SwapComp() {
         BigInt(2000000000),
         {
           value: etherValue,
-          gasLimit: 1030000,
         }
       );
       notification.success({
@@ -504,7 +563,6 @@ function SwapComp() {
     setButtonLoading(false);
     setButtonDescId('1');
     reportPayType(tx.hash);
-    console.log('swap-tx', tx);
   };
   // 触发交易流程
   const handleSwap = async (data: {
@@ -516,6 +574,8 @@ function SwapComp() {
     const { zeroAddress, universalRouterAddress, permit2Address } =
       contractConfig;
     const { tokenIn, amountIn } = data;
+    setButtonLoading(true);
+    setButtonDescId('9');
     //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await web3Provider.getSigner();
@@ -525,14 +585,19 @@ function SwapComp() {
       Permit2Abi,
       signer
     );
-    const tokenInContract = new ethers.Contract(tokenIn, ERC20Abi, signer);
-    if (tokenIn !== zeroAddress) {
+    const tokenInContract = new ethers.Contract(
+      tokenIn.contractAddress,
+      ERC20Abi,
+      signer
+    );
+
+    if (tokenIn.contractAddress !== zeroAddress) {
       const balance: BigNumber = await queryAllowance(
         tokenInContract,
         signerAddress,
         permit2Address
       );
-      const decimals = await tokenInContract.decimals();
+      const decimals = await tokenIn.decimals;
       if (
         balance.isZero() ||
         balance.lte(
@@ -548,7 +613,7 @@ function SwapComp() {
         if (successApprove) {
           const { permit, signature } = await signPermit({
             signerAddress,
-            token: tokenIn,
+            token: tokenIn.contractAddress,
             amount: BigInt((amountIn * 10 ** decimals).toFixed(0)),
             permit2Contract,
             signer,
@@ -572,7 +637,7 @@ function SwapComp() {
       } else {
         const { permit, signature } = await signPermit({
           signerAddress,
-          token: tokenIn,
+          token: tokenIn.contractAddress,
           amount: BigInt((amountIn * 10 ** decimals).toFixed(0)),
           permit2Contract,
           signer,
@@ -596,8 +661,6 @@ function SwapComp() {
         ...data,
         recipientAddress: signerAddress,
       });
-      console.log(etherValue);
-
       sendSwap({
         commands,
         inputs,
@@ -616,6 +679,7 @@ function SwapComp() {
       logoUrl: '/usdt.svg',
       contractAddress: usdtAddress,
       balance: '0',
+      decimals: '6',
     };
     const ethToken: TokenItemData = {
       name: 'ETH',
@@ -623,6 +687,7 @@ function SwapComp() {
       logoUrl: '/eth-logo.svg',
       contractAddress: ethAddress,
       balance: '0',
+      decimals: '18',
     };
     setTokenIn(ethToken);
     setTokenOut(usdtToken);
@@ -648,9 +713,8 @@ function SwapComp() {
             },
           ],
         });
-        setChainId(evmChainId);
       } catch (e) {
-        console.log(e);
+        return null
       }
     }
   };
@@ -678,7 +742,7 @@ function SwapComp() {
       amountOut !== 0
     ) {
       currentInputToken.current = 'out';
-      getAmount('out', amountOut, payType, quotePath);
+      getAmount('out', amountOut, quotePath);
     }
   }, [tokenIn]);
 
@@ -719,17 +783,17 @@ function SwapComp() {
       amountIn !== 0
     ) {
       currentInputToken.current = 'in';
-      getAmount('in', amountIn, payType, quotePath);
+      getAmount('in', amountIn, quotePath);
     }
   }, [tokenOut]);
 
   useEffect(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
       if (currentInputToken.current === 'in' && amountIn !== 0) {
-        getAmount('in', amountIn, payType, quotePath);
+        getAmount('in', amountIn, quotePath);
       }
       if (currentInputToken.current === 'out' && amountOut !== 0) {
-        getAmount('out', amountOut, payType, quotePath);
+        getAmount('out', amountOut, quotePath);
       }
     }
   }, [advConfig.slip, advConfig.slipType]);
@@ -742,6 +806,10 @@ function SwapComp() {
       });
     }
   }, [tokenIn, tokenOut]); */
+
+  useEffect(() => {
+    getTransactionFee({ chainId, provider, payType });
+  }, [chainId, provider, payType]);
 
   const tokenExchangeRate = useMemo(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress && exchangeRate) {
@@ -758,8 +826,8 @@ function SwapComp() {
       handleSwap({
         amountIn,
         amountOut,
-        tokenIn: tokenIn.contractAddress,
-        tokenOut: tokenOut.contractAddress,
+        tokenIn,
+        tokenOut,
       });
     }
   };
@@ -791,7 +859,7 @@ function SwapComp() {
               setOpenSelect(true);
             }}
           >
-            <img className="eth-logo" src={tokenIn?.logoUrl} alt="" />
+            <DefaultTokenImg name={tokenIn?.symbol} icon={tokenIn?.logoUrl} />
             <span>{tokenIn?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
@@ -803,7 +871,7 @@ function SwapComp() {
             setAmountIn(v);
             if (currentInputToken.current !== 'in')
               currentInputToken.current = 'in';
-            getAmountDebounce('in', v, payType, quotePath);
+            getAmountDebounce('in', v, quotePath);
           }}
         />
         <div className="token-info">
@@ -833,7 +901,7 @@ function SwapComp() {
               setOpenSelect(true);
             }}
           >
-            <img className="eth-logo" src={tokenOut?.logoUrl || ''} alt="" />
+            <DefaultTokenImg name={tokenOut?.name} icon={tokenOut?.logoUrl} />
             <span>{tokenOut?.symbol}</span>
             <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
           </div>
@@ -845,7 +913,7 @@ function SwapComp() {
             setAmountOut(v);
             if (currentInputToken.current !== 'out')
               currentInputToken.current = 'out';
-            getAmountDebounce('out', v, payType, quotePath);
+            getAmountDebounce('out', v, quotePath);
           }}
         />
         <div className="token-info">
@@ -888,7 +956,7 @@ function SwapComp() {
               setQuotePath(key);
               const amount =
                 currentInputToken.current === 'in' ? amountIn : amountOut;
-              getAmount(currentInputToken.current, amount, payType, key);
+              getAmount(currentInputToken.current, amount, key);
             }}
           />
         </div>
@@ -901,7 +969,7 @@ function SwapComp() {
               setPayType(v);
               const amount =
                 currentInputToken.current === 'in' ? amountIn : amountOut;
-              getAmount(currentInputToken.current, amount, v, quotePath);
+              getAmount(currentInputToken.current, amount, quotePath);
             }}
           />
         </div>

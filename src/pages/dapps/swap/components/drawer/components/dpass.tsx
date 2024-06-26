@@ -2,9 +2,7 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 export default function dpass({ data }) {
   const { t } = useTranslation();
-  console.log(data);
   const d = (name: string, sta: string) => {
-    console.log(sta);
     return (
       <div className="pass">
         <div

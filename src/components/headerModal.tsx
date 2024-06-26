@@ -4,7 +4,7 @@ import { CountContext } from '../Layout.tsx';
 import cookie from 'js-cookie';
 import Request from './axios.tsx';
 import { throttle } from 'lodash';
-import { MessageAll } from './message.ts';
+import NotificationChange from './message';
 import { useTranslation } from 'react-i18next';
 function HeaderModal() {
   const {
@@ -57,7 +57,7 @@ function HeaderModal() {
           });
           if (result?.status === 200) {
             setUserPar(param);
-            MessageAll('success', t('Market.update'));
+            NotificationChange('success', t('Market.update'));
             handleCancel();
           }
         }
@@ -219,7 +219,7 @@ function HeaderModal() {
                 <button
                   key={i?.key}
                   onClick={() => allConnect(i)}
-                  className={'walletButton disCen'}
+                  className={'walletButton'}
                 >
                   <img src={i?.img} loading={'lazy'} alt="" />
                   <span>{i.name}</span>

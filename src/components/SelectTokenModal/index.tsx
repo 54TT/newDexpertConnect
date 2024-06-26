@@ -16,7 +16,7 @@ function SelectTokenModal({
   ...props
 }: SelectTokenModalType) {
   const chainName = useMemo(() => ID_TO_CHAIN_NAME_LOW[chainId], [chainId]);
-
+  console.log(props?.open);
   return (
     <Modal
       {...props}
@@ -26,6 +26,7 @@ function SelectTokenModal({
       footer={null}
     >
       <SelectToken
+        open={props?.open}
         onChange={onChange}
         chainName={chainName}
         disabledTokens={disabledTokens}

@@ -8,7 +8,7 @@ import PostDetail from './components/PostDetail';
 import Profile from './components/Profile.tsx';
 import ContactList from './components/ContactList.tsx';
 import { CountContext } from '@/Layout.tsx';
-import { MessageAll } from '@/components/message.ts';
+import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 import cookie from 'js-cookie';
 type ActiveTabType =
@@ -27,7 +27,7 @@ function Community() {
   const history = useNavigate();
   const onActiveUserTabChange = (tab: string) => {
     const token = cookie.get('token');
-    if (!token || !user) return MessageAll('warning', t('Market.line'));
+    if (!token || !user) return NotificationChange('warning', t('Market.line'));
     setActiveUserTab(tab as ActiveTabType);
     history(`/community/${tab}`);
   };

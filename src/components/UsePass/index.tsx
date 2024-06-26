@@ -39,7 +39,7 @@ function UsePass({ type, onChange, payType }) {
             ),
           },
         ];
-        if (sniperBotSwapCnt) {
+        if (sniperBotSwapCnt !== '0') {
           const data = {
             label: 'D Pass',
             key: '2',
@@ -71,7 +71,7 @@ function UsePass({ type, onChange, payType }) {
         setPayTypeList(list);
       }
     } catch (e) {
-      return null
+      return null;
     }
   };
 

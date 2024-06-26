@@ -145,3 +145,9 @@ export const simplify = (name: any) => {
       : name
     : '';
 };
+
+export function thousands(num: string) {
+  var reg =
+    num.indexOf('.') > -1 ? /(\d)(?=(\d{3})+\.)/g : /(\d)(?=(?:\d{3})+$)/g;
+  return num.replace(reg, '$1,');
+}

@@ -9,9 +9,10 @@ export const getDecimals = async ({
   tokenInAddress,
   tokenOutAddress,
   chainId,
-}: Record<'tokenInAddress' | 'tokenOutAddress' | 'chainId' | 'provider', string>): Promise<
-  Record<'tokenInDecimals' | 'tokenOutDecimals', number>
-> => {
+}: Record<
+  'tokenInAddress' | 'tokenOutAddress' | 'chainId' | 'provider',
+  string
+>): Promise<Record<'tokenInDecimals' | 'tokenOutDecimals', number>> => {
   let tokenInDecimals;
   let tokenOutDecimals;
 

@@ -93,7 +93,7 @@ export const ethToErc20 = async (
   uniswapV3Fee: number
 ) => {
   const chainConfig = config[chainId];
-  const ethAddress = chainConfig.ethAddress;
+  const wethAddress = chainConfig.wethAddress;
   const universalRouterAddress = chainConfig.universalRouterAddress;
   const wrapEthParams = [universalRouterAddress, amountIn, false, feeType];
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
@@ -112,6 +112,6 @@ export const ethToErc20 = async (
   ];
   planner.addCommand(CommandType.V3_SWAP_EXACT_IN, swapParams, false);
 
-  const sweepParams = [ethAddress, recipient, 0];
+  const sweepParams = [wethAddress, recipient, 0];
   planner.addCommand(CommandType.SWEEP, sweepParams, false);
 };

@@ -7,7 +7,7 @@ import { formatAddress, getQueryParams } from '@/../utils/utils';
 import Loading from '@/components/allLoad/loading.tsx';
 import { useNavigate } from 'react-router';
 import { throttle } from 'lodash';
-import { MessageAll } from '@/components/message.ts';
+import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout.tsx';
 import Load from '@/components/allLoad/load.tsx';
@@ -72,7 +72,7 @@ function UserItem({ data, tab, getAll }: PostImtePropsType) {
                     if (result?.status === 200) {
                       setFollow(false);
                     } else {
-                      return MessageAll('warning', t('Market.unF'));
+                      return NotificationChange('warning', t('Market.unF'));
                     }
                   }
                 } catch (e) {
@@ -103,7 +103,7 @@ function UserItem({ data, tab, getAll }: PostImtePropsType) {
                     if (result?.status === 200) {
                       setFollow(true);
                     } else {
-                      return MessageAll('error', t('Market.unFo'));
+                      return NotificationChange('error', t('Market.unFo'));
                     }
                   }
                 } catch (e) {
