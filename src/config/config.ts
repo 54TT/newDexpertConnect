@@ -90,7 +90,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV2FactoryAddress: '0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6',
     uniswapV3FactoryAddress: '0x33128a8fC17869897dcE68Ed026d694621f6FDfD',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
-    universalRouterAddress: '0x772f7687fC4A104057C046cc3114e5d7e779cEE1',
+    universalRouterAddress: '0x72dd6b9853ddcbf294c0aadd5423866989bd5a77',
     wethAddress: '0x4200000000000000000000000000000000000006',
     wethUsdtPairAddress: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C',
     wethDecimal: 18,

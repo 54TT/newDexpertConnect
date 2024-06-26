@@ -241,7 +241,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       tokenOut?.contractAddress &&
       amountIn &&
       amountOut &&
-      amountInDecimal.lessThan(balanceIn)
+      amountInDecimal.lessThanOrEqualTo(balanceIn)
     ) {
       setButtonDisable(false);
       setButtonDescId('1');
