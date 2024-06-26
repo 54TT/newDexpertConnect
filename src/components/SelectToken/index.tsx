@@ -23,11 +23,17 @@ interface SelectTokenType {
   onChange: (data: TokenItemData) => void;
   chainName: string;
   disabledTokens: string[];
+  disabled: boolean;
 }
 
 const { Search } = Input;
 
-function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
+function SelectToken({
+  onChange,
+  chainName,
+  disabledTokens,
+  disabled,
+}: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
   const { provider, isLogin, chainId } = useContext(CountContext);
   const [historyItems, setHistoryItems] = useState([]);

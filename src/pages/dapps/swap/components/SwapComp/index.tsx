@@ -57,7 +57,7 @@ interface SwapCompType {
   initToken?: [tokenIn: TokenItemData, toeknOut: TokenItemData]; // 初始化的token
 }
 
-function SwapComp({ initChainId, initToken }: SwapCompType) {
+function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   const {
     provider,
     contractConfig,
@@ -175,7 +175,6 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       new Decimal(0),
       transactionFee.swap,
     ].filter((item) => item !== null);
-    console.log(transactionFee.swap);
 
     const res = await Promise.all([getGasPrice(), getAmountExchangeRate(data)]);
     return res;
@@ -477,7 +476,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       new Decimal(amountIn),
       new Decimal(amountOut),
       recipientAddress,
-      payType == '0',
+      payType == '0' ? 1 : 0,
       0,
       quotePath === '1' ? swapV3Pool?.fee : null,
       permit,
@@ -881,6 +880,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           chainList={swapChain}
           onChange={(v) => changeWalletChain(v)}
           hideChain={true}
+          disabled={!changeAble}
           wrapClassName="swap-chooose-chain"
         />
         <AdvConfig
@@ -897,12 +897,17 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
             className="dapp-sniper-right-token-icon"
             onClick={() => {
               currentSetToken.current = 'in';
+              if (!changeAble) {
+                return;
+              }
               setOpenSelect(true);
             }}
           >
             <DefaultTokenImg name={tokenIn?.symbol} icon={tokenIn?.logoUrl} />
             <span>{tokenIn?.symbol}</span>
-            <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
+            {changeAble && (
+              <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
+            )}
           </div>
         </div>
         <ProInputNumber
@@ -938,13 +943,18 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
           <div
             className="dapp-sniper-right-token-icon"
             onClick={() => {
+              if (!changeAble) {
+                return;
+              }
               currentSetToken.current = 'out';
               setOpenSelect(true);
             }}
           >
             <DefaultTokenImg name={tokenOut?.name} icon={tokenOut?.logoUrl} />
             <span>{tokenOut?.symbol}</span>
-            <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
+            {changeAble && (
+              <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
+            )}
           </div>
         </div>
         <ProInputNumber
@@ -1022,6 +1032,7 @@ function SwapComp({ initChainId, initToken }: SwapCompType) {
       </Button>
       <SelectTokenModal
         open={openSelect}
+        disabled={!changeAble}
         disabledTokens={[
           tokenIn?.contractAddress?.toLowerCase?.(),
           tokenOut?.contractAddress?.toLowerCase?.(),

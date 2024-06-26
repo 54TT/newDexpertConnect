@@ -11,8 +11,8 @@ export const erc20ToErc20 = async (
   amountInMax: BigNumber,
   amountOut: BigNumber,
   recipient: string,
-  isFee: boolean,
-  feeType: number,
+  level: number,
+  swapType: number,
   uniswapV3Fee: number,
   permit: any,
   signature: string
@@ -34,8 +34,8 @@ export const erc20ToErc20 = async (
     amountInMax,
     path,
     payerIsUser,
-    isFee,
-    feeType,
+    level,
+    swapType,
   ];
   planner.addCommand(CommandType.V3_SWAP_EXACT_OUT, swapParams, false);
 
@@ -51,8 +51,8 @@ export const erc20ToETH = async (
   amountInMax: BigNumber,
   amountOut: BigNumber,
   recipient: string,
-  isFee: boolean,
-  feeType: number,
+  level: number,
+  swapType: number,
   uniswapV3Fee: number,
   permit: any,
   signature: string
@@ -72,8 +72,8 @@ export const erc20ToETH = async (
     amountInMax,
     path,
     payerIsUser,
-    isFee,
-    feeType,
+    level,
+    swapType,
   ];
   planner.addCommand(CommandType.V3_SWAP_EXACT_OUT, swapParams, false);
 
@@ -92,8 +92,8 @@ export const ethToErc20 = async (
   amountInMax: BigNumber,
   amountOut: BigNumber,
   recipient: string,
-  isFee: boolean,
-  feeType: number,
+  level: number,
+  swapType: number,
   uniswapV3Fee: number
 ) => {
   console.log('ethToErc20', {
@@ -103,15 +103,15 @@ export const ethToErc20 = async (
     amountInMax: amountInMax.toString(),
     amountOut: amountOut.toString(),
     recipient,
-    isFee,
-    feeType,
+    level,
+    swapType,
     uniswapV3Fee,
   });
   const chainConfig = config[chainId];
   const wethAddress = chainConfig.wethAddress;
   const universalRouterAddress = chainConfig.universalRouterAddress;
 
-  const wrapEthParams = [universalRouterAddress, amountInMax, isFee, feeType];
+  const wrapEthParams = [universalRouterAddress, amountInMax, level, swapType];
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
 
   let swapPath = [tokenIn, tokenOut];
@@ -124,7 +124,7 @@ export const ethToErc20 = async (
     path,
     payerIsUser,
     false,
-    feeType,
+    swapType,
   ];
   planner.addCommand(CommandType.V3_SWAP_EXACT_OUT, swapParams, false);
 

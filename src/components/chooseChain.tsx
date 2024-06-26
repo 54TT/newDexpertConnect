@@ -8,6 +8,7 @@ interface ChooseChainType {
   disabledChain?: boolean;
   wrapClassName?: string;
   chainList: any[];
+  disabled: boolean;
 }
 
 function ChooseChain({
@@ -16,6 +17,7 @@ function ChooseChain({
   hideChain = false,
   disabledChain = false,
   wrapClassName,
+  disabled = false,
 }: ChooseChainType) {
   const [value, setValue] = useState<any>({
     value: 'Ethereum',
@@ -46,6 +48,7 @@ function ChooseChain({
     { trailing: false }
   );
   const handleOpenChange = (newOpen: boolean) => {
+    if (disabled) return;
     setOpen(newOpen);
   };
   const chain = (
@@ -87,11 +90,13 @@ function ChooseChain({
     >
       <div className={'boxPopover disDis'}>
         <img src={value?.icon} alt="" style={{ width: '22px' }} />
-        <img
-          src="/down.svg"
-          alt=""
-          style={{ width: '10px', marginLeft: '4px' }}
-        />
+        {!disabled && (
+          <img
+            src="/down.svg"
+            alt=""
+            style={{ width: '10px', marginLeft: '4px' }}
+          />
+        )}
       </div>
     </Popover>
   );
