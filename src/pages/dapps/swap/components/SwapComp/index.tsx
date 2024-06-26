@@ -124,7 +124,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   }, []);
 
   const getTransactionFee = async (data) => {
-    const fee = await getSwapFee(data);
+    const fee = await getSwapFee({ ...data, swapType: 0 });
     setTransactionFee({
       swap: fee,
     });
