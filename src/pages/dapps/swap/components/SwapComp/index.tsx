@@ -69,6 +69,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setChainId,
     transactionFee,
     setTransactionFee,
+    loginPrivider,
   } = useContext(CountContext);
   const { t } = useTranslation();
   const [amountIn, setAmountIn] = useState<number | null>(0);
@@ -257,6 +258,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
   const onChainChange = (targetChainId) => {
+    console.log('123123');
+
     setChainId(Number(targetChainId).toString());
   };
 
@@ -264,25 +267,24 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     if (isLogin) {
       try {
         // @ts-ignore
-        (window?.ethereum as any)?.on('chainChanged', onChainChange);
+        loginPrivider?.on('chainChanged', onChainChange);
+        loginPrivider?.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: `0x${Number(chainId).toString(16)}`,
+            },
+          ],
+        });
       } catch (e) {
-        return null
+        return null;
       }
-
-      (window as any)?.ethereum?.request({
-        method: 'wallet_switchEthereumChain',
-        params: [
-          {
-            chainId: `0x${Number(chainId).toString(16)}`,
-          },
-        ],
-      });
     }
     return () => {
       // @ts-ignore
-      (window.ethereum as any).removeListener('chainChanged', onChainChange);
+      (loginPrivider as any)?.removeListener?.('chainChanged', onChainChange);
     };
-  }, [isLogin]);
+  }, [isLogin, loginPrivider]);
 
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
@@ -340,7 +342,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         }
         setAmountOut(Number(amount.toString()));
       } catch (e) {
-        return null
+        return null;
       }
       setOutLoading(false);
     }
@@ -360,7 +362,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         }
         setAmountIn(Number(amount.toString()));
       } catch (e) {
-        return null
+        return null;
       }
       setInLoading(false);
     }
@@ -374,9 +376,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     provider,
   ]);
   // 处理approve
-  const handleApprove = async (
-    tokenContract: ethers.Contract,
-  ) => {
+  const handleApprove = async (tokenContract: ethers.Contract) => {
     const { permit2Address } = contractConfig;
     let approveTx;
     try {
@@ -390,7 +390,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     } catch (e) {
       setButtonDescId('1');
       setButtonLoading(false);
-      return null
+      return null;
     }
     const recipent = await approveTx.wait();
     // 1 成功 2 失败
@@ -619,7 +619,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonLoading(true);
     setButtonDescId('9');
     //@ts-ignore
-    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+    const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
     const signer = await web3Provider.getSigner();
 
     const signerAddress = await signer.getAddress();
@@ -651,9 +651,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         )
       ) {
         // 余额为0 或者余额 小于amount 需要approve
-        const successApprove = await handleApprove(
-          tokenInContract,
-        );
+        const successApprove = await handleApprove(tokenInContract);
         if (successApprove) {
           const { permit, signature } = await signPermit({
             signerAddress,
@@ -733,7 +731,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       // 有evm钱包环境
       try {
         //@ts-ignore
-        await window.ethereum.request({
+        await loginPrivider.request({
           method: 'wallet_switchEthereumChain',
           params: [
             {
@@ -742,7 +740,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           ],
         });
       } catch (e) {
-        return null
+        console.log(e);
       }
     }
   };
@@ -779,28 +777,27 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       const { wethAddress } = contractConfig;
       if (checkConnection() && token) {
         // @ts-ignore
-        const injectProvider = new ethers.providers.Web3Provider(
-          // @ts-ignore
-          window?.ethereum
-        );
+        const injectProvider = new ethers.providers.Web3Provider(loginPrivider);
+        console.log(loginPrivider);
+
         const balance = await getBalanceRpc(injectProvider, token, wethAddress);
 
         dispatch(balance);
       }
     },
-    [contractConfig]
+    [contractConfig, loginPrivider]
   );
   useEffect(() => {
     if (isLogin) {
       getTokenBalance(tokenIn?.contractAddress, setBalanceIn);
     }
-  }, [tokenIn, isLogin, chainId]);
+  }, [tokenIn, isLogin, chainId, loginPrivider]);
 
   useEffect(() => {
     if (isLogin) {
       getTokenBalance(tokenOut?.contractAddress, setBalanceOut);
     }
-  }, [tokenOut, isLogin, chainId]);
+  }, [tokenOut, isLogin, chainId, loginPrivider]);
 
   useEffect(() => {
     if (

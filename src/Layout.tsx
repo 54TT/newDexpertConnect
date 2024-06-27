@@ -74,7 +74,7 @@ function Layout() {
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
   const [loginPrivider, setLoginPrivider] = useState<any>(null);
-  const [chainId, setChainId] = useState('11155111'); // swap 链切换
+  const [chainId, setChainId] = useState('1'); // swap 链切换
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
     setContractConfig(newConfig);

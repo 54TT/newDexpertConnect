@@ -6,7 +6,6 @@ import { UniswapV2FactoryAbi } from '../abis/UniswapV2FactoryAbi';
 import { UniswapV3FactoryAbi } from '../abis/UniswapV3FactoryAbi';
 import { ethers } from 'ethers';
 import { QuoterAbi } from '../abis/QuoterAbi';
-import NotificationChange from '@/components/message';
 
 export const getUniversalRouterContract = async (
   provider: any,
@@ -25,8 +24,8 @@ export const getUniswapV2RouterContract = async (
 };
 
 export const getERC20Contract = async (provider: any, address: string) => {
-    const contract = new ethers.Contract(address, ERC20Abi, provider);
-    return  contract
+  const contract = new ethers.Contract(address, ERC20Abi, provider);
+  return contract;
 };
 
 export const getUniswapV2Contract = async (provider: any, address: string) => {

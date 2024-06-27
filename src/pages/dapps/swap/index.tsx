@@ -1,11 +1,11 @@
 import './index.less';
-import { useContext } from 'react';
+
 import SwapComp from './components/SwapComp';
 import './index.less';
-import Drawer from './components/drawer';
-import { CountContext } from '@/Layout.tsx';
+/* import Drawer from './components/drawer'; */
+
 function Swap() {
-  const { user }: any = useContext(CountContext);
+  /*   const { user }: any = useContext(CountContext); */
   return (
     <div
       className="dis"
@@ -18,7 +18,7 @@ function Swap() {
         <div className="dapp-sniper-right">
           <SwapComp />
         </div>
-        {user?.uid && <Drawer />}
+        {/*         {user?.uid && <Drawer />} */}
       </div>
     </div>
   );
