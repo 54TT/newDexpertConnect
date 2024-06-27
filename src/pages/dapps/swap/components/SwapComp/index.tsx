@@ -384,7 +384,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       setButtonLoading(true);
       approveTx = await tokenContract.approve(
         permit2Address,
-        expandToDecimalsBN(new Decimal(amountIn), decimals)
+        BigNumber.from(2).pow(BigNumber.from(256)).sub(BigNumber.from(1))
       );
     } catch (e) {
       console.error(e);
