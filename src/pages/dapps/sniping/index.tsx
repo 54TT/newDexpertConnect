@@ -1,19 +1,30 @@
 import './index.less';
 import { Input, InputNumber, Segmented, Select, Slider } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
 import { getERC20Contract } from '@utils/contracts';
 import Load from '@/components/allLoad/load';
+import NotificationChange from '@/components/message';
+// import Decimal from 'decimal.js';
+import { ethers } from 'ethers';
+import getBalanceRpc from '@utils/getBalanceRpc';
+import SelectTokenModal from '@/components/SelectTokenModal';
 export default function index() {
   const { t } = useTranslation();
-  const { browser, provider }: any = useContext(CountContext);
+  const { browser, provider, chainId, contractConfig }: any =
+    useContext(CountContext);
   const [maximumSlipValue, setMaximumSlipValue] = useState(0);
   const [gasPriceValue, setGasPriceValue] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [token, setToken] = useState<any>(null);
   const [isToken, setIsToken] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [useToken, setUserToken] = useState<any>(
+    contractConfig?.defaultTokenIn
+  );
+  console.log(useToken);
   const [params, setParams] = useState<any>({
     MaximumSlip: 'Auto',
     GasPrice: 'Auto',
@@ -32,16 +43,28 @@ export default function index() {
     setMaximumSlipValue(e);
   };
   const implement = async () => {
-    const tokenContract = await getERC20Contract(provider, searchValue);
-    if (tokenContract?.name && tokenContract?.symbol) {
+    try {
+      const contract = await getERC20Contract(provider, searchValue);
+      const getSymbolAsync = contract.symbol();
+      const getNameAsync = contract.name();
+      const getDecimalsAsync = contract.decimals();
+      const [symbol, name, decimals] = await Promise.all([
+        getSymbolAsync,
+        getNameAsync,
+        getDecimalsAsync,
+      ]);
       const searchToken = {
-        ...tokenContract,
+        symbol,
+        name,
+        decimals,
         contractAddress: searchValue,
       };
       setToken(searchToken);
       setIsToken(false);
-    } else {
+    } catch (e) {
       setIsToken(false);
+      NotificationChange('error', 'please input address correctly');
+      return null;
     }
   };
   const enter = async (e: any) => {
@@ -56,6 +79,29 @@ export default function index() {
       implement();
     }
   };
+
+  const aaa = async () => {
+    const injectProvider = new ethers.providers.Web3Provider(
+      // @ts-ignore
+      window?.ethereum
+    );
+    const balance = await getBalanceRpc(
+      injectProvider,
+      useToken?.contractAddress,
+      contractConfig?.wethAddress
+    );
+    console.log(balance);
+  };
+  useEffect(() => {
+    if (useToken?.contractAddress) {
+      aaa();
+    }
+  }, [useToken?.contractAddress]);
+
+  // const amountInDecimal = new Decimal(1);
+  // if (amountInDecimal.lessThanOrEqualTo(balanceIn)) {
+  // }
+
   return (
     <div className="sniping" style={{ width: browser ? '45%' : '95%' }}>
       <Input
@@ -99,8 +145,13 @@ export default function index() {
         )}
       </div>
       <div className="tokenIn">
-        <div className="price">
+        <div className="price" onClick={() => setOpen(true)}>
           <p>Sniper Amount</p>
+          <div className="eth">
+            <img src={useToken?.logoUrl} alt="" />
+            <span>{useToken?.symbol}</span>
+            <img src="/tokenLogo.svg" alt="" />
+          </div>
         </div>
         <InputNumber
           rootClassName="timeInputNumber"
@@ -268,6 +319,17 @@ export default function index() {
       </div>
 
       <div className="confirm">{t('Slider.Confirm')}</div>
+
+      <SelectTokenModal
+        open={open}
+        disabledTokens={[useToken?.contractAddress?.toLowerCase?.()]}
+        chainId={chainId}
+        onChange={(data) => {
+          setUserToken(data);
+          setOpen(false);
+        }}
+        onCancel={() => setOpen(false)}
+      />
     </div>
   );
 }

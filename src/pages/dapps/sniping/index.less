@@ -19,21 +19,45 @@
       color: white;
     }
   }
-  .tokenIn{
+  .tokenIn {
     border-radius: 10px;
     position: relative;
     z-index: 10;
     overflow: hidden;
     padding: 15px;
     background-color: rgb(45, 45, 45);
-    &>div:last-child,&>div:first-child{
+    & > div:last-child,
+    & > div:first-child {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    // .price{
-
-    // }
+    .price {
+      & > p:first-child {
+        color: rgb(222, 222, 222);
+      }
+      .eth {
+        background-color: rgb(30, 30, 30);
+        padding: 4px;
+        border-radius: 30px;
+        display: flex;
+        span {
+          color: white;
+        }
+        span:nth-child(2) {
+          margin: 0 5px;
+        }
+        img:first-child {
+          width: 22px;
+          height: 22px;
+        }
+        img:last-child {
+          width: 13px;
+        }
+        cursor: pointer;
+        align-items: center;
+      }
+    }
     // .amount{
 
     // }

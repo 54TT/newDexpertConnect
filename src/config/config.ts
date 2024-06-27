@@ -1,4 +1,5 @@
-type ChainIdList = '1' | '11155111';
+
+type ChainIdList = '1' | '11155111' | '8453';
 export const config: Record<ChainIdList, any> = {
   '1': {
     rpcUrl:
@@ -11,7 +12,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV2FactoryAddress: '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f',
     uniswapV3FactoryAddress: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
-    universalRouterAddress: '0x2299422d7631731dA6116d1C3b6691348Df27671',
+    universalRouterAddress: '0x6BbCe758B2b9427ef7B5049E8BD9ac6E8E2C6e97',
     wethAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     wethUsdtPairAddress: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
     wethDecimal: 18,
@@ -22,6 +23,22 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://etherscan.io/tx/',
+    defaultTokenIn: {
+      name: 'ETH',
+      symbol: 'ETH',
+      logoUrl: '/eth-logo.svg',
+      contractAddress: '0x0000000000000000000000000000000000000000',
+      balance: '0',
+      decimals: '18',
+    },
+    defaultTokenOut: {
+      name: 'USDT',
+      symbol: 'USDT',
+      logoUrl: '/usdt.svg',
+      contractAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      balance: '0',
+      decimals: '6',
+    },
   },
   '11155111': {
     rpcUrl: 'https://sepolia.drpc.org',
@@ -35,7 +52,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FactoryAddress: '0x0227628f3F023bb0B980b67D528571c95c6DaC1c',
     uniswapV3OracleLibraryAddress: '0xA4896b3573333Ad215E6F4B76439eEe14eE46a9D',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
-    universalRouterAddress: '0x956a0d3cf9c3840c8a6c207c8c5361811fe1fbac',
+    universalRouterAddress: '0xf50a6b847ed1e43ff1fedaf04d3f96118c7f19db',
     wethAddress: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
     wethUsdtPairAddress: '0x77f1a0ab2b0af8343640490264c65be6581bde3c',
     wethDecimal: 18,
@@ -46,5 +63,59 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x20893BBb093b0fdc669991236F6170ceCD101737',
     scan: 'https://sepolia.etherscan.io/tx/',
+    defaultTokenIn: {
+      name: 'ETH',
+      symbol: 'ETH',
+      logoUrl: '/eth-logo.svg',
+      contractAddress: '0x0000000000000000000000000000000000000000',
+      balance: '0',
+      decimals: '18',
+    },
+    defaultTokenOut: {
+      name: 'USDT',
+      symbol: 'USDT',
+      logoUrl: '/usdt.svg',
+      contractAddress: '0xb72bc8971d5e595776592e8290be6f31937097c6',
+      balance: '0',
+      decimals: '6',
+    },
+  },
+  '8453': {
+    rpcUrl: 'https://mainnet.base.org',
+    /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
+    verificationURL: 'https://api.basescan.org/api',
+    chainId: 8453,
+    verificationApiKey: '26DA1KNJPI4SMP8GUDAUA4611JIHQK16AD',
+    uniswapV2RouterAddress: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
+    uniswapV2FactoryAddress: '0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6',
+    uniswapV3FactoryAddress: '0x33128a8fC17869897dcE68Ed026d694621f6FDfD',
+    permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
+    universalRouterAddress: '0x72dd6b9853ddcbf294c0aadd5423866989bd5a77',
+    wethAddress: '0x4200000000000000000000000000000000000006',
+    wethUsdtPairAddress: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C',
+    wethDecimal: 18,
+    usdtAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    usdtDecimal: 6,
+    ethAddress: '0x0000000000000000000000000000000000000000',
+    zeroAddress: '0x0000000000000000000000000000000000000000',
+    uniswapV3FeeAmounts: [500, 3000, 10000],
+    quoterAddress: '0x2121136F02acb8162e4E7C74Cc8A064e3C40A10c',
+    scan: 'https://basescan.org/tx/',
+    defaultTokenIn: {
+      name: 'ETH',
+      symbol: 'ETH',
+      logoUrl: '/eth-logo.svg',
+      contractAddress: '0x0000000000000000000000000000000000000000',
+      balance: '0',
+      decimals: '18',
+    },
+    defaultTokenOut: {
+      name: 'USDC',
+      symbol: 'USDC',
+      logoUrl: '/usdc.svg',
+      contractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      balance: '0',
+      decimals: '6',
+    },
   },
 };

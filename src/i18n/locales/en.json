@@ -53,6 +53,9 @@
     "Fee": "Fee"
   },
   "Slider": {
+    "eth":"Click here to view on etherscan",
+    "succ":"Transaction submitted successfully",
+    "err":"Transaction error",
     "Hour":"Hour",
     "Min":"Min",
     "Auto":"Auto",

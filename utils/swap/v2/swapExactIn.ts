@@ -12,8 +12,8 @@ export const erc20ToErc20 = async (
   amountIn: BigNumber,
   amountOutMin: BigNumber,
   recipient: string,
-  isFee: boolean,
-  feeType: number,
+  level: number,
+  swapType: number,
   permit: any,
   signature: string
 ) => {
@@ -52,8 +52,8 @@ export const erc20ToErc20 = async (
     amountOutMin,
     swapPath,
     payerIsUser,
-    isFee,
-    feeType,
+    level,
+    swapType,
   ];
   planner.addCommand(CommandType.V2_SWAP_EXACT_IN, swapParams, false);
 
@@ -69,8 +69,8 @@ export const erc20ToETH = async (
   amountIn: BigNumber,
   amountOutMin: BigNumber,
   recipient: string,
-  isFee: boolean,
-  feeType: number,
+  level: number,
+  swapType: number,
   permit: any,
   signature: string
 ) => {
@@ -88,8 +88,8 @@ export const erc20ToETH = async (
     amountOutMin,
     swapPath,
     payerIsUser,
-    isFee,
-    feeType,
+    level,
+    swapType,
   ];
   planner.addCommand(CommandType.V2_SWAP_EXACT_IN, swapParams, false);
 
@@ -109,17 +109,17 @@ export const ethToErc20 = async (
   amountOutMin: BigNumber,
   recipient: string,
   pairAddress: string,
-  isFee: boolean,
-  feeType: number
+  level: number,
+  swapType: number
 ) => {
   const chainConfig = config[chainId];
   const wethAddress = chainConfig.wethAddress;
-  
-  const wrapEthParams = [pairAddress, amountIn, isFee, feeType];
+
+  const wrapEthParams = [pairAddress, amountIn, level, swapType];
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
   let swapPath = [tokenIn, tokenOut];
-  console.log("isFee:",isFee)
-  console.log("feeType:",feeType)
+  console.log('isFee:', level);
+  console.log('feeType:', swapType);
   const payerIsUser = true;
   const swapParams = [
     recipient,
@@ -128,7 +128,7 @@ export const ethToErc20 = async (
     swapPath,
     payerIsUser,
     false,
-    feeType,
+    swapType,
   ];
   planner.addCommand(CommandType.V2_SWAP_EXACT_IN, swapParams, false);
 

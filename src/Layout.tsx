@@ -71,6 +71,9 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
+  //  检测  evm环境  钱包
+  const [environment, setEnvironment] = useState<any>([]);
+  const [loginPrivider, setLoginPrivider] = useState<any>(null);
   const [chainId, setChainId] = useState('11155111'); // swap 链切换
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
@@ -82,7 +85,6 @@ function Layout() {
   useEffect(() => {
     changeConfig(chainId);
   }, [chainId]);
-
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -314,7 +316,16 @@ function Layout() {
       return null;
     }
   };
+  useEffect(() => {
+    if (cookie.get('walletRdns') && environment.length > 0) {
+      const at = cookie.get('walletRdns');
+      const provider = environment.filter((i: any) => i?.info?.rdns === at);
+      setLoginPrivider(provider[0]?.provider);
+    }
+  }, [cookie.get('walletRdns'), environment]);
+
   const handleLogin = async (i: any) => {
+    cookie.set('walletRdns', i?.info?.rdns);
     try {
       const account = await i?.provider?.request({
         method: 'eth_requestAccounts',
@@ -580,6 +591,9 @@ function Layout() {
     setChainId,
     transactionFee,
     setTransactionFee,
+    loginPrivider,
+    environment,
+    setEnvironment,
   };
   const clients = new ApolloClient({
     uri: chain[switchChain],

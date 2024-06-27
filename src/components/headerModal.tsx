@@ -20,11 +20,12 @@ function HeaderModal() {
     user,
     setUserPar,
     tonConnect,
+    environment,
+    setEnvironment,
   }: any = useContext(CountContext);
-  const [list, setList] = useState<any>([]);
   function onAnnouncement(event?: any) {
-    list.push(event?.detail);
-    setList([...list]);
+    environment.push(event?.detail);
+    setEnvironment([...environment]);
   }
   useEffect(() => {
     window.addEventListener('eip6963:announceProvider', onAnnouncement);
@@ -136,10 +137,11 @@ function HeaderModal() {
         tonConnect();
       } else {
         //  判断浏览器是否安装了  evm链钱包
-        const data = list.filter(
+        const data = environment.filter(
           (item: any) =>
             item?.info?.name === i?.key || item?.info?.rdns === i?.value
         );
+        console.log(data);
         if (data.length > 0) {
           //   判断是否是   phantom钱包  solana连接
           connectWallet(data[0]);

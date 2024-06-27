@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-function NotificationChange(status: string, data: string) {
+function NotificationChange(status: string, data: string, description?: any) {
   notification.open({
     className: `allNotificationStyle ${status === 'success' ? 'allNotificationSucc' : status === 'error' ? 'allNotificationErr' : 'allNotificationWarn'}`,
     message: (
@@ -23,7 +23,7 @@ function NotificationChange(status: string, data: string) {
     placement: 'bottomRight',
     duration: 3.5,
     btn: null,
-    description: '',
+    description: description,
     onClick: () => {
       notification.destroy(data + status);
     },

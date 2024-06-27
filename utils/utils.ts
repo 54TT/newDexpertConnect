@@ -2,6 +2,7 @@ import { BigNumber } from 'ethers';
 import bn from 'bignumber.js';
 import { Decimal } from 'decimal.js';
 import { encodePath } from './swapRouter02Helpers';
+import { zeroAddress } from './constants';
 
 export function getQueryParams() {
   const queryString = window.location.search;
@@ -14,6 +15,7 @@ export function getQueryParams() {
 }
 
 export const formatAddress = (address: string) => {
+  if (address === zeroAddress) return '';
   if (typeof address !== 'string') return '';
   if (address.length <= 10) return address;
   return `${address.slice(0, 5)}...${address.slice(address.length - 4, address.length)}`;

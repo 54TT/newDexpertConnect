@@ -25,21 +25,8 @@ export const getUniswapV2RouterContract = async (
 };
 
 export const getERC20Contract = async (provider: any, address: string) => {
-  try {
     const contract = new ethers.Contract(address, ERC20Abi, provider);
-    const getSymbolAsync = contract.symbol();
-    const getNameAsync = contract.name();
-    const getDecimalsAsync = contract.decimals();
-    const [symbol, name, decimals] = await Promise.all([
-      getSymbolAsync,
-      getNameAsync,
-      getDecimalsAsync,
-    ]);
-    return { symbol, name, decimals };
-  } catch (e) {
-    NotificationChange('error', 'please input address correctly');
-    return null;
-  }
+    return  contract
 };
 
 export const getUniswapV2Contract = async (provider: any, address: string) => {

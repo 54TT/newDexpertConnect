@@ -58,7 +58,7 @@ export default function index() {
     <div
       className={`dappsSwapHistory ${position === 'left' ? 'leftPo' : 'rightPo'}`}
       style={{
-        width: open ? (browser ? '30vw' : '80vw') : browser ? '65px' : '0',
+        width: open ? (browser ? '30vw' : '80vw') : browser ? '55px' : '0',
       }}
     >
       {browser && (
