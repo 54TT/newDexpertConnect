@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { CaretDownOutlined } from '@ant-design/icons';
 import Load from '@/components/allLoad/load.tsx';
 import { CountContext } from '@/Layout';
-import { MessageAll } from '@/components/message.ts';
+import NotificationChange from '@/components/message';
 import { useParams } from 'react-router-dom';
 import Loading from '@/components/allLoad/loading.tsx';
 import Nodata from '@/components/Nodata.tsx';
@@ -80,13 +80,13 @@ function Dpass() {
               rewardPointCnt: Number(user?.rewardPointCnt) - point,
             });
             getDpassList(1, at?.passId);
-            MessageAll('success', t('Alert.success'));
+            NotificationChange('success', t('Alert.success'));
             setIsExchange(false);
           } else {
             setIsExchange(false);
           }
         } else {
-          MessageAll('warning', t('Alert.not'));
+          NotificationChange('warning', t('Alert.not'));
           setIsExchange(false);
         }
       }

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import cookie from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import { MessageAll } from './message.ts';
+import NotificationChange from './message';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { ChainID_TO_ChainName, ChainId } from '@/../utils/constants.ts';
@@ -32,9 +32,9 @@ requestA.interceptors.response.use(
       e?.config?.url === '/api/v1/oauth/discord/claim' ||
       e?.config?.url === '/api/v1/oauth/telegram/chat/bind'
     ) {
-      MessageAll('warning', e?.response?.data?.msg);
+      NotificationChange('warning', e?.response?.data?.msg);
     } else {
-      MessageAll('warning', e?.response?.data?.msg);
+      NotificationChange('warning', e?.response?.data?.msg);
     }
   }
 );
@@ -100,7 +100,7 @@ const Request = () => {
           return await encapsulation(method, data, url, token, '', chainId);
         }
       } else {
-        MessageAll('warning', t('Market.login'));
+        NotificationChange('warning', t('Market.login'));
         clear();
       }
     } else {

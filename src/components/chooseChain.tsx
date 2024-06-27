@@ -29,8 +29,6 @@ function ChooseChain({
     function (i: any) {
       if (value !== i) {
         if (i?.disabled && disabledChain) {
-          console.log('rr');
-
           return;
         }
         if (

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { CountContext } from "@/Layout.tsx";
 import { useContext, useEffect, useState } from "react";
 import Request from "@/components/axios.tsx";
-import { MessageAll } from '@/components/message.ts'
+import NotificationChange from '@/components/message'
 import EachActivity from './eachActivity.tsx'
 import { throttle, } from "lodash";
 
@@ -60,7 +60,7 @@ function task({ getParams, data, select, setSelect, params, }: any) {
                                         }
                                     }
                                 } else {
-                                    MessageAll('warning', t('Market.line'))
+                                    NotificationChange('warning', t('Market.line'))
                                 }
                             }, 1500, { 'trailing': false })} className='disCen' key={ind}>{i.value}
                         </div>

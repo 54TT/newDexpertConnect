@@ -9,7 +9,7 @@ import Revalidate from './revalidate.tsx';
 import cookie from 'js-cookie';
 import Load from '@/components/allLoad/load.tsx';
 import Nodata from '@/components/Nodata.tsx';
-import { MessageAll } from '@/components/message.ts';
+import NotificationChange from '@/components/message';
 import Request from '@/components/axios.tsx';
 import SpecialOrPass from '../components/specialOrPass.tsx';
 import { simplify } from '@/../utils/change.ts';
@@ -405,7 +405,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
           getParams();
         } else if (res?.data?.code === '400') {
           setIsVerify(false);
-          MessageAll('warning', res?.data?.message);
+          NotificationChange('warning', res?.data?.message);
         }
       }
     }

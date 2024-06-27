@@ -15,7 +15,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-
 import {
   useTonConnectUI,
   useTonAddress,
@@ -37,7 +36,7 @@ import {
   getRequiredNamespaces,
 } from '../utils/default';
 import _ from 'lodash';
-import { MessageAll } from './components/message.ts';
+import NotificationChange from './components/message';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
@@ -61,6 +60,7 @@ const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
   () => import('./pages/activity/components/specialDetail.tsx')
 );
+
 const web3Modal = new Web3Modal({
   projectId: DEFAULT_PROJECT_ID,
   themeMode: 'dark',
@@ -71,6 +71,9 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
+  //  检测  evm环境  钱包
+  const [environment, setEnvironment] = useState<any>([]);
+  const [loginPrivider, setLoginPrivider] = useState<any>(null);
   const [chainId, setChainId] = useState('1'); // swap 链切换
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
@@ -79,11 +82,9 @@ function Layout() {
     //@ts-ignore
     setProvider(rpcProvider);
   };
-
   useEffect(() => {
     changeConfig(chainId);
   }, [chainId]);
-
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -171,7 +172,7 @@ function Layout() {
 
   useEffect(() => {
     if (checkConnection() && isLogin) {
-      setChainId('1');
+      // setChainId('1');
       // @ts-ignore
       window.ethereum.request({
         method: 'wallet_switchEthereumChain',
@@ -278,7 +279,7 @@ function Layout() {
 
           if (bind?.status === 200) {
             getUserNow();
-            MessageAll('success', t('person.bind'));
+            NotificationChange('success', t('person.bind'));
           }
         }
       } else {
@@ -315,7 +316,16 @@ function Layout() {
       return null;
     }
   };
+  useEffect(() => {
+    if (cookie.get('walletRdns') && environment.length > 0) {
+      const at = cookie.get('walletRdns');
+      const provider = environment.filter((i: any) => i?.info?.rdns === at);
+      setLoginPrivider(provider[0]?.provider);
+    }
+  }, [cookie.get('walletRdns'), environment]);
+
   const handleLogin = async (i: any) => {
+    cookie.set('walletRdns', i?.info?.rdns);
     try {
       const account = await i?.provider?.request({
         method: 'eth_requestAccounts',
@@ -341,7 +351,7 @@ function Layout() {
           return null;
         }
       } else {
-        MessageAll('warning', t('Market.log'));
+        NotificationChange('warning', t('Market.log'));
         setLoad(false);
       }
     } catch (err) {
@@ -581,8 +591,10 @@ function Layout() {
     setChainId,
     transactionFee,
     setTransactionFee,
+    loginPrivider,
+    environment,
+    setEnvironment,
   };
-
   const clients = new ApolloClient({
     uri: chain[switchChain],
     cache: new InMemoryCache(),

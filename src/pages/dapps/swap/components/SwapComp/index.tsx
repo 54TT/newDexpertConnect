@@ -6,7 +6,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button, Skeleton, notification } from 'antd';
+import { Button, Skeleton } from 'antd';
+import NotificationChange from '@/components/message';
 import ProInputNumber from '@/components/ProInputNumber';
 import { getAmountIn } from '@utils/swap/v2/getAmountIn';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
@@ -38,6 +39,7 @@ import {
   CHAIN_NAME_TO_CHAIN_ID_HEX,
 } from '@utils/constants';
 import useButtonDesc from '@/hook/useButtonDesc';
+import { useTranslation } from 'react-i18next';
 import UsePass from '@/components/UsePass';
 /* import { getPairAddress } from '@utils/swap/v2/getPairAddress';
 import { getTokenPrice } from '@utils/getTokenPrice'; */
@@ -67,7 +69,9 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setChainId,
     transactionFee,
     setTransactionFee,
+    loginPrivider,
   } = useContext(CountContext);
+  const { t } = useTranslation();
   const [amountIn, setAmountIn] = useState<number | null>(0);
   const [amountOut, setAmountOut] = useState<number | null>(0);
   const [tokenIn, setTokenIn] = useState<TokenItemData>();
@@ -254,6 +258,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
   const onChainChange = (targetChainId) => {
+    console.log('123123');
+
     setChainId(Number(targetChainId).toString());
   };
 
@@ -261,25 +267,24 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     if (isLogin) {
       try {
         // @ts-ignore
-        (window?.ethereum as any)?.on('chainChanged', onChainChange);
+        loginPrivider?.on('chainChanged', onChainChange);
+        loginPrivider?.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: `0x${Number(chainId).toString(16)}`,
+            },
+          ],
+        });
       } catch (e) {
-        console.log(e);
+        return null;
       }
-
-      (window as any)?.ethereum?.request({
-        method: 'wallet_switchEthereumChain',
-        params: [
-          {
-            chainId: `0x${Number(chainId).toString(16)}`,
-          },
-        ],
-      });
     }
     return () => {
       // @ts-ignore
-      (window.ethereum as any).removeListener('chainChanged', onChainChange);
+      (loginPrivider as any)?.removeListener?.('chainChanged', onChainChange);
     };
-  }, [isLogin]);
+  }, [isLogin, loginPrivider]);
 
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
@@ -337,7 +342,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         }
         setAmountOut(Number(amount.toString()));
       } catch (e) {
-        console.error(e);
+        return null;
       }
       setOutLoading(false);
     }
@@ -357,7 +362,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         }
         setAmountIn(Number(amount.toString()));
       } catch (e) {
-        console.error(e);
+        return null;
       }
       setInLoading(false);
     }
@@ -371,11 +376,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     provider,
   ]);
   // 处理approve
-  const handleApprove = async (
-    tokenContract: ethers.Contract,
-    amountIn: number,
-    decimals: number
-  ) => {
+  const handleApprove = async (tokenContract: ethers.Contract) => {
     const { permit2Address } = contractConfig;
     let approveTx;
     try {
@@ -387,11 +388,10 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         BigNumber.from(2).pow(BigNumber.from(256)).sub(BigNumber.from(1))
       );
     } catch (e) {
-      console.error(e);
       setButtonDescId('1');
       setButtonLoading(false);
+      return null;
     }
-    console.log(approveTx, 'approve--tx');
     const recipent = await approveTx.wait();
     // 1 成功 2 失败
     return recipent.status === 1;
@@ -502,7 +502,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           signature,
         ]);
       }
-
       if (currentInputToken.current === 'in') {
         if (quotePath === '0') {
           return await getSwapExactInBytes.apply(null, getBytesParam);
@@ -580,21 +579,18 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           value: etherValue,
         }
       );
-      notification.success({
-        message: 'Transaction submitted successfully',
-        description: (
-          <a href={`${scan}${tx.hash}`} target="_blank">
-            Click here to view on etherscan
-          </a>
-        ),
-      });
+      NotificationChange(
+        'success',
+        t('Slider.succ'),
+        <a href={`${scan}${tx.hash}`} target="_blank">
+          {t('Slider.eth')}
+        </a>
+      );
     } catch (e) {
-      notification.error({
-        message: 'Transaction error',
-      });
-      console.error(e);
+      NotificationChange('error', t('Slider.err'));
       setButtonLoading(false);
       setButtonDescId('1');
+      return null;
     }
     setButtonLoading(false);
     setButtonDescId('1');
@@ -623,7 +619,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonLoading(true);
     setButtonDescId('9');
     //@ts-ignore
-    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+    const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
     const signer = await web3Provider.getSigner();
 
     const signerAddress = await signer.getAddress();
@@ -655,11 +651,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         )
       ) {
         // 余额为0 或者余额 小于amount 需要approve
-        const successApprove = await handleApprove(
-          tokenInContract,
-          amountIn,
-          decimals
-        );
+        const successApprove = await handleApprove(tokenInContract);
         if (successApprove) {
           const { permit, signature } = await signPermit({
             signerAddress,
@@ -711,7 +703,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         ...data,
         recipientAddress: signerAddress,
       });
-
       sendSwap({
         commands,
         inputs,
@@ -740,7 +731,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       // 有evm钱包环境
       try {
         //@ts-ignore
-        await window.ethereum.request({
+        await loginPrivider.request({
           method: 'wallet_switchEthereumChain',
           params: [
             {
@@ -786,29 +777,27 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       const { wethAddress } = contractConfig;
       if (checkConnection() && token) {
         // @ts-ignore
-        const injectProvider = new ethers.providers.Web3Provider(
-          // @ts-ignore
-          window?.ethereum
-        );
+        const injectProvider = new ethers.providers.Web3Provider(loginPrivider);
+        console.log(loginPrivider);
+
         const balance = await getBalanceRpc(injectProvider, token, wethAddress);
 
         dispatch(balance);
       }
     },
-    [contractConfig]
+    [contractConfig, loginPrivider]
   );
-
   useEffect(() => {
     if (isLogin) {
       getTokenBalance(tokenIn?.contractAddress, setBalanceIn);
     }
-  }, [tokenIn, isLogin, chainId]);
+  }, [tokenIn, isLogin, chainId, loginPrivider]);
 
   useEffect(() => {
     if (isLogin) {
       getTokenBalance(tokenOut?.contractAddress, setBalanceOut);
     }
-  }, [tokenOut, isLogin, chainId]);
+  }, [tokenOut, isLogin, chainId, loginPrivider]);
 
   useEffect(() => {
     if (
@@ -1027,7 +1016,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       </Button>
       <SelectTokenModal
         open={openSelect}
-        disabled={!changeAble}
         disabledTokens={[
           tokenIn?.contractAddress?.toLowerCase?.(),
           tokenOut?.contractAddress?.toLowerCase?.(),

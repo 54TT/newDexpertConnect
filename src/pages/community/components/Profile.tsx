@@ -9,7 +9,7 @@ import { formatAddress, getQueryParams } from '@/../utils/utils.ts';
 import CommonModal from '@/components/CommonModal/index.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { throttle } from 'lodash';
-import { MessageAll } from '@/components/message.ts';
+import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout.tsx';
 
@@ -48,7 +48,7 @@ function Profie() {
 
   const getUserProfile = async (setCookise?: boolean) => {
     if (!id) {
-      return MessageAll('warning', t('Market.line'));
+      return NotificationChange('warning', t('Market.line'));
     }
     const token = Cookies.get('token');
     if (!token) return;
@@ -104,7 +104,7 @@ function Profie() {
     const uploadInput = inputRef?.current;
     const fileType = file.type;
     if (!allowedTypes.includes(fileType)) {
-      MessageAll('warning', t('Market.only'));
+      NotificationChange('warning', t('Market.only'));
       if (uploadInput?.value) {
         // 清空输入框的值，防止上传无效文件
         uploadInput.value = '';
@@ -124,7 +124,7 @@ function Profie() {
   const handleSubmit = async (data: any) => {
     const token = Cookies.get('token');
     if (!token || !id) {
-      return MessageAll('warning', t('Market.line'));
+      return NotificationChange('warning', t('Market.line'));
     }
     let avatarUrl = previewAvatar;
     let coverUrl = previewBG;
@@ -170,7 +170,7 @@ function Profie() {
       token,
     });
     if (result?.status === 200) {
-      MessageAll('success', t('Market.update'));
+      NotificationChange('success', t('Market.update'));
       getUserProfile(true);
       handleCancel();
     }
@@ -278,10 +278,10 @@ function Profie() {
             token,
           });
           if (result?.status === 200) {
-            MessageAll('success', t('Market.succ'));
+            NotificationChange('success', t('Market.succ'));
             setIsFollowed(true);
           } else {
-            return MessageAll('error', t('Market.unFo'));
+            return NotificationChange('error', t('Market.unFo'));
           }
         }
       } catch (e) {
@@ -304,10 +304,10 @@ function Profie() {
             token,
           });
           if (result?.status === 200) {
-            MessageAll('success', t('Market.unSucc'));
+            NotificationChange('success', t('Market.unSucc'));
             setIsFollowed(false);
           } else {
-            return MessageAll('error', t('Market.unF'));
+            return NotificationChange('error', t('Market.unF'));
           }
         }
       } catch (e) {

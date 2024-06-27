@@ -162,7 +162,7 @@ function Left() {
                       }
                       rootClassName="allTooltipClass"
                     >
-                      <span className="hint">!</span>
+                      <img src="/wenhao.svg" alt="" width={'15px'} style={{marginLeft:'3px'}}/>
                     </Tooltip>
                   )}
                 </p>

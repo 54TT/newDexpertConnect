@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import Picker from '@emoji-mart/react';
 import emojiData from '@emoji-mart/data';
 import { throttle } from 'lodash';
-import { MessageAll } from '@/components/message.ts';
+import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout.tsx';
 
@@ -47,7 +47,7 @@ function SendPost({
     const uploadInput = inputRef?.current;
     const fileType = file.type;
     if (!allowedTypes.includes(fileType)) {
-      MessageAll('warning', t('Market.only'));
+      NotificationChange('warning', t('Market.only'));
       if (uploadInput?.value) {
         // 清空输入框的值，防止上传无效文件
         uploadInput.value = '';
@@ -107,7 +107,7 @@ function SendPost({
           }
           if (imgUrl !== null) {
             if (!imgUrl || imgUrl?.status !== 200) {
-              return MessageAll('warning', t('Market.fail'));
+              return NotificationChange('warning', t('Market.fail'));
             }
           }
           const data = {
@@ -156,11 +156,11 @@ function SendPost({
             changeRefresh?.(true);
           }
         } catch (e) {
-          MessageAll('error', t('Market.pub'));
+          NotificationChange('error', t('Market.pub'));
           setPublishing(false);
         }
       } else {
-        MessageAll('warning', t('Market.line'));
+        NotificationChange('warning', t('Market.line'));
       }
     },
     1500,

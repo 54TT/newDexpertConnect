@@ -53,6 +53,22 @@
     "Fee": "Fee"
   },
   "Slider": {
+    "eth":"Click here to view on etherscan",
+    "succ":"Transaction submitted successfully",
+    "err":"Transaction error",
+    "Hour":"Hour",
+    "Min":"Min",
+    "Auto":"Auto",
+    "Customize":"Customize",
+    "Gas":"Gas Price",
+    "Order":"Order Deadline",
+    "Trade":"Trade Deadline",
+    "Maximum":"Maximum Slip",
+    "Total":"Token Total",
+    "Confirm":"Confirm",
+    "Sniper":"Sniper Amount",
+    "Token":"Token Information",
+    "address":"Address",
     "New Pairs": "New Pairs",
     "Trending": "Trending",
     "Name": "Name",
@@ -68,6 +84,7 @@
     "Following": "Following"
   },
   "Alert": {
+    "Not":"Not owned",
     "please connect your wallet": "please connect your wallet",
     "Please enter the purchase quantity": "Please enter the purchase quantity",
     "not": "Not enough points",

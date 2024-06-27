@@ -13,7 +13,7 @@ import Nodata from '@/components/Nodata.tsx';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { throttle } from 'lodash';
-import { MessageAll } from '@/components/message.ts';
+import NotificationChange from '@/components/message';
 import copy from 'copy-to-clipboard';
 export default function person() {
   const { getAll } = Request();
@@ -46,7 +46,7 @@ export default function person() {
       if (res?.status === 200 && res?.data?.url) {
         setIsCopy(false);
         copy(res?.data?.url);
-        MessageAll('success', t('person.copy'));
+        NotificationChange('success', t('person.copy'));
       } else {
         setIsCopy(false);
       }
@@ -92,7 +92,7 @@ export default function person() {
       name: 'Golden Pass:',
       data: Number(userPass?.stopTs)
         ? dayjs.unix(userPass?.stopTs).format('YYYY-MM-DD')
-        : 'Not owned',
+        : t('Alert.Not'),
     },
     { name: 'Fast Trade Pass:', data: userPass?.sniperBotSwapCnt || 0 },
     { name: 'Sniper Bot Pass:', data: userPass?.sniperBotPreswapCnt || 0 },
@@ -317,7 +317,7 @@ export default function person() {
           });
           if (res?.status === 200) {
             setIsValue(false);
-            MessageAll('success', t('person.ver'));
+            NotificationChange('success', t('person.ver'));
           } else {
             setIsValue(false);
           }

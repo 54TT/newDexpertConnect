@@ -10,7 +10,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { setMany, simplify } from '@/../utils/change.ts';
 import { throttle } from 'lodash';
 import { Popconfirm } from 'antd';
-import { MessageAll } from './message.ts';
+import NotificationChange from './message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '../Layout.tsx';
 
@@ -141,7 +141,7 @@ function Tweets({
       const token = cookie.get('token');
       const jwt = cookie.get('jwt');
       if (!jwt && !token) {
-        MessageAll('warning', t('Market.line'));
+        NotificationChange('warning', t('Market.line'));
         return;
       }
       if (type === 'reply' || type === 'comment') {
@@ -162,7 +162,7 @@ function Tweets({
       const token = cookie.get('token');
       const jwt = cookie.get('jwt');
       if (!token && !jwt) {
-        return MessageAll('warning', t('Market.line'));
+        return NotificationChange('warning', t('Market.line'));
       }
       history(`/community/user?uid=${localData.user.uid}`);
     },

@@ -375,7 +375,7 @@ function Header() {
             {browser ? (
               <div
                 className={'headerConnect'}
-                style={{ margin: '0 15px' }}
+                style={{ margin: '0 8px' }}
                 onClick={loginModal}
               >
                 <div className={'disCen'}>
