@@ -95,7 +95,7 @@ export const ethToErc20 = async (
   const chainConfig = config[chainId];
   const wethAddress = chainConfig.wethAddress;
   const universalRouterAddress = chainConfig.universalRouterAddress;
-  const wrapEthParams = [universalRouterAddress, amountIn, level, swapType];
+  const wrapEthParams = [universalRouterAddress, amountIn, 0, swapType];
   planner.addCommand(CommandType.WRAP_ETH, wrapEthParams, false);
 
   let swapPath = [tokenIn, tokenOut];
