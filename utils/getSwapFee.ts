@@ -18,7 +18,6 @@ export const getSwapFee = async ({ chainId, provider, payType, swapType }) => {
 
     const feeBaseBps = await universalRouterContract.feeBaseBps();
     fee = new Decimal(fastTradeFeeBps / feeBaseBps);
-    console.log(fee.toString());
   }
   return fee;
 };

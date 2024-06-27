@@ -53,6 +53,7 @@ import QuotoPathSelect from '@/components/QuotoPathSelect';
 import { swapChain } from '@utils/judgeStablecoin';
 import { getSwapFee } from '@utils/getSwapFee';
 import DefaultTokenImg from '@/components/DefaultTokenImg';
+import { expandToDecimalsBN } from '@utils/utils';
 interface SwapCompType {
   changeAble?: boolean; // 是否可修改Token || 网络
   initChainId?: string; // 初始化的chainId;
@@ -307,7 +308,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonLoading(true);
     setButtonDescId('7');
 
-    let start = Date.now();
     const { uniswapV2RouterAddress } = contractConfig;
 
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
@@ -376,8 +376,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   // 处理approve
   const handleApprove = async (
     tokenContract: ethers.Contract,
-    amountIn: number,
-    decimals: number
   ) => {
     const { permit2Address } = contractConfig;
     let approveTx;
@@ -387,7 +385,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       setButtonLoading(true);
       approveTx = await tokenContract.approve(
         permit2Address,
-        BigInt((amountIn * 10 ** decimals).toFixed(0))
+        BigNumber.from(2).pow(BigNumber.from(256)).sub(BigNumber.from(1))
       );
     } catch (e) {
       setButtonDescId('1');
@@ -523,9 +521,9 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
 
     const { commands, inputs } = await getSwapBytesFn(tokenIn, tokenOut);
 
-    let etherValue = BigInt(0);
+    let etherValue: any = BigNumber.from(0);
     if (tokenIn.contractAddress === contractConfig.ethAddress) {
-      etherValue = BigInt((amountIn * 10 ** 18).toFixed(0));
+      etherValue = expandToDecimalsBN(new Decimal(amountIn), 18);
     }
     return { commands, inputs, etherValue };
   };
@@ -647,20 +645,20 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       if (
         balance.isZero() ||
         balance.lte(
-          BigNumber.from(new Decimal(amountIn * 10 ** decimals).toFixed(0))
+          BigNumber.from(
+            new Decimal(amountIn).mul(new Decimal(10 ** decimals)).toFixed(0)
+          )
         )
       ) {
         // 余额为0 或者余额 小于amount 需要approve
         const successApprove = await handleApprove(
           tokenInContract,
-          amountIn,
-          decimals
         );
         if (successApprove) {
           const { permit, signature } = await signPermit({
             signerAddress,
             token: tokenIn.contractAddress,
-            amount: BigInt((amountIn * 10 ** decimals).toFixed(0)),
+            amount: expandToDecimalsBN(new Decimal(amountIn), decimals),
             permit2Contract,
             signer,
           });
@@ -684,7 +682,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         const { permit, signature } = await signPermit({
           signerAddress,
           token: tokenIn.contractAddress,
-          amount: BigInt((amountIn * 10 ** decimals).toFixed(0)),
+          amount: expandToDecimalsBN(new Decimal(amountIn), decimals),
           permit2Contract,
           signer,
         });
