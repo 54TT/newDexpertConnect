@@ -62,6 +62,7 @@ function Left() {
           <ChooseChain
             chainList={chainParams}
             disabledChain={true}
+            hideChain={true}
             onChange={(v) => setSwitchChain(v)}
           />
           <Select
@@ -162,7 +163,12 @@ function Left() {
                       }
                       rootClassName="allTooltipClass"
                     >
-                      <img src="/wenhao.svg" alt="" width={'15px'} style={{marginLeft:'3px'}}/>
+                      <img
+                        src="/wenhao.svg"
+                        alt=""
+                        width={'15px'}
+                        style={{ marginLeft: '3px' }}
+                      />
                     </Tooltip>
                   )}
                 </p>

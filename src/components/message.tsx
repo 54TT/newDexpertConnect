@@ -23,7 +23,7 @@ function NotificationChange(status: string, data: string, description?: any) {
     placement: 'topRight',
     duration: 3.5,
     btn: null,
-    description: description,
+    description,
     onClick: () => {
       notification.destroy(data + status);
     },

@@ -85,6 +85,14 @@ export const chain: any = {
   Optimism: 'https://dexpertpairs.lol/subgraphs/name/optimism/uniswapv2',
 };
 
+export const CHAINID_TO_PAIR_QUERY_URL = {
+  1: 'https://dexpertpairs.lol/subgraphs/name/ethereum/uniswapv2',
+  42161: 'https://dexpertpairs.lol/subgraphs/name/arbitrum/uniswapv2',
+  8453: 'https://dexpertpairs.lol/subgraphs/name/base/uniswapv2',
+  56: 'https://dexpertpairs.lol/subgraphs/name/bsc/uniswapv2',
+  10: 'https://dexpertpairs.lol/subgraphs/name/optimism/uniswapv2',
+};
+
 export const rpcLink: any = {
   Ethereum:
     'https://eth-mainnet.g.alchemy.com/v2/BhTc3g2lt1Qj3IagsyOJsH5065ueK1Aw',
@@ -103,20 +111,23 @@ export const chainParams = [
   {
     value: 'Arbitrum',
     icon: '/Arbitrum.svg',
+    disabled: true,
   },
-  { value: 'Avalanche', icon: '/AvalancheCoin.svg', disabled: true },
-  { value: 'BSC', icon: '/BNBChain.svg' },
+  { value: 'Avalanche', icon: '/AvalancheCoin.svg', hide: true },
+  { value: 'BSC', icon: '/BNBChain.svg', disabled: true },
   {
     value: 'Polygon',
     icon: '/PolygonCoin.svg',
+    hide: true,
   },
-  { value: 'Optimism', icon: '/Optimism.svg' },
-  { value: 'Blast', icon: '/Blast.svg', disabled: true },
+  { value: 'Optimism', icon: '/Optimism.svg', hide: true },
+  { value: 'Blast', icon: '/Blast.svg', hide: true },
   {
     value: 'Base',
     icon: '/BASE.png',
+    hide: true,
   },
-  { value: 'Celo', icon: '/Celo.svg', disabled: true },
+  { value: 'Celo', icon: '/Celo.svg', hide: true },
 ];
 export const swapChain = [
   { value: 'Ethereum', icon: '/EthereumCoin.svg',chainId:'1',key:'0x1' },
