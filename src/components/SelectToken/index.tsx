@@ -29,7 +29,8 @@ const { Search } = Input;
 
 function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
-  const { provider, isLogin, chainId } = useContext(CountContext);
+  const { provider, isLogin, chainId, loginPrivider } =
+    useContext(CountContext);
   /*   const [showSearch, setShowSearch] = useState(false); */
   const [historyItems, setHistoryItems] = useState([]);
   const memoryTokenList = useRef<TokenItemData[]>([]);
@@ -132,7 +133,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
 
   const getHistoryTokenList = async () => {
     // @ts-ignore
-    const provider = new ethers.providers.Web3Provider(window?.ethereum);
+    const provider = new ethers.providers.Web3Provider(loginPrivider);
     const signer = await provider.getSigner();
     const address = await signer.getAddress();
     const historyToken = await getHistoryToken({ address, chainId });
@@ -146,7 +147,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     } else {
       setHistoryItems([]);
     }
-  }, [isLogin, chainId]);
+  }, [isLogin, chainId, loginPrivider]);
 
   const memoClickTokenHistory = async (data) => {
     if (!isLogin) return;
@@ -154,7 +155,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
       (item) => item.contractAddress === data.contractAddress
     );
     // @ts-ignore
-    const provider = new ethers.providers.Web3Provider(window?.ethereum);
+    const provider = new ethers.providers.Web3Provider(loginPrivider);
     const signer = await provider.getSigner();
     const address = await signer.getAddress();
     if (findIndex == -1) {
@@ -192,8 +193,9 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
         <div className="token-history-list">
           <span className="token-list-title">History tokens</span>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-            {historyItems.map((item) => (
+            {historyItems.map((item,index) => (
               <div
+              key={index}
                 className={`history-token-item ${disabledTokens?.includes?.(item.contractAddress) ? 'disable-token' : ''}`}
                 onClick={() => handleTokenSelect(item)}
               >

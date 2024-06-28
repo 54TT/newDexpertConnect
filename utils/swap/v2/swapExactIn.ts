@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 import { RoutePlanner, CommandType } from '../../planner';
-import { config } from '../../../src/config/config';
+import { config } from '@/config/config';
 import { getPairAddress } from './getPairAddress';
 
 export const erc20ToErc20 = async (

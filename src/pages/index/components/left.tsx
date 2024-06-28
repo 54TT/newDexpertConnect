@@ -7,9 +7,9 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import newPair from '@/components/getNewPair.tsx';
 import { useTranslation } from 'react-i18next';
-import { getGas } from '../../../../utils/getGas.ts';
-import Nodata from '../../../components/Nodata.tsx';
-import ChooseChain from '../../../components/chooseChain.tsx';
+import { getGas } from '@/../utils/getGas.ts';
+import Nodata from '@/components/Nodata.tsx';
+import ChooseChain from '@/components/chooseChain.tsx';
 import { chainParams } from '@utils/judgeStablecoin.ts';
 function Left() {
   const hei = useRef<any>();

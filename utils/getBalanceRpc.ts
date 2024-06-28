@@ -15,19 +15,20 @@ const getBalanceRpcEther = async (
     const balance: BigNumber = await signer.getBalance();
     return new Decimal(balance.toString()).div(new Decimal(10 ** 18));
   }
-  const erc20Contract:any = await getERC20Contract(injectProvider, token);
+
+  const erc20Contract: any = await getERC20Contract(injectProvider, token);
   if (
     token.toLocaleLowerCase() !== zeroAddress.toLocaleLowerCase() &&
     token.toLocaleLowerCase() !== weth.toLocaleLowerCase()
   ) {
     decimals = await erc20Contract.decimals();
   }
-  let address='0x511D53e67c6255Ad466902Ee714c92c3Ad4cD655'
-  // try {
-    // address = await signer.getAddress();
-  // } catch (e) {
-  //   console.log(e);
-  // }
+  let address;
+  try {
+    address = await signer.getAddress();
+  } catch (e) {
+    console.log(e);
+  }
   const balance: BigNumber = await erc20Contract?.balanceOf(address);
   if (balance.isZero()) return new Decimal(balance.toString());
   return new Decimal(balance.toString()).div(new Decimal(10 ** decimals));

@@ -3836,11 +3836,7 @@ lit@2.7.5:
 
 localforage@1.10.0:
   version "1.10.0"
-<<<<<<< HEAD
-  resolved "https://registry.npmjs.org/localforage/-/localforage-1.10.0.tgz#5c465dc5f62b2807c3a84c0c6a1b1b3212781dd4"
-=======
   resolved "https://registry.npmjs.org/localforage/-/localforage-1.10.0.tgz"
->>>>>>> 4553deea68252d3d7cedd9e37f7095394bb08faa
   integrity sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==
   dependencies:
     lie "3.1.1"

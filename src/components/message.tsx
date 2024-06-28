@@ -20,7 +20,7 @@ function NotificationChange(status: string, data: string, description?: any) {
       </div>
     ),
     key: data + status,
-    placement: 'bottomRight',
+    placement: 'topRight',
     duration: 3.5,
     btn: null,
     description: description,

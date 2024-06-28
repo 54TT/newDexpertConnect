@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
-import { config } from '../../../src/config/config';
-import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
+import { config } from '@/config/config';
+import { expandToDecimalsBN, reduceFromDecimalsBN } from '@/../utils/utils';
 import { Decimal } from 'decimal.js';
 import { getPairAddress } from './getPairAddress';
 import { zeroAddress } from '@utils/constants';

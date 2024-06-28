@@ -53,6 +53,9 @@
     "Fee": "Fee"
   },
   "Slider": {
+    "Invalid":"Invalid chain",
+    "c":"The current chain does not support the operation",
+    "chain":"Please select the chain and enter the address correctly",
     "max":"Max",
     "eth":"Click here to view on etherscan",
     "succ":"Transaction submitted successfully",

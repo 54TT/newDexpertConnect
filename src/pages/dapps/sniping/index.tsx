@@ -6,6 +6,7 @@ import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
 import { getERC20Contract } from '@utils/contracts';
 import Load from '@/components/allLoad/load';
+import Loading from '@/components/allLoad/loading';
 import NotificationChange from '@/components/message';
 import Decimal from 'decimal.js';
 import _ from 'lodash';
@@ -18,26 +19,31 @@ import UsePass from '@/components/UsePass';
 import getBalanceRpc from '@utils/getBalanceRpc';
 import SelectTokenModal from '@/components/SelectTokenModal';
 import { getUniswapV2RouterContract } from '@utils/contracts';
+import {
+  CHAIN_NAME_TO_CHAIN_ID,
+  CHAIN_NAME_TO_CHAIN_ID_HEX,
+  CHAIN_VERSION_TO_CHAIN_ID,
+} from '@utils/constants';
 import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
 import { getSwapExactInBytes as getSwapExactInBytesV3 } from '@utils/swap/v3/getSwapExactInBytes';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
 import { expandToDecimalsBN } from '@utils/utils';
-import {  getPermitSignature } from '@utils/permit2';
-
+import { getPermitSignature } from '@utils/permit2';
+import ChooseChain from '@/components/chooseChain';
+import { swapChain } from '@utils/judgeStablecoin';
+import { config } from '@/config/config.ts';
 export default function index() {
   const { t } = useTranslation();
   const {
     browser,
-    provider,
-    chainId,
     loginPrivider,
-    contractConfig,
     transactionFee,
+    isLogin,
     user,
     setIsModalOpen,
   }: any = useContext(CountContext);
-   // 如果是uniswap3 需要的数据
+  // 如果是uniswap3 需要的数据
   const [swapV3Pool, setSwapV3Pool] = useState({
     fee: 0,
     poolAddress: '',
@@ -51,17 +57,54 @@ export default function index() {
   const [open, setOpen] = useState(false);
   const [quotePath, setQuotePath] = useState('0'); // 0 uniswapV2 1 V3
   const [tokenInValue, setTokenInValue] = useState(0);
+  // 是否显示   价值
   const [isShow, setIsShow] = useState(false);
+  // 余额
   const [balance, setBalance] = useState(0);
   const [isBalance, setIsBalance] = useState(true);
+  // 数量
   const [value, setValue] = useState(0);
+  const [chainId, setChainId] = useState('1');
+  const [chain, setChain] = useState<any>();
+  const [contractConfig, setContractConfig] = useState<any>();
+  const [provider, setProvider] = useState<any>();
+  // 是否切换链
+  const [isChain, setIsChain] = useState('more');
+  // 选择链改变   privider
+  const changePrivider = (chainId: string, choose?: string) => {
+    const newConfig = config[chainId ?? '1'];
+    setContractConfig(newConfig);
+    setUserToken(newConfig?.defaultTokenIn);
+    const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
+    if (choose === 'choose') {
+      if (searchValue?.length === 42) {
+        setIsToken(true);
+        implement(rpcProvider);
+      }
+    }
+    getBalance(
+      newConfig?.defaultTokenIn?.contractAddress,
+      newConfig?.wethAddress,
+      loginPrivider
+    );
+    setIsBalance(true);
+    setProvider(rpcProvider);
+  };
+  useEffect(() => {
+    if (loginPrivider && isLogin) {
+      changePrivider(chainId);
+      changeChain();
+    }
+    return () => {
+      // @ts-ignore
+      (loginPrivider as any)?.removeListener?.('chainChanged', onChainChange);
+    };
+  }, [chainId, loginPrivider, isLogin]);
   //  pass  卡
   const [payType, setPayType] = useState('0');
   const [gasPrice, setGasPrice] = useState(0);
   //  使用的token
-  const [useToken, setUserToken] = useState<any>(
-    contractConfig?.defaultTokenIn
-  );
+  const [useToken, setUserToken] = useState<any>();
   const [params, setParams] = useState<any>({
     MaximumSlip: 'Auto',
     GasPrice: 'Auto',
@@ -79,9 +122,12 @@ export default function index() {
   const onChange = (e: number) => {
     setMaximumSlipValue(e);
   };
-  const implement = async () => {
+  const implement = async (moreProvider?: any) => {
     try {
-      const contract = await getERC20Contract(provider, searchValue);
+      const contract = await getERC20Contract(
+        moreProvider ? moreProvider : provider,
+        searchValue
+      );
       const getSymbolAsync = contract.symbol();
       const getNameAsync = contract.name();
       const getDecimalsAsync = contract.decimals();
@@ -100,7 +146,8 @@ export default function index() {
       setIsToken(false);
     } catch (e) {
       setIsToken(false);
-      NotificationChange('error', 'please input address correctly');
+      setToken(null);
+      NotificationChange('error', t('Slider.chain'));
       return null;
     }
   };
@@ -117,15 +164,16 @@ export default function index() {
     }
   };
   // 获取钱包余额
-  const getBalance = async () => {
-    const injectProvider = new ethers.providers.Web3Provider(
-      // @ts-ignore
-      window?.ethereum
-    );
+  const getBalance = async (
+    contractAddress: string,
+    wethAddress: string,
+    loginPrivider: any
+  ) => {
+    const injectProvider = new ethers.providers.Web3Provider(loginPrivider);
     const balance = await getBalanceRpc(
       injectProvider,
-      useToken?.contractAddress,
-      contractConfig?.wethAddress
+      contractAddress,
+      wethAddress
     );
     if (balance) {
       const data = Number(balance.toString())
@@ -141,21 +189,22 @@ export default function index() {
     // const tt = amountInDecimal.lessThanOrEqualTo(balance);
   };
 
-  useEffect(() => {
-    if (useToken?.contractAddress && user?.uid) {
-      getBalance();
-    } else {
-      setIsBalance(false);
-    }
-  }, [useToken]);
   //  获取输出  价格
-  const getAmount = async (value: number, quotePath: string, token?: any) => {
+  const getAmount = async (
+    value: number,
+    quotePath: string,
+    token?: any,
+    moreProvider?: any
+  ) => {
     const { uniswapV2RouterAddress, defaultTokenOut } = contractConfig;
     const param = [
       chainId,
-      provider,
+      moreProvider ? moreProvider : provider,
       quotePath === '0'
-        ? await getUniswapV2RouterContract(provider, uniswapV2RouterAddress)
+        ? await getUniswapV2RouterContract(
+            moreProvider ? moreProvider : provider,
+            uniswapV2RouterAddress
+          )
         : null,
       [
         token?.contractAddress
@@ -178,7 +227,6 @@ export default function index() {
           param
         );
         amount = quoteAmount;
-        console.log(poolInfo);
         setSwapV3Pool(poolInfo);
       }
       setIsShow(false);
@@ -296,8 +344,7 @@ export default function index() {
     // token   useToken
     // 判断输入的数量 不大于  拥有的
     if (Number(value) <= Number(balance)) {
-      const { permit2Address } =
-        contractConfig;
+      const { permit2Address } = contractConfig;
       const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
       const signer = await web3Provider.getSigner();
       const signerAddress = await signer.getAddress();
@@ -323,6 +370,7 @@ export default function index() {
         signature,
         recipientAddress: signerAddress,
       });
+      console.log(commands, inputs, etherValue);
     }
     // const tt = await getAll({
     //   method: 'post',
@@ -342,28 +390,108 @@ export default function index() {
     getAmount(e, quotePath);
     setIsShow(true);
   }, 1000);
-  const mask = { 0: '100%', 25: '125%', 50: '150%', 75: '175%', 100: '200%' };
 
+  //  判断是否支持的链
+  const supportedChain = (chain: string) => {
+    if (chain === '0x1' || chain === '0x2105' || chain === '0xaa36a7') {
+      const chainID = CHAIN_VERSION_TO_CHAIN_ID[chain];
+      setChainId(chainID);
+      const data = swapChain.filter((i: any) => i.key === chain);
+      setChain(data[0]);
+      setIsChain('success');
+    } else {
+      NotificationChange('warning', t('Slider.c'));
+      setIsChain('error');
+    }
+  };
+
+  // 监听切换链
+  const onChainChange = (targetChainId) => {
+    supportedChain(targetChainId);
+  };
+  //  是否切换链
+  const changeChain = async () => {
+    const chain = await loginPrivider.send('eth_chainId', []);
+    if (chain?.result === '0x1') {
+      setIsChain('success');
+    } else {
+      try {
+        loginPrivider?.on('chainChanged', onChainChange);
+        await loginPrivider?.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: `0x${Number(chainId).toString(16)}`,
+            },
+          ],
+        });
+      } catch (e) {
+        supportedChain(chain?.result);
+        return null;
+      }
+    }
+  };
+
+  const changeWalletChain = async (v: any) => {
+    const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v.value];
+    const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v.value];
+    if (!isLogin) {
+      setChainId(evmChainId);
+    } else {
+      // 有evm钱包环境
+      try {
+        //@ts-ignore
+        await loginPrivider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: evmChainIdHex,
+            },
+          ],
+        });
+        setChainId(v.chainId);
+        setChain(v);
+      } catch (e) {
+        return null;
+      }
+    }
+    // if (evmChainId !== chainId) {
+    //   changePrivider(evmChainId, 'choose');
+    //   setChainId(evmChainId);
+    // }
+  };
+
+  const mask = { 0: '100%', 25: '125%', 50: '150%', 75: '175%', 100: '200%' };
   return (
     <div className="sniping" style={{ width: browser ? '45%' : '95%' }}>
-      <Input
-        size="large"
-        rootClassName="snipingInput"
-        onKeyDown={enter}
-        placeholder="Contract address"
-        allowClear
-        onChange={searchChange}
-        suffix={
-          <SearchOutlined
-            onClick={clickSearch}
-            style={{
-              color: 'rgb(134,240,151)',
-              fontSize: '16px',
-              cursor: 'pointer',
-            }}
-          />
-        }
-      />
+      <div className="Contractaddress">
+        <Input
+          size="large"
+          rootClassName="snipingInput"
+          onKeyDown={enter}
+          placeholder="Contract address"
+          allowClear
+          onChange={searchChange}
+          suffix={
+            <SearchOutlined
+              onClick={clickSearch}
+              style={{
+                color: 'rgb(134,240,151)',
+                fontSize: '16px',
+                cursor: 'pointer',
+              }}
+            />
+          }
+        />
+        <ChooseChain
+          disabledChain={true}
+          data={chain}
+          chainList={swapChain}
+          onClick={(v) => changeWalletChain(v)}
+          hideChain={true}
+          wrapClassName="swap-chooose-chain"
+        />
+      </div>
       <div className="token">
         <p className="Information">{t('Slider.Token')}</p>
         <div className="selectTo">
@@ -390,6 +518,7 @@ export default function index() {
         <div className="price">
           <p>Sniper Amount</p>
           <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* v2  v3 */}
             <QuotoPathSelect
               data={quotePath}
               onChange={(key: string) => {
@@ -398,6 +527,7 @@ export default function index() {
                 getAmount(value, key);
               }}
             />
+            {/* 选择token */}
             <div className="eth" onClick={() => setOpen(true)}>
               <img src={useToken?.logoUrl} alt="" />
               <span>{useToken?.symbol}</span>
@@ -406,6 +536,7 @@ export default function index() {
           </div>
         </div>
         <div className="balan">
+          {/* 数量 */}
           <InputNumber
             rootClassName="tokenValue"
             min={0}
@@ -414,16 +545,18 @@ export default function index() {
             controls={false}
             value={value}
             onChange={(e: number) => {
-              change(e);
+              if (e) {
+                change(e);
+              }
               setValue(e);
             }}
           />
           <p
             onClick={() => {
               if (Number(balance)) {
-                getAmount(balance ? balance : 0, quotePath);
+                getAmount(balance, quotePath);
                 setIsShow(true);
-                setValue(balance ? balance : 0);
+                setValue(balance);
               }
             }}
           >
@@ -433,7 +566,7 @@ export default function index() {
         <div className="amount">
           <div>
             {!isShow ? (
-              tokenInValue + ' ' + contractConfig.defaultTokenOut.symbol
+              tokenInValue + ' ' + contractConfig?.defaultTokenOut?.symbol
             ) : (
               <Skeleton.Button active size="small" />
             )}
@@ -444,7 +577,6 @@ export default function index() {
           </div>
         </div>
       </div>
-
       <div className="operate">
         <p className="amount"> {t('Slider.Sniper')}</p>
         <div className="row">
@@ -627,7 +759,11 @@ export default function index() {
           }
         }}
       >
-        {user?.uid ? t('Slider.Confirm') : t('Common.Connect Wallet')}
+        {user?.uid
+          ? isChain === 'more'
+            ? t('Slider.Confirm')
+            : t('Slider.Confirm')
+          : t('Common.Connect Wallet')}
       </div>
       <SelectTokenModal
         open={open}
@@ -635,12 +771,25 @@ export default function index() {
         chainId={chainId}
         onChange={(data) => {
           setUserToken(data);
-          getAmount(value, quotePath, data);
-          setIsShow(true);
+          getBalance(
+            data?.contractAddress,
+            contractConfig?.wethAddress,
+            loginPrivider
+          );
+          setIsBalance(true);
+          if (value) {
+            getAmount(value, quotePath, data);
+            setIsShow(true);
+          }
           setOpen(false);
         }}
         onCancel={() => setOpen(false)}
       />
+      {isChain === 'more' && (
+        <div className="coveredDust">
+          <Loading browser={browser} />
+        </div>
+      )}
     </div>
   );
 }

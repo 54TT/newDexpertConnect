@@ -1,8 +1,8 @@
-import { config } from '../../../src/config/config';
+import { config } from '@/config/config';
 import { RoutePlanner } from '../../planner';
 import { ethToWeth, wethToEth } from './swapEthAndWeth';
 import Decimal from 'decimal.js';
-import { expandToDecimalsBN } from '../../utils';
+import { expandToDecimalsBN } from '@/../utils/utils';
 
 export const getSwapEthAndWeth = async (
   chainId: string,

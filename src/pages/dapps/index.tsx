@@ -20,7 +20,7 @@ export default function index() {
       },
       key: 'swap',
     },
-    {
+     {
       status: params?.id === 'sniping',
       imgAc: '/snipingActive.png',
       img: '/snipingMore.png',
@@ -75,7 +75,7 @@ export default function index() {
         </div>
       </div>
       {params?.id === 'swap' && <Swap />}
-      {params?.id === 'sniping' && <Sniping />}
+      {params?.id === 'sniping' && <Sniping/>}
       {params?.id === 'buyBot' && <BuyBot />}
     </div>
   );

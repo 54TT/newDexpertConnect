@@ -1,4 +1,3 @@
-
 type ChainIdList = '1' | '11155111' | '8453';
 export const config: Record<ChainIdList, any> = {
   '1': {
@@ -11,7 +10,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV2FactoryAddress: '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f',
     uniswapV3FactoryAddress: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
-    universalRouterAddress: '0x6BbCe758B2b9427ef7B5049E8BD9ac6E8E2C6e97',
+    universalRouterAddress: '0x45ed48611aaa13b10aa2af1a954ed164e8662d36',
     wethAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     wethUsdtPairAddress: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
     wethDecimal: 18,
