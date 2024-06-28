@@ -53,6 +53,7 @@
     "Fee": "Fee"
   },
   "Slider": {
+    "max":"Max",
     "eth":"Click here to view on etherscan",
     "succ":"Transaction submitted successfully",
     "err":"Transaction error",

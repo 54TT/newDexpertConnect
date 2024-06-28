@@ -203,6 +203,7 @@ function Layout() {
   const clear = async () => {
     history('/re-register');
     cookie.remove('token');
+    cookie.remove('walletRdns');
     cookie.remove('currentAddress');
     changeBindind.current = '';
     cookie.remove('jwt');

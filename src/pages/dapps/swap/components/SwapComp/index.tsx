@@ -266,7 +266,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         // @ts-ignore
         (window?.ethereum as any)?.on('chainChanged', onChainChange);
       } catch (e) {
-        return null
+        return null;
       }
 
       (window as any)?.ethereum?.request({
@@ -298,6 +298,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     value: number,
     quotePath: string
   ) => {
+    console.log(value);
+    console.log(quotePath);
     if (value == null || value === 0) return;
     if (
       ((type === 'in' || type === 'out') && !tokenIn?.contractAddress) ||
@@ -307,11 +309,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
     setButtonLoading(true);
     setButtonDescId('7');
-
     const { uniswapV2RouterAddress } = contractConfig;
-
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
-
     const param = [
       chainId,
       provider,
@@ -336,11 +335,12 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
             param
           );
           amount = quoteAmount;
+          console.log(poolInfo);
           setSwapV3Pool(poolInfo);
         }
         setAmountOut(Number(amount.toString()));
       } catch (e) {
-        return null
+        return null;
       }
       setOutLoading(false);
     }
@@ -360,7 +360,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         }
         setAmountIn(Number(amount.toString()));
       } catch (e) {
-        return null
+        return null;
       }
       setInLoading(false);
     }
@@ -374,9 +374,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     provider,
   ]);
   // 处理approve
-  const handleApprove = async (
-    tokenContract: ethers.Contract,
-  ) => {
+  const handleApprove = async (tokenContract: ethers.Contract) => {
     const { permit2Address } = contractConfig;
     let approveTx;
     try {
@@ -390,7 +388,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     } catch (e) {
       setButtonDescId('1');
       setButtonLoading(false);
-      return null
+      return null;
     }
     const recipent = await approveTx.wait();
     // 1 成功 2 失败
@@ -422,7 +420,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     const intervalTime = uint === 'h' ? value * 3600 : value * 30;
     const dateTimeStamp =
       Number(String(Date.now()).slice(0, 10)) + intervalTime;
-
     const permitSingle: PermitSingle = {
       sigDeadline: dateTimeStamp,
       spender: universalRouterAddress,
@@ -459,6 +456,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
 
   // 获取交易字节码
   const getSwapBytes = async (data: any) => {
+    console.log('data============',data);
     const { ethAddress, wethAddress } = contractConfig;
     const {
       amountIn,
@@ -518,9 +516,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         }
       }
     };
-
     const { commands, inputs } = await getSwapBytesFn(tokenIn, tokenOut);
-
     let etherValue: any = BigNumber.from(0);
     if (tokenIn.contractAddress === contractConfig.ethAddress) {
       etherValue = expandToDecimalsBN(new Decimal(amountIn), 18);
@@ -621,7 +617,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await web3Provider.getSigner();
-
     const signerAddress = await signer.getAddress();
     const permit2Contract = new ethers.Contract(
       permit2Address,
@@ -651,9 +646,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         )
       ) {
         // 余额为0 或者余额 小于amount 需要approve
-        const successApprove = await handleApprove(
-          tokenInContract,
-        );
+        const successApprove = await handleApprove(tokenInContract);
         if (successApprove) {
           const { permit, signature } = await signPermit({
             signerAddress,
@@ -669,7 +662,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
             signature,
             recipientAddress: signerAddress,
           });
-
           sendSwap({
             commands,
             inputs,
@@ -742,7 +734,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           ],
         });
       } catch (e) {
-        return null
+        return null;
       }
     }
   };
@@ -784,7 +776,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           window?.ethereum
         );
         const balance = await getBalanceRpc(injectProvider, token, wethAddress);
-
         dispatch(balance);
       }
     },
