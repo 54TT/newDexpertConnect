@@ -10,6 +10,10 @@ import { CountContext } from '@/Layout';
 import { getERC20Contract } from '@utils/contracts';
 import { getHistoryToken, addHistoryToken } from '@utils/indexDBfn';
 import { ethers } from 'ethers';
+import axios from 'axios';
+import { getGraphQlQuery } from './const';
+import { CHAINID_TO_PAIR_QUERY_URL } from '@utils/judgeStablecoin';
+import React from 'react';
 export interface TokenItemData {
   symbol: string;
   name: string;
@@ -23,17 +27,34 @@ interface SelectTokenType {
   onChange: (data: TokenItemData) => void;
   chainName: string;
   disabledTokens: string[];
+  type: 'swap' | 'snip';
 }
 
 const { Search } = Input;
 
-function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
+function SelectToken({
+  onChange,
+  chainName,
+  disabledTokens,
+  type = 'swap', // 只能搜币对
+}: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
   const { provider, isLogin, chainId, loginPrivider } =
     useContext(CountContext);
+  console.log('rerender');
+
   /*   const [showSearch, setShowSearch] = useState(false); */
   const [historyItems, setHistoryItems] = useState([]);
   const memoryTokenList = useRef<TokenItemData[]>([]);
+  const [first] = useState(10); // graphQl pageSize;
+  const [skip, setSkip] = useState(0); // graphQl pageSKip;
+  const [poplurList, setPoplurList] = useState([]);
+  const [poplurTotals, setPoplurTotals] = useState(0);
+  const [searchPariTokenList, setSearchPariTokenList] = useState([]);
+  const [searchTotals, setSearchTotals] = useState(0);
+  const [searchTokenList, setSearchTokenList] = useState([]);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchString, setSearchString] = useState('');
   const memoryTokenTotal = useRef<number>(0);
   const [page, setPage] = useState(1);
   const [totalTokens, setTotalTokens] = useState(0);
@@ -52,9 +73,12 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     });
     const { tokens, totalTokens } = data;
     if (page === 1) {
+      setPoplurList(tokens || []);
+      setPoplurTotals(totalTokens);
       setTokenList(tokens || []);
       setTotalTokens(totalTokens);
     } else {
+      setPoplurList(tokenList.concat(tokens));
       setTokenList(tokenList.concat(tokens));
     }
   };
@@ -64,63 +88,109 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     getHotTradingToken(1);
   }, [chainName]);
 
-  const next = () => {
-    const newPage = page + 1;
-    getHotTradingToken(newPage);
-  };
+  const next = async () => {
+    if (!showSearch) {
+      const newPage = page + 1;
+      getHotTradingToken(newPage);
+      return;
+    }
+    if (showSearch && type === 'swap') {
+      console.log('run show next');
 
-  const clearSearch = () => {
-    if (memoryTokenList?.current?.length) {
-      setTokenList(memoryTokenList.current);
-      setTotalTokens(memoryTokenTotal.current);
+      const { data } = await getTokenPairList(
+        searchString,
+        { first, skip },
+        chainId
+      );
+      setSkip(first + skip);
+      const newData = searchPariTokenList.concat(data.pairs);
+      console.log(data, newData);
+
+      setSearchPariTokenList(newData);
+      setTokenList(newData);
     }
   };
 
   const onSearch = async (value: string) => {
     if (value === '') {
-      clearSearch();
+      setShowSearch(false);
+      setTokenList(poplurList);
+      setTotalTokens(poplurTotals);
+      setSkip(0);
       return;
     }
 
-    if (value.length !== 42) {
-      notification.warning({
-        message: 'please input address correctly',
-      });
-      return;
-    }
-    const tokenContract = await getERC20Contract(provider, value);
-    try {
-      const getSymbolAsync = tokenContract.symbol();
-      const getNameAsync = tokenContract.name();
-      const getDecimalsAsync = tokenContract.decimals();
-      const [symbol, name, decimals] = await Promise.all([
-        getSymbolAsync,
-        getNameAsync,
-        getDecimalsAsync,
-      ]);
-      const searchToken = {
-        symbol,
-        name,
-        decimals,
-        contractAddress: value,
-      };
-      memoryTokenList.current = tokenList;
-      memoryTokenTotal.current = totalTokens;
+    if (value.length == 42 && value.startsWith('0x')) {
+      if (type === 'snip') {
+        const tokenContract = await getERC20Contract(provider, value);
+        try {
+          const getSymbolAsync = tokenContract.symbol();
+          const getNameAsync = tokenContract.name();
+          const getDecimalsAsync = tokenContract.decimals();
+          const [symbol, name, decimals] = await Promise.all([
+            getSymbolAsync,
+            getNameAsync,
+            getDecimalsAsync,
+          ]);
+          const searchToken = {
+            symbol,
+            name,
+            decimals,
+            contractAddress: value,
+          };
+          memoryTokenList.current = tokenList;
+          memoryTokenTotal.current = totalTokens;
 
-      setTokenList([searchToken]);
-      setTotalTokens(1);
-    } catch (e) {
-      notification.warning({
-        message: 'please input address correctly',
-      });
+          setSearchTokenList([searchToken]);
+          setTokenList([searchToken]);
+          setSearchTotals(1);
+          setTotalTokens(1);
+        } catch (e) {
+          notification.warning({
+            message: 'please input address correctly',
+          });
+        }
+      }
+    } else {
+      const { data } = await getTokenPairList(
+        value,
+        { first, skip: 0 },
+        chainId
+      );
+      const totals = data.uniswapFactories[0].pairCount;
+      setSearchTokenList(totals);
+      setSearchPariTokenList(data.pairs);
+      setTokenList(data.pairs);
+      setSkip(first);
+      setTotalTokens(totals);
     }
+    setShowSearch(true);
+  };
+
+  const getTokenPairList = async (
+    str,
+    page: { first: number; skip: number },
+    chainId: string
+  ) => {
+    const { data } = await axios.post(
+      CHAINID_TO_PAIR_QUERY_URL[chainId],
+      getGraphQlQuery(str, page)
+    );
+    return data;
   };
 
   useEffect(() => {
     if (tokenList.length && totalTokens > tokenList.length) {
       const observeFn = (dom) => {
-        if (dom[0].isIntersecting && page >= 1) {
-          next();
+        if (dom[0].isIntersecting) {
+          console.log('at bottom');
+          if (showSearch && type === 'swap' && skip > 0) {
+            next();
+          } else {
+            if (!showSearch && type === 'snip' && page > 1) {
+              next();
+            }
+          }
         }
       };
       let io = new IntersectionObserver(observeFn);
@@ -150,6 +220,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   }, [isLogin, chainId, loginPrivider]);
 
   const memoClickTokenHistory = async (data) => {
+    if (showSearch && type === 'swap') return;
     if (!isLogin) return;
     const findIndex = historyItems.findIndex(
       (item) => item.contractAddress === data.contractAddress
@@ -177,7 +248,9 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     if (disabledTokens?.includes?.(item.contractAddress.toLowerCase())) {
       return;
     }
-    memoClickTokenHistory(item);
+    if (!showSearch && type !== 'swap') {
+      memoClickTokenHistory(item);
+    }
     onChange(item);
   };
 
@@ -187,6 +260,10 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
         className="select-token-search"
         placeholder="Token Contract Address"
         onSearch={onSearch}
+        onChange={(e) => {
+          setSearchString(e.target.value);
+        }}
+        value={searchString}
         allowClear
       />
       {isLogin && historyItems?.length ? (
@@ -207,36 +284,113 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
       ) : (
         <></>
       )}
-      <span className="popular-tokens token-list-title">Popular tokens</span>
+      <span className="popular-tokens token-list-title">Search Pair</span>
       <div id="scrollTarget">
-        <>
-          {tokenList?.map?.((item: TokenItemData) => (
-            <div
-              key={item.contractAddress}
-              className={`select-token-item ${disabledTokens?.includes?.(item.contractAddress) ? 'disable-token' : ''}`}
-              onClick={() => {
-                handleTokenSelect(item);
-              }}
-            >
-              <div className="select-token-item-info">
-                <DefaultTokenImg name={item.symbol} icon={item.logoUrl} />
-                <div className="token-item-info-box">
-                  <span className="select-token-item-info-symbol">
-                    {item.symbol}
-                  </span>
-                  <span className="select-token-item-info-address">
-                    {formatAddress(item.contractAddress)}
-                  </span>
-                </div>
-              </div>
-              <div className="select-token-item-balance">{item.balance}</div>
-            </div>
-          ))}
-          <span id="scroll-end-element"></span>
-        </>
+        <TokenList
+          tokenList={tokenList}
+          disabledTokens={disabledTokens}
+          handleTokenSelect={handleTokenSelect}
+          type={type}
+          showSearch={showSearch}
+        />
+        <span id="scroll-end-element"></span>
       </div>
     </div>
   );
 }
 
-export default SelectToken;
+export default React.memo(SelectToken, (prev, next) => {
+  const disabledTokensEqual = () => {
+    const [token0Prev, token1Prev] = prev.disabledTokens;
+    const [token0Next, token1Next] = next.disabledTokens;
+    return token0Prev === token0Next && token1Prev === token1Next;
+  };
+
+  return (
+    prev.type === next.type &&
+    disabledTokensEqual() &&
+    prev.chainName == next.chainName
+  );
+});
+
+const TokenList = ({
+  tokenList,
+  disabledTokens,
+  handleTokenSelect,
+  type,
+  showSearch,
+}) => {
+  const SingleToken = () => (
+    <>
+      {tokenList?.map?.((item: TokenItemData) => (
+        <div
+          key={item.contractAddress}
+          className={`select-token-item ${disabledTokens?.includes?.(item.contractAddress) ? 'disable-token' : ''}`}
+          onClick={() => {
+            handleTokenSelect(item);
+          }}
+        >
+          <div className="select-token-item-info">
+            <DefaultTokenImg name={item.symbol} icon={item.logoUrl} />
+            <div className="token-item-info-box">
+              <span className="select-token-item-info-symbol">
+                {item.symbol}
+              </span>
+              <span className="select-token-item-info-address">
+                {formatAddress(item.contractAddress)}
+              </span>
+            </div>
+          </div>
+          <div className="select-token-item-balance">{item.balance}</div>
+        </div>
+      ))}
+    </>
+  );
+
+  const PairToken = () => (
+    <>
+      {tokenList?.map?.((item: TokenItemData) => (
+        <div
+          key={item?.id}
+          className={`select-token-item`}
+          onClick={() => {
+            /* handleTokenSelect(item); */
+            console.log(item);
+          }}
+        >
+          <div className="select-token-item-info">
+            <DefaultTokenImg name={item?.token0?.symbol} icon={''} />
+            <DefaultTokenImg
+              style={{ marginLeft: '-12px' }}
+              name={item?.token1?.symbol}
+              icon={''}
+            />
+            <div className="token-item-info-box">
+              <span className="select-token-item-info-symbol">
+                {`${item?.token0?.symbol} / ${item?.token1?.symbol}`}
+              </span>
+              <span className="select-token-item-info-address">
+                {formatAddress(item?.id)}
+              </span>
+            </div>
+          </div>
+          <div className="select-token-item-balance">{item?.balance}</div>
+        </div>
+      ))}
+    </>
+  );
+
+  if (type === 'swap') {
+    if (showSearch) {
+      return <PairToken />;
+    } else {
+      return <SingleToken />;
+    }
+  } else {
+    if (showSearch) {
+      return <SingleToken />;
+    } else {
+      return <SingleToken />;
+    }
+  }
+};
