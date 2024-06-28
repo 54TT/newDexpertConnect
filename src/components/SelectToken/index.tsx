@@ -152,19 +152,21 @@ function SelectToken({
         }
       }
     } else {
-      const { data } = await getTokenPairList(
-        value,
-        { first, skip: 0 },
-        chainId
-      );
-      const totals = data.uniswapFactories[0].pairCount;
-      setSearchTokenList(totals);
-      setSearchPariTokenList(data.pairs);
-      setTokenList(data.pairs);
-      setSkip(first);
-      setTotalTokens(totals);
+      if (type === 'swap') {
+        const { data } = await getTokenPairList(
+          value,
+          { first, skip: 0 },
+          chainId
+        );
+        const totals = data.uniswapFactories[0].pairCount;
+        setSearchTokenList(totals);
+        setSearchPariTokenList(data.pairs);
+        setTokenList(data.pairs);
+        setSkip(first);
+        setTotalTokens(totals);
+      }
+      setShowSearch(true);
     }
-    setShowSearch(true);
   };
 
   const getTokenPairList = async (
@@ -183,7 +185,6 @@ function SelectToken({
     if (tokenList.length && totalTokens > tokenList.length) {
       const observeFn = (dom) => {
         if (dom[0].isIntersecting) {
-          console.log('at bottom');
           if (showSearch && type === 'swap' && skip > 0) {
             next();
           } else {
