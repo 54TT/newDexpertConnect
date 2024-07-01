@@ -91,6 +91,8 @@ export const CHAINID_TO_PAIR_QUERY_URL = {
   8453: 'https://dexpertpairs.lol/subgraphs/name/base/uniswapv2',
   56: 'https://dexpertpairs.lol/subgraphs/name/bsc/uniswapv2',
   10: 'https://dexpertpairs.lol/subgraphs/name/optimism/uniswapv2',
+  // 测试节点，用于Swap搜索 Pair
+  11155111: 'https://dexpertpairs.lol/subgraphs/name/ethereum/uniswapv2',
 };
 
 export const rpcLink: any = {
