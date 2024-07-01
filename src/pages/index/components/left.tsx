@@ -1,4 +1,4 @@
-import { Select, Tooltip } from 'antd';
+import { Select, Tooltip, Input, Modal } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loading from '@/components/allLoad/loading.tsx';
 import Load from '@/components/allLoad/load.tsx';
@@ -11,10 +11,19 @@ import { getGas } from '../../../../utils/getGas.ts';
 import Nodata from '../../../components/Nodata.tsx';
 import ChooseChain from '../../../components/chooseChain.tsx';
 import { chainParams } from '@utils/judgeStablecoin.ts';
+import { SearchOutlined } from '@ant-design/icons';
+const { Search } = Input;
 function Left() {
   const hei = useRef<any>();
-  const { ethPrice, moreLoad, tableDta, setDta, wait, changePage } =
-    newPair() as any;
+  const {
+    ethPrice,
+    moreLoad,
+    tableDta,
+    setDta,
+    wait,
+    changePage,
+    setSearchStr,
+  } = newPair() as any;
   const { browser, switchChain, setSwitchChain }: any =
     useContext(CountContext);
   const [tableHei, setTableHei] = useState('');
@@ -22,6 +31,8 @@ function Left() {
   const time = '24h';
   const [gas, setGas] = useState<string>('');
   const [gasLoad, setGasLoad] = useState(true);
+  const [searchModal, setSearchModal] = useState(false);
+  const [] = useState(false);
   const gasOb = async () => {
     const data: any = await getGas(switchChain);
     if (data) {
@@ -46,6 +57,11 @@ function Left() {
     setSelect(value);
   };
   const { t } = useTranslation();
+
+  const onSearchPair = (v: string) => {
+    setSearchStr(v);
+  };
+
   return (
     <div className={'indexBox'} style={{ width: browser ? '74%' : 'auto' }}>
       {/* top*/}
@@ -84,6 +100,21 @@ function Left() {
               { value: 'watch', label: t('Market.Favorites'), disabled: true },
             ]}
           />
+          {browser ? (
+            <div className="pair-search">
+              <Search
+                className="common-search"
+                placeholder={t('Common.SearchPairPlaceholder')}
+                onSearch={onSearchPair}
+                allowClear
+              />
+            </div>
+          ) : (
+            <SearchOutlined
+              style={{ color: '#fff', marginLeft: '8px', fontSize: '18px' }}
+              onClick={() => setSearchModal(true)}
+            />
+          )}
         </div>
         {/* <Segmented options={['5m', '1h', '6h', '24h']} onChange={changSeg} className={'homeSegmented'} defaultValue={'24h'} /> */}
         <div className={`indexRight dis`}>
@@ -208,6 +239,18 @@ function Left() {
       >
         <Load />
       </div>
+      <Modal
+        open={searchModal}
+        onCancel={() => setSearchModal(false)}
+        footer={null}
+      >
+        <Search
+          className="common-search pair-search-modal"
+          placeholder={t('Common.SearchPairPlaceholder')}
+          onSearch={onSearchPair}
+          allowClear
+        />
+      </Modal>
     </div>
   );
 }
