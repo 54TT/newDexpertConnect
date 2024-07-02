@@ -42,7 +42,7 @@ import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
 import { config } from './config/config.ts';
 import checkConnection from '@utils/checkConnect.ts';
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 import Decimal from 'decimal.js';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
@@ -202,6 +202,7 @@ function Layout() {
   };
   const clear = async () => {
     history('/re-register');
+    setLoginPrivider(null)
     cookie.remove('token');
     cookie.remove('walletRdns');
     cookie.remove('currentAddress');

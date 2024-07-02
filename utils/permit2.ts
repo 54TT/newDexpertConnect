@@ -81,14 +81,16 @@ export async function getPermitSignature(
   permit2Contract: any,
   signerAddress: string
 ) {
-  // look up the correct nonce for this permit
-  const nextNonce = (
-    await permit2Contract.allowance(
-      signerAddress,
-      permit.details.token,
-      permit.spender
-    )
-  ).nonce;
-  permit.details.nonce = nextNonce;
+  if(!permit?.details?.nonce){
+    const nextNonce = (
+      await permit2Contract.allowance(
+        signerAddress,
+        permit.details.token,
+        permit.spender
+      )
+    ).nonce;
+    permit.details.nonce = nextNonce;
+  }
+
   return await signPermit(chainId, permit, permit2Contract.address);
 }

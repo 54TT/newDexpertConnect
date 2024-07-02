@@ -252,7 +252,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       setButtonDisable(true);
     }
   };
-
   useEffect(() => {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
@@ -560,7 +559,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     const intervalTime = uint === 'h' ? value * 3600 : value * 60;
     const dateTimeStamp =
       Number(String(Date.now()).slice(0, 10)) + intervalTime;
-
     let tx;
     try {
       tx = await universalRouterWriteContract['execute(bytes,bytes[],uint256)'](

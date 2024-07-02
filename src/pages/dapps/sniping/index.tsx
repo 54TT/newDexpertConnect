@@ -20,7 +20,6 @@ import getBalanceRpc from '@utils/getBalanceRpc';
 import SelectTokenModal from '@/components/SelectTokenModal';
 import { getUniswapV2RouterContract } from '@utils/contracts';
 import {
-  CHAIN_NAME_TO_CHAIN_ID,
   CHAIN_NAME_TO_CHAIN_ID_HEX,
   CHAIN_VERSION_TO_CHAIN_ID,
 } from '@utils/constants';
@@ -62,11 +61,12 @@ export default function index() {
   // 余额
   const [balance, setBalance] = useState(0);
   const [isBalance, setIsBalance] = useState(true);
-  // 数量
+  //  输入 数量
   const [value, setValue] = useState(0);
   const [chainId, setChainId] = useState('1');
   const [chain, setChain] = useState<any>();
   const [contractConfig, setContractConfig] = useState<any>();
+  // 当前链的
   const [provider, setProvider] = useState<any>();
   // 是否切换链
   const [isChain, setIsChain] = useState('more');
@@ -82,19 +82,29 @@ export default function index() {
         implement(rpcProvider);
       }
     }
-    getBalance(
-      newConfig?.defaultTokenIn?.contractAddress,
-      newConfig?.wethAddress,
-      loginPrivider
-    );
-    setIsBalance(true);
+    if (loginPrivider) {
+      setIsBalance(true);
+      getBalance(
+        newConfig?.defaultTokenIn?.contractAddress,
+        newConfig?.wethAddress,
+        loginPrivider
+      );
+    } else {
+      setIsBalance(false);
+    }
     setProvider(rpcProvider);
   };
+
+  useEffect(() => {
+    if (!user?.uid) {
+      setIsChain('error');
+    }
+  }, []);
   useEffect(() => {
     if (loginPrivider && isLogin) {
-      changePrivider(chainId);
       changeChain();
     }
+    changePrivider(chainId);
     return () => {
       // @ts-ignore
       (loginPrivider as any)?.removeListener?.('chainChanged', onChainChange);
@@ -103,8 +113,10 @@ export default function index() {
   //  pass  卡
   const [payType, setPayType] = useState('0');
   const [gasPrice, setGasPrice] = useState(0);
+
   //  使用的token
   const [useToken, setUserToken] = useState<any>();
+  console.log(useToken);
   const [params, setParams] = useState<any>({
     MaximumSlip: 'Auto',
     GasPrice: 'Auto',
@@ -113,6 +125,7 @@ export default function index() {
     OrderDeadlineValue: 30,
     OrderDeadlineType: 'Min',
   });
+  console.log(params);
   const searchChange = async (e: any) => {
     setSearchValue(e.target.value);
     if (e.target.value.length !== 42) {
@@ -258,12 +271,11 @@ export default function index() {
       new Decimal(amountOut),
       recipientAddress,
       payType == '0' ? 1 : 0,
-      0,
+      1,
       quotePath === '1' ? swapV3Pool?.fee : null,
       permit,
       signature,
     ].filter((item) => item !== null);
-
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
         (tokenIn.contractAddress === ethAddress ||
@@ -303,7 +315,8 @@ export default function index() {
     amount,
     permit2Contract,
     signer,
-  }) => {
+    nonce,
+  }: any) => {
     const { universalRouterAddress } = contractConfig;
     const intervalTime = 0.5 * 3600;
     const dateTimeStamp =
@@ -315,7 +328,7 @@ export default function index() {
         token,
         amount,
         expiration: 0,
-        nonce: 0,
+        nonce: nonce,
       },
     };
     let signatureData;
@@ -337,17 +350,24 @@ export default function index() {
     } catch (e) {
       return null;
     }
-
     return signatureData;
   };
+  // sniper
   const goSniping = async () => {
     // token   useToken
     // 判断输入的数量 不大于  拥有的
-    if (Number(value) <= Number(balance)) {
+    //  s'lian
+    if (Number(value) <= Number(balance) && params?.TradeDeadlineValue) {
       const { permit2Address } = contractConfig;
       const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
-      const signer = await web3Provider.getSigner();
+      const signer = web3Provider.getSigner();
       const signerAddress = await signer.getAddress();
+      const signerAcount = web3Provider.getSigner(signerAddress);
+      const nonce = await web3Provider.getTransactionCount(
+        signerAddress,
+        'latest'
+      );
+      console.log(nonce);
       const permit2Contract = new ethers.Contract(
         permit2Address,
         Permit2Abi,
@@ -360,8 +380,9 @@ export default function index() {
         amount: expandToDecimalsBN(new Decimal(value), decimals),
         permit2Contract,
         signer,
+        nonce,
       });
-      const { commands, inputs, etherValue } = await getSwapBytes({
+      const { commands, inputs } = await getSwapBytes({
         amountIn: value,
         amountOut: 0,
         tokenIn: useToken,
@@ -370,8 +391,125 @@ export default function index() {
         signature,
         recipientAddress: signerAddress,
       });
-      console.log(commands, inputs, etherValue);
+      const intervalTime =
+        params?.TradeDeadlineType === 'Min'
+          ? params?.TradeDeadlineValue * 60
+          : params?.TradeDeadlineValue * 3600;
+      const dateTimeStamp =
+        Number(String(Date.now()).slice(0, 10)) + intervalTime;
+      const values = ethers.utils.defaultAbiCoder.encode(
+        ['bytes', 'bytes[]', 'uint256'],
+        [commands, inputs, dateTimeStamp]
+      );
+      if (values) {
+        const ethBigInit = new Decimal(value)
+          .mul(new Decimal(10).pow(new Decimal(Number(useToken?.decimals))))
+          .toFixed(0);
+        const tx = {
+          to: contractConfig?.universalRouterAddress,
+          // to: signerAddress,
+          value: useToken?.name === 'ETH' ? ethBigInit : 0,
+          data: values,
+          maxPriorityFeePerGas: ethers.utils.parseUnits('100', 'gwei'), // 设置 gasPrice，单位为 wei
+          gasLimit: 200000, // 设置 gasLimit
+          maxFeePerGas: ethers.utils.parseUnits('200', 'gwei'),
+          nonce: nonce,
+          type: 2, // 交易类型 2 (EIP-1559)
+          chainId: Number(chainId),
+        };
+        // 私钥
+        // const wallet = new ethers.Wallet(
+        //   '0f238c25479d60f4025c4d3e35df3012aa2cb01638c1112d1e5a19ec62f36d8f',
+        //   provider
+        // );
+        // const signedTxssss = await wallet.signTransaction(tx);
+        // const signedTxsssdsadsadasds =
+        //   await web3Provider.sendTransaction(signedTxssss);
+        // console.log(signedTxssss);
+        // console.log(signedTxsssdsadsadasds);
+
+        // 签名交易  0xb1Ef7099B9ee63cB1128FA899b94970617Cc6eA6
+        const signedTx = await signerAcount.signMessage(JSON.stringify(tx));
+        console.log(signedTx);
+        // 发送签名后的交易到以太坊网络
+        const txResponse = await web3Provider.sendTransaction(signedTx);
+        console.log(txResponse);
+        if (0) {
+          // 转换交易数据为符合 EIP-712 格式的字节码
+          const typedData = {
+            types: {
+              EIP712Domain: [
+                { name: 'name', type: 'string' },
+                { name: 'version', type: 'string' },
+                { name: 'chainId', type: 'uint256' },
+                { name: 'verifyingContract', type: 'address' },
+              ],
+              Transaction: [
+                { name: 'to', type: 'address' },
+                { name: 'value', type: 'uint256' },
+                { name: 'gas', type: 'uint256' },
+                { name: 'gasPrice', type: 'uint256' },
+                { name: 'nonce', type: 'uint256' },
+                { name: 'data', type: 'string' },
+              ],
+            },
+            primaryType: 'Transaction',
+            domain: {
+              name: 'Dexpert',
+              version: '1.0',
+              chainId: Number(chainId), // 主网的 chainId
+              verifyingContract: contractConfig?.universalRouterAddress, // 验证合约地址
+            },
+            message: {
+              to: contractConfig?.universalRouterAddress,
+              maxFeePerGas: 15,
+              value: useToken?.name === 'ETH' ? ethBigInit : '',
+              gas: 21000,
+              data: values,
+              // gasPrice: ethers.utils.parseUnits('10', 'gwei'),
+              gasPrice: 10,
+              nonce: nonce,
+            },
+          };
+          // const txResponse = await wallet.sendTransaction(yy);
+          // console.log(txResponse)
+          const signedTx = await web3Provider.send('eth_signTypedData_v4', [
+            signerAddress,
+            JSON.stringify(typedData),
+          ]);
+          console.log(signedTx);
+          // if (signedTx) {
+          const txResponse = await signer.sendTransaction(signedTx);
+          console.log(txResponse);
+        }
+
+        // }
+        // const signedTx = await provider.send('eth_signTypedData_v4', [
+        //   signerAddress,
+        //   tx,
+        // ]);
+        // const signedTx = await web3Provider.send('eth_signTransaction', [tx]);
+        // const signedTx = await loginPrivider.request({
+        //   method: 'eth_signTransaction',
+        //   params: [tx, signerAddress],
+        // });
+        // const signedTx = await sign.signTransaction(tx);
+        // const signedTx = await signer.signTransaction(tx);
+        // const serializedTx =  ethers.utils.serialize(tx);
+        // console.log(serializedTx);
+        // // 使用 signer.signMessage 方法签名序列化后的交易数据
+        // const signature = await signer.signMessage(
+        //   ethers.utils.arrayify(serializedTx)
+        // );
+        // console.log(signature);
+        // const signedTx = ethers.utils.serialize(tx, signature);
+
+        // const signedTxs = await provider.sign(tx);
+        // console.log(values);
+        // console.log('Transaction Hash:', txResponse);
+      }
     }
+
     // const tt = await getAll({
     //   method: 'post',
     //   url: '/api/v1/sniper/preswap',
@@ -382,7 +520,6 @@ export default function index() {
     // if (tt?.status === 200) {
     // }
   };
-
   const onChangeGas = (e: any) => {
     setGasPrice(e);
   };
@@ -390,7 +527,6 @@ export default function index() {
     getAmount(e, quotePath);
     setIsShow(true);
   }, 1000);
-
   //  判断是否支持的链
   const supportedChain = (chain: string) => {
     if (chain === '0x1' || chain === '0x2105' || chain === '0xaa36a7') {
@@ -431,13 +567,9 @@ export default function index() {
       }
     }
   };
-
   const changeWalletChain = async (v: any) => {
     const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v.value];
-    const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v.value];
-    if (!isLogin) {
-      setChainId(evmChainId);
-    } else {
+    if (loginPrivider) {
       // 有evm钱包环境
       try {
         //@ts-ignore
@@ -460,7 +592,6 @@ export default function index() {
     //   setChainId(evmChainId);
     // }
   };
-
   const mask = { 0: '100%', 25: '125%', 50: '150%', 75: '175%', 100: '200%' };
   return (
     <div className="sniping" style={{ width: browser ? '45%' : '95%' }}>
@@ -523,8 +654,10 @@ export default function index() {
               data={quotePath}
               onChange={(key: string) => {
                 setQuotePath(key);
-                setIsShow(true);
-                getAmount(value, key);
+                if (loginPrivider) {
+                  setIsShow(true);
+                  getAmount(value, key);
+                }
               }}
             />
             {/* 选择token */}
@@ -579,7 +712,7 @@ export default function index() {
       </div>
       <div className="operate">
         <p className="amount"> {t('Slider.Sniper')}</p>
-        <div className="row">
+        {/* <div className="row">
           <p> {t('Slider.Maximum')}</p>
           <div className="time">
             <Segmented
@@ -594,7 +727,7 @@ export default function index() {
               }}
             />
           </div>
-        </div>
+        </div> */}
         {params?.MaximumSlip === 'Customize' && (
           <div className="sidle">
             <Slider
@@ -767,20 +900,23 @@ export default function index() {
       </div>
       <SelectTokenModal
         open={open}
+        type="snip"
         disabledTokens={[useToken?.contractAddress?.toLowerCase?.()]}
         chainId={chainId}
         onChange={(data) => {
-          setUserToken(data);
-          getBalance(
-            data?.contractAddress,
-            contractConfig?.wethAddress,
-            loginPrivider
-          );
-          setIsBalance(true);
-          if (value) {
-            getAmount(value, quotePath, data);
-            setIsShow(true);
+          if (loginPrivider) {
+            getBalance(
+              data?.contractAddress,
+              contractConfig?.wethAddress,
+              loginPrivider
+            );
+            setIsBalance(true);
+            if (value) {
+              getAmount(value, quotePath, data);
+              setIsShow(true);
+            }
           }
+          setUserToken(data);
           setOpen(false);
         }}
         onCancel={() => setOpen(false)}
