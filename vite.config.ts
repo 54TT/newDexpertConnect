@@ -4,6 +4,9 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    sourcemap: 'inline',
+  },
   resolve: {
     alias: {
       // 可以通过别名导入 ethers.js，以避免直接引用 node_modules 中的路径
