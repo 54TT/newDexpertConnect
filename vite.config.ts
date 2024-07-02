@@ -5,7 +5,7 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [react()],
   build: {
-    sourcemap: 'inline',
+    sourcemap: true,
   },
   resolve: {
     alias: {
