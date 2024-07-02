@@ -113,10 +113,8 @@ export default function index() {
   //  pass  卡
   const [payType, setPayType] = useState('0');
   const [gasPrice, setGasPrice] = useState(0);
-
   //  使用的token
   const [useToken, setUserToken] = useState<any>();
-  console.log(useToken);
   const [params, setParams] = useState<any>({
     MaximumSlip: 'Auto',
     GasPrice: 'Auto',
@@ -125,7 +123,6 @@ export default function index() {
     OrderDeadlineValue: 30,
     OrderDeadlineType: 'Min',
   });
-  console.log(params);
   const searchChange = async (e: any) => {
     setSearchValue(e.target.value);
     if (e.target.value.length !== 42) {
@@ -362,12 +359,10 @@ export default function index() {
       const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
       const signer = web3Provider.getSigner();
       const signerAddress = await signer.getAddress();
-      const signerAcount = web3Provider.getSigner(signerAddress);
       const nonce = await web3Provider.getTransactionCount(
         signerAddress,
         'latest'
       );
-      console.log(nonce);
       const permit2Contract = new ethers.Contract(
         permit2Address,
         Permit2Abi,
@@ -427,13 +422,6 @@ export default function index() {
         //   await web3Provider.sendTransaction(signedTxssss);
         // console.log(signedTxssss);
         // console.log(signedTxsssdsadsadasds);
-
-        // 签名交易  0xb1Ef7099B9ee63cB1128FA899b94970617Cc6eA6
-        const signedTx = await signerAcount.signMessage(JSON.stringify(tx));
-        console.log(signedTx);
-        // 发送签名后的交易到以太坊网络
-        const txResponse = await web3Provider.sendTransaction(signedTx);
-        console.log(txResponse);
         if (0) {
           // 转换交易数据为符合 EIP-712 格式的字节码
           const typedData = {
@@ -482,7 +470,6 @@ export default function index() {
           const txResponse = await signer.sendTransaction(signedTx);
           console.log(txResponse);
         }
-
         // }
         // const signedTx = await provider.send('eth_signTypedData_v4', [
         //   signerAddress,
@@ -886,7 +873,9 @@ export default function index() {
         className="confirm"
         onClick={() => {
           if (user?.uid) {
-            goSniping();
+            if(0){
+              goSniping();
+            }
           } else {
             setIsModalOpen(true);
           }

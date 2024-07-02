@@ -41,8 +41,6 @@ function SelectToken({
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
   const { provider, isLogin, chainId, loginPrivider } =
     useContext(CountContext);
-  console.log('rerender');
-
   /*   const [showSearch, setShowSearch] = useState(false); */
   const [historyItems, setHistoryItems] = useState([]);
   const memoryTokenList = useRef<TokenItemData[]>([]);
@@ -350,7 +348,7 @@ const TokenList = ({
 
   const PairToken = () => (
     <>
-      {tokenList?.map?.((item: TokenItemData) => (
+      {tokenList?.map?.((item: any) => (
         <div
           key={item?.id}
           className={`select-token-item`}

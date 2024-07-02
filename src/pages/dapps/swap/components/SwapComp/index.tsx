@@ -34,7 +34,6 @@ import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
 import ChooseChain from '@/components/chooseChain';
 import {
-  CHAIN_ID_TO_CHAIN_NAME,
   CHAIN_NAME_TO_CHAIN_ID,
   CHAIN_NAME_TO_CHAIN_ID_HEX,
 } from '@utils/constants';
@@ -59,7 +58,6 @@ interface SwapCompType {
   initChainId?: string; // 初始化的chainId;
   initToken?: [tokenIn: TokenItemData, toeknOut: TokenItemData]; // 初始化的token
 }
-
 function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   const {
     provider,
@@ -114,8 +112,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       setAmountOut(0);
     }
     if (initChainId) {
-      const chianName = CHAIN_ID_TO_CHAIN_NAME[initChainId];
-      changeWalletChain(chianName);
+      changeWalletChain(initChainId);
     }
   };
 
@@ -126,7 +123,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
 
   useEffect(() => {
     initData();
-  }, []);
+  }, [initToken]);
 
   const getTransactionFee = async (data) => {
     const fee = await getSwapFee({ ...data, swapType: 0 });
@@ -763,12 +760,9 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     async (token, dispatch) => {
       const { wethAddress } = contractConfig;
       if (checkConnection() && token) {
-        console.log('loginPrivider--------------',loginPrivider)
         // @ts-ignore
         const injectProvider = new ethers.providers.Web3Provider(loginPrivider);
-        console.log('111111111111111',token, wethAddress)
         const balance = await getBalanceRpc(injectProvider, token, wethAddress);
-        console.log('22222222222',balance)
         dispatch(balance);
       }
     },

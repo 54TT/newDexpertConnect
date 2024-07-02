@@ -130,21 +130,39 @@ export const chainParams = [
   { value: 'Celo', icon: '/Celo.svg', hide: true },
 ];
 export const swapChain = [
-  { value: 'Ethereum', icon: '/EthereumCoin.svg',chainId:'1',key:'0x1' },
+  { value: 'Ethereum', icon: '/EthereumCoin.svg', chainId: '1', key: '0x1' },
   {
     value: 'Arbitrum',
     icon: '/Arbitrum.svg',
     disabled: true,
-    key:'0xa4b1',chainId:'42161'
+    key: '0xa4b1',
+    chainId: '42161',
   },
-  { value: 'BSC', icon: '/BNBChain.svg', disabled: true,key:'0x38',chainId:'56' },
-  { value: 'Optimism', icon: '/Optimism.svg', disabled: true,chainId:'10',key:'0xa' },
+  {
+    value: 'BSC',
+    icon: '/BNBChain.svg',
+    disabled: true,
+    key: '0x38',
+    chainId: '56',
+  },
+  {
+    value: 'Optimism',
+    icon: '/Optimism.svg',
+    disabled: true,
+    chainId: '10',
+    key: '0xa',
+  },
   { value: 'Blast', icon: '/Blast.svg', hide: true },
   {
     value: 'Base',
     icon: '/BASE.png',
-    key:'0x2105',chainId:'8453'
+    key: '0x2105',
+    chainId: '8453',
   },
-  { value: 'Sepolia', icon: '/unkonwLogo.png' ,key:"0xaa36a7",chainId:'11155111'},
+  {
+    value: 'Sepolia',
+    icon: '/unkonwLogo.png',
+    key: '0xaa36a7',
+    chainId: '11155111',
+  },
 ];
-
