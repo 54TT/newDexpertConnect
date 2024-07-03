@@ -48,11 +48,11 @@ function Community() {
     user: <Profile />,
   };
   return (
-    <div className="community-page" style={{width:browser?'90%':'98%'}}>
+    <div className="community-page" style={{ width: browser ? '90%' : '98%' }}>
       {
         <div
           className="community-page-left"
-          style={{ display: browser ? 'block' : 'none', }}
+          style={{ display: browser ? 'block' : 'none' }}
         >
           <UserInfo
             activeTab={activeUserTab}
@@ -61,8 +61,11 @@ function Community() {
         </div>
       }
       <div
-        className="community-page-content" 
-        style={{ width: browser ? '56%' : '100%' ,borderRadius:browser?" 0 10px 0 0":'15px'}}
+        className="community-page-content"
+        style={{
+          width: browser ? '56%' : '100%',
+          borderRadius: browser ? ' 0 10px 0 0' : '15px',
+        }}
       >
         {ComponentMap[activeUserTab as ActiveTabType]}
       </div>

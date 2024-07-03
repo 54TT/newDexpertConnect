@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { DeleteOutlined } from '@ant-design/icons';
 import { setMany, simplify } from '@/../utils/change.ts';
-import { throttle } from 'lodash';
+import { method, throttle } from 'lodash';
 import { Popconfirm } from 'antd';
 import NotificationChange from './message';
 import { useTranslation } from 'react-i18next';
@@ -190,6 +190,26 @@ function Tweets({
     { trailing: false }
   );
 
+  const handleShare = async () => {
+    const token = cookie.get('token');
+    const jwt = cookie.get('jwt');
+    if (!token && !jwt) {
+      return NotificationChange('warning', t('Market.line'));
+    }
+    const { data } = await getAll({
+      method: 'post',
+      url: '/api/v1/post/share/add',
+      data: {
+        postId: localData.postId,
+      },
+      token,
+    });
+    setLocalData({
+      ...localData,
+      SharesCnt: data.shareCnt,
+    });
+  };
+
   return (
     <>
       <div
@@ -218,9 +238,16 @@ function Tweets({
               }}
             />
             <div>
-              <div className="disDis" style={{ flexDirection: 'row',fontSize:"18px" }}>
+              <div
+                className="disDis"
+                style={{ flexDirection: 'row', fontSize: '18px' }}
+              >
                 <span>
-                  {simplify(localData?.user?.username?localData?.user?.username:localData?.user?.address)}
+                  {simplify(
+                    localData?.user?.username
+                      ? localData?.user?.username
+                      : localData?.user?.address
+                  )}
                 </span>
                 {Number(localData?.user?.level) ? (
                   <img
@@ -344,16 +371,13 @@ function Tweets({
               src="/share.svg"
               style={{ width: '19px' }}
               alt=""
+              onClick={handleShare}
             />
-            <span>
-              {setMany(Math.ceil(Math.random() * 10 + Math.random() * 100))}
-            </span>
+            <span>{localData?.SharesCnt || '0'}</span>
           </p>
           <p className={'tweetsIn look-icon'}>
             <img loading={'lazy'} src="/look.svg" alt="" />
-            <span style={{ whiteSpace: 'nowrap' }}>
-              {setMany(Math.ceil(Math.random() * 1000 + Math.random() * 1000))}
-            </span>
+            <span style={{ whiteSpace: 'nowrap' }}>{localData.ViewsCnt}</span>
           </p>
         </div>
       </div>
