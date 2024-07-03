@@ -93,7 +93,6 @@ function SelectToken({
       return;
     }
     if (showSearch && type === 'swap') {
-      console.log('run show next');
 
       const { data } = await getTokenPairList(
         searchString,
@@ -102,8 +101,6 @@ function SelectToken({
       );
       setSkip(first + skip);
       const newData = searchPariTokenList.concat(data.pairs);
-      console.log(data, newData);
-
       setSearchPariTokenList(newData);
       setTokenList(newData);
     }
@@ -181,7 +178,6 @@ function SelectToken({
     if (tokenList.length && totalTokens > tokenList.length) {
       const observeFn = (dom) => {
         if (dom[0].isIntersecting) {
-          console.log('at bottom');
           if (showSearch && type === 'swap' && skip > 0) {
             next();
           } else {
@@ -354,7 +350,6 @@ const TokenList = ({
           className={`select-token-item`}
           onClick={() => {
             /* handleTokenSelect(item); */
-            console.log(item);
           }}
         >
           <div className="select-token-item-info">

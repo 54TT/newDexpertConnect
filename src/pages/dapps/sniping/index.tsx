@@ -11,7 +11,6 @@ import NotificationChange from '@/components/message';
 import Decimal from 'decimal.js';
 import _ from 'lodash';
 import { BigNumber, ethers } from 'ethers';
-import Request from '@/components/axios';
 import { Permit2Abi } from '@abis/Permit2Abi';
 import { getSwapEthAndWeth } from '@utils/swap/v2/getSwapEthAndWeth';
 import QuotoPathSelect from '@/components/QuotoPathSelect';
@@ -47,7 +46,6 @@ export default function index() {
     fee: 0,
     poolAddress: '',
   });
-  const { getAll } = Request();
   const [maximumSlipValue, setMaximumSlipValue] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   // sniper   token

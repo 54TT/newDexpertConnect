@@ -155,7 +155,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       const { quoteAmount } = await getV3AmountOut.apply(null, data);
       amount = quoteAmount;
     }
-
     return amount.toNumber() < 0.000001
       ? '< 0.000001'
       : parseFloat(amount.toFixed(6)).toString();
@@ -253,7 +252,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
-  const onChainChange = (targetChainId,) => {
+  const onChainChange = (targetChainId) => {
     setChainId(Number(targetChainId).toString());
   };
 
@@ -331,7 +330,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           amount = quoteAmount;
           setSwapV3Pool(poolInfo);
         }
-        setAmountOut(Number(amount.toString()));
+        const aa = amount.toString();
+        setAmountOut(Number(aa));
       } catch (e) {
         return null;
       }
@@ -741,7 +741,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     );
     if (pairAddress) {
       const res = await getTokenPrice(provider, chainId, pairAddress);
-      console.log(res);
     }
   }; */
 
