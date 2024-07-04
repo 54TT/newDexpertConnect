@@ -141,7 +141,6 @@ function HeaderModal() {
           (item: any) =>
             item?.info?.name === i?.key || item?.info?.rdns === i?.value
         );
-        console.log(data);
         if (data.length > 0) {
           //   判断是否是   phantom钱包  solana连接
           connectWallet(data[0]);

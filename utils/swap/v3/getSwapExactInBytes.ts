@@ -1,4 +1,4 @@
-import { config } from '../../../src/config/config';
+import { config } from '@/config/config';
 import { RoutePlanner } from '../../planner';
 import { erc20ToETH, erc20ToErc20, ethToErc20 } from './swapExactIn';
 import { expandToDecimalsBN } from '../../utils';

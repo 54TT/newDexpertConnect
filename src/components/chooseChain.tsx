@@ -1,14 +1,16 @@
 import { Popover } from 'antd';
 import './index.less';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { throttle } from 'lodash';
 interface ChooseChainType {
-  onChange: (v: any) => void;
+  onChange?: (v: any) => void;
+  onClick?: (v: any) => void;
   hideChain?: boolean;
   disabledChain?: boolean;
   wrapClassName?: string;
   chainList: any[];
   disabled?: boolean;
+  data?: any;
 }
 
 function ChooseChain({
@@ -18,10 +20,13 @@ function ChooseChain({
   disabledChain = false,
   wrapClassName,
   disabled = false,
+  data,
+  onClick,
 }: ChooseChainType) {
   const [value, setValue] = useState<any>({
     value: 'Ethereum',
     icon: '/EthereumCoin.svg',
+    chainId:'1',key:'0x1'
   });
 
   const [open, setOpen] = useState<any>(false);
@@ -36,8 +41,12 @@ function ChooseChain({
           i?.value !== 'Blast' &&
           i?.value !== 'Celo'
         ) {
-          setValue(i);
-          onChange(i.value);
+          if (onClick) {
+            onClick(i);
+          }
+          if (onChange) {
+            onChange(i.value);
+          }
           setOpen(false);
         }
       }
@@ -76,6 +85,11 @@ function ChooseChain({
       })}
     </div>
   );
+  useEffect(() => {
+    if (data?.value) {
+      setValue(data);
+    }
+  }, [data]);
   return (
     <Popover
       content={chain}

@@ -53,6 +53,5 @@ export const getTokenPrice = async (
   } else {
     price = new Decimal(0);
   }
-
   return price.mul(wethPrice);
 };

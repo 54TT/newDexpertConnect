@@ -34,7 +34,6 @@ import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
 import ChooseChain from '@/components/chooseChain';
 import {
-  CHAIN_ID_TO_CHAIN_NAME,
   CHAIN_NAME_TO_CHAIN_ID,
   CHAIN_NAME_TO_CHAIN_ID_HEX,
 } from '@utils/constants';
@@ -59,7 +58,6 @@ interface SwapCompType {
   initChainId?: string; // 初始化的chainId;
   initToken?: [tokenIn: TokenItemData, toeknOut: TokenItemData]; // 初始化的token
 }
-
 function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   const {
     provider,
@@ -114,8 +112,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       setAmountOut(0);
     }
     if (initChainId) {
-      const chianName = CHAIN_ID_TO_CHAIN_NAME[initChainId];
-      changeWalletChain(chianName);
+      changeWalletChain(initChainId);
     }
   };
 
@@ -126,7 +123,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
 
   useEffect(() => {
     initData();
-  }, []);
+  }, [initToken]);
 
   const getTransactionFee = async (data) => {
     const fee = await getSwapFee({ ...data, swapType: 0 });
@@ -158,7 +155,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       const { quoteAmount } = await getV3AmountOut.apply(null, data);
       amount = quoteAmount;
     }
-
     return amount.toNumber() < 0.000001
       ? '< 0.000001'
       : parseFloat(amount.toFixed(6)).toString();
@@ -252,14 +248,11 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       setButtonDisable(true);
     }
   };
-
   useEffect(() => {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
   const onChainChange = (targetChainId) => {
-    console.log('123123');
-
     setChainId(Number(targetChainId).toString());
   };
 
@@ -309,11 +302,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
     setButtonLoading(true);
     setButtonDescId('7');
-
     const { uniswapV2RouterAddress } = contractConfig;
-
     const slip = advConfig.slipType === '0' ? 0.02 : advConfig.slip;
-
     const param = [
       chainId,
       provider,
@@ -340,7 +330,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           amount = quoteAmount;
           setSwapV3Pool(poolInfo);
         }
-        setAmountOut(Number(amount.toString()));
+        const aa = amount.toString();
+        setAmountOut(Number(aa));
       } catch (e) {
         return null;
       }
@@ -422,7 +413,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     const intervalTime = uint === 'h' ? value * 3600 : value * 30;
     const dateTimeStamp =
       Number(String(Date.now()).slice(0, 10)) + intervalTime;
-
     const permitSingle: PermitSingle = {
       sigDeadline: dateTimeStamp,
       spender: universalRouterAddress,
@@ -518,9 +508,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         }
       }
     };
-
     const { commands, inputs } = await getSwapBytesFn(tokenIn, tokenOut);
-
     let etherValue: any = BigNumber.from(0);
     if (tokenIn.contractAddress === contractConfig.ethAddress) {
       etherValue = expandToDecimalsBN(new Decimal(amountIn), 18);
@@ -568,7 +556,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     const intervalTime = uint === 'h' ? value * 3600 : value * 60;
     const dateTimeStamp =
       Number(String(Date.now()).slice(0, 10)) + intervalTime;
-
     let tx;
     try {
       tx = await universalRouterWriteContract['execute(bytes,bytes[],uint256)'](
@@ -621,7 +608,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
     const signer = await web3Provider.getSigner();
-
     const signerAddress = await signer.getAddress();
     const permit2Contract = new ethers.Contract(
       permit2Address,
@@ -667,7 +653,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
             signature,
             recipientAddress: signerAddress,
           });
-
           sendSwap({
             commands,
             inputs,
@@ -724,7 +709,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   const changeWalletChain = async (v: string) => {
     const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
-
     if (!isLogin) {
       setChainId(evmChainId);
     } else {
@@ -740,7 +724,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           ],
         });
       } catch (e) {
-        console.log(e);
+        return null;
       }
     }
   };
@@ -757,7 +741,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     );
     if (pairAddress) {
       const res = await getTokenPrice(provider, chainId, pairAddress);
-      console.log(res);
     }
   }; */
 
@@ -778,10 +761,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       if (checkConnection() && token) {
         // @ts-ignore
         const injectProvider = new ethers.providers.Web3Provider(loginPrivider);
-        console.log(loginPrivider);
-
         const balance = await getBalanceRpc(injectProvider, token, wethAddress);
-
         dispatch(balance);
       }
     },

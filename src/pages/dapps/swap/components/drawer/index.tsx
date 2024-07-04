@@ -102,7 +102,7 @@ export default function index() {
             if (35 - win == at) {
               setPosition('left');
             }
-            if (at === -0) {
+            if (at === 0) {
               setPosition('right');
             }
             setOffset(offset);

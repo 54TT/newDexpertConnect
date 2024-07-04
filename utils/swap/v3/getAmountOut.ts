@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { config } from '../../../src/config/config';
+import { config } from '@/config/config';
 import { expandToDecimalsBN, reduceFromDecimalsBN } from '../../utils';
 import { getQuoterContract } from '../../contracts';
 import { Decimal } from 'decimal.js';

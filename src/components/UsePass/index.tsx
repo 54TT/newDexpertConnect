@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import SelectComp from '@/components/SelectComp';
 import { Tag } from 'antd';
-function UsePass({ type, onChange, payType, refreshPass }) {
+function UsePass({ type, onChange, payType, refreshPass }:any) {
   const { isLogin } = useContext(CountContext);
   // 0 付钱 1 gloden 2 swap
   /*   const [dpassCount, setDapssCount] = useState('0'); // 剩余的dpass次数 需要区分swap snip limit
