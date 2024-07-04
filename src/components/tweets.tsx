@@ -52,7 +52,7 @@ function Tweets({
     let data = name?.content?.replace(/\n/g, '<br>');
     let urlRegex = /(https?:\/\/[^\s]+)/g;
     let urls = data.match(urlRegex);
-    if (urls.length > 0) {
+    if (urls?.length) {
       urls.map((i: string) => {
         data?.replace(i, '<a href=' + i + '></a>');
       });
