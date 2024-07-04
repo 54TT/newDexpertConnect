@@ -871,7 +871,7 @@ export default function index() {
         className="confirm"
         onClick={() => {
           if (user?.uid) {
-            if(0){
+            if (0) {
               goSniping();
             }
           } else {
@@ -887,7 +887,6 @@ export default function index() {
       </div>
       <SelectTokenModal
         open={open}
-        type="snip"
         disabledTokens={[useToken?.contractAddress?.toLowerCase?.()]}
         chainId={chainId}
         onChange={(data) => {
