@@ -15,7 +15,7 @@ function QuotoPathSelect({ data, onChange }) {
         src="/uniswap-uni-logo.svg"
         alt=""
       />
-      <span style={{ display: 'inline-block', width: '80px' }}>{text}</span>
+      <span style={{ display: 'inline-block' }}>{text}</span>
     </div>
   );
   const list: SelectCompItemType[] = [

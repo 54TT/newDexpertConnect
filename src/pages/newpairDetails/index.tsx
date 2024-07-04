@@ -27,6 +27,7 @@ function Index() {
       name
       symbol
       totalLiquidity
+      decimals
       totalSupply
     }
     token1 {
@@ -34,6 +35,7 @@ function Index() {
       name
       symbol
       totalLiquidity
+      decimals
       totalSupply
     }
     reserve0
@@ -83,7 +85,7 @@ function Index() {
       >
         {load ? <Left par={par} /> : ''}
         <Center id={id} />
-        <Right />
+        <Right par={par}/>
       </div>
     </>
   );

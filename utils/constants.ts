@@ -151,6 +151,17 @@ export const CHAIN_NAME_TO_CHAIN_ID = {
   Sepolia: '11155111',
 };
 
+
+export const CHAIN_VERSION_TO_CHAIN_ID = {
+  '0x1': '1',
+  '0xa4b1': '42161',
+  '0x89': '137',
+  '0xa': '10',
+  '0x2105': '8453',
+  '0x38': '56',
+  '0xaa36a7': '11155111',
+};
+
 export const CHAIN_NAME_TO_CHAIN_ID_HEX = {
   Ethereum: '0x1',
   Arbitrum: '0xa4b1',

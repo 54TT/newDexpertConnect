@@ -8,7 +8,6 @@ interface SelectTokenModalType extends ModalProps {
   chainId: string;
   disabledTokens: string[];
   disabled?: boolean;
-  type?: 'swap' | 'snip';
 }
 
 function SelectTokenModal({
@@ -16,7 +15,6 @@ function SelectTokenModal({
   chainId,
   disabledTokens,
   disabled,
-  type = 'swap',
   ...props
 }: SelectTokenModalType) {
   const chainName = useMemo(() => ID_TO_CHAIN_NAME_LOW[chainId], [chainId]);
@@ -34,7 +32,6 @@ function SelectTokenModal({
         onChange={onChange}
         chainName={chainName}
         disabledTokens={disabledTokens}
-        type={type}
       />
     </Modal>
   );

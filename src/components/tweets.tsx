@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { DeleteOutlined } from '@ant-design/icons';
-import { setMany, simplify } from '@/../utils/change.ts';
+import { simplify } from '@/../utils/change.ts';
 import { throttle } from 'lodash';
 import { Popconfirm } from 'antd';
 import NotificationChange from './message';
@@ -35,8 +35,8 @@ function Tweets({
   const { getAll } = Request();
   const { t } = useTranslation();
   const [clickAnimate, setClickAnimate] = useState(false);
-  const [localData, setLocalData] = useState(name);
-
+  const [localData, setLocalData] = useState<any>(name);
+  const [text, setText] = useState('');
   const [openComment, setOpenComment] = useState(false);
   const history = useNavigate();
   const { user } = useContext(CountContext) as any;
@@ -47,8 +47,22 @@ function Tweets({
       }, 1000);
     }
   }, [clickAnimate]);
+
+  useEffect(() => {
+    let data = name?.content?.replace(/\n/g, '<br>');
+    let urlRegex = /(https?:\/\/[^\s]+)/g;
+    let urls = data.match(urlRegex);
+    if (urls?.length) {
+      urls.map((i: string) => {
+        data?.replace(i, '<a href=' + i + '></a>');
+      });
+      setText(data);
+    } else {
+      setText(data);
+    }
+  }, [name]);
   // 是否是comment 而非reply，用于调用不同的like接口, parentId为0则为comment
-  const isComment = localData.parentId === '0';
+  const isComment = localData?.parentId === '0';
   // const animationVariants = {
   //     hidden: { y: '100%', opacity: 0 },
   //     visible: { y: '-100%', opacity: 1 },
@@ -64,15 +78,15 @@ function Tweets({
         let data;
         if (type === 'post') {
           url = '/api/v1/post/like';
-          data = { postId: localData.postId };
+          data = { postId: localData?.postId };
         }
         if (type === 'comment' || isComment) {
           url = '/api/v1/post/comment/like';
-          data = { commentId: localData.id };
+          data = { commentId: localData?.id };
         }
         if (type === 'reply' && !isComment) {
           url = '/api/v1//reply/like';
-          data = { replyId: localData.id };
+          data = { replyId: localData?.id };
         }
         try {
           if (localData?.likeStatus === false) {
@@ -87,21 +101,21 @@ function Tweets({
               setLocalData({
                 ...localData,
                 likeStatus: true,
-                likeNum: Number(localData.likeNum) + 1,
+                likeNum: Number(localData?.likeNum) + 1,
               });
             }
           } else {
             if (type === 'post') {
               url = '/api/v1/post/like/cancel';
-              data = { postId: localData.postId };
+              data = { postId: localData?.postId };
             }
             if (type === 'comment' || isComment) {
               url = '/api/v1/post/comment/like/cancel';
-              data = { commentId: localData.id };
+              data = { commentId: localData?.id };
             }
             if (type === 'reply' && !isComment) {
               url = '/api/v1//reply/like/cancel';
-              data = { replyId: localData.id };
+              data = { replyId: localData?.id };
             }
             const result: any = await getAll({
               method: 'post',
@@ -113,7 +127,7 @@ function Tweets({
               setLocalData({
                 ...localData,
                 likeStatus: false,
-                likeNum: Number(localData.likeNum) - 1,
+                likeNum: Number(localData?.likeNum) - 1,
               });
             }
           }
@@ -145,9 +159,9 @@ function Tweets({
         return;
       }
       if (type === 'reply' || type === 'comment') {
-        if (type === 'reply' && user?.uid === localData.user.uid) return;
+        if (type === 'reply' && user?.uid === localData?.user?.uid) return;
         localStorage.setItem('reply-detail', JSON.stringify(localData));
-        history(`/community/comment?reply=${localData.id}`);
+        history(`/community/comment?reply=${localData?.id}`);
         return;
       }
       localStorage.setItem('post-detail', JSON.stringify(localData));
@@ -164,7 +178,7 @@ function Tweets({
       if (!token && !jwt) {
         return NotificationChange('warning', t('Market.line'));
       }
-      history(`/community/user?uid=${localData.user.uid}`);
+      history(`/community/user?uid=${localData?.user?.uid}`);
     },
     1500,
     { trailing: false }
@@ -189,6 +203,26 @@ function Tweets({
     1500,
     { trailing: false }
   );
+
+  const handleShare = async () => {
+    const token = cookie.get('token');
+    const jwt = cookie.get('jwt');
+    if (!token && !jwt) {
+      return NotificationChange('warning', t('Market.line'));
+    }
+    const { data } = await getAll({
+      method: 'post',
+      url: '/api/v1/post/share/add',
+      data: {
+        postId: localData.postId,
+      },
+      token,
+    });
+    setLocalData({
+      ...localData,
+      SharesCnt: data.shareCnt,
+    });
+  };
 
   return (
     <>
@@ -218,9 +252,16 @@ function Tweets({
               }}
             />
             <div>
-              <div className="disDis" style={{ flexDirection: 'row',fontSize:"18px" }}>
+              <div
+                className="disDis"
+                style={{ flexDirection: 'row', fontSize: '18px' }}
+              >
                 <span>
-                  {simplify(localData?.user?.username?localData?.user?.username:localData?.user?.address)}
+                  {simplify(
+                    localData?.user?.username
+                      ? localData?.user?.username
+                      : localData?.user?.address
+                  )}
                 </span>
                 {Number(localData?.user?.level) ? (
                   <img
@@ -245,7 +286,7 @@ function Tweets({
                 display: 'block',
               }}
             >
-              {dayjs().to(dayjs(localData.CreatedAt))}
+              {dayjs().to(dayjs(localData?.CreatedAt))}
             </p>
           </div>
           {status !== 'detail' && user?.uid === localData?.user?.uid && (
@@ -275,7 +316,7 @@ function Tweets({
           <div
             className={'tweetsText'}
             dangerouslySetInnerHTML={{
-              __html: localData.content.replace(/\n/g, '<br>'),
+              __html: text,
             }}
           ></div>
         ) : (
@@ -344,16 +385,13 @@ function Tweets({
               src="/share.svg"
               style={{ width: '19px' }}
               alt=""
+              onClick={handleShare}
             />
-            <span>
-              {setMany(Math.ceil(Math.random() * 10 + Math.random() * 100))}
-            </span>
+            <span>{localData?.SharesCnt || '0'}</span>
           </p>
           <p className={'tweetsIn look-icon'}>
             <img loading={'lazy'} src="/look.svg" alt="" />
-            <span style={{ whiteSpace: 'nowrap' }}>
-              {setMany(Math.ceil(Math.random() * 1000 + Math.random() * 1000))}
-            </span>
+            <span style={{ whiteSpace: 'nowrap' }}>{localData.ViewsCnt}</span>
           </p>
         </div>
       </div>

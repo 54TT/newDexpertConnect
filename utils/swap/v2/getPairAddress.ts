@@ -1,5 +1,4 @@
-import { getUniswapV2FactoryContract } from '../../contracts';
-
+import { getUniswapV2FactoryContract } from '@/../utils/contracts';
 export const getPairAddress = async (
   provider: any,
   uniswapV2FactoryAddress: string,

@@ -91,7 +91,6 @@
     font-size: 12px;
     font-weight: 300;
   }
-
   .bottom-info {
     width: 100%;
     background-color: #2d2d2d;
@@ -136,6 +135,122 @@
 
 .swap-comp {
   width: 100%;
+  .pro-input {
+    width: 100%;
+    .ant-input-number {
+      width: 100%;
+      input {
+        font-size: 32px;
+        padding: 0;
+      }
+    }
+  }
+  .dapp-sniper-right-token {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &-label {
+      color: @desc-font-color;
+      font-weight: 400;
+    }
+    &-icon {
+      background-color: #1e1e1e;
+      width: 90px;
+      padding: 2px;
+      border-radius: 20px;
+      display: flex;
+      color: white;
+      justify-content: space-around;
+      cursor: pointer;
+      align-items: center;
+      .default-token-img {
+        img {
+          width: 24px;
+          height: 24px;
+        }
+        .token-name-img {
+          width: 24px;
+          height: 24px;
+
+          > span {
+            display: inline-block;
+            font-size: 18px;
+          }
+        }
+      }
+    }
+  }
+  .swap-button {
+    .action-button(@button-color);
+    width: 100%;
+    font-size: 24px;
+    height: 60px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .send-token {
+    width: 100%;
+    aspect-ratio: 360/162;
+    box-sizing: border-box;
+    background-image: url(/swapBoxUp.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    margin-bottom: -5%;
+    .token-info {
+      margin-bottom: 32px;
+    }
+    z-index: 1;
+  }
+  .receive-token {
+    box-sizing: border-box;
+    width: 100%;
+    aspect-ratio: 360/138;
+    background-image: url(/swapBoxDown.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+
+    z-index: 2;
+  }
+  .input-token {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .token-info {
+    color: @desc-font-color;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 300;
+  }
+  .bottom-info {
+    width: 100%;
+    background-color: #2d2d2d;
+    padding: 0 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 15px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+    margin-top: 8px;
+
+    > div {
+      height: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      span {
+        color: @dark-font-color;
+        font-weight: 300;
+      }
+    }
+  }
+
+
+
   &-config {
     width: 100%;
     display: flex;
@@ -177,8 +292,6 @@
 @media (max-width: 450px) {
   .dapp-sniper-right {
     width: 94vw;
-    .receive-token {
-    }
     .send-token {
       margin-bottom: -5%;
       .token-info {
