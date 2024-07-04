@@ -110,7 +110,7 @@ export default function index() {
   }, [chainId, loginPrivider, isLogin]);
   //  pass  卡
   const [payType, setPayType] = useState('0');
-  const [gasPrice, setGasPrice] = useState(0);
+  const [, setGasPrice] = useState(0);
   //  使用的token
   const [useToken, setUserToken] = useState<any>();
   const [params, setParams] = useState<any>({
@@ -398,7 +398,7 @@ export default function index() {
         const ethBigInit = new Decimal(value)
           .mul(new Decimal(10).pow(new Decimal(Number(useToken?.decimals))))
           .toFixed(0);
-        const tx = {
+        /*         const tx = {
           to: contractConfig?.universalRouterAddress,
           // to: signerAddress,
           value: useToken?.name === 'ETH' ? ethBigInit : 0,
@@ -409,7 +409,7 @@ export default function index() {
           nonce: nonce,
           type: 2, // 交易类型 2 (EIP-1559)
           chainId: Number(chainId),
-        };
+        }; */
         // 私钥
         // const wallet = new ethers.Wallet(
         //   '0f238c25479d60f4025c4d3e35df3012aa2cb01638c1112d1e5a19ec62f36d8f',
@@ -505,7 +505,7 @@ export default function index() {
     // if (tt?.status === 200) {
     // }
   };
-  const onChangeGas = (e: any) => {
+  const onChangeGas = (e: number) => {
     setGasPrice(e);
   };
   const change = _.debounce((e: number) => {
