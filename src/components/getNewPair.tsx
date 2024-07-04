@@ -1,25 +1,37 @@
-import { gql, useQuery } from "@apollo/client";
-import { useContext, useEffect, useState } from "react";
-import { cloneDeep, differenceBy } from "lodash";
-import { judgeStablecoin } from '@/../utils/judgeStablecoin.ts'
-import { CountContext } from "../Layout.tsx";
+import { gql, useQuery } from '@apollo/client';
+import { useContext, useEffect, useState } from 'react';
+import { cloneDeep, differenceBy } from 'lodash';
+import { judgeStablecoin } from '@/../utils/judgeStablecoin.ts';
+import { CountContext } from '../Layout.tsx';
 
 function GetNewPair() {
-  const { switchChain, }: any = useContext(CountContext);
+  const { switchChain }: any = useContext(CountContext);
   const [current, setCurrent] = useState(1);
-  const [ethPrice, setEthprice] = useState<string>('0')
-  const [moreLoad, setMoreLoad] = useState(false)
-  const [polling, setPolling] = useState<boolean>(false)
-  const [tableDta, setDta] = useState([])
-  const [wait, setWait] = useState<boolean>(true)
+  const [ethPrice, setEthprice] = useState<string>('0');
+  const [moreLoad, setMoreLoad] = useState(false);
+  const [polling, setPolling] = useState<boolean>(false);
+  const [tableDta, setDta] = useState([]);
+  const [wait, setWait] = useState<boolean>(true);
+  const [searchStr, setSearchStr] = useState('');
 
   useEffect(() => {
-    setEthprice('0')
-    setDta([])
-    setWait(true)
-    setCurrent(1)
-    setMoreLoad(true)
+    setEthprice('0');
+    setDta([]);
+    setWait(true);
+    setCurrent(1);
+    setMoreLoad(true);
   }, [switchChain]);
+
+  useEffect(() => {
+    if (searchStr) {
+      setEthprice('0');
+      setDta([]);
+      setWait(true);
+      setCurrent(1);
+      setMoreLoad(true);
+    }
+  }, [searchStr]);
+
   const GET_DATA = gql`query LiveNewPair {
   _meta {
     block {
@@ -30,7 +42,7 @@ function GetNewPair() {
   bundles {
     ${switchChain === 'Polygon' ? 'maticPrice' : switchChain === 'BSC' ? 'bnbPrice' : 'ethPrice'}
   }
-  pairs(first: 25, orderBy: createdAtTimestamp,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
+  pairs(first: 25, orderBy: createdAtTimestamp, where: {or: [{token0_: {name_contains: "${searchStr}"}}, {token0_: {symbol_contains: "${searchStr}"}}, {token1_: {symbol_contains: "${searchStr}"}}, {token1_: {name_contains: "${searchStr}"}}]} ,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
     createdAtTimestamp
     id
     liquidityPositionSnapshots(orderBy: timestamp, orderDirection: desc, first: 1) {
@@ -99,78 +111,91 @@ function GetNewPair() {
     pairCount
     id
   }
-}`
-  const { loading, data, refetch } = useQuery(GET_DATA) as any
+}`;
+  const { loading, data, refetch } = useQuery(GET_DATA) as any;
   useEffect(() => {
     const interval = setInterval(async () => {
-      setPolling(true)
+      setPolling(true);
       refetch();
     }, 8000);
     return () => {
       clearInterval(interval);
-    }
-  }, [])
+    };
+  }, []);
   const getParams = (par: any) => {
-    const a = cloneDeep(par)
+    const a = cloneDeep(par);
     const p = a.map((i: any) => {
-      const value = judgeStablecoin(i?.token0?.id, i?.token1?.id, switchChain)
+      const value = judgeStablecoin(i?.token0?.id, i?.token1?.id, switchChain);
       if (value === 1) {
-        const token0 = i.token0
-        i.token0 = i.token1
-        i.token1 = token0
+        const token0 = i.token0;
+        i.token0 = i.token1;
+        i.token1 = token0;
       }
-      return i
-    })
+      return i;
+    });
     if (polling) {
-      const abcd: any = differenceBy(p, tableDta, 'id')
+      const abcd: any = differenceBy(p, tableDta, 'id');
       if (abcd.length > 0) {
-        const at: any = abcd.concat(tableDta)
-        setDta(at)
+        const at: any = abcd.concat(tableDta);
+        setDta(at);
       }
     } else {
       if (current !== 1) {
-        const abcd: any = differenceBy(p, tableDta, 'id')
-        const ab = tableDta.concat(abcd)
-        setDta(ab)
+        const abcd: any = differenceBy(p, tableDta, 'id');
+        const ab = tableDta.concat(abcd);
+        setDta(ab);
       } else {
-        setDta(p)
+        setDta(p);
       }
     }
-    setMoreLoad(false)
-    setPolling(false)
-  }
+    setMoreLoad(false);
+    setPolling(false);
+  };
   useEffect(() => {
     if (!loading) {
-      setWait(false)
+      setWait(false);
       if (data && data?.pairs.length > 0) {
-        getParams(data.pairs)
-        const abc: any = data.bundles
-        let price: any = null
+        getParams(data.pairs);
+        const abc: any = data.bundles;
+        let price: any = null;
         if (switchChain === 'Polygon') {
-          price = abc[0].maticPrice
+          price = abc[0].maticPrice;
         } else if (switchChain === 'BSC') {
-          price = abc[0].bnbPrice
+          price = abc[0].bnbPrice;
         } else {
-          price = abc[0].ethPrice
+          price = abc[0].ethPrice;
         }
         if (price) {
-          setEthprice(Number(price).toFixed(2).replace(/\.?0*$/, ''))
+          setEthprice(
+            Number(price)
+              .toFixed(2)
+              .replace(/\.?0*$/, '')
+          );
         } else {
-          setEthprice('0')
+          setEthprice('0');
         }
       }
     }
   }, [data]);
   useEffect(() => {
     if (moreLoad) {
-      refetch()
+      refetch();
     }
-  }, [moreLoad])
+  }, [moreLoad]);
   const changePage = () => {
-    setCurrent(current + 1)
-    setMoreLoad(true)
-  }
-  return { ethPrice, moreLoad, wait, tableDta, setDta, changePage }
+    setCurrent(current + 1);
+    setMoreLoad(true);
+  };
+
+  return {
+    ethPrice,
+    moreLoad,
+    wait,
+    tableDta,
+    setDta,
+    changePage,
+    setSearchStr,
+  };
 }
 
 export default GetNewPair;

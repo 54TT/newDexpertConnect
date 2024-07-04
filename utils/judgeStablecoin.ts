@@ -85,6 +85,14 @@ export const chain: any = {
   Optimism: 'https://dexpertpairs.lol/subgraphs/name/optimism/uniswapv2',
 };
 
+export const CHAINID_TO_PAIR_QUERY_URL = {
+  1: 'https://dexpertpairs.lol/subgraphs/name/ethereum/uniswapv2',
+  42161: 'https://dexpertpairs.lol/subgraphs/name/arbitrum/uniswapv2',
+  8453: 'https://dexpertpairs.lol/subgraphs/name/base/uniswapv2',
+  56: 'https://dexpertpairs.lol/subgraphs/name/bsc/uniswapv2',
+  10: 'https://dexpertpairs.lol/subgraphs/name/optimism/uniswapv2',
+};
+
 export const rpcLink: any = {
   Ethereum:
     'https://eth-mainnet.g.alchemy.com/v2/BhTc3g2lt1Qj3IagsyOJsH5065ueK1Aw',

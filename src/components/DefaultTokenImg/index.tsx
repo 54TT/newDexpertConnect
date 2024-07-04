@@ -1,7 +1,16 @@
+import { CSSProperties } from 'react';
 import './index.less';
-function DefaultTokenImg({ name, icon }: { name: string; icon: string }) {
+function DefaultTokenImg({
+  name,
+  icon,
+  style,
+}: {
+  name: string;
+  icon: string;
+  style?: CSSProperties;
+}) {
   return (
-    <div className="default-token-img">
+    <div className="default-token-img" style={style}>
       {icon ? (
         <img src={icon} alt="" />
       ) : (
