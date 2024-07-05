@@ -13,6 +13,7 @@ import { Popconfirm } from 'antd';
 import NotificationChange from './message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '../Layout.tsx';
+import copy from '../../utils/copy.ts';
 
 dayjs.extend(relativeTime);
 
@@ -40,6 +41,11 @@ function Tweets({
   const [openComment, setOpenComment] = useState(false);
   const history = useNavigate();
   const { user } = useContext(CountContext) as any;
+
+  useEffect(() => {
+    setLocalData(name);
+  }, [name]);
+
   useEffect(() => {
     if (clickAnimate) {
       setTimeout(() => {
@@ -51,7 +57,7 @@ function Tweets({
   useEffect(() => {
     let data = name?.content?.replace(/\n/g, '<br>');
     let urlRegex = /(https?:\/\/[^\s]+)/g;
-    let urls = data.match(urlRegex);
+    let urls = data?.match?.(urlRegex);
     if (urls?.length) {
       urls.map((i: string) => {
         data?.replace(i, '<a href=' + i + '></a>');
@@ -161,11 +167,14 @@ function Tweets({
       if (type === 'reply' || type === 'comment') {
         if (type === 'reply' && user?.uid === localData?.user?.uid) return;
         localStorage.setItem('reply-detail', JSON.stringify(localData));
-        history(`/community/comment?reply=${localData?.id}`);
+        history(
+          `/community/comment?p=${localData.postId}&reply=${localData?.id}`
+        );
         return;
       }
       localStorage.setItem('post-detail', JSON.stringify(localData));
-      history('/community/detail');
+
+      history(`/community/detail?p=${localData.postId}`);
     },
     1500,
     { trailing: false }
@@ -218,6 +227,9 @@ function Tweets({
       },
       token,
     });
+    const { origin, pathname } = window.location;
+    const url = `${origin}${pathname}?p=${localData.postId}`;
+    copy(url);
     setLocalData({
       ...localData,
       SharesCnt: data.shareCnt,
@@ -391,7 +403,9 @@ function Tweets({
           </p>
           <p className={'tweetsIn look-icon'}>
             <img loading={'lazy'} src="/look.svg" alt="" />
-            <span style={{ whiteSpace: 'nowrap' }}>{localData.ViewsCnt}</span>
+            <span style={{ whiteSpace: 'nowrap' }}>
+              {localData?.ViewsCnt || 0}
+            </span>
           </p>
         </div>
       </div>
