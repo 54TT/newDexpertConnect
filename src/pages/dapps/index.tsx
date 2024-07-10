@@ -74,6 +74,7 @@ export default function index() {
           })}
         </div>
       </div>
+      {/* aaaadsdasd */}
       {params?.id === 'swap' && <Swap />}
       {params?.id === 'sniping' && <Sniping/>}
       {params?.id === 'buyBot' && <BuyBot />}
