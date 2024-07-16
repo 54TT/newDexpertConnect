@@ -2,7 +2,7 @@ import './index.less';
 import SwapComp from './components/SwapComp';
 import './index.less';
 import { useContext } from 'react';
-import Drawer from './components/drawer';
+import Drawer from '../drawer';
 import { CountContext } from '@/Layout';
 function Swap() {
   const { user }: any = useContext(CountContext);

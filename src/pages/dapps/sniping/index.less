@@ -1,11 +1,42 @@
 .sniping {
   margin: 0 auto;
   position: relative;
+  font-size: 16px;
   overflow: hidden;
+
+  .walletBack {
+    display: flex;
+    align-items: center;
+    background-color: #2d2d2d;
+    padding: 16px 20px;
+    border-radius: 16px;
+    margin-top: 16px;
+    justify-content: space-between;
+    img {
+      cursor: pointer;
+    }
+    p {
+      color: white;
+      font-size: 24px;
+    }
+  }
+  & > .top {
+    display: flex;
+    padding: 12px 0;
+    margin-top: 16px;
+    background-color: #2d2d2d;
+    align-items: center;
+    border-radius: 14px;
+    & > p {
+      flex: 1;
+      cursor: pointer;
+      font-size: 18px;
+      text-align: center;
+    }
+  }
   .Contractaddress {
     display: flex;
     align-items: center;
-    margin-top: 20px;
     margin-bottom: 10px;
     justify-content: space-between;
   }
@@ -18,22 +49,26 @@
     background-color: rgba(0, 0, 0, 00.4);
     width: 100%;
   }
-
+  // .ant-input-outlined:
   .snipingInput {
     padding: 5px 10px;
-
-    border: 1px solid rgb(134, 240, 151);
+    box-shadow: none;
+    border-color: transparent;
     background-color: rgb(45, 45, 45);
     input {
       color: white;
       background-color: rgb(45, 45, 45);
     }
     input::placeholder {
-      color: rgb(134, 240, 151);
+      color: #969696;
     }
     .ant-input-clear-icon {
       color: white;
     }
+  }
+  .snipingInput:focus-within {
+    // border: 1px solid rgb(134, 240, 151);
+    border-color: rgb(134, 240, 151);
   }
   .tokenIn {
     border-radius: 10px;
@@ -128,17 +163,14 @@
       color: rgb(220, 220, 220);
     }
     .selectTo {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       padding: 12px 0;
       border-bottom: 2px solid rgb(58, 58, 58);
-      span:first-child {
+      p:first-child {
         font-weight: bold;
         color: white;
         font-size: 24px;
       }
-      span:last-child {
+      p:last-child {
         font-size: 15px;
         color: rgb(160, 160, 160);
       }
@@ -151,6 +183,7 @@
         color: white;
       }
       p:last-child {
+        word-wrap: break-word;
         color: rgb(222, 222, 222);
       }
     }
@@ -219,7 +252,7 @@
     position: relative;
     z-index: 10;
     overflow: hidden;
-    margin: 10px 0;
+    margin-top: 10px;
     padding: 15px;
     background-color: rgb(45, 45, 45);
     .gasPrice {
@@ -271,6 +304,7 @@
         }
       }
       .timeInputNumber {
+        min-width: 180px;
         width: 35%;
         border-radius: 30px;
         input {

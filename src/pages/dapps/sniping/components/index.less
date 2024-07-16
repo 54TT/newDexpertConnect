@@ -1,0 +1,188 @@
+.allWallet {
+  margin: 10px 0;
+  .wallet {
+    background-color: #2d2d2d;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .wallet {
+    .left {
+      display: flex;
+      align-items: center;
+      & > img {
+        width: 30px;
+      }
+      div {
+        margin-left: 16px;
+        p:first-child {
+          font-size: 21px;
+          color: white;
+        }
+        p:last-child {
+          margin-top: 4px;
+          color: #a0a0a0;
+        }
+      }
+    }
+    & > p {
+      color: white;
+      font-size: 20px;
+    }
+  }
+}
+.oriderDetailBox {
+  margin: 10px 0;
+}
+.oriderDetail {
+  font-size: 17px;
+  & > p:first-child {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  background-color: #2d2d2d;
+  border-radius: 16px;
+  padding: 30px 20px;
+  .dis {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .line {
+    height: 1px;
+    background-color: #4d4d4d;
+    margin: 20px 0;
+  }
+  .symbol {
+    margin: 6px 0 20px;
+    span:first-child {
+      font-size: 30px;
+      font-weight: bold;
+      color: white;
+    }
+    span:last-child {
+      font-size: 14px;
+      color: #a0a0a0;
+    }
+  }
+  .address {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .more {
+    span:first-child {
+      color: rgba(255, 255, 255, 0.55);
+    }
+    span:last-child {
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+  .sni {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .wallet {
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .walletItem {
+    margin-top: 8px;
+    padding: 10px 20px;
+    & > div {
+      margin-bottom: 8px;
+      & > span:first-child {
+        color: rgba(255, 255, 255, 0.85);
+      }
+      .num {
+        display: flex;
+        align-items: center;
+        img {
+          margin-left: 10px;
+        }
+        span {
+          color: rgb(134, 240, 151);
+        }
+      }
+    }
+    border-radius: 8px;
+    .walletAddress {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 14px;
+    }
+  }
+  .add {
+    font-size: 15px;
+    margin: 10px 0 16px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+}
+
+.scrollHei {
+  overflow-x: hidden;
+  padding-right: 10px;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.order {
+  font-size: 16px;
+  margin-top: 16px;
+  margin-bottom: 10px;
+  .oriderItem {
+    margin-bottom: 16px;
+    background-color: #2d2d2d;
+    border-radius: 16px;
+    padding: 20px;
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .right {
+        display: flex;
+        align-items: center;
+        p {
+          color: #ea6e6e;
+          cursor: pointer;
+          border: 1px solid #ea6e6e;
+          border-radius: 8px;
+          padding: 8px 12px;
+        }
+        img {
+          width: 8px;
+          margin-left: 20px;
+          cursor: pointer;
+        }
+      }
+      .left {
+        p:first-child {
+          color: rgba(255, 255, 255, 0.85);
+        }
+        p:last-child {
+          color: rgba(255, 255, 255, 0.55);
+          font-size: 14px;
+          margin-top: 8px;
+        }
+      }
+    }
+    .line {
+      height: 1px;
+      background-color: #4d4d4d;
+      margin: 16px 0;
+    }
+    .data {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      justify-content: space-between;
+      & > span:first-child {
+        color: rgba(255, 255, 255, 0.55);
+      }
+      & > div {
+        display: flex;
+        align-items: center;
+        color: rgba(255, 255, 255, 0.85);
+      }
+    }
+  }
+}
