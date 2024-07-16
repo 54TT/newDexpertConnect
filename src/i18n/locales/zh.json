@@ -73,7 +73,14 @@
     "Name": "名称",
     "Price": "价格",
     "24h(%)": "24h(%)",
-    "More": "加载更多"
+    "More": "加载更多",
+    "Dex": "流动池",
+    "Service Fee": "服务费",
+    "Estinmated Gas Fee": "预计Gas费用",
+    "Quote Rate": "汇率",
+    "Previously selected tokens": "历史代币",
+    "Popular tokens": "热门代币",
+    "0.2% Dexpert service fee": "向Dexpert支付0.2%的手续费"
   },
   "Community": {
     "Share your insights...": "请在这分享你的见闻...",
@@ -235,5 +242,8 @@
     "com": "即将到来",
     "ent": "输入邀请码",
     "logout": "登出"
+  },
+  "Swap": {
+    "Order expire in": "订单过期时间"
   }
 }

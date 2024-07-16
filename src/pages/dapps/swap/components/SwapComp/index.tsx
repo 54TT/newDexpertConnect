@@ -941,7 +941,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       </div>
       <div className="bottom-info">
         <div className="exchange-rate">
-          <span>Reference Exchange Rate</span>
+          <span>{t('Slider.Previously selected tokens')}</span>
           {showSkeleton ? (
             <Skeleton.Button active size="small" />
           ) : (
@@ -951,7 +951,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           )}
         </div>
         <div className="exchange-fee">
-          <span>Estinated Fees</span>
+          <span>{t('Slider.Estinmated Gas Fee')}</span>
           {showSkeleton ? (
             <Skeleton.Button active size="small" />
           ) : (
@@ -963,7 +963,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           )}
         </div>
         <div className="exchange-path">
-          <span>Quote Path</span>
+          <span>{t('Slider.Dex')}</span>
           <QuotoPathSelect
             data={quotePath}
             onChange={(key: string) => {
@@ -975,7 +975,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           />
         </div>
         <div className="service-fee">
-          <span>Service Fees</span>
+          <span>{t('Slider.Service Fee')}</span>
           <UsePass
             type="swap"
             payType={payType}
