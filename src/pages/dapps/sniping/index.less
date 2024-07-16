@@ -70,6 +70,29 @@
     // border: 1px solid rgb(134, 240, 151);
     border-color: rgb(134, 240, 151);
   }
+  .sniperCollapse{
+    background-color: #2d2d2d;
+    border: none;
+    margin-top: 10px;
+    .ant-collapse-item{
+      .ant-collapse-header {
+        border-radius: 10px;
+        .ant-collapse-header-text{
+          font-size: 16px;
+      color: rgb(220, 220, 220);
+
+        }
+      }
+      .ant-collapse-content{
+        border-top-color: #4C4C4C;
+
+        background-color: transparent;
+        .ant-collapse-content-box{
+          padding: 0 !important;
+        }
+      }
+    }
+  }
   .tokenIn {
     border-radius: 10px;
     position: relative;
@@ -248,11 +271,9 @@
     font-weight: bold;
   }
   .operate {
-    border-radius: 10px;
     position: relative;
     z-index: 10;
     overflow: hidden;
-    margin-top: 10px;
     padding: 15px;
     background-color: rgb(45, 45, 45);
     .gasPrice {

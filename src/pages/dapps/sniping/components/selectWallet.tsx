@@ -7,7 +7,7 @@ import Loading from '@/components/allLoad/loading';
 import Load from '@/components/allLoad/load';
 import { CountContext } from '@/Layout.tsx';
 import getBalance from '@/../utils/getBalance';
-export default function selectWallet({ setWallet }: any) {
+export default function selectWallet({ setWallet, id, value }: any) {
   const { browser }: any = useContext(CountContext);
   const { getAll } = Request();
   const [data, setData] = useState([]);
@@ -31,7 +31,7 @@ export default function selectWallet({ setWallet }: any) {
         res?.data?.list.map((i: any) => {
           address.push(i.address);
         });
-        const priceAll = await getBalance(address);
+        const priceAll = await getBalance(address, id.toString());
         if (priceAll.length > 0) {
           const newer = priceAll.map((i: any) => {
             i.balance = Number(i.balance)
@@ -98,7 +98,7 @@ export default function selectWallet({ setWallet }: any) {
               return (
                 <div
                   onClick={() => {
-                    if (Number(i.balance)) {
+                    if (Number(i.balance) && Number(i.balance) >= value) {
                       const data = select.filter(
                         (item: any) => item?.privateKey === i.privateKey
                       );

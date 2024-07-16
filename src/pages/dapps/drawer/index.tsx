@@ -11,8 +11,9 @@ import History from './components/history';
 import AddWallet from './components/addWallet';
 import SetWallet from './components/setWallet';
 import cookie from 'js-cookie';
-export default function index() {
+export default function index({id}:any) {
   const { user, browser }: any = useContext(CountContext);
+  console.log(user)
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>(null);
   const { getAll } = Request();
@@ -116,7 +117,6 @@ export default function index() {
           />
         </FloatingBubble>
       )}
-
       <Drawer
         title="Basic Drawer"
         rootClassName="dappsAllDrawer"
@@ -132,7 +132,7 @@ export default function index() {
                   style={{borderRadius:'50%'}}
                   alt=""
                 />
-                <p>sdadasdsad</p>
+                <p>{user?.username}</p>
                 <Copy name="dsadasdsad" img="/copySwap.svg" />
               </div>
               <p onClick={() => setAddWallet('add')}>+</p>
@@ -160,7 +160,7 @@ export default function index() {
             {select === 'history' && <History />}
           </div>
         ) : addWallet === 'add' ? (
-          <AddWallet setAddWallet={setAddWallet} setWalletId={setWalletId} />
+          <AddWallet setAddWallet={setAddWallet} setWalletId={setWalletId} id={id}/>
         ) : (
           <SetWallet walletId={walletId} />
         )}

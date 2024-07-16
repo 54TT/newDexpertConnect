@@ -3,7 +3,7 @@ import './index.less';
 import WalletList from './components/walletList';
 import AddMethod from './components/addMethod';
 import ImportAndCreate from './components/importAndCreate';
-export default function index({ setAddWallet ,setWalletId}: any) {
+export default function index({ setAddWallet ,setWalletId,id}: any) {
   const [status, setStatus] = useState('list');
   return (
     <div className="addWallet">
@@ -25,7 +25,7 @@ export default function index({ setAddWallet ,setWalletId}: any) {
         <span></span>
       </div>
       {status === 'list' ? (
-        <WalletList setStatus={setStatus} setAddWallet={setAddWallet} setWalletId={setWalletId}/>
+        <WalletList setStatus={setStatus} setAddWallet={setAddWallet} setWalletId={setWalletId} id={id}/>
       ) : status === 'addMethod' ? (
         <AddMethod setStatus={setStatus} />
       ) : (

@@ -9,7 +9,7 @@ import getBalance from '@/../utils/getBalance';
 export default function walletList({
   setStatus,
   setAddWallet,
-  setWalletId,
+  setWalletId,id
 }: any) {
   const { browser }: any = useContext(CountContext);
   const { getAll } = Request();
@@ -33,7 +33,7 @@ export default function walletList({
         res?.data?.list.map((i: any) => {
           address.push(i.address);
         });
-        const priceAll = await getBalance(address);
+        const priceAll = await getBalance(address,id);
         if (priceAll.length > 0) {
           const newer = priceAll.map((i: any) => {
             i.balance = Number(i.balance)
@@ -81,13 +81,8 @@ export default function walletList({
       setNextLoad(true);
     }
   };
-  const getNow = async () => {
-    const t = await getBalance('0xb34C0CFAC19819524892E09Afda7402E57CbcDA6');
-    console.log(t);
-  };
   useEffect(() => {
     getWalletList(1);
-    getNow();
   }, []);
   return (
     <div className="walletList">

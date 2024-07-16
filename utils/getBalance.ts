@@ -1,17 +1,22 @@
 import axios from 'axios';
-async function getBalance(address: any): Promise<any> {
+async function getBalance(address: any, id: string): Promise<any> {
   const isBat = Array.isArray(address);
   // 批量
   if (isBat) {
-    const response = await axios.get('https://api-sepolia.etherscan.io/api', {
-      params: {
-        module: 'account',
-        action: 'balancemulti',
-        apikey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
-        address: address.join(','),
-        tag: 'latest',
-      },
-    });
+    const response = await axios.get(
+      id === '1'
+        ? 'https://api.etherscan.io/api'
+        : 'https://api-sepolia.etherscan.io/api',
+      {
+        params: {
+          module: 'account',
+          action: 'balancemulti',
+          apikey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
+          address: address.join(','),
+          tag: 'latest',
+        },
+      }
+    );
     return response.data.result;
     // const banlaceMap = result.reduce((prev: any, next: any) => {
     //   const balance =
@@ -22,7 +27,9 @@ async function getBalance(address: any): Promise<any> {
     // return banlaceMap;
   } else {
     // 单条
-    const response = await axios.get('https://api-sepolia.etherscan.io/api', {
+    const response = await axios.get(      id === '1'
+      ? 'https://api.etherscan.io/api'
+      : 'https://api-sepolia.etherscan.io/api', {
       params: {
         module: 'account',
         action: 'balancemulti',

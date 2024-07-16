@@ -8,12 +8,12 @@ import Order from './components/order';
 import OrderDetail from './components/oriderDetail';
 import Loading from '@/components/allLoad/loading';
 import Drawer from '../drawer';
-import cookie from 'js-cookie'
+import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
 import _ from 'lodash';
 export default function index() {
   const { t } = useTranslation();
-const { getAll } = Request();
+  const { getAll } = Request();
   const { browser, user, setIsModalOpen }: any = useContext(CountContext);
   // 是否切换链
   const [isChain, setIsChain] = useState('more');
@@ -42,43 +42,44 @@ const { getAll } = Request();
     OrderDeadlineType: '1',
   });
 
-const sniper=async()=>{
-  // const tokens = cookie.get('token');
-  console.log(wallet)
-  console.log(useToken)
-  console.log(token)
-  console.log(params)
-  console.log(gasPrice)
-  console.log(id)
-  // let arr:any =[]
-  // if(wallet.length>0){
-  //   wallet.map((i:any)=>{
-  //     arr.push(i.address)
-  //   })
-  //   const res = await getAll({
-  //     method: 'post',
-  //     url: '/api/v1/sniper/preswap',
-  //     data: { walletIdArr: arr,chainID:id,orderDeadline:params?.OrderDeadlineValue,orderDeadlineType:params?.OrderDeadlineType,gasPrice,tradeDeadlineType:params?.TradeDeadlineType,tradeDeadline:params?.TradeDeadlineValue},
-  //     token,
-  //   });
-  // }
-  
-
-    // "tokenInCa": "string",
-    // "tokenInSymbol": "string",
-    // "tokenInName": "string",
-    // "tokenInAmount": "string",
-    // "tokenInDecimal": "string",
-    // "tokenOutCa": "string",
-    // "tokenOutSymbol": "string",
-    // "tokenOutName": "string",
-    // "tokenOutAmount": "string",
-    // "tokenOutDecimal": "string",
-
-    // "type": "string",
-    // "slippage": "string",
-}
-
+  const sniper = async () => {
+    const tokens = cookie.get('token');
+    let arr: any = [];
+    if (wallet?.length > 0&&token&&value&&useToken) {
+      wallet.map((i: any) => {
+        arr.push(i.walletId);
+      });
+      const res = await getAll({
+        method: 'post',
+        url: '/api/v1/sniper/preswap',
+        data: {
+          gasPrice: params?.GasPrice === 'Auto' ? '' : (gasPrice +100).toString(),
+          gasPriceType: params?.GasPrice === 'Auto' ? '1' : '2',
+          tokenOutDecimal: token?.decimals.toString(),
+          tokenOutAmount: '0',
+          tokenOutName: token?.name,
+          tokenOutSymbol: token?.symbol,
+          tokenOutCa: token?.contractAddress,
+          tokenInDecimal: useToken?.decimals,
+          tokenInAmount: value.toString(),
+          tokenInName: useToken?.name,
+          tokenInSymbol: useToken?.symbol,
+          tokenInCa: useToken?.contractAddress,
+          walletIdArr: arr,
+          chainID: id,
+          orderDeadline: params?.OrderDeadlineValue.toString(),
+          orderDeadlineType: params?.OrderDeadlineType,
+          tradeDeadlineType: params?.TradeDeadlineType,
+          tradeDeadline: params?.TradeDeadlineValue.toString(),
+          slippage: params?.MaximumSlip === 'Auto' ? '' : (MaximumSlip/100).toString(),
+          slippageType: params?.MaximumSlip === 'Auto' ? '1' : '2',
+          type: '1',
+        },
+        token:tokens,
+      });
+      console.log(res)
+    }
+  };
 
   const chooseWallet = () => {
     //  第一步
@@ -91,7 +92,7 @@ const sniper=async()=>{
         }
       }
     } else {
-      sniper()
+      sniper();
     }
   };
   const operate = {
@@ -102,7 +103,10 @@ const sniper=async()=>{
     value,
     setValue,
     token,
-    setToken,setId,setUseToken,setMaximumSlip
+    setToken,
+    setId,
+    setUseToken,
+    setMaximumSlip,
   };
 
   const backChange = (name: string) => {
@@ -120,7 +124,7 @@ const sniper=async()=>{
         return (
           <>
             {backChange('选择钱包')}
-            <SelectWallet setWallet={setWallet} />
+            <SelectWallet setWallet={setWallet} id={id} value={value}/>
           </>
         );
       } else {
@@ -184,7 +188,7 @@ const sniper=async()=>{
           <Loading browser={browser} />
         </div>
       )}
-      {user?.uid && <Drawer />}
+      {user?.uid && <Drawer id={id} />}
     </div>
   );
 }

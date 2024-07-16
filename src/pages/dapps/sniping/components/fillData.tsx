@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { getERC20Contract } from '@utils/contracts';
 import Load from '@/components/allLoad/load';
 import NotificationChange from '@/components/message';
+import UsePass from '@/components/UsePass';
 import Decimal from 'decimal.js';
 import _ from 'lodash';
 import SelectTokenModal from '@/components/SelectTokenModal';
@@ -37,11 +38,13 @@ export default function fillData({
   value,
   setValue,
   setId,
-  setUseToken,setMaximumSlip
+  setUseToken,
+  setMaximumSlip,
 }: any) {
   const { t } = useTranslation();
   const { loginPrivider, transactionFee, isLogin, user }: any =
     useContext(CountContext);
+  const [payType, setPayType] = useState('0');
   const [maximumSlipValue, setMaximumSlipValue] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [isToken, setIsToken] = useState(false);
@@ -117,7 +120,6 @@ export default function fillData({
         decimals,
         contractAddress: searchValue,
       };
-      console.log(searchToken);
       setToken(searchToken);
       setIsToken(false);
     } catch (e) {
@@ -248,7 +250,7 @@ export default function fillData({
   return (
     <div className="scrollHei sniperOrder" style={{ margin: '20px 0 10px' }}>
       <div className="Contractaddress">
-        {/* 0xaea46A60368A7bD060eec7DF8CBa43b7EF41Ad85 */}
+        {/* 0x7b522bA8C126716bf7c9E5f92951aCae38a680d6 */}
         <Input
           size="large"
           rootClassName="snipingInput"
@@ -363,179 +365,192 @@ export default function fillData({
           </div> */}
         </div>
       </div>
-
-      <div className="operate">
-        <p className="amount"> Advanced settings</p>
-        <div className="row">
-          <p> {t('Slider.Maximum')}</p>
-          <div className="time">
-            <Segmented
-              rootClassName="timeSegmented"
-              options={[
-                { label: t('Slider.Auto'), value: 'Auto' },
-                { label: t('Slider.Customize'), value: 'Customize' },
-              ]}
-              onChange={(value) => {
-                const at = { ...params, MaximumSlip: value };
-                setParams({ ...at });
+      <Collapse
+        collapsible="icon"
+        className="sniperCollapse"
+        expandIconPosition="end"
+        expandIcon={(e: any) => {
+          return (
+            <img
+              src="/collopse.svg"
+              alt=""
+              style={{
+                transform: e?.isActive ? 'rotate(-90deg)' : 'rotate(0deg)',
               }}
             />
-          </div>
-        </div>
-        {params?.MaximumSlip === 'Customize' && (
-          <div className="sidle">
-            <Slider
-              rootClassName="sidleSlider"
-              min={0}
-              max={100}
-              styles={{
-                rail: {
-                  background: 'rgb(72,72,72)',
-                },
-                track: {
-                  background: 'rgb(134,240,151)',
-                },
-                handle: {
-                  borderRadius: '5px',
-                  width: '8px',
-                  height: '15px',
-                  marginTop: '-3px',
-                  background: 'white',
-                },
-              }}
-              onChange={onChange}
-              value={
-                typeof maximumSlipValue === 'number' ? maximumSlipValue : 0
-              }
-            />
-            <InputNumber
-              rootClassName="timeInputNumber"
-              min={0}
-              suffix={<p style={{ color: 'rgb(134,240,151)' }}>%</p>}
-              stringMode={false}
-              controls={false}
-              max={100}
-              value={
-                typeof maximumSlipValue === 'number' ? maximumSlipValue : 0
-              }
-              onChange={onChange}
-            />
-          </div>
-        )}
-        <div style={{ margin: ' 7px 0' }} className="row">
-          <p> {t('Slider.Trade')}</p>
-          <div className="time">
-            <InputNumber
-              min={0}
-              defaultValue={30}
-              stringMode={false}
-              controls={false}
-              rootClassName="timeInputNumber"
-              onChange={(e: number) => {
-                const at = { ...params, TradeDeadlineValue: e };
-                setParams({ ...at });
-              }}
-            />
-            <Select
-              rootClassName="timeSelect"
-              defaultValue="1"
-              onChange={(e: string) => {
-                const at = { ...params, TradeDeadlineType: e };
-                setParams({ ...at });
-              }}
-              options={[
-                { value: '1', label: t('Slider.Min') },
-                { value: '2', label: t('Slider.Hour') },
-              ]}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <p> {t('Slider.Order')}</p>
-          <div className="time">
-            <InputNumber
-              min={0}
-              defaultValue={30}
-              stringMode={false}
-              controls={false}
-              rootClassName="timeInputNumber"
-              onChange={(e: number) => {
-                const at = { ...params, OrderDeadlineValue: e };
-                setParams({ ...at });
-              }}
-            />
-            <Select
-              rootClassName="timeSelect"
-              defaultValue="1"
-              onChange={(e: string) => {
-                const at = { ...params, OrderDeadlineType: e };
-                setParams({ ...at });
-              }}
-              options={[
-                { value: '1', label: t('Slider.Min') },
-                { value: '2', label: t('Slider.Hour') },
-              ]}
-            />
-          </div>
-        </div>
-        <div style={{ marginTop: ' 7px' }} className="row">
-          <p>{t('Slider.Gas')}</p>
-          <div className="time">
-            <Segmented
-              rootClassName="timeSegmented"
-              options={[
-                { label: t('Slider.Auto'), value: 'Auto' },
-                { label: t('Slider.Customize'), value: 'Customize' },
-              ]}
-              onChange={(value) => {
-                const at = { ...params, GasPrice: value };
-                setParams({ ...at });
-              }}
-            />
-          </div>
-        </div>
-        {params?.GasPrice === 'Customize' && (
-          <Slider
-            marks={mask}
-            step={null}
-            onChange={onChangeGas}
-            styles={{
-              rail: {
-                background: 'rgb(72,72,72)',
-              },
-              track: {
-                background: 'rgb(134,240,151)',
-              },
-            }}
-            rootClassName="CustomizeSlider"
-          />
-          // <div className="gasPrice">
-          //   <InputNumber
-          //     rootClassName="timeInputNumber"
-          //     min={0}
-          //     suffix={<p style={{ color: 'rgb(134,240,151)' }}>Gas</p>}
-          //     stringMode={false}
-          //     controls={false}
-          //     value={typeof gasPriceValue === 'number' ? gasPriceValue : 0}
-          //     onChange={(e: number) => {
-          //       setGasPriceValue(e);
-          //     }}
-          //   />
-          // </div>
-        )}
-        {/* <div className="service-fee">
-            <span>Service Fees</span>
-            <UsePass
-              type="swap"
-              payType={payType}
-              onChange={(v: string) => {
-                setPayType(v);
-              }}
-            />
-          </div> */}
-        <div className="back"></div>
-        <div className="backRight"></div>
-      </div>
+          );
+        }}
+        items={[
+          {
+            key: '1',
+            label: <p className="amount"> Advanced settings</p>,
+            children: (
+              <div className="operate">
+                <div className="row">
+                  <p> {t('Slider.Maximum')}</p>
+                  <div className="time">
+                    <Segmented
+                      rootClassName="timeSegmented"
+                      options={[
+                        { label: t('Slider.Auto'), value: 'Auto' },
+                        { label: t('Slider.Customize'), value: 'Customize' },
+                      ]}
+                      onChange={(value) => {
+                        const at = { ...params, MaximumSlip: value };
+                        setParams({ ...at });
+                      }}
+                    />
+                  </div>
+                </div>
+                {params?.MaximumSlip === 'Customize' && (
+                  <div className="sidle">
+                    <Slider
+                      rootClassName="sidleSlider"
+                      min={0}
+                      max={100}
+                      styles={{
+                        rail: {
+                          background: 'rgb(72,72,72)',
+                        },
+                        track: {
+                          background: 'rgb(134,240,151)',
+                        },
+                        handle: {
+                          borderRadius: '5px',
+                          width: '8px',
+                          height: '15px',
+                          marginTop: '-3px',
+                          background: 'white',
+                        },
+                      }}
+                      onChange={onChange}
+                      value={
+                        typeof maximumSlipValue === 'number'
+                          ? maximumSlipValue
+                          : 0
+                      }
+                    />
+                    <InputNumber
+                      rootClassName="timeInputNumber"
+                      min={0}
+                      suffix={<p style={{ color: 'rgb(134,240,151)' }}>%</p>}
+                      stringMode={false}
+                      controls={false}
+                      max={100}
+                      value={
+                        typeof maximumSlipValue === 'number'
+                          ? maximumSlipValue
+                          : 0
+                      }
+                      onChange={onChange}
+                    />
+                  </div>
+                )}
+                <div style={{ margin: ' 7px 0' }} className="row">
+                  <p> {t('Slider.Trade')}</p>
+                  <div className="time">
+                    <InputNumber
+                      min={0}
+                      defaultValue={30}
+                      stringMode={false}
+                      controls={false}
+                      rootClassName="timeInputNumber"
+                      onChange={(e: number) => {
+                        const at = { ...params, TradeDeadlineValue: e };
+                        setParams({ ...at });
+                      }}
+                    />
+                    <Select
+                      rootClassName="timeSelect"
+                      defaultValue="1"
+                      onChange={(e: string) => {
+                        const at = { ...params, TradeDeadlineType: e };
+                        setParams({ ...at });
+                      }}
+                      options={[
+                        { value: '1', label: t('Slider.Min') },
+                        { value: '2', label: t('Slider.Hour') },
+                      ]}
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <p> {t('Slider.Order')}</p>
+                  <div className="time">
+                    <InputNumber
+                      min={0}
+                      defaultValue={30}
+                      stringMode={false}
+                      controls={false}
+                      rootClassName="timeInputNumber"
+                      onChange={(e: number) => {
+                        const at = { ...params, OrderDeadlineValue: e };
+                        setParams({ ...at });
+                      }}
+                    />
+                    <Select
+                      rootClassName="timeSelect"
+                      defaultValue="1"
+                      onChange={(e: string) => {
+                        const at = { ...params, OrderDeadlineType: e };
+                        setParams({ ...at });
+                      }}
+                      options={[
+                        { value: '1', label: t('Slider.Min') },
+                        { value: '2', label: t('Slider.Hour') },
+                      ]}
+                    />
+                  </div>
+                </div>
+                <div style={{ marginTop: ' 7px' }} className="row">
+                  <p>{t('Slider.Gas')}</p>
+                  <div className="time">
+                    <Segmented
+                      rootClassName="timeSegmented"
+                      options={[
+                        { label: t('Slider.Auto'), value: 'Auto' },
+                        { label: t('Slider.Customize'), value: 'Customize' },
+                      ]}
+                      onChange={(value) => {
+                        const at = { ...params, GasPrice: value };
+                        setParams({ ...at });
+                      }}
+                    />
+                  </div>
+                </div>
+                {params?.GasPrice === 'Customize' && (
+                  <Slider
+                    marks={mask}
+                    step={null}
+                    onChange={onChangeGas}
+                    styles={{
+                      rail: {
+                        background: 'rgb(72,72,72)',
+                      },
+                      track: {
+                        background: 'rgb(134,240,151)',
+                      },
+                    }}
+                    rootClassName="CustomizeSlider"
+                  />
+                )}
+                <div className="service-fee">
+                  <span>Service Fees</span>
+                  <UsePass
+                    type="swap"
+                    payType={payType}
+                    onChange={(v: string) => {
+                      setPayType(v);
+                    }}
+                  />
+                </div>
+                <div className="back"></div>
+                <div className="backRight"></div>
+              </div>
+            ),
+          },
+        ]}
+      />
       <SelectTokenModal
         open={open}
         disabledTokens={[useToken?.contractAddress?.toLowerCase?.()]}

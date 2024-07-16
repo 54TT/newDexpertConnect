@@ -5,6 +5,7 @@ export default function dpass({ data }) {
   const d = (name: string, sta: string) => {
     return (
       <div className="pass">
+        <div className='leftBox'>
         <div
           className="left"
           style={{
@@ -14,8 +15,9 @@ export default function dpass({ data }) {
         >
           <img src="/dexpert.svg" alt="" />
         </div>
+        <p>{sta === 'swap' ? 'D pass' : 'Gloden Pass'}</p>
+        </div>
         <div className="right">
-          <p>{sta === 'swap' ? 'D pass' : 'Gloden Pass'}</p>
           <p>
             {sta === 'swap'
               ? Number(name)
