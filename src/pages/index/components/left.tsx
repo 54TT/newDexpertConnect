@@ -96,8 +96,8 @@ function Left() {
             popupClassName={'indexSelectPopup'}
             options={[
               { value: 'newPair', label: t('Market.New') },
-              { value: 'trading', label: t('Market.Trading'), disabled: true },
-              { value: 'watch', label: t('Market.Favorites'), disabled: true },
+              /*  { value: 'trading', label: t('Market.Trading'), disabled: true },
+              { value: 'watch', label: t('Market.Favorites'), disabled: true }, */
             ]}
           />
           {browser ? (

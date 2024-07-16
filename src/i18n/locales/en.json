@@ -31,7 +31,7 @@
     "set": "Set up name",
     "This": "This operation is irreversible. Are you sure you want to delete it?",
     "del": "Delete the Post?",
-    "SearchPairPlaceholder": "Search token name here"
+    "SearchPairPlaceholder": "Search"
   },
   "Dapps": {
     "Token Creation Bot": "Token Creation Bot",
@@ -68,7 +68,7 @@
     "Gas": "Gas Price",
     "Order": "Order Deadline",
     "Trade": "Trade Deadline",
-    "Maximum": "Maximum Slip",
+    "Maximum": "Maximum slippage",
     "Total": "Token Total",
     "Confirm": "Confirm",
     "Sniper": "Sniper Amount",
