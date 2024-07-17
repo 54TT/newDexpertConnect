@@ -5,6 +5,7 @@ import { CountContext } from '@/Layout';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swap from './swap';
 import Sniping from './sniping';
+import Mint from './mint';
 export default function index() {
   const params: any = useParams();
   const { browser }: any = useContext(CountContext);
@@ -20,7 +21,7 @@ export default function index() {
       },
       key: 'swap',
     },
-     {
+    {
       status: params?.id === 'sniping',
       imgAc: '/snipingActive.png',
       img: '/snipingMore.png',
@@ -39,6 +40,14 @@ export default function index() {
         history('/dapps/buyBot');
       },
       key: 'buyBot',
+    },
+    {
+      status: params?.id === 'mint',
+      name: 'mint',
+      onClick: () => {
+        history('/dapps/mint');
+      },
+      key: 'mint',
     },
   ];
 
@@ -75,8 +84,9 @@ export default function index() {
         </div>
       </div>
       {params?.id === 'swap' && <Swap />}
-      {params?.id === 'sniping' && <Sniping/>}
+      {params?.id === 'sniping' && <Sniping />}
       {params?.id === 'buyBot' && <BuyBot />}
+      {params?.id === 'mint' && <Mint />}
     </div>
   );
 }
