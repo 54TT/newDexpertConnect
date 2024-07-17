@@ -24,7 +24,6 @@ export default function oriderDetail({ orderId }: any) {
       setLoad(true);
     }
   };
-  console.log(par);
   useEffect(() => {
     if (orderId) {
       getOrder(orderId);

@@ -2,12 +2,12 @@ import { useEffect, useState, useContext } from 'react';
 import './index.less';
 import { Modal } from 'antd';
 import cookie from 'js-cookie';
+import NotificationChange from '@/components/message';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Load from '@components/allLoad/load.tsx';
 import LoadIng from '@components/allLoad/loading';
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
-
 export default function order({ setIsShow, setOrderId }: any) {
   const { getAll } = Request();
   const [data, setData] = useState([]);
@@ -15,6 +15,7 @@ export default function order({ setIsShow, setOrderId }: any) {
   const { browser }: any = useContext(CountContext);
   const [load, setLoad] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [orderId, setIsOrderId] = useState('');
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const changePage = () => {
@@ -24,15 +25,37 @@ export default function order({ setIsShow, setOrderId }: any) {
       getList(page + 1);
     }
   };
-
   const handleOk = () => {
     setIsModalOpen(false);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setOrderId('');
   };
 
+  const cancelOrder = async () => {
+    const token = cookie.get('token');
+    if (token && orderId) {
+      const res = await getAll({
+        method: 'post',
+        url: '/api/v1/preswap/cancel',
+        data: { orderId: orderId },
+        token,
+      });
+      if (res?.status === 200) {
+        const tt = data?.map((i: any) => {
+          if (i.orderCode === orderId) {
+            i.status = '2';
+          }
+          return i;
+        });
+        setData([...tt]);
+        handleCancel();
+        NotificationChange('success', res?.data?.message);
+      }
+    }
+  };
   const getList = async (page: number) => {
     const token = cookie.get('token');
     const res = await getAll({
@@ -56,7 +79,6 @@ export default function order({ setIsShow, setOrderId }: any) {
       setLoading(true);
     }
   };
-
   useEffect(() => {
     getList(1);
   }, []);
@@ -84,7 +106,18 @@ export default function order({ setIsShow, setOrderId }: any) {
                     </p>
                   </div>
                   <div className="right">
-                    <p onClick={() => setIsModalOpen(true)}>terminate</p>
+                    <p
+                      onClick={() => {
+                        setIsOrderId(i.orderCode);
+                        setIsModalOpen(true);
+                      }}
+                    >
+                      {i?.status === '1'
+                        ? 'terminate'
+                        : i?.status === '2'
+                          ? '已取消订单'
+                          : '过期'}
+                    </p>
                     <img
                       src="/orderRight.svg"
                       alt=""
@@ -129,7 +162,7 @@ export default function order({ setIsShow, setOrderId }: any) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            visibility:load?'visible':'hidden'
+            visibility: load ? 'visible' : 'hidden',
           }}
         >
           <Load />
@@ -148,10 +181,10 @@ export default function order({ setIsShow, setOrderId }: any) {
         <div className="box">
           <p className="title">取消订单</p>
           <p className="ord">订单编号</p>
-          <p className="num">dsadsadsdsdsadsadsdsads</p>
+          <p className="num">{orderId}</p>
           <div className="bot">
-            <p>1</p>
-            <p>2</p>
+            <p onClick={handleCancel}>再考虑一下</p>
+            <p onClick={cancelOrder}>Terminate</p>
           </div>
         </div>
       </Modal>
