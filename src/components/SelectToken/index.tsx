@@ -10,6 +10,7 @@ import { CountContext } from '@/Layout';
 import { getERC20Contract } from '@utils/contracts';
 import { getHistoryToken, addHistoryToken } from '@utils/indexDBfn';
 import { ethers } from 'ethers';
+import { useTranslation } from 'react-i18next';
 export interface TokenItemData {
   symbol: string;
   name: string;
@@ -31,6 +32,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
   const { provider, isLogin, chainId, loginPrivider } =
     useContext(CountContext);
+  const { t } = useTranslation();
   /*   const [showSearch, setShowSearch] = useState(false); */
   const [historyItems, setHistoryItems] = useState([]);
   const memoryTokenList = useRef<TokenItemData[]>([]);
@@ -191,7 +193,9 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
       />
       {isLogin && historyItems?.length ? (
         <div className="token-history-list">
-          <span className="token-list-title">History tokens</span>
+          <span className="token-list-title">
+            {t('Slider.Previously selected tokens')}
+          </span>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {historyItems.map((item) => (
               <div
@@ -207,7 +211,9 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
       ) : (
         <></>
       )}
-      <span className="popular-tokens token-list-title">Popular tokens</span>
+      <span className="popular-tokens token-list-title">
+        {t('Slider.Popular tokens')}
+      </span>
       <div id="scrollTarget">
         <>
           {tokenList?.map?.((item: TokenItemData) => (

@@ -13,7 +13,7 @@ function Right() {
   const { t } = useTranslation();
   const swiperHei = useRef<any>(null);
   const { browser }: any = useContext(CountContext);
-  const [select, setSelect] = useState('one');
+  const [select, setSelect] = useState('two');
   const [heigh, setHei] = useState<any>(null);
   useEffect(() => {
     const hei = window?.innerHeight - swiperHei?.current?.clientHeight - 130;
@@ -83,7 +83,7 @@ function Right() {
           value={select}
           block
           options={[
-            { label: t('Common.Recommand'), value: 'one' },
+            // { label: t('Common.Recommand'), value: 'one' },
             { label: t('Common.Lastest'), value: 'two' },
           ]}
           onChange={(value: any) => {

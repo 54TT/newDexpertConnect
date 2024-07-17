@@ -31,7 +31,7 @@
     "set": "Set up name",
     "This": "This operation is irreversible. Are you sure you want to delete it?",
     "del": "Delete the Post?",
-    "SearchPairPlaceholder": "Search token name here"
+    "SearchPairPlaceholder": "Search"
   },
   "Dapps": {
     "Token Creation Bot": "Token Creation Bot",
@@ -66,9 +66,9 @@
     "Auto": "Auto",
     "Customize": "Customize",
     "Gas": "Gas Price",
-    "Order": "Order Deadline",
+    "Order": "Order expire in",
     "Trade": "Trade Deadline",
-    "Maximum": "Maximum Slip",
+    "Maximum": "Maximum slippage",
     "Total": "Token Total",
     "Confirm": "Confirm",
     "Sniper": "Sniper Amount",
@@ -79,7 +79,14 @@
     "Name": "Name",
     "Price": "Price",
     "24h(%)": "24h(%)",
-    "More": "More"
+    "More": "More",
+    "Dex": "Dex",
+    "Service Fee": "Service fee",
+    "Estinmated Gas Fee": "Estinmated gas fee",
+    "Quote Rate": "Quote Rate",
+    "Previously selected tokens": "Previously selected tokens",
+    "Popular tokens": "Popular tokens",
+    "0.2% Dexpert service fee": "0.2% Dexpert service fee"
   },
   "Community": {
     "Share your insights...": "Please share your opinion here...",

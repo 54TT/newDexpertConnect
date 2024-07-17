@@ -42,7 +42,7 @@ function GetNewPair() {
   bundles {
     ${switchChain === 'Polygon' ? 'maticPrice' : switchChain === 'BSC' ? 'bnbPrice' : 'ethPrice'}
   }
-  pairs(first: 25, orderBy: createdAtTimestamp, where: {or: [{token0_: {name_contains: "${searchStr}"}}, {token0_: {symbol_contains: "${searchStr}"}}, {token1_: {symbol_contains: "${searchStr}"}}, {token1_: {name_contains: "${searchStr}"}}]} ,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
+  pairs(first: 25, orderBy: createdAtTimestamp, where: {or: [{token0_: {name_contains_nocase: "${searchStr}"}}, {token0_: {symbol_contains_nocase: "${searchStr}"}}, {token1_: {symbol_contains_nocase: "${searchStr}"}}, {token1_: {name_contains_nocase: "${searchStr}"}}]} ,orderDirection:  desc,skip: ${polling ? 0 : (current - 1) * 15}) {
     createdAtTimestamp
     id
     liquidityPositionSnapshots(orderBy: timestamp, orderDirection: desc, first: 1) {
