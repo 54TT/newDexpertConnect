@@ -3,7 +3,9 @@ import './index.less';
 import WalletList from './components/walletList';
 import AddMethod from './components/addMethod';
 import ImportAndCreate from './components/importAndCreate';
+import { useTranslation } from 'react-i18next';
 export default function index({ setAddWallet ,setWalletId,id}: any) {
+const { t } = useTranslation();
   const [status, setStatus] = useState('list');
   return (
     <div className="addWallet">
@@ -21,7 +23,7 @@ export default function index({ setAddWallet ,setWalletId,id}: any) {
             }
           }}
         />
-        <span>{status === 'list' ? 'Wallet management' : 'Add Wallet'}</span>
+        <span>{status === 'list' ?t('sniping.management') : t('sniping.Add')}</span>
         <span></span>
       </div>
       {status === 'list' ? (

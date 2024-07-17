@@ -12,6 +12,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import ProInputNumber from '@/components/ProInputNumber';
 import { useTranslation } from 'react-i18next';
 
+
 interface AdvConfigProps {
   onClose: (data: AdvConfigType) => void;
   initData: AdvConfigType;

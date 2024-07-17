@@ -6,11 +6,13 @@ import Load from '@/components/allLoad/load';
 import { CountContext } from '@/Layout.tsx';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import getBalance from '@/../utils/getBalance';
+import { useTranslation } from 'react-i18next';
 export default function walletList({
   setStatus,
   setAddWallet,
   setWalletId,id
 }: any) {
+const { t } = useTranslation();
   const { browser }: any = useContext(CountContext);
   const { getAll } = Request();
   const [list, setList] = useState([]);
@@ -139,7 +141,7 @@ export default function walletList({
         </div>
       </div>
       <div className="add" onClick={() => setStatus('addMethod')}>
-        <span>Add Wallet</span>
+        <span>{t('sniping.Add')}</span>
         <img src="/addWalletGo.svg" alt="" />
       </div>
     </div>

@@ -255,7 +255,7 @@ export default function fillData({
           size="large"
           rootClassName="snipingInput"
           onKeyDown={enter}
-          placeholder="Contract address"
+          placeholder={t('sniping.Contract')}
           allowClear
           onChange={searchChange}
           suffix={
@@ -302,7 +302,7 @@ export default function fillData({
       </div>
       <div className="tokenIn">
         <div className="price">
-          <p>Sniper Amount</p>
+          <p>{t('sniping.Sniper')}</p>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {/* v2  v3 */}
             {/* <QuotoPathSelect
@@ -383,7 +383,7 @@ export default function fillData({
         items={[
           {
             key: '1',
-            label: <p className="amount"> Advanced settings</p>,
+            label: <p className="amount"> {t('sniping.Advanced')}</p>,
             children: (
               <div className="operate">
                 <div className="row">
@@ -535,7 +535,7 @@ export default function fillData({
                   />
                 )}
                 <div className="service-fee">
-                  <span>Service Fees</span>
+                  <span>{t('sniping.Service')}</span>
                   <UsePass
                     type="swap"
                     payType={payType}

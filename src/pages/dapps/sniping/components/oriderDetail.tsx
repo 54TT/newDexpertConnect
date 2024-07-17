@@ -4,7 +4,9 @@ import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
 import LoadIng from '@components/allLoad/loading';
+import { useTranslation } from 'react-i18next';
 export default function oriderDetail({ orderId ,}: any) {
+const { t } = useTranslation();
   const { getAll } = Request();
   const { browser }: any = useContext(CountContext);
   const [par, setPar] = useState<any>(null);
@@ -34,40 +36,40 @@ export default function oriderDetail({ orderId ,}: any) {
     <div className="scrollHei sniperOrder oriderDetailBox ">
       {load ? (
         <div className="oriderDetail ">
-          <p>Token Information</p>
+          <p>{t('sniping.Information')}</p>
           <div className="symbol dis">
             <span>{par?.tokenOutName}</span>
             <span>{par?.tokenOutSymbol}</span>
           </div>
           <div className="more dis">
-            <span>Total Supply</span>
+            <span>{t('sniping.Total')}</span>
             <span>{par?.totalSupply || 0}</span>
           </div>
           {/*线*/}
           <div className="line"></div>
           {/*  */}
-          <p className="address">Token address</p>
+          <p className="address">{t('sniping.address')}</p>
           <p className="add">{par?.tokenOutCa}</p>
           <div className="more dis">
-            <span>订单编号</span>
+            <span>{t('sniping.number')}</span>
             <span>{par?.orderCode}</span>
           </div>
           <div className="line"></div>
-          <p className="sni">sniper amount</p>
+          <p className="sni">{t('sniping.Sniper')}</p>
           <div className="more dis" style={{ margin: '10px 0 14px' }}>
-            <span>Max slippage</span>
+            <span>{t('sniping.Max')}</span>
             <span>
               {par?.slippageType === '1' ? 'Auto' : par?.slippage || '0'}
             </span>
           </div>
           <div className="more dis">
-            <span>Gas Price</span>
+            <span>{t('sniping.Gas')}</span>
             <span>
               {par?.gasPriceType === '1' ? 'Auto' : par?.gasPrice || '0'}
             </span>
           </div>
           <div className="line"></div>
-          <p className="wallet">使用钱包</p>
+          <p className="wallet">{t('sniping.wallet')}</p>
           {par?.walletArr?.length > 0
             ? par?.walletArr.map((i: any, ind: number) => {
                 return (
@@ -97,14 +99,14 @@ export default function oriderDetail({ orderId ,}: any) {
                           }}
                         >
                           {i?.orderStatus === '6'
-                            ? '过期'
+                            ? t('sniping.Expired')
                             : i?.orderStatus === '5'
-                              ? '已取消'
+                              ? t('sniping.cancele')
                               : i?.orderStatus === '3' || i?.orderStatus === '4'
-                                ? '等待'
+                                ? t('sniping.wait')
                                 : i?.orderStatus === '2'
-                                  ? '失败'
-                                  : '获得' +
+                                  ? t('sniping.failed')
+                                  : t('sniping.get') +
                                     i?.tokenOutAmount +
                                     i?.tokenOutName}
                         </span>
@@ -122,15 +124,15 @@ export default function oriderDetail({ orderId ,}: any) {
             : ''}
           <div className="line"></div>
           <div className="more dis">
-            <span>订单开始时间</span>
+            <span>{t('sniping.start')}</span>
             <span>{par?.orderStartTime}</span>
           </div>
           <div className="more dis" style={{ margin: '16px 0' }}>
-            <span>订单结束时间</span>
+            <span>{t('sniping.end')}</span>
             <span>{par?.orderEndTime}</span>
           </div>
           <div className="more dis">
-            <span>金额</span>
+            <span>{t('sniping.Amount')}</span>
             <span>{par?.tokenInAmount || 0}ETH</span>
           </div>
         </div>

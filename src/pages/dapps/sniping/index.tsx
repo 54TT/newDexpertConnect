@@ -2,6 +2,7 @@ import './index.less';
 import { useState, useContext } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
+
 import FillData from './components/fillData';
 import SelectWallet from './components/selectWallet';
 import Order from './components/order';
@@ -10,7 +11,6 @@ import Loading from '@/components/allLoad/loading';
 import Drawer from '../drawer';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
-
 import _ from 'lodash';
 export default function index() {
   const { t } = useTranslation();
@@ -130,6 +130,8 @@ export default function index() {
       // 取消订单
       if (show && orderPar?.status === '1') {
         cancelOrder();
+      }else{
+        setIsShow(false)
       }
     }
   };
@@ -168,7 +170,7 @@ export default function index() {
       if (show) {
         return (
           <>
-            {backChange('选择钱包')}
+            {backChange(t('sniping.choose'))}
             <SelectWallet setWallet={setWallet} id={id} value={value} />
           </>
         );
@@ -179,7 +181,7 @@ export default function index() {
       if (show) {
         return (
           <>
-            {backChange('订单详情')}
+            {backChange(t('sniping.detail'))}
             <OrderDetail orderId={orderPar?.orderCode} />
           </>
         );
@@ -193,8 +195,8 @@ export default function index() {
       {!show && (
         <div className="top">
           {[
-            { name: 'Sniping', key: 'Sniping' },
-            { name: '订单', key: 'order' },
+            { name: t('sniping.Sniping'), key: 'Sniping' },
+            { name:  t('sniping.order'), key: 'order' },
           ].map((i: any) => {
             return (
               <p

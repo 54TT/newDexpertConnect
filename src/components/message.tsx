@@ -21,7 +21,7 @@ function NotificationChange(status: string, data: string, description?: any) {
     ),
     key: data + status,
     placement: 'topRight',
-    duration: 3.5,
+    duration: 8,
     btn: null,
     description,
     onClick: () => {

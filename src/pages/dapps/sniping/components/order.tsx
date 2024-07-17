@@ -8,7 +8,10 @@ import Load from '@components/allLoad/load.tsx';
 import LoadIng from '@components/allLoad/loading';
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
-export default function order({ setIsShow,setOrderPar }: any) {
+import { useTranslation } from 'react-i18next';
+
+export default function order({ setIsShow, setOrderPar }: any) {
+const { t } = useTranslation();
   const { getAll } = Request();
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
@@ -31,7 +34,7 @@ export default function order({ setIsShow,setOrderPar }: any) {
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setOrderPar(null)
+    setOrderPar(null);
   };
 
   const cancelOrder = async () => {
@@ -113,10 +116,10 @@ export default function order({ setIsShow,setOrderPar }: any) {
                       }}
                     >
                       {i?.status === '1'
-                        ? 'terminate'
+                        ? t('sniping.terminate')
                         : i?.status === '2'
-                          ? '已取消订单'
-                          : '过期'}
+                          ? t('sniping.canceled')
+                          : t('sniping.Expired')}
                     </p>
                     <img
                       src="/orderRight.svg"
@@ -130,11 +133,11 @@ export default function order({ setIsShow,setOrderPar }: any) {
                 </div>
                 <p className="line"></p>
                 <div className="data">
-                  <span>订单编号</span>
+                  <span>{t('sniping.number')}</span>
                   <div>{i?.orderCode}</div>
                 </div>
                 <div className="data">
-                  <span>使用钱包</span>
+                  <span>{t('sniping.wallet')}</span>
                   <div>
                     {i.walletArr.map((it: string, ind: number) => {
                       return <span key={ind}>{it}</span>;
@@ -142,11 +145,11 @@ export default function order({ setIsShow,setOrderPar }: any) {
                   </div>
                 </div>
                 <div className="data">
-                  <span>金额</span>
+                  <span>{t('sniping.Amount')}</span>
                   <div>{i?.tokenInAmount}</div>
                 </div>
                 <div className="data">
-                  <span>订单时限</span>
+                  <span>{t('sniping.time')}</span>
                   <div>{i?.orderDeadline}</div>
                 </div>
               </div>

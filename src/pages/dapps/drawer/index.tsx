@@ -11,7 +11,10 @@ import History from './components/history';
 import AddWallet from './components/addWallet';
 import SetWallet from './components/setWallet';
 import cookie from 'js-cookie';
-export default function index({id}:any) {
+import { useTranslation } from 'react-i18next';
+
+export default function index({ id }: any) {
+  const { t } = useTranslation();
   const { user, browser }: any = useContext(CountContext);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>(null);
@@ -19,8 +22,6 @@ export default function index({id}:any) {
   const [select, setSelect] = useState('pass');
   const [addWallet, setAddWallet] = useState('more');
   const [walletId, setWalletId] = useState<any>(null);
-
-  
   const [offset, setOffset] = useState<any>();
   //  左还是右
   const [position, setPosition] = useState('right');
@@ -37,12 +38,12 @@ export default function index({id}:any) {
     },
     {
       img: select === 'wallet' ? '/swapWalletAc.svg' : '/swapWallet.svg',
-      name: 'Wallet',
+      name: t('sniping.Assets'),
       key: 'wallet',
     },
     {
       img: select === 'history' ? '/swapHisAc.svg' : '/swapHis.svg',
-      name: 'History',
+      name: t('sniping.History'),
       key: 'history',
     },
   ];
@@ -128,13 +129,13 @@ export default function index({id}:any) {
               <div>
                 <img
                   src={user?.avatarUrl ? user?.avatarUrl : '/topLogo.png'}
-                  style={{borderRadius:'50%'}}
+                  style={{ borderRadius: '50%' }}
                   alt=""
                 />
                 <p>{user?.username}</p>
                 <Copy name="dsadasdsad" img="/copySwap.svg" />
               </div>
-              <p onClick={() => setAddWallet('add')}>+</p>
+              <img src="/walletAdd.svg" alt="" onClick={() => setAddWallet('add')} style={{cursor:'pointer'}}/>
             </div>
             <p className="price">dsdada</p>
             <div className="select">
@@ -159,7 +160,11 @@ export default function index({id}:any) {
             {select === 'history' && <History />}
           </div>
         ) : addWallet === 'add' ? (
-          <AddWallet setAddWallet={setAddWallet} setWalletId={setWalletId} id={id}/>
+          <AddWallet
+            setAddWallet={setAddWallet}
+            setWalletId={setWalletId}
+            id={id}
+          />
         ) : (
           <SetWallet walletId={walletId} />
         )}

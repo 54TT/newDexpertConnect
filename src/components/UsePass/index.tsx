@@ -35,7 +35,7 @@ function UsePass({ type, onChange, payType, refreshPass }: any) {
             title: (
               <>
                 <Tag color="#aaa" style={{ color: 'black' }}>
-                  0.2% fees
+                  0.2% fee
                 </Tag>
               </>
             ),
