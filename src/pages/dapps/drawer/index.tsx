@@ -13,7 +13,6 @@ import SetWallet from './components/setWallet';
 import cookie from 'js-cookie';
 export default function index({id}:any) {
   const { user, browser }: any = useContext(CountContext);
-  console.log(user)
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>(null);
   const { getAll } = Request();

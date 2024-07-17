@@ -431,7 +431,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           permit2Contract,
           signerAddress
         );
-
       const signature = await signer._signTypedData(
         eip712Domain,
         PERMIT2_PERMIT_TYPE,
@@ -472,7 +471,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       permit,
       signature,
     ].filter((item) => item !== null);
-
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
         (tokenIn.contractAddress === ethAddress ||
@@ -489,7 +487,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           recipientAddress,
           permit,
           signature,
-        ]);
+        ])
       }
       if (currentInputToken.current === 'in') {
         if (quotePath === '0') {
@@ -708,7 +706,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   const changeWalletChain = async (v: string) => {
     const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
-    console.log()
     if (!isLogin) {
       setChainId(evmChainId);
     } else {

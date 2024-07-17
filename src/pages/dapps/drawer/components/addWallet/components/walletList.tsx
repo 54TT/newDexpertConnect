@@ -14,7 +14,6 @@ export default function walletList({
   const { browser }: any = useContext(CountContext);
   const { getAll } = Request();
   const [list, setList] = useState([]);
-  console.log(list)
   const [page, setPage] = useState(1);
   const [load, setLoad] = useState(false);
   const [isNext, setIsNext] = useState(false);

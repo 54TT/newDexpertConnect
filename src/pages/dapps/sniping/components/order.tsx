@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './index.less';
 import { Modal } from 'antd';
+import cookie from 'js-cookie';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Load from '@components/allLoad/load.tsx';
+import Request from '@/components/axios.tsx';
 export default function order({ setIsShow }: any) {
+  const { getAll } = Request();
   const [data, setData] = useState([1, 2, 3, 4]);
   const [page, setPage] = useState(1);
   const [load, setLoad] = useState(false);
@@ -24,6 +27,21 @@ export default function order({ setIsShow }: any) {
     setIsModalOpen(false);
   };
 
+  const getList = async (page:number) => {
+    const token = cookie.get('token');
+    const res = await getAll({
+      method: 'post',
+      url: '/api/v1/sniper/getOrderList',
+      data: { page },
+      token,
+    });
+    console.log(res);
+  };
+
+  useEffect(() => {
+    getList(1);
+  }, []);
+
   return (
     <div className="order scrollHei sniperOrder" id="scrollableSniperOrder">
       <InfiniteScroll
@@ -33,7 +51,7 @@ export default function order({ setIsShow }: any) {
         loader={null}
         dataLength={data.length}
       >
-        {data.map((post: any,ind:number) => {
+        {data.map((post: any, ind: number) => {
           return (
             <div className="oriderItem" key={ind}>
               <div className="top">
@@ -88,7 +106,7 @@ export default function order({ setIsShow }: any) {
 
       <Modal
         title=""
-        rootClassName='orderModalCancel'
+        rootClassName="orderModalCancel"
         footer={null}
         centered
         open={isModalOpen}
@@ -96,16 +114,15 @@ export default function order({ setIsShow }: any) {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-<div className='box'>
-  <p className='title'>取消订单</p>
-  <p className='ord'>订单编号</p>
-  <p className='num'>dsadsadsdsdsadsadsdsads</p>
-  <div className='bot'>
-    <p>1</p>
-    <p>2</p>
-  </div>
-
-</div>
+        <div className="box">
+          <p className="title">取消订单</p>
+          <p className="ord">订单编号</p>
+          <p className="num">dsadsadsdsdsadsadsdsads</p>
+          <div className="bot">
+            <p>1</p>
+            <p>2</p>
+          </div>
+        </div>
       </Modal>
     </div>
   );

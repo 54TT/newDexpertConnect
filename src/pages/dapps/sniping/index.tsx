@@ -10,6 +10,7 @@ import Loading from '@/components/allLoad/loading';
 import Drawer from '../drawer';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
+
 import _ from 'lodash';
 export default function index() {
   const { t } = useTranslation();
@@ -32,20 +33,20 @@ export default function index() {
   const [gasPrice, setGasPrice] = useState(0);
   const [MaximumSlip, setMaximumSlip] = useState(0);
   const [wallet, setWallet] = useState(null);
-  // 设置
-  const [params, setParams] = useState<any>({
+  const more ={
     MaximumSlip: 'Auto',
     GasPrice: 'Auto',
     TradeDeadlineValue: 30,
     TradeDeadlineType: '1',
     OrderDeadlineValue: 30,
     OrderDeadlineType: '1',
-  });
-
+  }
+  // 设置
+  const [params, setParams] = useState<any>(more);
   const sniper = async () => {
     const tokens = cookie.get('token');
     let arr: any = [];
-    if (wallet?.length > 0&&token&&value&&useToken) {
+    if (wallet?.length > 0 && token && value && useToken) {
       wallet.map((i: any) => {
         arr.push(i.walletId);
       });
@@ -53,7 +54,8 @@ export default function index() {
         method: 'post',
         url: '/api/v1/sniper/preswap',
         data: {
-          gasPrice: params?.GasPrice === 'Auto' ? '' : (gasPrice +100).toString(),
+          gasPrice:
+            params?.GasPrice === 'Auto' ? '0' : (gasPrice + 100).toString(),
           gasPriceType: params?.GasPrice === 'Auto' ? '1' : '2',
           tokenOutDecimal: token?.decimals.toString(),
           tokenOutAmount: '0',
@@ -71,13 +73,25 @@ export default function index() {
           orderDeadlineType: params?.OrderDeadlineType,
           tradeDeadlineType: params?.TradeDeadlineType,
           tradeDeadline: params?.TradeDeadlineValue.toString(),
-          slippage: params?.MaximumSlip === 'Auto' ? '' : (MaximumSlip/100).toString(),
+          slippage:
+            params?.MaximumSlip === 'Auto'
+              ? '0'
+              : (MaximumSlip / 100).toString(),
           slippageType: params?.MaximumSlip === 'Auto' ? '1' : '2',
           type: '1',
         },
-        token:tokens,
+        token: tokens,
       });
-      console.log(res)
+      if (res?.status === 200) {
+        setSelect('order');
+        setIsShow(false);
+        setParams(more)
+        setWallet(null)
+        setMaximumSlip(0)
+        setGasPrice(0)
+        setValue(0)
+        setToken(null)
+      }
     }
   };
 
@@ -124,7 +138,7 @@ export default function index() {
         return (
           <>
             {backChange('选择钱包')}
-            <SelectWallet setWallet={setWallet} id={id} value={value}/>
+            <SelectWallet setWallet={setWallet} id={id} value={value} />
           </>
         );
       } else {
