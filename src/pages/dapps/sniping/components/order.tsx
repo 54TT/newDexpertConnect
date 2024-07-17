@@ -8,7 +8,7 @@ import Load from '@components/allLoad/load.tsx';
 import LoadIng from '@components/allLoad/loading';
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
-export default function order({ setIsShow, setOrderId }: any) {
+export default function order({ setIsShow,setOrderPar }: any) {
   const { getAll } = Request();
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
@@ -31,7 +31,7 @@ export default function order({ setIsShow, setOrderId }: any) {
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setOrderId('');
+    setOrderPar(null)
   };
 
   const cancelOrder = async () => {
@@ -82,7 +82,6 @@ export default function order({ setIsShow, setOrderId }: any) {
   useEffect(() => {
     getList(1);
   }, []);
-
   return (
     <div className="order scrollHei sniperOrder" id="scrollableSniperOrder">
       {loading ? (
@@ -110,6 +109,7 @@ export default function order({ setIsShow, setOrderId }: any) {
                       onClick={() => {
                         setIsOrderId(i.orderCode);
                         setIsModalOpen(true);
+                        setOrderPar(i);
                       }}
                     >
                       {i?.status === '1'
@@ -122,7 +122,7 @@ export default function order({ setIsShow, setOrderId }: any) {
                       src="/orderRight.svg"
                       alt=""
                       onClick={() => {
-                        setOrderId(i?.orderCode);
+                        setOrderPar(i);
                         setIsShow(true);
                       }}
                     />

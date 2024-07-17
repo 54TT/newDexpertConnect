@@ -80,7 +80,7 @@
     "Quote Rate": "汇率",
     "Previously selected tokens": "历史代币",
     "Popular tokens": "热门代币",
-    "0.2% Dexpert service fee": "向Dexpert支付0.2%的手续费"
+    "serviceFee": "向Dexpert支付0.2%的手续费"
   },
   "Community": {
     "Share your insights...": "请在这分享你的见闻...",

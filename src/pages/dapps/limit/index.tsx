@@ -23,7 +23,6 @@ export default function index() {
       setNonce(res?.data?.nonce);
     }
   };
-
   //  创建订单
   const setOrder = async () => {
     // const deadlineSeconds = 24 * 60 * 60;

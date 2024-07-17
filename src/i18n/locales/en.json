@@ -86,7 +86,7 @@
     "Quote Rate": "Quote Rate",
     "Previously selected tokens": "Previously selected tokens",
     "Popular tokens": "Popular tokens",
-    "0.2% Dexpert service fee": "0.2% Dexpert service fee"
+    "serviceFee": "0.2% Dexpert service fee"
   },
   "Community": {
     "Share your insights...": "Please share your opinion here...",

@@ -4,7 +4,7 @@ import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
 import LoadIng from '@components/allLoad/loading';
-export default function oriderDetail({ orderId }: any) {
+export default function oriderDetail({ orderId ,}: any) {
   const { getAll } = Request();
   const { browser }: any = useContext(CountContext);
   const [par, setPar] = useState<any>(null);
@@ -41,9 +41,9 @@ export default function oriderDetail({ orderId }: any) {
           </div>
           <div className="more dis">
             <span>Total Supply</span>
-            <span>{}</span>
+            <span>{par?.totalSupply || 0}</span>
           </div>
-          {/* 线 */}
+          {/*线*/}
           <div className="line"></div>
           {/*  */}
           <p className="address">Token address</p>
@@ -56,11 +56,15 @@ export default function oriderDetail({ orderId }: any) {
           <p className="sni">sniper amount</p>
           <div className="more dis" style={{ margin: '10px 0 14px' }}>
             <span>Max slippage</span>
-            <span>{par?.slippageType === '1' ? 'Auto' : par?.slippage}</span>
+            <span>
+              {par?.slippageType === '1' ? 'Auto' : par?.slippage || '0'}
+            </span>
           </div>
           <div className="more dis">
             <span>Gas Price</span>
-            <span>{par?.gasPriceType === '1' ? 'Auto' : par?.gasPrice}</span>
+            <span>
+              {par?.gasPriceType === '1' ? 'Auto' : par?.gasPrice || '0'}
+            </span>
           </div>
           <div className="line"></div>
           <p className="wallet">使用钱包</p>

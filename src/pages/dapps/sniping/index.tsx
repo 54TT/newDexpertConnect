@@ -29,19 +29,20 @@ export default function index() {
   const [value, setValue] = useState(0);
   // 链  id
   const [id, setId] = useState('1');
-  const [orderId, setOrderId] = useState('');
   // gas  价格
   const [gasPrice, setGasPrice] = useState(0);
   const [MaximumSlip, setMaximumSlip] = useState(0);
   const [wallet, setWallet] = useState(null);
-  const more ={
+  // order  信息
+  const [orderPar, setOrderPar] = useState<any>(null);
+  const more = {
     MaximumSlip: 'Auto',
     GasPrice: 'Auto',
     TradeDeadlineValue: 30,
     TradeDeadlineType: '1',
     OrderDeadlineValue: 30,
     OrderDeadlineType: '1',
-  }
+  };
   // 设置
   const [params, setParams] = useState<any>(more);
   const sniper = async () => {
@@ -86,28 +87,50 @@ export default function index() {
       if (res?.status === 200) {
         setSelect('order');
         setIsShow(false);
-        setParams(more)
-        setWallet(null)
-        setMaximumSlip(0)
-        setGasPrice(0)
-        setValue(0)
-        setToken(null)
+        setParams(more);
+        setWallet(null);
+        setMaximumSlip(0);
+        setGasPrice(0);
+        setValue(0);
+        setToken(null);
+      }
+    }
+  };
+  // 取消订单
+  const cancelOrder = async () => {
+    const token = cookie.get('token');
+    if (token && orderPar?.orderCode) {
+      const res = await getAll({
+        method: 'post',
+        url: '/api/v1/preswap/cancel',
+        data: { orderId: orderPar?.orderCode },
+        token,
+      });
+      if (res?.status === 200) {
+        setIsShow(false)
       }
     }
   };
 
   const chooseWallet = () => {
-    //  第一步
-    if (!show) {
-      if (params && value && token) {
-        if (params?.GasPrice === 'Auto') {
-          setIsShow(true);
-        } else if (gasPrice) {
-          setIsShow(true);
+    //  第一步  狙击
+    if (select === 'Sniping') {
+      if (!show) {
+        if (params && value && token) {
+          if (params?.GasPrice === 'Auto') {
+            setIsShow(true);
+          } else if (gasPrice) {
+            setIsShow(true);
+          }
         }
+      } else {
+        sniper();
       }
     } else {
-      sniper();
+      // 取消订单
+      if (show && orderPar?.status === '1') {
+        cancelOrder();
+      }
     }
   };
   const operate = {
@@ -127,7 +150,14 @@ export default function index() {
   const backChange = (name: string) => {
     return (
       <div className="walletBack">
-        <img src="/sniperBack.svg" alt="" onClick={() => setIsShow(false)} />
+        <img
+          src="/sniperBack.svg"
+          alt=""
+          onClick={() => {
+            setOrderPar(null);
+            setIsShow(false);
+          }}
+        />
         <p>{name}</p>
         <p></p>
       </div>
@@ -150,11 +180,11 @@ export default function index() {
         return (
           <>
             {backChange('订单详情')}
-            <OrderDetail orderId={orderId}/>
+            <OrderDetail orderId={orderPar?.orderCode} />
           </>
         );
       } else {
-        return <Order setIsShow={setIsShow} setOrderId={setOrderId}/>;
+        return <Order setIsShow={setIsShow} setOrderPar={setOrderPar} />;
       }
     }
   };
@@ -191,12 +221,16 @@ export default function index() {
             setIsModalOpen(true);
           }
         }}
-        style={{display:select==='order'?'none':'block'}}
+        style={{ display: select === 'order' && !show ? 'none' : 'block' }}
       >
         {user?.uid
-          ? isChain === 'more'
-            ? t('Slider.Confirm')
-            : t('Slider.Confirm')
+          ? orderPar?.status === '1'
+            ? 'Terminate'
+            : orderPar?.status === '2'
+              ? '已取消订单'
+              : orderPar?.status === '3'
+                ? '过期'
+                : t('Slider.Confirm')
           : t('Common.Connect Wallet')}
       </div>
       {isChain === 'more' && (
