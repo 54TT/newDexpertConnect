@@ -5,8 +5,10 @@ import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import SelectComp from '@/components/SelectComp';
 import { Tag } from 'antd';
-function UsePass({ type, onChange, payType, refreshPass }:any) {
+import { useTranslation } from 'react-i18next';
+function UsePass({ type, onChange, payType, refreshPass }: any) {
   const { isLogin } = useContext(CountContext);
+  const { t } = useTranslation;
   // 0 付钱 1 gloden 2 swap
   /*   const [dpassCount, setDapssCount] = useState('0'); // 剩余的dpass次数 需要区分swap snip limit
   const [glodenEndTime, setGlodenEndTime] = useState('0'); // 金卡到期时间 */
@@ -28,7 +30,7 @@ function UsePass({ type, onChange, payType, refreshPass }:any) {
         setGlodenEndTime(stopTs); */
         let list = [
           {
-            label: 'Pay 0.2% for fees',
+            label: t('Slider.0.2% Dexpert service fee'),
             key: '0',
             title: (
               <>

@@ -10,6 +10,7 @@ import {
 import './index.less';
 import { CloseOutlined } from '@ant-design/icons';
 import ProInputNumber from '@/components/ProInputNumber';
+import { useTranslation } from 'react-i18next';
 
 interface AdvConfigProps {
   onClose: (data: AdvConfigType) => void;
@@ -77,6 +78,7 @@ export interface AdvConfigType {
 export const SettingContent: ForwardRefExoticComponent<
   { initData: AdvConfigType } & RefAttributes<SettingContentRef>
 > = forwardRef(({ initData }, ref) => {
+  const { t } = useTranslation();
   const segmentOptions = [
     {
       label: 'Auto',
@@ -114,7 +116,7 @@ export const SettingContent: ForwardRefExoticComponent<
   return (
     <div className="setting-content">
       <div className="setting-item">
-        <span>Maximum Slip</span>
+        <span>{t('Slider.Maximum')}</span>
         <Segmented
           options={segmentOptions}
           onChange={(v: '0' | '1') => setSlipType(v)}
@@ -142,7 +144,7 @@ export const SettingContent: ForwardRefExoticComponent<
         </div>
       )}
       <div className="setting-item">
-        <span>Trade Deadline</span>
+        <span>{t('Slider.Order expire in')}</span>
         <div className="setting-item-back">
           <ProInputNumber
             inputNumberProps={{ min: 5 }}

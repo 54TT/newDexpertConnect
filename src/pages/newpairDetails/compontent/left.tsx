@@ -75,7 +75,14 @@ function Left({ par }: any) {
       <div className={`address dis`}>
         <div>
           <span>CA:</span>
-          <span
+          <a
+            href={`https://etherscan.io/address/${
+              value === 0
+                ? simplify(par?.token0?.id)
+                : value === 1
+                  ? simplify(par?.token1?.id)
+                  : simplify(par?.token1?.id)
+            }`}
             style={{
               color: browser ? '#c2bebe' : 'rgb(89,175,255)',
               borderBottom: browser ? 'none' : '1px solid rgb(89,175,255)',
@@ -86,7 +93,7 @@ function Left({ par }: any) {
               : value === 1
                 ? simplify(par?.token1?.id)
                 : simplify(par?.token1?.id)}
-          </span>
+          </a>
           <div onClick={() => show('one')}>
             <Copy
               setSelect={setSelectOne}
@@ -103,14 +110,15 @@ function Left({ par }: any) {
         </div>
         <div>
           <span>Pair:</span>
-          <span
+          <a
+            href={`https://etherscan.io/address/${simplify(par?.id)}`}
             style={{
               color: browser ? '#c2bebe' : 'rgb(89,175,255)',
               borderBottom: browser ? 'none' : '1px solid rgb(89,175,255)',
             }}
           >
             {simplify(par?.id)}
-          </span>
+          </a>
           <div onClick={() => show('two')}>
             <Copy name={par?.id} setSelect={setSelectTwo} select={selectTwo} />
           </div>
