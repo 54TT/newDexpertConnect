@@ -1,8 +1,8 @@
-import { DutchOrder, OrderType, UniswapXOrderParser } from '@uniswap/uniswapx-sdk'
+import { DutchOrder, OrderType } from '@uniswap/uniswapx-sdk'
 import { ORDER_STATUS, UniswapXOrderEntity,OrderValidationResponse,CreateOrderResponse } from './entities'
 import { BigNumber, Contract, ethers, Wallet } from 'ethers';
 import ERC20ABI from "./abi/ERC20ABI.json";
-import { buildOrder, submitOrder } from "./index";
+import { buildOrder, submitOrder } from "./tt";
 import {OffChainUniswapXOrderValidator} from "./OffChainUniswapXOrderValidator";
 
 import { Order } from './config/types/order'
@@ -107,7 +107,7 @@ export const createOrder = async (
 
   const { order, payload, nonce } = await buildOrder(chainId, recipient, inputAmount, outputAmount, deadlineSeconds, inputToken, outputToken, orderCreator);
   console.log("nonce:",nonce)
-  const validationProvider: OffChainUniswapXOrderValidator = new OffChainUniswapXOrderValidator();
+  const validationProvider: any = new OffChainUniswapXOrderValidator();
   const validationResp: OrderValidationResponse = validationProvider.validate(order);
   if(!validationResp.valid){
     return {

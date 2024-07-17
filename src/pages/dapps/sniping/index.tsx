@@ -29,6 +29,7 @@ export default function index() {
   const [value, setValue] = useState(0);
   // 链  id
   const [id, setId] = useState('1');
+  const [orderId, setOrderId] = useState('');
   // gas  价格
   const [gasPrice, setGasPrice] = useState(0);
   const [MaximumSlip, setMaximumSlip] = useState(0);
@@ -149,11 +150,11 @@ export default function index() {
         return (
           <>
             {backChange('订单详情')}
-            <OrderDetail />
+            <OrderDetail orderId={orderId}/>
           </>
         );
       } else {
-        return <Order setIsShow={setIsShow} />;
+        return <Order setIsShow={setIsShow} setOrderId={setOrderId}/>;
       }
     }
   };
@@ -190,6 +191,7 @@ export default function index() {
             setIsModalOpen(true);
           }
         }}
+        style={{display:select==='order'?'none':'block'}}
       >
         {user?.uid
           ? isChain === 'more'

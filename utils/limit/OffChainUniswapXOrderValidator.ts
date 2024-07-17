@@ -1,7 +1,6 @@
 import {
   CosignedV2DutchOrder,
   DutchOrder,
-  DutchOutput,
   OrderType,
 } from '@uniswap/uniswapx-sdk'
 import { BigNumber } from 'ethers'
@@ -269,7 +268,7 @@ export class OffChainUniswapXOrderValidator {
     }
   }
 
-  private validateOutputs(dutchOutputs: DutchOutput[]): OrderValidationResponse {
+  private validateOutputs(dutchOutputs: any[]): OrderValidationResponse {
     if (dutchOutputs.length == 0) {
       return {
         valid: false,
