@@ -1,14 +1,16 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState,  } from 'react';
+// useContext
 import './index.less';
 import cookie from 'js-cookie';
 // import { BigNumber, ethers } from 'ethers';
-import { CountContext } from '@/Layout';
+// import { CountContext } from '@/Layout';
 // import { createOrder,  } from "@/../utils/limit/order"
 import Request from '@/components/axios.tsx';
 export default function index() {
-  const { loginPrivider } = useContext(CountContext);
+  // const { loginPrivider } = useContext(CountContext);
   const { getAll } = Request();
   const [nonce, setNonce] = useState('');
+  // 获取签名
   const getNoce = async () => {
     const token = cookie.get('token');
     const res = await getAll({
@@ -22,6 +24,7 @@ export default function index() {
     }
   };
 
+  //  创建订单
   const setOrder = async () => {
     // const deadlineSeconds = 24 * 60 * 60;
     // const chainId = 11155111;
@@ -47,7 +50,6 @@ export default function index() {
   useEffect(() => {
     getNoce();
   }, []);
-
   return (
     <div className="limitBox">
       <div
