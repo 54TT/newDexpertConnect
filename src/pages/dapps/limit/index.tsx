@@ -9,7 +9,6 @@ export default function index() {
   const { loginPrivider } = useContext(CountContext);
   const { getAll } = Request();
   const [nonce, setNonce] = useState('');
-
   const getNoce = async () => {
     const token = cookie.get('token');
     const res = await getAll({
