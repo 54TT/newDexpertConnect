@@ -276,7 +276,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       // @ts-ignore
       (loginPrivider as any)?.removeListener?.('chainChanged', onChainChange);
     };
-  }, [isLogin, loginPrivider]);
+  }, [isLogin, loginPrivider, chainId]);
 
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
@@ -841,6 +841,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           onChange={(v) => changeWalletChain(v)}
           hideChain={true}
           disabled={!changeAble}
+          data={swapChain.find((i: any) => i.chainId === chainId)}
           wrapClassName="swap-chooose-chain"
         />
         <AdvConfig
