@@ -15,13 +15,14 @@ function LaunchForm({ formData, setFormData }) {
   return (
     <>
       <PageHeader arrow={true} title="Launch" desc="填写代币详细信息" />
-      <div className="launch-form mint-scroll">
+      <div className="launch-form mint-scroll scroll">
         <Form
           form={form}
           onChange={(data) => console.log(data)}
           onFinish={(file) => console.log(file)}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 18 }}
+          labelCol={{ span: 8 }}
+          labelWrap
+          wrapperCol={{ span: 16 }}
           labelAlign="left"
         >
           <Form.Item
@@ -60,7 +61,7 @@ function LaunchForm({ formData, setFormData }) {
             <Input />
           </Form.Item>
           <Form.Item label="描述" name="desc">
-            <TextArea />
+            <TextArea autoSize style={{ minHeight: '66px' }} />
           </Form.Item>
           <>
             <Form.Item label="首次购买税" name="buyTex" hidden={!showAdv}>

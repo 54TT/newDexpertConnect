@@ -11,4 +11,30 @@
     margin-left: 12px;
     margin-top: 12px;
   }
+  .ant-form-item {
+    margin-bottom: 12px;
+    .ant-row {
+      background-color: rgba(94, 94, 94, 0.3);
+      border-radius: 12px;
+      padding: 2px 4px;
+
+      .ant-col {
+        label {
+          color: rgba(255, 255, 255, 0.85);
+        }
+        .ant-form-item-control-input {
+          input,
+          textarea {
+            background-color: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.85);
+            box-shadow: none;
+          }
+        }
+      }
+    }
+    &-margin-offset {
+      margin-bottom: 12px !important;
+    }
+  }
 }

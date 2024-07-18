@@ -1,0 +1,59 @@
+.top-launch-header {
+  width: calc(100% + 6px);
+  height: 120px;
+  text-align: center;
+  background: rgba(134, 240, 151, 1);
+
+  position: relative;
+  left: -3px;
+  top: -20px;
+  overflow: hidden;
+  border-radius: 48px;
+  .animate-wave {
+    position: absolute;
+    top: calc(-100% - 20px);
+    width: 100%;
+    aspect-ratio: 1/1;
+    z-index: 3;
+  }
+  .animate-wave * {
+    border: 2px solid rgba(73, 135, 83, 0.4);
+    position: absolute;
+    border-radius: 50%;
+    animation: opac 6s infinite;
+  }
+
+  .animate-wave .w2 {
+    animation-delay: 1s;
+  }
+
+  .animate-wave .w3 {
+    animation-delay: 2s;
+  }
+
+  .animate-wave .w4 {
+    animation-delay: 3s;
+  }
+
+  .animate-wave .w5 {
+    animation-delay: 4s;
+  }
+
+  .animate-wave .w6 {
+    animation-delay: 5s;
+  }
+  .launch-home-button {
+    div {
+      font-size: 48px;
+      margin-top: 4px;
+      color: rgba(26, 26, 26, 0.85);
+    }
+  }
+
+  .launch-home-top-icon {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+    color: rgba(26, 26, 26, 0.85);
+  }
+}

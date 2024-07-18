@@ -18,12 +18,12 @@ function LaunchHome() {
           <div className="launch-home-top-icon">
             <img src="/launchTop.svg" alt="" />
           </div>
-          <p
+          <div
             className="launch-home-button"
             onClick={() => history('/dapps/mint/form')}
           >
             Launch
-          </p>
+          </div>
         </div>
         <div className="launch-home-bottom">
           <img className="cloud-left cloud" src="/cloudLeft.svg" alt="" />
@@ -31,7 +31,15 @@ function LaunchHome() {
           <img className="cloud-right cloud" src="/cloudRight.svg" alt="" />
         </div>
       </div>
-      <span className="launch-home-manage_token">代币管理</span>
+      <div className="launch-home-manage_token">
+        <span
+          onClick={() => {
+            history('/dapps/mint/manageToken');
+          }}
+        >
+          代币管理
+        </span>
+      </div>
     </>
   );
 }

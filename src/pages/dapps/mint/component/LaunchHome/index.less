@@ -1,9 +1,14 @@
 .launch-home {
-  width: 100%;
-  height: 90%;
+  width: calc(100% + 6px);
+  height: 86%;
   position: relative;
+  right: 3px;
+  top: -2px;
   border-radius: 20px;
+  display: flex;
+  justify-content: center;
   overflow: hidden;
+  background-color: rgba(46, 46, 46, 1);
   &-button {
     position: relative;
     z-index: 2;
@@ -11,7 +16,7 @@
   }
   .animate-wave {
     position: absolute;
-    top: -30%;
+    top: calc(-30% - 6px);
     width: 100%;
     aspect-ratio: 1/1;
     z-index: 1;
@@ -34,10 +39,10 @@
   }
   &-bottom {
     position: absolute;
-    bottom: -45%;
-    width: 100%;
-    right: 50%;
+    bottom: -50%;
+    width: 1000px;
     display: flex;
+    justify-content: space-around;
     .rocket {
       animation-name: rocket-up-and-down;
       animation-duration: 5s;
@@ -49,8 +54,9 @@
     .cloud {
       width: 100%;
       position: relative;
+      bottom: -60px;
       /* 动画持续时间 */
-      animation-duration: 5s;
+      animation-duration: 5.2s;
       /* 动画无限循环 */
       animation-iteration-count: infinite;
       /* 动画的计时函数，这里是线性 */
@@ -58,12 +64,13 @@
       /* 确保元素的中心点用作旋转的基点 */
       transform-origin: center;
       &-right {
-        right: 35%;
+        right: 20%;
         animation-name: clockwise-rotate;
       }
       &-left {
-        left: 35%;
+        left: 20%;
         animation-name: counterclockwise-rotate;
+        animation-duration: 4.8s;
       }
     }
   }
@@ -76,7 +83,7 @@
     transform: rotate(90deg);
   }
   50% {
-    transform: translateY(10px) scale(0.9) translateX(10px) rotate(180deg);
+    transform: translateY(20px) scale(0.9) translateX(20px) rotate(180deg);
   }
   75% {
     transform: rotate(270deg);
@@ -165,7 +172,7 @@
 }
 
 .launch-home-manage_token {
-  margin-top: 12px;
+  margin-top: 24px;
   text-align: center;
   font-size: 24px;
   color: rgba(255, 255, 255, 0.8);
