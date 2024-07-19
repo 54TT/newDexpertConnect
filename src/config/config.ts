@@ -2,7 +2,7 @@ type ChainIdList = '1' | '11155111' | '8453';
 export const config: Record<ChainIdList, any> = {
   '1': {
     rpcUrl:
-      'https://eth-mainnet.g.alchemy.com/v2/_zR9i2vahgYv3nbxS8bxZccBY6gn9N1M',
+      'https://eth-mainnet.g.alchemy.com/v2/pYR_0-1KLcH-cJ_j_7dWOAWByJmPM-bN',
     chainId: 1,
     verificationURL: 'https://api.etherscan.io/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
@@ -39,7 +39,8 @@ export const config: Record<ChainIdList, any> = {
     },
   },
   '11155111': {
-    rpcUrl: 'https://sepolia.drpc.org',
+    rpcUrl:
+      'https://eth-sepolia.g.alchemy.com/v2/pYR_0-1KLcH-cJ_j_7dWOAWByJmPM-bN',
     /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
     verificationURL: 'https://api-sepolia.etherscan.io/api',
     chainId: 11155111,
@@ -77,7 +78,8 @@ export const config: Record<ChainIdList, any> = {
     },
   },
   '8453': {
-    rpcUrl: 'https://mainnet.base.org',
+    rpcUrl:
+      'https://base-mainnet.g.alchemy.com/v2/pYR_0-1KLcH-cJ_j_7dWOAWByJmPM-bN',
     /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
     verificationURL: 'https://api.basescan.org/api',
     chainId: 8453,
