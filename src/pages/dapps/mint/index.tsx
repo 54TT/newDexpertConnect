@@ -3,7 +3,7 @@ import LaunchForm from './component/LaunchForm';
 import { Route, Routes } from 'react-router-dom';
 import LaunchHome from './component/LaunchHome';
 import { useState } from 'react';
-import ManageToken from './component/ManageToken';
+import ManageTokenList from './component/ManageTokenList';
 function Mint() {
   const [formData, setFormData] = useState({});
   return (
@@ -21,7 +21,7 @@ function Mint() {
                 <LaunchForm formData={formData} setFormData={setFormData} />
               }
             ></Route>
-            <Route path="/manageToken" element={<ManageToken />}></Route>
+            <Route path="/manageToken" element={<ManageTokenList />}></Route>
           </Routes>
         </div>
       </div>

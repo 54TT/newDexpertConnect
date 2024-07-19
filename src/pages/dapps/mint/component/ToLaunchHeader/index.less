@@ -1,6 +1,6 @@
 .top-launch-header {
   width: calc(100% + 6px);
-  height: 120px;
+  height: 100px;
   text-align: center;
   background: rgba(134, 240, 151, 1);
 
@@ -8,13 +8,13 @@
   left: -3px;
   top: -20px;
   overflow: hidden;
-  border-radius: 48px;
+  border-radius: 32px;
   .animate-wave {
     position: absolute;
-    top: calc(-100% - 20px);
+    top: calc(-100% - 50px);
     width: 100%;
     aspect-ratio: 1/1;
-    z-index: 3;
+    z-index: 2;
   }
   .animate-wave * {
     border: 2px solid rgba(73, 135, 83, 0.4);
@@ -43,10 +43,13 @@
     animation-delay: 5s;
   }
   .launch-home-button {
+    position: relative;
+    z-index: 3;
     div {
-      font-size: 48px;
+      font-size: 32px;
       margin-top: 4px;
       color: rgba(26, 26, 26, 0.85);
+      cursor: pointer;
     }
   }
 

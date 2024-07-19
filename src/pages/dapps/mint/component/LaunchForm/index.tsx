@@ -14,7 +14,12 @@ function LaunchForm({ formData, setFormData }) {
   }, []);
   return (
     <>
-      <PageHeader arrow={true} title="Launch" desc="填写代币详细信息" />
+      <PageHeader
+        className="launch-form-header"
+        arrow={true}
+        title="Launch"
+        desc="填写代币详细信息"
+      />
       <div className="launch-form mint-scroll scroll">
         <Form
           form={form}
