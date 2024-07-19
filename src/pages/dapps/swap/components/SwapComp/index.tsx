@@ -855,7 +855,9 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       </div>
       <div className="input-token send-token">
         <div className="dapp-sniper-right-token">
-          <div className="dapp-sniper-right-token-label">Send</div>
+          <div className="dapp-sniper-right-token-label">
+            {t('Slider.Send')}
+          </div>
           <div
             className="dapp-sniper-right-token-icon"
             onClick={() => {
@@ -902,7 +904,9 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       </div>
       <div className="input-token receive-token">
         <div className="dapp-sniper-right-token">
-          <div className="dapp-sniper-right-token-label">Receive</div>
+          <div className="dapp-sniper-right-token-label">
+            {t('Slider.Receive')}
+          </div>
           <div
             className="dapp-sniper-right-token-icon"
             onClick={() => {
@@ -941,7 +945,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       </div>
       <div className="bottom-info">
         <div className="exchange-rate">
-          <span>{t('Slider.Previously selected tokens')}</span>
+          <span>{t('Slider.Quote Rate')}</span>
           {showSkeleton ? (
             <Skeleton.Button active size="small" />
           ) : (
