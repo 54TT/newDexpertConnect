@@ -27,7 +27,7 @@ export default function selectWallet({ setWallet, id, value }: any) {
     });
     if (res?.status === 200) {
       let address: any = [];
-      if (res?.data?.list.length > 0) {
+      if (res?.data?.list.length > 0) { 
         res?.data?.list.map((i: any) => {
           address.push(i.address);
         });

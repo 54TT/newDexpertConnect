@@ -8,7 +8,7 @@ import Sniping from './sniping';
 import Limit from './limit';
 export default function index() {
   const params: any = useParams();
-  const { browser }: any = useContext(CountContext);
+  // const { browser }: any = useContext(CountContext); 
   const history = useNavigate();
   const top = [
     {
@@ -41,22 +41,22 @@ export default function index() {
       },
       key: 'buyBot',
     },
-    // {
-    //   imgAc: '/snipingActive.png',
-    //   img: '/snipingMore.png',
-    //   status: params?.id === 'limit',
-    //   name: 'Limit',
-    //   onClick: () => {
-    //     history('/dapps/limit');
-    //   },
-    //   key: 'limit',
-    // },
+    {
+      imgAc: '/snipingActive.png',
+      img: '/snipingMore.png',
+      status: params?.id === 'limit',
+      name: 'Limit',
+      onClick: () => {
+        history('/dapps/limit');
+      },
+      key: 'limit',
+    },
   ];
 
   return (
     <div className="dappsBox">
       <div
-        style={{ padding: browser ? ' 12px 35%' : '10px 6%' }}
+        // style={{ padding: browser ? ' 12px 35%' : '10px 6%' }}
         className="top"
       >
         <div className="back"></div>

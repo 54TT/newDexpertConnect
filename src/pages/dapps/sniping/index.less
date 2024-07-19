@@ -39,6 +39,14 @@
     align-items: center;
     margin-bottom: 10px;
     justify-content: space-between;
+    box-sizing: border-box;
+    height: 36px;
+    .ant-input-affix-wrapper{
+      transition: all .2s ease;
+    }
+    input{
+      background: #2d2d2d !important;
+    }
   }
   .coveredDust {
     position: absolute;
@@ -361,6 +369,9 @@
             background-color: rgb(134, 240, 151) !important;
             border-radius: 30px;
             padding: 0 15px;
+            &:hover{
+              border-color: transparent !important;
+            }
           }
           .ant-select-arrow {
             .anticon {
@@ -368,7 +379,11 @@
             }
           }
         }
-
+        .ant-select-focused {
+          .ant-select-selector {
+            border: none;
+          }
+        }
         .timeSegmented {
           width: 100% !important;
           border-radius: 30px;

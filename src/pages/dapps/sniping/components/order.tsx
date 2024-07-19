@@ -116,7 +116,7 @@ const { t } = useTranslation();
                       }}
                     >
                       {i?.status === '1'
-                        ? t('sniping.terminate')
+                        ? t('sniping.cancel')
                         : i?.status === '2'
                           ? t('sniping.canceled')
                           : t('sniping.Expired')}
@@ -148,9 +148,9 @@ const { t } = useTranslation();
                   <span>{t('sniping.Amount')}</span>
                   <div>{i?.tokenInAmount}</div>
                 </div>
-                <div className="data">
+                <div className="data" style={{flexWrap:'wrap'}}>
                   <span>{t('sniping.time')}</span>
-                  <div>{i?.orderDeadline}</div>
+                  <div style={{justifyContent:"flex-end",marginTop:"8px",width:"100%"}}>{i?.orderDeadline}</div>
                 </div>
               </div>
             );

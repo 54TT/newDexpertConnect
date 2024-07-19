@@ -5,8 +5,9 @@ import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
 import LoadIng from '@components/allLoad/loading';
 import { useTranslation } from 'react-i18next';
+import { getScanLink } from '@/utils/getScanLink';
 export default function oriderDetail({ orderId ,}: any) {
-const { t } = useTranslation();
+  const { t } = useTranslation();
   const { getAll } = Request();
   const { browser }: any = useContext(CountContext);
   const [par, setPar] = useState<any>(null);
@@ -21,6 +22,7 @@ const { t } = useTranslation();
     });
     if (res?.status === 200) {
       setPar(res?.data?.orderDetail);
+      console.log(res?.data?.orderDetail);
       setLoad(true);
     } else {
       setLoad(true);
@@ -59,14 +61,32 @@ const { t } = useTranslation();
           <div className="more dis" style={{ margin: '10px 0 14px' }}>
             <span>{t('sniping.Max')}</span>
             <span>
-              {par?.slippageType === '1' ? 'Auto' : par?.slippage || '0'}
+              {par?.slippageType === '1' ? 'Auto' : par?.slippage*100+' %' || '0'}
             </span>
           </div>
           <div className="more dis">
             <span>{t('sniping.Gas')}</span>
             <span>
-              {par?.gasPriceType === '1' ? 'Auto' : par?.gasPrice || '0'}
+              {par?.gasPriceType === '1' ? 'Auto' : par?.gasPrice+'%' || '0'}
             </span>
+          </div>
+          <div className="more dis">
+            <span>Service Fee</span>
+            {par?.payType==='0' &&
+              <span>
+                0.2% fee
+              </span>
+            }
+            {par?.payType==='1' &&
+              <span>
+                Golden Card
+              </span>
+            }
+            {par?.payType==='2' &&
+              <span>
+                Dpass Card
+              </span>
+            }
           </div>
           <div className="line"></div>
           <p className="wallet">{t('sniping.wallet')}</p>
@@ -113,11 +133,21 @@ const { t } = useTranslation();
                         <img
                           src="/ethLogo111.svg"
                           alt=""
-                          style={{ width: '20px' }}
+                          style={{ width: '20px' ,cursor:'pointer'}}
+                          onClick={(e)=>{
+                            e.stopPropagation()
+                            if(par?.walletArr[0]?.tx){
+                              // 后端接口需要传回chainId
+                              window.open(getScanLink(par?.walletArr[0].chainID,par.walletArr[0].tx))
+                            }
+                          }}
                         />
                       </div>
                     </div>
-                    <p className="walletAddress">{i?.walletAddress}</p>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                      <span style={{color:'rgba(255,255,255,0.55'}}>address</span>
+                      <p className="walletAddress">{i?.walletAddress.slice(0,6)+'...'+i?.walletAddress.slice(-4)}</p>
+                    </div>
                   </div>
                 );
               })
@@ -133,7 +163,7 @@ const { t } = useTranslation();
           </div>
           <div className="more dis">
             <span>{t('sniping.Amount')}</span>
-            <span>{par?.tokenInAmount || 0}ETH</span>
+            <span>{par?.tokenInAmount || 0} ETH</span>
           </div>
         </div>
       ) : (

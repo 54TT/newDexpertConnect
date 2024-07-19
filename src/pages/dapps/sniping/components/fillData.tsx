@@ -40,11 +40,13 @@ export default function fillData({
   setId,
   setUseToken,
   setMaximumSlip,
+  payType,
+  setPayType
 }: any) {
   const { t } = useTranslation();
   const { loginPrivider, transactionFee, isLogin, user }: any =
     useContext(CountContext);
-  const [payType, setPayType] = useState('0');
+  // const [payType, setPayType] = useState('0');
   const [maximumSlipValue, setMaximumSlipValue] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [isToken, setIsToken] = useState(false);
@@ -540,6 +542,7 @@ export default function fillData({
                     type="swap"
                     payType={payType}
                     onChange={(v: string) => {
+                      console.log(v);
                       setPayType(v);
                     }}
                   />
