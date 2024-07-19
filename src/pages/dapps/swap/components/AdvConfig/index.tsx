@@ -11,8 +11,6 @@ import './index.less';
 import { CloseOutlined } from '@ant-design/icons';
 import ProInputNumber from '@/components/ProInputNumber';
 import { useTranslation } from 'react-i18next';
-
-
 interface AdvConfigProps {
   onClose: (data: AdvConfigType) => void;
   initData: AdvConfigType;
@@ -22,7 +20,7 @@ interface AdvConfigProps {
 function AdvConfig({ onClose, initData }: AdvConfigProps) {
   const [open, setOpen] = useState(false);
   const contentRef = useRef<SettingContentRef>();
-
+  const { t } = useTranslation();
   const Title = () => (
     <div
       style={{
@@ -31,7 +29,7 @@ function AdvConfig({ onClose, initData }: AdvConfigProps) {
         width: '100%',
       }}
     >
-      <span className="popup-title">Advanced setting</span>
+      <span className="popup-title">{t('Slider.Advanced setting')}</span>
       <CloseOutlined
         style={{ color: '#fff', cursor: 'pointer', padding: '4px' }}
         onClick={() => {
@@ -82,21 +80,21 @@ export const SettingContent: ForwardRefExoticComponent<
   const { t } = useTranslation();
   const segmentOptions = [
     {
-      label: 'Auto',
+      label: t('Slider.Auto'),
       value: '0',
     },
     {
-      label: 'Custom',
+      label: t('Slider.Customize'),
       value: '1',
     },
   ];
   const selectOptions = [
     {
-      label: 'Minute',
+      label: t('Slider.Min'),
       value: 'm',
     },
     {
-      label: 'Hour',
+      label: t('Slider.Hour'),
       value: 'h',
     },
   ];
@@ -145,7 +143,7 @@ export const SettingContent: ForwardRefExoticComponent<
         </div>
       )}
       <div className="setting-item">
-        <span>{t('Slider.Order expire in')}</span>
+        <span>{t('Slider.Order')}</span>
         <div className="setting-item-back">
           <ProInputNumber
             inputNumberProps={{ min: 5 }}

@@ -48,7 +48,16 @@
     "Telegram Suite": "Telegram 套件",
     "Thor Desc": "Thor是一个用户友好的DApp，它自动化了ERC-20代币创建过程。通过提供直观的界面和简化复杂任务，Thor使用户能够高效地创建和部署他们的代币。",
     "Run Tips": "在Uniswap协议设计中，开发团队不会从交易中提取费用，所有交易中的费用都会返还给提供流动性的提供者。",
-    "Fee": "费用"
+    "Fee": "费用",
+    "Swap": "交换",
+    "Connect Wallet": "连接钱包",
+    "Chain not supported": "不支持的链",
+    "Insufficient Fund": "余额不足",
+    "Approving": "授权中",
+    "Authenticating": "等待许可",
+    "Converting": "转换中",
+    "Confirming": "正在确认",
+    "Awaiting wallet's response": "等待钱包响应"
   },
 
   "Slider": {
@@ -81,6 +90,12 @@
     "Previously selected tokens": "历史代币",
     "Popular tokens": "热门代币",
     "serviceFee": "向Dexpert支付0.2%的手续费"
+    "0.2% Dexpert service fee": "向Dexpert支付0.2%的手续费",
+    "Advanced setting": "高级设置",
+    "Send": "发送",
+    "Receive": "接收",
+    "Select Token": "选择代币",
+    "Token Contract Address": "代币合约地址"
   },
   "Community": {
     "Share your insights...": "请在这分享你的见闻...",

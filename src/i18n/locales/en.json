@@ -51,7 +51,16 @@
     "Start on Web": "Start on Web",
     "Thor Desc": "Thor is a user-friendly DApp that automates the ERC-20 token creation process. By providing an intuitive interface and simplifying complex tasks, Thor empowers users to efficiently create and deploy their tokens.",
     "Run Tips": "In the Uniswap protocol design, the development team does not extract fees from transactions, and all fees in transactions are returned to the liquidity provider.",
-    "Fee": "Fee"
+    "Fee": "Fee",
+    "Swap": "Swap",
+    "Connect Wallet": "Connect Wallet",
+    "Chain not supported": "Chain not supported",
+    "Insufficient Fund": "Insufficient Fund",
+    "Approving": "Approving",
+    "Authenticating": "Authenticating",
+    "Converting": "Converting",
+    "Confirming": "Confirming",
+    "Awaiting wallet's response": "Awaiting wallet's response"
   },
   "Slider": {
     "Invalid": "Invalid chain",
@@ -87,6 +96,12 @@
     "Previously selected tokens": "Previously selected tokens",
     "Popular tokens": "Popular tokens",
     "serviceFee": "0.2% Dexpert service fee"
+    "0.2% Dexpert service fee": "0.2% Dexpert service fee",
+    "Advanced setting": "Advanced setting",
+    "Send": "Send",
+    "Receive": "Receive",
+    "Select Token": "Select Token",
+    "Token Contract Address": "Token Contract Address"
   },
   "Community": {
     "Share your insights...": "Please share your opinion here...",
