@@ -1,7 +1,7 @@
 import './in.less';
 import BuyBot from './buyBot';
-import { useContext } from 'react';
-import { CountContext } from '@/Layout';
+// import { useContext } from 'react';
+// import { CountContext } from '@/Layout';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swap from './swap';
 import Sniping from './sniping';

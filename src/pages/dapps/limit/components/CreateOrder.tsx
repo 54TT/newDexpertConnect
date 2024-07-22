@@ -1,12 +1,13 @@
-import { TokenItemData } from "@/components/SelectToken"
+// import { TokenItemData } from "@/components/SelectToken"
 import SelectTokenModal from "@/components/SelectTokenModal"
-import DefaultTokenImg from "@/components/DefaultTokenImg"
+// import DefaultTokenImg from "@/components/DefaultTokenImg"
 import { useState } from "react"
 
 
 export default function CreateOrder() {
   const [showSelectModal, setShowSelectModal] = useState(false)
-  const [payToken,setPayToken]=useState<TokenItemData>()
+  // const [payToken,setPayToken]=useState<TokenItemData>()
+  
   // const [receiveToken,setReceiveToken]=useState<TokenItemData>()
   
   return (
@@ -24,10 +25,10 @@ export default function CreateOrder() {
         <div className="token-card-body dis-between">
           <div className="token-card-body-left">
             <div className="limit-select-token" onClick={()=>{setShowSelectModal(true)}}>
-              <DefaultTokenImg
+              {/* <DefaultTokenImg
                 name={payToken?.symbol}
                 icon={payToken?.logoUrl}
-              />
+              /> */}
             </div>
           </div>
           <span className="token-card-body-right">0.023</span>

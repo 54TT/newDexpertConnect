@@ -1,4 +1,4 @@
-import { useEffect, useState,  } from 'react';
+import { useEffect,  } from 'react';
 import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -6,31 +6,31 @@ import OrderCard from './components/OrderCard';
 import CreateOrder from './components/CreateOrder';
 // useContext
 import './index.less';
-import cookie from 'js-cookie';
+// import cookie from 'js-cookie';
 // import { BigNumber, ethers } from 'ethers';
 // import { CountContext } from '@/Layout';
 // import { createOrder,  } from "@/../utils/limit/order"
-import Request from '@/components/axios.tsx';
+// import Request from '@/components/axios.tsx';
 export default function index() {
   // const { loginPrivider } = useContext(CountContext);
   const {t}=useTranslation()
-  const { getAll } = Request();
-  const [nonce, setNonce] = useState('');
-  // 获取签名
-  const getNoce = async () => {
-    const token = cookie.get('token');
-    const res = await getAll({
-      method: 'get',
-      url: '/api/v1/limit/getNonce',
-      data: {},
-      token,
-    });
-    if (res?.status === 200) {
-      setNonce(res?.data?.nonce);
-    }
-  };
+  // const { getAll } = Request();
+  // const [nonce, setNonce] = useState('');
+  // // 获取签名
+  // const getNoce = async () => {
+  //   const token = cookie.get('token');
+  //   const res = await getAll({
+  //     method: 'get',
+  //     url: '/api/v1/limit/getNonce',
+  //     data: {},
+  //     token,
+  //   });
+  //   if (res?.status === 200) {
+  //     setNonce(res?.data?.nonce);
+  //   }
+  // };
   //  创建订单
-  const setOrder = async () => {
+  // const setOrder = async () => {
     // const deadlineSeconds = 24 * 60 * 60;
     // const chainId = 11155111;
     // const receipt: string = '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89';
@@ -50,7 +50,7 @@ export default function index() {
     //   token,
     // });
     // console.log(res)
-  };
+  // };
 
   useEffect(() => {
     // getNoce();

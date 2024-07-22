@@ -4,7 +4,7 @@ import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
 import { CountContext } from '@/Layout';
 import Loading from '@components/allLoad/loading';
-import Load from '@/components/allLoad/load';
+// import Load from '@/components/allLoad/load';
 import WalletDetail from './WalletDetail';
 import getBalance from '@utils/getBalance';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -12,7 +12,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 export default function WalletManage({id}: any) {
   const { browser }: any = useContext(CountContext);
   const [loading, setLoading] = useState(false)
-  const [nextLoad, setNextLoad] = useState(false);
+  // const [nextLoad, setNextLoad] = useState(false);
 
   const [walletList, setWalletList] = useState([]);
   const [showWalletDetail,setShowWalletDetail]=useState(false)
@@ -67,10 +67,10 @@ export default function WalletManage({id}: any) {
         setIsNext(true)
       }
       setLoading(true)
-      setNextLoad(false)
+      // setNextLoad(false)
     }else{
       setLoading(true)
-      setNextLoad(false)
+      // setNextLoad(false)
     }
   };
 
@@ -89,7 +89,7 @@ export default function WalletManage({id}: any) {
     if(!isNext){
       getWalletList(page+1);
       setPage(page+1);
-      setNextLoad(true);
+      // setNextLoad(true);
     }
   }
   useEffect(()=>{
@@ -143,7 +143,7 @@ export default function WalletManage({id}: any) {
           <WalletDetail id={id} setShowWalletDetail={setShowWalletDetail} showWalletDetail={showWalletDetail} />
         )
       }
-      ( !nextLoad && <Load />)
+      {/* ( !nextLoad && <Load />) */}
       {/* 添加钱包，未实现 */}
       { loading &&
         <span className="add-wallet" onClick={createWallet}>Add wallet</span>
