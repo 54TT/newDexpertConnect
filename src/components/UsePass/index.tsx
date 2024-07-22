@@ -8,7 +8,11 @@ import { Tag } from 'antd';
 import { useTranslation } from 'react-i18next';
 function UsePass({ type, onChange, payType, refreshPass }: any) {
   const { isLogin } = useContext(CountContext);
+<<<<<<< HEAD
   const { t } = useTranslation()
+=======
+  const { t } = useTranslation();
+>>>>>>> main
   // 0 付钱 1 gloden 2 swap
   /*   const [dpassCount, setDapssCount] = useState('0'); // 剩余的dpass次数 需要区分swap snip limit
   const [glodenEndTime, setGlodenEndTime] = useState('0'); // 金卡到期时间 */

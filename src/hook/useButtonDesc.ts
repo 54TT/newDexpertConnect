@@ -1,14 +1,17 @@
+import { useTranslation } from 'react-i18next';
+
 const useButtonDesc = (id: string) => {
+  const { t } = useTranslation();
   const desc = {
-    '1': 'Swap',
-    '2': 'Connect Wallet',
-    '3': 'Unsupported Chain',
-    '4': 'Insufficient Balance',
-    '5': 'Waiting Approve',
-    '6': 'Waiting Permit',
-    '7': 'Calculating Amount',
-    '8': 'Waiting Confirm',
-    '9': 'Wait for wallet response',
+    '1': t('Dapps.Swap'),
+    '2': t('Dapps.Connect Wallet'),
+    '3': t('Dapps.Chain not supported'),
+    '4': t('Dapps.Insufficient Fund'),
+    '5': t('Dapps.Approving'),
+    '6': t('Dapps.Authenticating'),
+    '7': t('Dapps.Converting'),
+    '8': t('Dapps.Confirming'),
+    '9': t("Dapps.Awaiting wallet's response"),
   };
   return [desc[id]];
 };
