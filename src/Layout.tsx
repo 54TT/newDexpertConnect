@@ -324,8 +324,18 @@ function Layout() {
       const at = cookie.get('walletRdns');
       const provider = environment.filter((i: any) => i?.info?.rdns === at);
       setLoginPrivider(provider[0]?.provider);
+      setCurrentSwapChain(provider);
     }
   }, [cookie.get('walletRdns'), environment]);
+
+  const setCurrentSwapChain = async (provider) => {
+    const walletChainIdHex = await provider[0]?.provider.request({
+      method: 'eth_chainId',
+    });
+    const walletChainId = Number(walletChainIdHex).toString(10);
+    console.log(walletChainId);
+    setChainId(walletChainId);
+  };
 
   const handleLogin = async (i: any) => {
     cookie.set('walletRdns', i?.info?.rdns);

@@ -193,9 +193,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
       />
       {isLogin && historyItems?.length ? (
         <div className="token-history-list">
-          <span className="token-list-title">
-            {t('Slider.Previously selected tokens')}
-          </span>
+          <span className="token-list-title">{t('Slider.Quote Rate')}</span>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {historyItems.map((item) => (
               <div
