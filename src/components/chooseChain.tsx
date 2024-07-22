@@ -26,7 +26,8 @@ function ChooseChain({
   const [value, setValue] = useState<any>({
     value: 'Ethereum',
     icon: '/EthereumCoin.svg',
-    chainId:'1',key:'0x1'
+    chainId: '1',
+    key: '0x1',
   });
 
   const [open, setOpen] = useState<any>(false);
@@ -92,6 +93,7 @@ function ChooseChain({
   }, [data]);
   return (
     <Popover
+      className="choose-chain"
       content={chain}
       title=""
       onOpenChange={handleOpenChange}

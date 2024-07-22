@@ -73,7 +73,7 @@ function Layout() {
   const [contractConfig, setContractConfig] = useState();
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
-  const [loginPrivider, setLoginPrivider] = useState<any>(null);
+  const [loginProvider, setloginProvider] = useState<any>(null);
   const [chainId, setChainId] = useState('1'); // swap 链切换
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
@@ -202,7 +202,7 @@ function Layout() {
   };
   const clear = async () => {
     history('/re-register');
-    setLoginPrivider(null);
+    setloginProvider(null);
     cookie.remove('token');
     cookie.remove('walletRdns');
     cookie.remove('currentAddress');
@@ -323,7 +323,7 @@ function Layout() {
     if (cookie.get('walletRdns') && environment.length > 0) {
       const at = cookie.get('walletRdns');
       const provider = environment.filter((i: any) => i?.info?.rdns === at);
-      setLoginPrivider(provider[0]?.provider);
+      setloginProvider(provider[0]?.provider);
       setCurrentSwapChain(provider);
     }
   }, [cookie.get('walletRdns'), environment]);
@@ -604,7 +604,7 @@ function Layout() {
     setChainId,
     transactionFee,
     setTransactionFee,
-    loginPrivider,
+    loginProvider,
     environment,
     setEnvironment,
   };

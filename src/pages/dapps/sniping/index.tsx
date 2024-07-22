@@ -35,7 +35,7 @@ export default function index() {
   const { t } = useTranslation();
   const {
     browser,
-    loginPrivider,
+    loginProvider,
     transactionFee,
     isLogin,
     user,
@@ -80,12 +80,12 @@ export default function index() {
         implement(rpcProvider);
       }
     }
-    if (loginPrivider) {
+    if (loginProvider) {
       setIsBalance(true);
       getBalance(
         newConfig?.defaultTokenIn?.contractAddress,
         newConfig?.wethAddress,
-        loginPrivider
+        loginProvider
       );
     } else {
       setIsBalance(false);
@@ -99,15 +99,15 @@ export default function index() {
     }
   }, []);
   useEffect(() => {
-    if (loginPrivider && isLogin) {
+    if (loginProvider && isLogin) {
       changeChain();
     }
     changePrivider(chainId);
     return () => {
       // @ts-ignore
-      (loginPrivider as any)?.removeListener?.('chainChanged', onChainChange);
+      (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
     };
-  }, [chainId, loginPrivider, isLogin]);
+  }, [chainId, loginProvider, isLogin]);
   //  pass  卡
   const [payType, setPayType] = useState('0');
   const [, setGasPrice] = useState(0);
@@ -175,9 +175,9 @@ export default function index() {
   const getBalance = async (
     contractAddress: string,
     wethAddress: string,
-    loginPrivider: any
+    loginProvider: any
   ) => {
-    const injectProvider = new ethers.providers.Web3Provider(loginPrivider);
+    const injectProvider = new ethers.providers.Web3Provider(loginProvider);
     const balance = await getBalanceRpc(
       injectProvider,
       contractAddress,
@@ -354,7 +354,7 @@ export default function index() {
     //  s'lian
     if (Number(value) <= Number(balance) && params?.TradeDeadlineValue) {
       const { permit2Address } = contractConfig;
-      const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
+      const web3Provider = new ethers.providers.Web3Provider(loginProvider);
       const signer = web3Provider.getSigner();
       const signerAddress = await signer.getAddress();
       const nonce = await web3Provider.getTransactionCount(
@@ -474,7 +474,7 @@ export default function index() {
         //   tx,
         // ]);
         // const signedTx = await web3Provider.send('eth_signTransaction', [tx]);
-        // const signedTx = await loginPrivider.request({
+        // const signedTx = await loginProvider.request({
         //   method: 'eth_signTransaction',
         //   params: [tx, signerAddress],
         // });
@@ -532,13 +532,13 @@ export default function index() {
   };
   //  是否切换链
   const changeChain = async () => {
-    const chain = await loginPrivider.send('eth_chainId', []);
+    const chain = await loginProvider.send('eth_chainId', []);
     if (chain?.result === '0x1') {
       setIsChain('success');
     } else {
       try {
-        loginPrivider?.on('chainChanged', onChainChange);
-        await loginPrivider?.request({
+        loginProvider?.on('chainChanged', onChainChange);
+        await loginProvider?.request({
           method: 'wallet_switchEthereumChain',
           params: [
             {
@@ -554,11 +554,11 @@ export default function index() {
   };
   const changeWalletChain = async (v: any) => {
     const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v.value];
-    if (loginPrivider) {
+    if (loginProvider) {
       // 有evm钱包环境
       try {
         //@ts-ignore
-        await loginPrivider.request({
+        await loginProvider.request({
           method: 'wallet_switchEthereumChain',
           params: [
             {
@@ -639,7 +639,7 @@ export default function index() {
               data={quotePath}
               onChange={(key: string) => {
                 setQuotePath(key);
-                if (loginPrivider) {
+                if (loginProvider) {
                   setIsShow(true);
                   getAmount(value, key);
                 }
@@ -890,11 +890,11 @@ export default function index() {
         disabledTokens={[useToken?.contractAddress?.toLowerCase?.()]}
         chainId={chainId}
         onChange={(data) => {
-          if (loginPrivider) {
+          if (loginProvider) {
             getBalance(
               data?.contractAddress,
               contractConfig?.wethAddress,
-              loginPrivider
+              loginProvider
             );
             setIsBalance(true);
             if (value) {
