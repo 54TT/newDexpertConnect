@@ -1,14 +1,6 @@
 import './index.less';
-import {
-  Input,
-  InputNumber,
-  Segmented,
-  Select,
-  Slider,
-  Skeleton,
-  Tooltip,
-} from 'antd';
-import { InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { Input, InputNumber, Segmented, Select, Slider, Skeleton } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';

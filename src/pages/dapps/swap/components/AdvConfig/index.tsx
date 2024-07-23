@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 import './index.less';
-import { CloseOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 import ProInputNumber from '@/components/ProInputNumber';
 import { useTranslation } from 'react-i18next';
 interface AdvConfigProps {
