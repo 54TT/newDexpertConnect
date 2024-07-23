@@ -35,7 +35,7 @@ export default function index() {
       imgAc: '/buybotActive.png',
       img: '/buybotMore.png',
       status: params?.id === 'buyBot',
-      name: 'Buy Bot',
+      name: 'TG Group Notification Bot',
       onClick: () => {
         history('/dapps/buyBot');
       },

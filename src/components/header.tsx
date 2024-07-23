@@ -25,7 +25,6 @@ function Header() {
   const [open, setOpen] = useState(false);
   const showDrawer = throttle(
     function () {
-      
       setOpen(true);
     },
     1500,
