@@ -10,12 +10,15 @@ import { useTranslation } from 'react-i18next';
 export default function walletList({
   setStatus,
   setAddWallet,
-  setWalletId,id
+  setWalletId,
+  id,
 }: any) {
-const { t } = useTranslation();
+  const { t } = useTranslation();
   const { browser }: any = useContext(CountContext);
   const { getAll } = Request();
   const [list, setList] = useState([]);
+
+  
   const [page, setPage] = useState(1);
   const [load, setLoad] = useState(false);
   const [isNext, setIsNext] = useState(false);
@@ -34,7 +37,7 @@ const { t } = useTranslation();
         res?.data?.list.map((i: any) => {
           address.push(i.address);
         });
-        const priceAll = await getBalance(address,id);
+        const priceAll = await getBalance(address, id);
         if (priceAll.length > 0) {
           const newer = priceAll.map((i: any) => {
             i.balance = Number(i.balance)
