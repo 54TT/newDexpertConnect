@@ -1,30 +1,36 @@
-import { useEffect, useState,  } from 'react';
+import { useEffect,  } from 'react';
+import { Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
+import OrderCard from './components/OrderCard';
+import CreateOrder from './components/CreateOrder';
 // useContext
 import './index.less';
-import cookie from 'js-cookie';
+// import cookie from 'js-cookie';
 // import { BigNumber, ethers } from 'ethers';
 // import { CountContext } from '@/Layout';
 // import { createOrder,  } from "@/../utils/limit/order"
-import Request from '@/components/axios.tsx';
+// import Request from '@/components/axios.tsx';
 export default function index() {
   // const { loginPrivider } = useContext(CountContext);
-  const { getAll } = Request();
-  const [nonce, setNonce] = useState('');
-  // 获取签名
-  const getNoce = async () => {
-    const token = cookie.get('token');
-    const res = await getAll({
-      method: 'get',
-      url: '/api/v1/limit/getNonce',
-      data: {},
-      token,
-    });
-    if (res?.status === 200) {
-      setNonce(res?.data?.nonce);
-    }
-  };
+  const {t}=useTranslation()
+  // const { getAll } = Request();
+  // const [nonce, setNonce] = useState('');
+  // // 获取签名
+  // const getNoce = async () => {
+  //   const token = cookie.get('token');
+  //   const res = await getAll({
+  //     method: 'get',
+  //     url: '/api/v1/limit/getNonce',
+  //     data: {},
+  //     token,
+  //   });
+  //   if (res?.status === 200) {
+  //     setNonce(res?.data?.nonce);
+  //   }
+  // };
   //  创建订单
-  const setOrder = async () => {
+  // const setOrder = async () => {
     // const deadlineSeconds = 24 * 60 * 60;
     // const chainId = 11155111;
     // const receipt: string = '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89';
@@ -44,15 +50,51 @@ export default function index() {
     //   token,
     // });
     // console.log(res)
-  };
+  // };
 
   useEffect(() => {
-    getNoce();
+    // getNoce();
   }, []);
   return (
-    <div className="limitBox">
-      <div
-        className="top"
+    <div className="limit border">
+      <div className="limit-left border">
+        <div className="limit-left-header">
+          <Input
+              size="large"
+              rootClassName="limit-input"
+              variant='borderless'
+              // onKeyDown={enter}
+              placeholder={t('sniping.Contract')}
+              allowClear
+              // onChange={searchChange}
+              suffix={
+                <SearchOutlined
+                  // onClick={clickSearch}
+                  style={{
+                    color: 'rgb(134,240,151)',
+                    fontSize: '16px',
+                    cursor: 'pointer',
+                  }}
+                />
+              }
+              />
+              <div style={{borderRight:"2px solid #565656"}}></div>
+              <span className='orders-btn active'>Live Orders</span>
+              <span className='orders-btn'>Ongoning Order(s)</span>
+              <span className='orders-btn'>My Order(s)</span>
+        </div>
+        <div className="limit-left-body">
+          <OrderCard />
+          <OrderCard />
+          <OrderCard />
+          <OrderCard />
+        </div>
+      </div>
+      <div className="limit-right">
+        <CreateOrder />
+      </div>
+      {/* <div
+        className="top border"
         onClick={() => {
           if (nonce) {
             setOrder();
@@ -60,7 +102,7 @@ export default function index() {
         }}
       >
         ppppppp
-      </div>
+      </div> */}
       <div className="bot"></div>
     </div>
   );

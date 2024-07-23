@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import FillData from './components/fillData';
 import SelectWallet from './components/selectWallet';
+import WalletManage from './components/WalletManage';
 import Order from './components/order';
 import OrderDetail from './components/oriderDetail';
 import Loading from '@/components/allLoad/loading';
@@ -33,6 +34,7 @@ export default function index() {
   const [gasPrice, setGasPrice] = useState(0);
   const [MaximumSlip, setMaximumSlip] = useState(0);
   const [wallet, setWallet] = useState(null);
+  const [payType,setPayType]=useState('0');
   // order  信息
   const [orderPar, setOrderPar] = useState<any>(null);
   const more = {
@@ -52,6 +54,8 @@ export default function index() {
       wallet.map((i: any) => {
         arr.push(i.walletId);
       });
+      console.log(arr);
+      
       const res = await getAll({
         method: 'post',
         url: '/api/v1/sniper/preswap',
@@ -81,6 +85,7 @@ export default function index() {
               : (MaximumSlip / 100).toString(),
           slippageType: params?.MaximumSlip === 'Auto' ? '1' : '2',
           type: '1',
+          payType: payType,
         },
         token: tokens,
       });
@@ -147,6 +152,8 @@ export default function index() {
     setId,
     setUseToken,
     setMaximumSlip,
+    payType,
+    setPayType
   };
 
   const backChange = (name: string) => {
@@ -177,7 +184,7 @@ export default function index() {
       } else {
         return <FillData {...operate} />;
       }
-    } else {
+    } else if(select === 'order'){
       if (show) {
         return (
           <>
@@ -188,6 +195,8 @@ export default function index() {
       } else {
         return <Order setIsShow={setIsShow} setOrderPar={setOrderPar} />;
       }
+    }else {
+      return <WalletManage id={id} />;
     }
   };
   return (
@@ -197,6 +206,7 @@ export default function index() {
           {[
             { name: t('sniping.Sniping'), key: 'Sniping' },
             { name:  t('sniping.order'), key: 'order' },
+            { name: 'Wallet(s)',key: 'wallet' }
           ].map((i: any) => {
             return (
               <p

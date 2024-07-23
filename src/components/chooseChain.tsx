@@ -64,7 +64,7 @@ function ChooseChain({
         return (
           <div
             key={ind}
-            style={hideChain ? { display: i?.hide ? 'none' : 'flex' } : {}}
+            style={hideChain ? { display: i?.hide ? 'none' : 'flex',cursor: disabledChain && i.disabled === true ? 'not-allowed' : 'pointer', } : {}}
             className={'chain disDis'}
             onClick={() => click(i)}
           >
