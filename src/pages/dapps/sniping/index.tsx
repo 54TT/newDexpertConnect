@@ -1,6 +1,14 @@
 import './index.less';
-import { Input, InputNumber, Segmented, Select, Slider, Skeleton } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import {
+  Input,
+  InputNumber,
+  Segmented,
+  Select,
+  Slider,
+  Skeleton,
+  Tooltip,
+} from 'antd';
+import { InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
@@ -782,7 +790,8 @@ export default function index() {
           </div>
         </div>
         <div className="row">
-          <p> {t('Slider.Order')}</p>
+          <p>{t('Slider.Order')}</p>
+
           <div className="time">
             <InputNumber
               min={0}

@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 import './index.less';
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import ProInputNumber from '@/components/ProInputNumber';
 import { useTranslation } from 'react-i18next';
 interface AdvConfigProps {
@@ -144,6 +144,7 @@ export const SettingContent: ForwardRefExoticComponent<
       )}
       <div className="setting-item">
         <span>{t('Slider.Order')}</span>
+
         <div className="setting-item-back">
           <ProInputNumber
             inputNumberProps={{ min: 5 }}
