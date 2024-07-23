@@ -11,11 +11,8 @@ import './index.less';
 import { CloseOutlined } from '@ant-design/icons';
 import ProInputNumber from '@/components/ProInputNumber';
 import { useTranslation } from 'react-i18next';
-<<<<<<< HEAD
 
 
-=======
->>>>>>> main
 interface AdvConfigProps {
   onClose: (data: AdvConfigType) => void;
   initData: AdvConfigType;

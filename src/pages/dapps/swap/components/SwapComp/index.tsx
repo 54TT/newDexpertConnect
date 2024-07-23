@@ -1004,6 +1004,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         ]}
         chainId={chainId}
         onChange={(data) => {
+          console.log(data);
+          
           if (currentSetToken.current === 'in') {
             setTokenIn(data);
           } else {

@@ -95,16 +95,12 @@
     "Quote Rate": "Quote Rate",
     "Previously selected tokens": "Previously selected tokens",
     "Popular tokens": "Popular tokens",
-<<<<<<< HEAD
-    "serviceFee": "0.2% Dexpert service fee"
-=======
     "0.2% Dexpert service fee": "0.2% Dexpert service fee",
     "Advanced setting": "Advanced setting",
     "Send": "Send",
     "Receive": "Receive",
     "Select Token": "Select Token",
     "Token Contract Address": "Token Contract Address"
->>>>>>> main
   },
   "Community": {
     "Share your insights...": "Please share your opinion here...",
@@ -270,9 +266,10 @@
     "choose":"Choose wallet",
     "detail":"Order details",
     "Sniping":"Sniping",
+    "Terminate":"Terminate",
     "order":"Order",
     "Contract":"Contract address",
-    "Sniper":"Sniper Amount",
+    "Sniper":"Advanced Settings",
     "Advanced":"Details",
     "Service":"Service Fee",
     "cancel":"Cancel",

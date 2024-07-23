@@ -89,16 +89,12 @@
     "Quote Rate": "汇率",
     "Previously selected tokens": "历史代币",
     "Popular tokens": "热门代币",
-<<<<<<< HEAD
-    "serviceFee": "向Dexpert支付0.2%的手续费"
-=======
     "0.2% Dexpert service fee": "向Dexpert支付0.2%的手续费",
     "Advanced setting": "高级设置",
     "Send": "发送",
     "Receive": "接收",
     "Select Token": "选择代币",
     "Token Contract Address": "代币合约地址"
->>>>>>> main
   },
   "Community": {
     "Share your insights...": "请在这分享你的见闻...",
@@ -268,9 +264,10 @@
     "choose":"选择钱包",
     "detail":"订单详情",
     "Sniping":"狙击",
+    "Terminate":"中断",
     "order":"订单",
     "Contract":"合约地址",
-    "Sniper":"狙击数量",
+    "Sniper":"高级选项",
     "Advanced":"详情",
     "Service":"服务费用",
     "cancel":"取消",

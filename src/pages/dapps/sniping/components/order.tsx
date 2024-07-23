@@ -68,6 +68,7 @@ const { t } = useTranslation();
       token,
     });
     if (res?.status === 200) {
+      console.log(res?.data);
       if (res?.data?.orderList.length !== 10) {
         setShow(true);
       }
@@ -116,7 +117,7 @@ const { t } = useTranslation();
                       }}
                     >
                       {i?.status === '1'
-                        ? t('sniping.cancel')
+                        ? t('sniping.Terminate')
                         : i?.status === '2'
                           ? t('sniping.canceled')
                           : t('sniping.Expired')}
@@ -140,7 +141,7 @@ const { t } = useTranslation();
                   <span>{t('sniping.wallet')}</span>
                   <div>
                     {i.walletArr.map((it: string, ind: number) => {
-                      return <span key={ind}>{it}</span>;
+                      return <span style={{marginLeft:'4px'}} key={ind}>{it}</span>;
                     })}
                   </div>
                 </div>
