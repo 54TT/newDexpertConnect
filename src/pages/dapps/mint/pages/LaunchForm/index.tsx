@@ -1,8 +1,8 @@
 import { Form, Input, InputNumber } from 'antd';
 import { useState } from 'react';
 import './index.less';
-import PageHeader from '../PageHeader';
-import BottomButton from '../BottomButton';
+import PageHeader from '../../component/PageHeader';
+import BottomButton from '../../component/BottomButton';
 import { useForm } from 'antd/es/form/Form';
 import { useNavigate } from 'react-router-dom';
 
@@ -52,6 +52,7 @@ function LaunchForm({ formData, setFormData }) {
         arrow={true}
         title="Launch"
         desc="填写代币详细信息"
+        disabled={false}
       />
       <div className="launch-form mint-scroll scroll">
         <Form

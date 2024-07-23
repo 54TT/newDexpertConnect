@@ -1,9 +1,11 @@
 import './index.less';
 export type ItemDataType = {
-  title: string | React.ReactNode; // 左上
-  desc: string | React.ReactNode; // 左下
-  remark: string | React.ReactNode; // 右上
-  tips: string | React.ReactNode; // 右下
+  title?: string | React.ReactNode; // 左上
+  desc?: string | React.ReactNode; // 左下
+  remark?: string | React.ReactNode; // 右上
+  tips?: string | React.ReactNode; // 右下
+  id?: string;
+  address?: string;
 };
 
 interface TokenItemPropsType {
@@ -18,10 +20,12 @@ function TokenItem({ onClick, data }: TokenItemPropsType) {
         {title && <div className="launch-token-item-title">{title}</div>}
         {remark && <div className="launch-token-item-remark">{remark}</div>}
       </div>
-      <div className="dis">
-        {desc && <div className="launch-token-item-desc">{desc}</div>}
-        {tips && <div className="launch-token-item-tips">{tips}</div>}
-      </div>
+      {(desc || tips) && (
+        <div className="dis">
+          {desc && <div className="launch-token-item-desc">{desc}</div>}
+          {tips && <div className="launch-token-item-tips">{tips}</div>}
+        </div>
+      )}
     </div>
   );
 }

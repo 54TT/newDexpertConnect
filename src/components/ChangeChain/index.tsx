@@ -12,8 +12,8 @@ export interface ChangeChainPropsType {
 
 function ChangeChain({
   wrapClassName,
-  hideChain = false,
-  disabledChain = false,
+  hideChain = true,
+  disabledChain = true,
   disabled = false,
 }: ChangeChainPropsType) {
   const { setChainId, isLogin, loginProvider, chainId } =

@@ -1,15 +1,16 @@
 import { useContext, useState } from 'react';
-import BottomButton from '../BottomButton';
-import PageHeader from '../PageHeader';
+import BottomButton from '../../component/BottomButton';
+import PageHeader from '../../component/PageHeader';
 import './index.less';
 import { MintContext } from '../..';
 import Request from '@/components/axios';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import { BigNumber, ethers } from 'ethers';
+import InfoList from '../../component/InfoList';
 function ConfirmPage() {
   const { formData } = useContext(MintContext);
-  const { loginProvider } = useContext(CountContext);
+  const { loginProvider, chainId } = useContext(CountContext);
   const [loading, setLoading] = useState(false);
   const { getAll } = Request();
   const token = Cookies.get('token');
@@ -19,6 +20,7 @@ function ConfirmPage() {
       url: '/api/v1/launch-bot/contract',
       data: formData,
       token,
+      chainId,
     });
 
   const reportDeploy = async (data: {
@@ -31,6 +33,7 @@ function ConfirmPage() {
       url: '/api/v1/launch-bot/contract/deploy',
       data,
       token,
+      chainId,
     });
   };
 
@@ -61,14 +64,20 @@ function ConfirmPage() {
   return (
     <div className="mint-confirm">
       <PageHeader title="Launch" desc="确认" />
-      <div className="confirm-info mint-scroll">
+      <InfoList
+        data={Object.keys(formData).map((key) => ({
+          label: key,
+          value: formData[key],
+        }))}
+      />
+      {/* <div className="confirm-info mint-scroll">
         {Object.keys(formData).map((key) => (
           <div key={key} className="confirm-info-item">
             <span>{key}：</span>
             <span>{formData[key]}</span>
           </div>
         ))}
-      </div>
+      </div> */}
       <BottomButton
         loading={loading}
         text="创建代币"

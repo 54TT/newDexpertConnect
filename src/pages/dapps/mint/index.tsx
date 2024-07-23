@@ -1,11 +1,13 @@
 import './index.less';
-import LaunchForm, { FormDataType } from './component/LaunchForm';
+import LaunchForm, { FormDataType } from './pages/LaunchForm';
 import { Route, Routes } from 'react-router-dom';
-import LaunchHome from './component/LaunchHome';
+import LaunchHome from './pages/LaunchHome';
 import { useState, createContext } from 'react';
-import ManageTokenList from './component/ManageTokenList';
-import ConfirmPage from './component/ConfirmPage.tsx';
-import ManagePairAndContract from './component/ManagePairAndContract/index.tsx';
+import ManageTokenList from './pages/ManageTokenList';
+import ConfirmPage from './pages/ConfirmPage/index.tsx';
+import ManagePairListAndContract from './pages/ManagePairListAndContract';
+import ManageTokenDetail from './pages/ManageTokenDetail/index.tsx';
+import ManagePairDetail from './pages/ManagePairDetail/index.tsx';
 
 export const MintContext = createContext(null);
 const initFormData: Partial<FormDataType> = {
@@ -44,7 +46,12 @@ function Mint() {
                 }
               ></Route>
               <Route path="/manageToken" element={<ManageTokenList />}></Route>
-              <Route path="/managePair" element={<ManagePairAndContract />} />
+              <Route
+                path="/managePair"
+                element={<ManagePairListAndContract />}
+              />
+              <Route path="/tokenDetail" element={<ManageTokenDetail />} />
+              <Route path="/pairDetail" element={<ManagePairDetail />} />
               <Route path="/confirm/:from" element={<ConfirmPage />} />
             </Routes>
           </div>

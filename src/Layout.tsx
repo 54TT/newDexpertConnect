@@ -206,7 +206,8 @@ function Layout() {
   };
 
   useEffect(() => {
-    if (isLogin) {
+    console.log(loginProvider);
+    if (isLogin && loginProvider) {
       try {
         // @ts-ignore
         loginProvider?.on('chainChanged', onChainChange);
@@ -351,7 +352,6 @@ function Layout() {
     if (cookie.get('walletRdns') && environment.length > 0) {
       const at = cookie.get('walletRdns');
       const provider = environment.filter((i: any) => i?.info?.rdns === at);
-      setloginProvider(provider[0]?.provider);
       setCurrentSwapChain(provider);
     }
   }, [cookie.get('walletRdns'), environment]);
@@ -360,9 +360,10 @@ function Layout() {
     const walletChainIdHex = await provider[0]?.provider.request({
       method: 'eth_chainId',
     });
+    console.log(walletChainIdHex);
     const walletChainId = Number(walletChainIdHex).toString(10);
-    console.log(walletChainId);
     setChainId(walletChainId);
+    setloginProvider(provider[0]?.provider);
   };
 
   const handleLogin = async (i: any) => {
