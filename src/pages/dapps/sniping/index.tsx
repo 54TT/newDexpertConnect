@@ -1,5 +1,5 @@
 import './index.less';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
 
@@ -8,6 +8,7 @@ import SelectWallet from './components/selectWallet';
 import WalletManage from './components/WalletManage';
 import Order from './components/order';
 import OrderDetail from './components/oriderDetail';
+// import WalletDetail from './components/WalletDetail';
 import Loading from '@/components/allLoad/loading';
 import Drawer from '../drawer';
 import cookie from 'js-cookie';
@@ -140,6 +141,9 @@ export default function index() {
       }
     }
   };
+  useEffect(() => {
+    console.log(orderPar);
+  }, [orderPar]);
   const operate = {
     params,
     setParams,
@@ -189,14 +193,24 @@ export default function index() {
         return (
           <>
             {backChange(t('sniping.detail'))}
-            <OrderDetail orderId={orderPar?.orderCode} />
+            <OrderDetail orderId={orderPar?.orderCode} tokenInAmount={orderPar?.tokenInAmount} />
           </>
         );
       } else {
         return <Order setIsShow={setIsShow} setOrderPar={setOrderPar} />;
       }
     }else {
-      return <WalletManage id={id} />;
+
+      //   return (
+      //     <>
+      //       {backChange('Wallet list')}
+      //       {/* <WalletManage id={id} setIsShow={setIsShow} /> */}
+      //     </>
+      //   );
+      // }else{
+      //   // return <WalletManage id={id} setIsShow={setIsShow} />;
+      // }
+      return <WalletManage id={id} setIsShow={setIsShow} />;
     }
   };
   return (
@@ -225,7 +239,7 @@ export default function index() {
       {filterPage()}
       {/* confirm */}
       <div
-        className="confirm"
+        className={`confirm ${select==='order'?'order-cancel':''}`}
         onClick={() => {
           if (user?.uid) {
             chooseWallet();
@@ -233,13 +247,14 @@ export default function index() {
             setIsModalOpen(true);
           }
         }}
-        style={{ display: select === 'order' && !show ? 'none' : 'block' }}
+        // style={{ display: select === 'order' && !show ? 'none' : 'block' }}
+        style={{ display: select === 'order' ? 'none' : 'block' }}
       >
         {user?.uid
           ? orderPar?.status === '1'
-            ? 'Terminate'
+            ? t("sniping.cancel")
             : orderPar?.status === '2'
-              ? '已取消订单'
+              ? t("sniping.canceled")
               : orderPar?.status === '3'
                 ? '过期'
                 : t('Slider.Confirm')

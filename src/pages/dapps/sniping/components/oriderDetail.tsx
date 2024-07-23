@@ -6,7 +6,7 @@ import { CountContext } from '@/Layout';
 import LoadIng from '@components/allLoad/loading';
 import { useTranslation } from 'react-i18next';
 import { getScanLink } from '@/utils/getScanLink';
-export default function oriderDetail({ orderId ,}: any) {
+export default function oriderDetail({ orderId,tokenInAmount}: any) {
   const { t } = useTranslation();
   const { getAll } = Request();
   const { browser }: any = useContext(CountContext);
@@ -58,19 +58,19 @@ export default function oriderDetail({ orderId ,}: any) {
           </div>
           <div className="line"></div>
           <p className="sni">{t('sniping.Sniper')}</p>
-          <div className="more dis" style={{ margin: '10px 0 14px' }}>
-            <span>{t('sniping.Max')}</span>
+          <div className="more dis" style={{ margin: '10px 0 10px' }}>
+            <span >{t('sniping.Max')}</span>
             <span>
               {par?.slippageType === '1' ? 'Auto' : par?.slippage*100+' %' || '0'}
             </span>
           </div>
-          <div className="more dis">
+          <div className="more dis" style={{ margin: '10px 0 10px' }}>
             <span>{t('sniping.Gas')}</span>
             <span>
               {par?.gasPriceType === '1' ? 'Auto' : par?.gasPrice+'%' || '0'}
             </span>
           </div>
-          <div className="more dis">
+          <div className="more dis" style={{ margin: '10px 0 10px' }}>
             <span>Service Fee</span>
             {par?.payType==='0' &&
               <span>
@@ -126,11 +126,12 @@ export default function oriderDetail({ orderId ,}: any) {
                                 ? t('sniping.wait')
                                 : i?.orderStatus === '2'
                                   ? t('sniping.failed')
-                                  : t('sniping.get') +
+                                  : t('sniping.get') +' '+
                                     i?.tokenOutAmount +
                                     i?.tokenOutName}
                         </span>
-                        <img
+                        { i?.tx &&
+                          <img
                           src="/ethLogo111.svg"
                           alt=""
                           style={{ width: '20px' ,cursor:'pointer'}}
@@ -138,14 +139,14 @@ export default function oriderDetail({ orderId ,}: any) {
                             e.stopPropagation()
                             if(par?.walletArr[0]?.tx){
                               // 后端接口需要传回chainId
-                              window.open(getScanLink(par?.walletArr[0].chainID,par.walletArr[0].tx))
+                              window.open(getScanLink(par?.walletArr[i].chainID,par.walletArr[i].tx))
                             }
                           }}
                         />
+                        }
                       </div>
                     </div>
-                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                      <span style={{color:'rgba(255,255,255,0.55'}}>address</span>
+                    <div style={{display:'flex',alignItems:'center'}}>
                       <p className="walletAddress">{i?.walletAddress.slice(0,6)+'...'+i?.walletAddress.slice(-4)}</p>
                     </div>
                   </div>
@@ -163,7 +164,7 @@ export default function oriderDetail({ orderId ,}: any) {
           </div>
           <div className="more dis">
             <span>{t('sniping.Amount')}</span>
-            <span>{par?.tokenInAmount || 0} ETH</span>
+            <span>{tokenInAmount===''?0:tokenInAmount} ETH</span>
           </div>
         </div>
       ) : (

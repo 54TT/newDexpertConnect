@@ -30,7 +30,7 @@ function UsePass({ type, onChange, payType, refreshPass }: any) {
         setGlodenEndTime(stopTs); */
         let list = [
           {
-            label: t('Slider.serviceFee'),
+            label: t('Slider.0.2% Dexpert service fee'),
             key: '0',
             title: (
               <>

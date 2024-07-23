@@ -9,8 +9,8 @@ import WalletDetail from './WalletDetail';
 import getBalance from '@utils/getBalance';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-export default function WalletManage({id}: any) {
-  const { browser }: any = useContext(CountContext);
+export default function WalletManage({id,setIsShow}: any) {
+  const { browser,isLogin,chainId }: any = useContext(CountContext);
   const [loading, setLoading] = useState(false)
   // const [nextLoad, setNextLoad] = useState(false);
 
@@ -18,6 +18,9 @@ export default function WalletManage({id}: any) {
   const [showWalletDetail,setShowWalletDetail]=useState(false)
   const [page, setPage] = useState(1);
   const [isNext,setIsNext] = useState(false)
+  const [walletId,setWalletId]=useState('')
+  const [walletName,setWalletName]=useState('')
+  const [walletBalance,setWalletBalance]=useState(0)
   const { getAll } = Request();
   const getWalletList = async (page: number) => {
     const token = cookie.get('token');
@@ -75,9 +78,12 @@ export default function WalletManage({id}: any) {
   };
 
   // 选择某个钱包，展示钱包详情
-  const selectWallet = (id: any) => {
+  const selectWallet = (wallet: any) => {
     setShowWalletDetail(true);
-    console.log(id);
+    setWalletName(wallet.name);
+    setWalletBalance(wallet.balance)
+    setWalletId(wallet.walletId);
+    console.log(wallet);
     
   };
   // 创建钱包，未实现
@@ -98,7 +104,7 @@ export default function WalletManage({id}: any) {
 
   useEffect(() => {
     getWalletList(1);
-  }, []);
+  }, [isLogin,chainId]);
 
 
   return (
@@ -113,10 +119,14 @@ export default function WalletManage({id}: any) {
             dataLength={walletList.length}
           >
             { walletList.length >0 ?(
-              walletList.map((item:any)=>{
+              walletList.map((item:any,index:number)=>{
                 return(
-                  <div className="walletList-item"
-                    onClick={()=>selectWallet(item)}
+                  <div
+                    className="walletList-item"
+                    onClick={()=>{
+                      selectWallet(item)
+                      setIsShow(true)}}
+                    key={index}
                   >
                     <span className='wallet-logo'>{item.name.toUpperCase().slice(0,1)}</span>
                     <div className='wallet-item-middle'>
@@ -140,7 +150,13 @@ export default function WalletManage({id}: any) {
       }
       {
         showWalletDetail && (
-          <WalletDetail id={id} setShowWalletDetail={setShowWalletDetail} showWalletDetail={showWalletDetail} />
+          <WalletDetail
+            id={walletId} 
+            name={walletName} 
+            balance={walletBalance} 
+            setIsShow={setIsShow}
+            setShowWalletDetail={setShowWalletDetail} 
+            showWalletDetail={showWalletDetail} />
         )
       }
       {/* ( !nextLoad && <Load />) */}
