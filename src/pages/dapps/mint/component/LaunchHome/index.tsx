@@ -1,40 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import './index.less';
-import ChooseChain from '@/components/chooseChain';
-import { swapChain } from '@utils/judgeStablecoin';
-import { useContext } from 'react';
-import { CountContext } from '@/Layout';
-import {
-  CHAIN_NAME_TO_CHAIN_ID,
-  CHAIN_NAME_TO_CHAIN_ID_HEX,
-} from '@utils/constants';
+import ChangeChain from '@/components/ChangeChain';
 function LaunchHome() {
-  const { loginProvider, chainId, setChainId, isLogin } =
-    useContext(CountContext);
   const history = useNavigate();
-
-  const changeWalletChain = async (v: string) => {
-    const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
-    const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
-    if (!isLogin) {
-      setChainId(evmChainId);
-    } else {
-      // 有evm钱包环境
-      try {
-        //@ts-ignore
-        await loginProvider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [
-            {
-              chainId: evmChainIdHex,
-            },
-          ],
-        });
-      } catch (e) {
-        return null;
-      }
-    }
-  };
 
   return (
     <>
@@ -58,13 +26,7 @@ function LaunchHome() {
           >
             Launch
           </div>
-          <ChooseChain
-            disabledChain={true}
-            data={swapChain.find((i: any) => i.chainId === chainId)}
-            chainList={swapChain}
-            onClick={(v) => changeWalletChain(v)}
-            hideChain={true}
-          />
+          <ChangeChain hideChain={true} disabledChain={true} />
         </div>
         <div className="launch-home-bottom">
           <img className="cloud-left cloud" src="/cloudLeft.svg" alt="" />

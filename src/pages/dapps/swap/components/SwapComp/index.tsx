@@ -53,6 +53,7 @@ import { swapChain } from '@utils/judgeStablecoin';
 import { getSwapFee } from '@utils/getSwapFee';
 import DefaultTokenImg from '@/components/DefaultTokenImg';
 import { expandToDecimalsBN } from '@utils/utils';
+import ChangeChain from '@/components/ChangeChain';
 interface SwapCompType {
   changeAble?: boolean; // 是否可修改Token || 网络
   initChainId?: string; // 初始化的chainId;
@@ -251,33 +252,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   useEffect(() => {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
-
-  const onChainChange = (targetChainId) => {
-    setChainId(Number(targetChainId).toString());
-  };
-
-  useEffect(() => {
-    if (isLogin) {
-      try {
-        // @ts-ignore
-        loginProvider?.on('chainChanged', onChainChange);
-        loginProvider?.request({
-          method: 'wallet_switchEthereumChain',
-          params: [
-            {
-              chainId: `0x${Number(chainId).toString(16)}`,
-            },
-          ],
-        });
-      } catch (e) {
-        return null;
-      }
-    }
-    return () => {
-      // @ts-ignore
-      (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
-    };
-  }, [isLogin, loginProvider, chainId]);
 
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
@@ -838,7 +812,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   return (
     <div className="swap-comp">
       <div className="swap-comp-config">
-        <ChooseChain
+        {/* <ChooseChain
           disabledChain={true}
           chainList={swapChain}
           onChange={(v) => changeWalletChain(v)}
@@ -846,6 +820,12 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           disabled={!changeAble}
           data={swapChain.find((i: any) => i.chainId === chainId)}
           wrapClassName="swap-chooose-chain"
+        /> */}
+        <ChangeChain
+          wrapClassName="swap-chooose-chain"
+          hideChain={true}
+          disabled={!changeAble}
+          disabledChain={true}
         />
         <AdvConfig
           initData={initAdvConfig}

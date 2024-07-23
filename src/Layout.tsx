@@ -200,6 +200,34 @@ function Layout() {
       return null;
     }
   };
+
+  const onChainChange = (targetChainId) => {
+    setChainId(Number(targetChainId).toString());
+  };
+
+  useEffect(() => {
+    if (isLogin) {
+      try {
+        // @ts-ignore
+        loginProvider?.on('chainChanged', onChainChange);
+        loginProvider?.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: `0x${Number(chainId).toString(16)}`,
+            },
+          ],
+        });
+      } catch (e) {
+        return null;
+      }
+    }
+    return () => {
+      // @ts-ignore
+      (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
+    };
+  }, [isLogin, loginProvider, chainId]);
+
   const clear = async () => {
     history('/re-register');
     setloginProvider(null);
