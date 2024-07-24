@@ -353,7 +353,6 @@ function Layout() {
       const at = cookie.get('walletRdns');
       const provider = environment.filter((i: any) => i?.info?.rdns === at);
       if (provider.length > 0) {
-        setLoginPrivider(provider[0]?.provider);
         setCurrentSwapChain(provider);
       }
     }
@@ -363,7 +362,6 @@ function Layout() {
     const walletChainIdHex = await provider[0]?.provider.request({
       method: 'eth_chainId',
     });
-    console.log(walletChainIdHex);
     const walletChainId = Number(walletChainIdHex).toString(10);
     setChainId(walletChainId);
     setloginProvider(provider[0]?.provider);
