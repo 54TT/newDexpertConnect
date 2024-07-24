@@ -1,0 +1,36 @@
+.launch-header {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  position: relative;
+  &-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &-desc {
+    margin-top: 6px;
+    font-size: 22px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  &-arrow-left {
+    position: absolute;
+    left: 20px;
+    top: calc(50% - 6px);
+    &-icon {
+      color: #fff;
+    }
+  }
+  &-row {
+    display: flex;
+    justify-content: center;
+  }
+  &-right {
+    position: absolute;
+    right: 20px;
+    top: 30px;
+    &-line {
+      top: 0;
+    }
+  }
+}

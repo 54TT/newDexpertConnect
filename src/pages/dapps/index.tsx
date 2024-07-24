@@ -6,6 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Swap from './swap';
 import Sniping from './sniping';
 import Limit from './limit';
+import Mint from './mint';
 export default function index() {
   const params: any = useParams();
   const { browser,  }: any = useContext(CountContext);
@@ -35,7 +36,7 @@ export default function index() {
       imgAc: '/buybotActive.png',
       img: '/buybotMore.png',
       status: params?.id === 'buyBot',
-      name: 'Buy Bot',
+      name: 'TG Group Notification Bot',
       onClick: () => {
         history('/dapps/buyBot');
       },
@@ -50,6 +51,14 @@ export default function index() {
         history('/dapps/limit');
       },
       key: 'limit',
+    },
+    {
+      status: params?.id === 'mint',
+      name: 'mint',
+      onClick: () => {
+        history('/dapps/mint');
+      },
+      key: 'mint',
     },
   ];
 
@@ -91,6 +100,7 @@ export default function index() {
       {params?.id === 'sniping' && <Sniping />}
       {params?.id === 'buyBot' && <BuyBot />}
       {params?.id === 'limit' && <Limit />}
+      {params?.id === 'mint' && <Mint />}
     </div>
   );
 }

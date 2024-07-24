@@ -4,13 +4,21 @@ import { useEffect, useState } from 'react';
 import { throttle } from 'lodash';
 interface ChooseChainType {
   onChange?: (v: any) => void;
-  onClick?: (v: any) => void;
+  onClick?: (v: ChooseChainValueType) => void;
   hideChain?: boolean;
   disabledChain?: boolean;
   wrapClassName?: string;
   chainList: any[];
   disabled?: boolean;
   data?: any;
+}
+
+export interface ChooseChainValueType {
+  value: string;
+  icon: string;
+  chainId: string;
+  key: string;
+  [x: string]: any;
 }
 
 function ChooseChain({
@@ -23,10 +31,11 @@ function ChooseChain({
   data,
   onClick,
 }: ChooseChainType) {
-  const [value, setValue] = useState<any>({
+  const [value, setValue] = useState<ChooseChainValueType>({
     value: 'Ethereum',
     icon: '/EthereumCoin.svg',
-    chainId:'1',key:'0x1'
+    chainId: '1',
+    key: '0x1',
   });
 
   const [open, setOpen] = useState<any>(false);
@@ -60,7 +69,7 @@ function ChooseChain({
   };
   const chain = (
     <div className={`headerChain dis`}>
-      {chainList.map((i: any, ind: number) => {
+      {chainList.map((i: ChooseChainValueType, ind: number) => {
         return (
           <div
             key={ind}
@@ -92,6 +101,7 @@ function ChooseChain({
   }, [data]);
   return (
     <Popover
+      className="choose-chain"
       content={chain}
       title=""
       onOpenChange={handleOpenChange}

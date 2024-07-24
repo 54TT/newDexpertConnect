@@ -1,0 +1,30 @@
+.manage-token-detail-info {
+  &.mint-scroll {
+    max-height: 200px;
+  }
+}
+
+.manage-token-button_box {
+  width: 90%;
+  display: flex;
+  justify-content: space-around;
+  margin: 12px auto;
+  button {
+    width: 30%;
+  }
+  .ant-btn-primary {
+    border: 1px solid rgba(134, 240, 151, 1);
+    color: rgba(134, 240, 151, 1);
+  }
+  .ant-btn-primary.ant-btn-background-ghost:hover {
+    color: rgba(134, 240, 151, 1) !important;
+    border: 1px solid rgba(134, 240, 151, 1) !important;
+    cursor: not-allowed;
+  }
+}
+
+.not-owner {
+  button {
+    cursor: not-allowed;
+  }
+}
