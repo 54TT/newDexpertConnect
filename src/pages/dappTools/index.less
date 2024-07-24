@@ -1,0 +1,160 @@
+.box {
+  .topChange {
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 13%;
+    background-color: rgb(26, 26, 26);
+    display: flex;
+
+    .swiperBox {
+      width: 90%;
+
+      .swiper-slide {
+        width: auto !important;
+        margin: 0 6px;
+      }
+    }
+
+    .list {
+      padding: 8px 20px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        margin-right: 3px;
+      }
+
+      span {
+        margin-left: 3px;
+      }
+    }
+
+    img {
+      width: 20px;
+      cursor: pointer;
+      display: flex;
+    }
+  }
+
+  .community-page-right {
+    margin: 0 auto;
+
+    .displ {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .ant-card {
+      color: #d6dfd7;
+      background: transparent !important;
+
+      .ant-card-head-title {
+        color: #d6dfd7;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 19.6px;
+        text-align: left;
+      }
+
+      &-head {
+        background: #181e1c;
+        border: 0.2px solid transparent;
+        min-height: 34px !important;
+      }
+
+      &-body {
+        background: #202221;
+        border: 0.2px solid #687c69;
+        padding: 0 0 10px !important;
+
+        .card-pair-info {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 12px;
+
+          &>p {
+            flex: 1;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+
+  .left {
+    background-color: rgb(6, 14, 11);
+    width: 18%;
+    border-right: 0.2px solid #687c69;
+    padding-top: 2%;
+  }
+
+  .center {
+    overflow: hidden;
+    margin: 0 auto;
+
+    .tt {
+      display: flex;
+      align-items: flex-end;
+
+      .ttLeft {
+        background-color: #060b08;
+        border: 2px solid rgb(72, 86, 72);
+        border-right: none;
+
+        img {
+          display: block;
+          margin: 0 auto;
+        }
+      }
+
+      .ttRight {
+        .ttRightTop {
+          position: relative;
+
+          .tokenTT {
+            width: 92%;
+            z-index: 10;
+            border-radius: 0 10px 0 10px;
+            box-shadow: -23px 0 20px 0 #2f5435, 0 25px 20px 0 #2f5435;
+            background-color: rgb(134, 240, 151);
+          }
+        }
+
+        .ttRightBot {
+          border: 2px solid rgb(72, 86, 72);
+          border-left: none;
+          border-top: none;
+          background-color: rgb(6, 11, 8);
+        }
+      }
+    }
+
+    .pp {
+      color: rgb(200, 200, 200);
+      line-height: 1.2;
+    }
+
+    .video {
+      &>div {
+        padding: 4px 0;
+        cursor: pointer;
+        border: 1px solid rgb(134, 240, 151);
+        border-radius: 5px;
+        text-align: center;
+      }
+    }
+
+    .botBb {
+      padding: 10px;
+      background-color: #060b08;
+      border-radius: 0 0 10px 10px;
+      border: 2px solid rgb(72, 86, 72);
+      border-top: none;
+
+    }
+  }
+}

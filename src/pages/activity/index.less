@@ -1,0 +1,272 @@
+.activityBox {
+  position: relative;
+
+  .activeBack {
+    background-image: url('/badsada.svg');
+    padding: 3.3% 0 6.5%;
+    background-repeat: space;
+    position: relative;
+    .activeBackOrder {
+      width: 72%;
+      margin: 0 auto;
+      color: rgb(212, 223, 214);
+      line-height: 1.1;
+      text-align: center;
+    }
+    .activeBackEach {
+      width: 72%;
+      margin: 0 auto;
+      color: rgb(212, 223, 214);
+      line-height: 1.1;
+      text-align: center;
+      margin-top: 5%;
+      margin-bottom: 10px;
+    }
+    .activeBackJian {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+  }
+
+  .topTitle {
+    text-align: center;
+    font-size: 30px;
+  }
+
+  .pTime {
+    text-align: center;
+    margin: 2% 0 15px;
+    font-size: 26px;
+    background: linear-gradient(
+      90deg,
+      rgb(133, 240, 150) 0%,
+      rgb(1, 255, 72) 100%
+    );
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .top {
+    margin: 2% auto 2.5%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-end;
+    background: linear-gradient(to right, rgb(6, 10, 11), rgb(22, 51, 42));
+    border-radius: 10px;
+
+    div {
+      p:first-child {
+        color: white;
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      p:last-child {
+        font-size: 15px;
+        color: rgb(200, 200, 200);
+      }
+    }
+
+    & > p:last-child {
+      background-color: rgb(134, 240, 151);
+      border-radius: 5px;
+      font-size: 15px;
+      padding: 6px 13px;
+      cursor: pointer;
+    }
+  }
+
+  .p2 {
+    text-align: center;
+    font-size: 32px;
+    background-image: -webkit-gradient(
+      linear,
+      left 0,
+      right 0,
+      from(rgb(130, 240, 150)),
+      to(rgb(2, 255, 72))
+    );
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .allTime {
+    margin: 0 auto 14px;
+
+    .setImg {
+      width: 30%;
+
+      img {
+        width: 100%;
+        display: block;
+      }
+    }
+
+    img {
+      display: block;
+      width: 30%;
+    }
+
+    .allTimeText {
+      width: 100%;
+
+      img {
+        margin: 0 7px;
+      }
+
+      p {
+        color: #d6dfd7;
+        font-size: 18px;
+        margin: 10px auto;
+      }
+    }
+
+    .ac {
+      color: rgb(197, 205, 197);
+      margin: 0 auto;
+    }
+  }
+
+  .frosted {
+    filter: blur(5px);
+    background-color: #1a1f1b;
+  }
+
+  .point {
+    position: relative;
+    border-radius: 10px;
+    margin: 0 auto;
+    border: 2px solid rgb(60, 69, 60);
+
+    .connect {
+      z-index: 1;
+      box-sizing: border-box;
+      color: rgb(134, 240, 151);
+      text-align: center;
+
+      p:last-child {
+        padding: 7px 15px;
+        color: black;
+        cursor: pointer;
+        display: inline-block;
+        border-radius: 7px;
+        font-weight: 600;
+        background-color: rgb(134, 240, 151);
+        font-size: 18px;
+      }
+    }
+
+    .youPoint {
+      & > div {
+        display: flex;
+        justify-content: center;
+        padding: 15px 0 20px;
+        flex-direction: column;
+
+        & > span:first-child {
+          text-align: center;
+          color: rgb(214, 223, 215);
+        }
+
+        & > p {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 20px;
+
+          img {
+            display: block;
+            width: 15px;
+            cursor: pointer;
+            margin-left: 10px;
+          }
+
+          & > span {
+            text-align: center;
+            color: #86f097;
+          }
+        }
+
+        & > span:last-child {
+          text-align: center;
+          font-size: 25px;
+          margin-top: 20px;
+          color: #86f097;
+        }
+
+        flex: 1;
+      }
+
+      & > div:nth-child(2) {
+        border-left: 2px solid rgb(60, 69, 60);
+        border-right: 2px solid rgb(60, 69, 60);
+      }
+    }
+  }
+
+  .p3 {
+    text-align: center;
+    color: rgb(250, 250, 250);
+    margin: 10px auto 2.5%;
+    font-size: 12px;
+  }
+
+  .active {
+    margin-top: 2.2%;
+
+    .box {
+      display: flex;
+      justify-content: space-between;
+
+      div:first-child {
+        p {
+          border-radius: 10px;
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          background: linear-gradient(
+            to right,
+            rgb(30, 30, 30),
+            rgb(38, 45, 38)
+          );
+
+          img {
+            width: 28px;
+            margin-left: 5px;
+            display: block;
+          }
+        }
+      }
+
+      div:last-child {
+        border-radius: 10px;
+        box-sizing: border-box;
+        background: linear-gradient(140deg, rgb(25, 30, 25), rgb(40, 45, 40));
+
+        p:first-child {
+          color: white;
+          font-size: 24px;
+        }
+
+        p:nth-child(2) {
+          font-size: 14px;
+          line-height: 1.2;
+          margin: 4% 0;
+          color: rgb(200, 200, 200);
+        }
+
+        p:nth-child(3) {
+          border-radius: 5px;
+          padding: 6px 10px;
+          cursor: pointer;
+          display: inline-block;
+          background-color: rgb(134, 240, 151);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,298 @@
+.dpass-background {
+  background-image: url(/backActive.svg);
+  background-repeat: no-repeat;
+  padding: 3.5% 0 6%;
+  background-size: 100% 150vh;
+
+
+  .dpass-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &-left {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      position: relative;
+      margin-right: 128px;
+
+      .dapss-card {
+        width: 400px;
+        z-index: 10;
+        animation: dpass-card-ani 2s infinite linear;
+        margin-bottom: -5px;
+      }
+
+      .dpass-cap {
+        width: 270px;
+        height: 150px;
+      }
+
+      .dpass-light {
+        position: absolute;
+        bottom: 50px;
+        width: 350px;
+        animation: dpass-light-ani 2s infinite linear;
+      }
+    }
+
+    &-right {
+      margin-top: -6vh;
+
+      &-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 4vh;
+      }
+
+      &-content {
+        color: white;
+        font-weight: 200;
+        width: 500px;
+        margin-top: 24px;
+      }
+
+      &-action {
+        display: flex;
+        justify-content: center;
+        margin-top: 24px;
+
+        &-input {
+          margin-right: 48px;
+          background-color: #828282;
+          padding: 8px 0;
+          border-radius: 5px;
+          opacity: 0.8;
+
+          span {
+            color: #ededed;
+            font-size: 20px;
+            display: inline-block;
+            padding: 0 12px;
+            cursor: pointer;
+          }
+
+          &_number {
+            width: 80px;
+            text-align: center;
+            border: none;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            height: 20px;
+            background-color: #828282;
+            font-size: 16px;
+            color: #fff;
+
+            &:focus-visible {
+              outline: none;
+            }
+          }
+        }
+
+        &-button {
+          text-align: center;
+          border-radius: 5px;
+          padding: 11px 15px;
+          line-height: 1;
+          cursor: pointer;
+
+        }
+      }
+
+      &-info {
+        background: #343e35;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        height: 120px;
+        margin-top: 24px;
+        border-radius: 10px;
+        opacity: 0.9;
+
+        &-title {
+          margin-bottom: 24px;
+          color: #dbdbdb;
+          font-weight: 300;
+        }
+
+        &-amount {
+          color: #86f097;
+          font-size: 18px;
+        }
+
+        &-points {
+          width: 50%;
+        }
+      }
+    }
+  }
+
+  .dpass-redeem {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+
+    >div {
+      background: #343e35;
+      width: 1030px;
+      border-radius: 15px;
+    }
+
+    &-table {
+      padding: 24px;
+
+      &-th {
+        display: flex;
+        justify-content: space-between;
+        color: #dbdbdb;
+        font-weight: 300;
+
+        >span {
+          flex: 1;
+        }
+      }
+
+      &-td {
+        display: flex;
+        justify-content: space-between;
+        color: #fff;
+        margin-top: 24px;
+        align-items: center;
+
+        >span {
+          flex: 1;
+          font-family: Inter;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 19.36px;
+          text-align: left;
+        }
+
+        .copy-dpass-key {
+          background: #86f097;
+          border: none;
+        }
+      }
+    }
+  }
+}
+
+@keyframes dpass-card-ani {
+  0% {
+    transform: translate(0px, 0px);
+  }
+
+  50% {
+    transform: translate(0px, -20px);
+  }
+
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes dpass-light-ani {
+  0% {
+    width: 300px;
+  }
+
+  50% {
+    width: 340px;
+  }
+
+  100% {
+    width: 300px;
+  }
+}
+
+@media (max-width: 900px) {
+  .dpass-background {
+    .dpass-content {
+      padding: 40px 0;
+      flex-direction: column;
+      width: 100%;
+
+      &-left {
+        margin: 0;
+
+        .dapss-card {
+          width: 240px;
+          animation: dpass-card-ani 2s infinite linear;
+          margin-bottom: -40px;
+        }
+
+        .dpass-cap {
+          width: 120px;
+        }
+
+        .dpass-light {
+          position: absolute;
+          bottom: 42px;
+          width: 100px;
+          animation: dpass-light-ani 2s infinite linear;
+        }
+      }
+
+      .dpass-content-right {
+        margin-top: 0 !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        &-content {
+          width: 90%;
+          font-size: 16px;
+        }
+
+        &-title {
+          margin-bottom: 0;
+          font-size: 24px;
+        }
+
+        &-info {
+          width: 90%;
+        }
+      }
+    }
+
+    .dpass-redeem {
+      >div {
+        width: 90%;
+        overflow-x: scroll;
+
+      }
+    }
+  }
+
+  @keyframes dpass-light-ani {
+    0% {
+      width: 100px;
+    }
+
+    50% {
+      width: 140px;
+    }
+
+    100% {
+      width: 100px;
+    }
+  }
+
+  @keyframes dpass-card-ani {
+    0% {
+      transform: translate(0px, 0px);
+    }
+
+    50% {
+      transform: translate(0px, -10px);
+    }
+
+    100% {
+      transform: translate(0px, 0px);
+    }
+  }
+}

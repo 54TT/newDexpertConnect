@@ -1,0 +1,574 @@
+.twitterTask {
+  .title {
+    color: rgb(134, 240, 151);
+    font-size: 20px;
+  }
+
+  input {
+    background-color: rgb(35, 51, 40);
+    color: rgb(220, 220, 220);
+    width: 100%;
+    text-indent: 10px;
+    border-radius: 8px;
+    border: none;
+    padding: 4px 0;
+    margin-bottom: 10px;
+    outline: none;
+  }
+
+  .Paste {
+    color: white;
+  }
+
+  .title1 {
+    color: rgb(200, 200, 200);
+    margin: 15px 0 8px;
+  }
+
+  .bot {
+    .p {
+      padding: 10px 0;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    p {
+      border: 1px solid rgb(134, 240, 151);
+      color: rgb(134, 240, 151);
+      margin-right: 2%;
+    }
+
+    div {
+      background-color: rgb(134, 240, 151);
+      border: 2px solid rgb(104, 124, 105);
+      margin-left: 2%;
+    }
+  }
+
+  .link {
+    margin-bottom: 10px;
+    cursor: pointer;
+    padding: 5px;
+    width: 20%;
+    font-size: 18px;
+    border-radius: 7px;
+    background-color: rgb(134, 240, 151);
+
+    img {
+      width: 20px;
+      margin-right: 6px;
+      display: block;
+    }
+  }
+}
+
+.revalidate {
+  & > p:first-child {
+    margin-top: 20px;
+    font-size: 18px;
+    color: rgb(200, 200, 200);
+  }
+
+  & > p:last-child:hover {
+    transform: scale(0.9);
+  }
+
+  & > p:last-child {
+    border-radius: 10px;
+    background-color: rgb(220, 220, 220);
+    padding: 10px 0;
+    object-fit: cover;
+    transition: all 0.8s;
+    cursor: pointer;
+
+    img {
+      width: 18px;
+      display: block;
+      margin-right: 2px;
+    }
+
+    span {
+      margin-left: 2px;
+    }
+  }
+
+  & > div {
+    margin: 35px 0 15px;
+    background-color: rgb(220, 240, 220);
+    border-radius: 10px;
+    display: flex;
+    padding: 10px 15px 20px;
+    box-sizing: border-box;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    & > img {
+      width: 20px;
+      display: block;
+      cursor: pointer;
+    }
+
+    & > div {
+      display: flex;
+      align-items: center;
+
+      & > div {
+        p:first-child {
+          font-weight: bold;
+          font-size: 18px;
+          cursor: pointer;
+          line-height: 1;
+          display: inline-block;
+        }
+
+        p:first-child:hover {
+          border-bottom: 2px solid;
+        }
+
+        p:last-child {
+          box-sizing: border-box;
+          height: 14px;
+
+          span {
+            color: rgb(0, 111, 214);
+            cursor: pointer;
+            line-height: 1;
+            font-weight: bold;
+            display: inline-block;
+          }
+
+          span:hover {
+            border-bottom: 2px solid;
+          }
+        }
+      }
+
+      & > img {
+        width: 45px;
+        cursor: pointer;
+        margin-right: 10px;
+        display: block;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+.activityPerson {
+  overflow: hidden;
+  background-image: url('/badsada.svg');
+  background-repeat: no-repeat;
+  padding: 2% 0 6%;
+  background-size: 100% 150vh;
+  position: relative;
+
+  .Invite {
+    border: 2px solid rgb(104, 124, 105);
+    border-radius: 20px;
+    display: flex;
+    margin-top: 10%;
+    padding: 3% 9% 3% 2%;
+    justify-content: space-between;
+
+    .left {
+      .leftTop {
+        display: flex;
+        align-items: center;
+
+        p {
+          font-size: 30px;
+          color: rgb(134, 240, 151);
+          margin-right: 10px;
+        }
+
+        img {
+          display: block;
+          width: 80%;
+        }
+      }
+
+      .leftBot {
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+
+        & > p,
+        & > div {
+          text-align: center;
+          border-radius: 7px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 15px;
+          width: 50%;
+          cursor: pointer;
+        }
+
+        & > p:first-child {
+          margin-right: 10px;
+          background-color: rgb(134, 240, 151);
+        }
+
+        & > div:last-child {
+          margin-left: 10px;
+          border: 2px solid rgb(104, 124, 105);
+          color: rgb(104, 124, 105);
+        }
+      }
+    }
+
+    .centerNow {
+      margin-left: 24px;
+      border: 1px solid rgb(134, 240, 151);
+      padding: 10px 0 15px;
+      border-radius: 8px;
+      width: 30%;
+
+      p {
+        text-align: center;
+      }
+
+      p:first-child {
+        color: white;
+        font-size: 14px;
+      }
+
+      p:last-child {
+        color: rgb(134, 240, 151);
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 13px;
+      }
+    }
+
+    .rightNow {
+      width: 10%;
+      position: relative;
+
+      img {
+        position: absolute;
+        display: block;
+        width: 100%;
+      }
+
+      img:first-child {
+        top: -24%;
+        left: -15%;
+      }
+
+      img:nth-child(2) {
+        top: -7%;
+        left: 25%;
+      }
+
+      img:last-child {
+        top: -36%;
+        left: 38%;
+      }
+    }
+  }
+
+  .sureInvite {
+    border: 2px solid rgb(104, 124, 105);
+    border-radius: 20px;
+    position: relative;
+    display: flex;
+    margin-top: 8%;
+    padding: 2%;
+    justify-content: space-between;
+
+    .positionImg {
+      position: absolute;
+      top: 30%;
+      left: 65%;
+      width: 13%;
+    }
+
+    .rightNow {
+      width: 10%;
+      position: relative;
+
+      img {
+        position: absolute;
+        display: block;
+        width: 80%;
+      }
+
+      img:first-child {
+        top: -45%;
+        left: -20%;
+      }
+
+      img:nth-child(2) {
+        top: -15%;
+        left: 10%;
+      }
+
+      img:last-child {
+        top: -70%;
+        left: 38%;
+      }
+    }
+
+    & > div {
+      display: flex;
+      justify-content: space-between;
+
+      & > input {
+        background-color: transparent;
+        color: #687c69;
+        border: 2px solid rgb(104, 124, 105);
+        border-radius: 10px;
+        font-size: 17px;
+        padding: 1% 2%;
+        box-sizing: border-box;
+        width: 68%;
+        outline: none;
+      }
+
+      & > div {
+        background-color: rgb(134, 240, 151);
+        font-size: 17px;
+        font-weight: bold;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28%;
+        cursor: pointer;
+        line-height: 2.2;
+        border-radius: 7px;
+      }
+    }
+  }
+
+  .boxLeft {
+    box-sizing: border-box;
+    overflow: hidden;
+
+    .address {
+      border: 2px solid rgb(104, 124, 105);
+      border-radius: 10px;
+      padding: 15px 10px;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .img {
+        display: flex;
+        align-items: center;
+
+        img {
+          display: block;
+          width: 30px;
+          margin-left: -10px;
+        }
+      }
+
+      p:first-child {
+        display: flex;
+        align-items: center;
+        color: rgb(134, 240, 151);
+        font-size: 20px;
+      }
+
+      p:last-child {
+        color: rgb(214, 223, 215);
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .tittle {
+      display: flex;
+      margin-bottom: 15px;
+      justify-content: space-evenly;
+      align-items: center;
+
+      & > p {
+        color: rgb(134, 240, 151);
+        font-size: 32px;
+      }
+
+      & > img {
+        border-radius: 50%;
+      }
+    }
+  }
+
+  .boxRight {
+    border: 2px solid rgb(104, 124, 105);
+    border-radius: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 0 5%;
+    box-sizing: border-box;
+
+    .point {
+      font-size: 20px;
+      margin-bottom: 10px;
+
+      span:first-child {
+        color: rgb(214, 223, 215);
+      }
+
+      span:last-child {
+        color: rgb(134, 240, 151);
+      }
+    }
+
+    div {
+      span:first-child {
+        color: rgb(214, 223, 215);
+      }
+
+      span:last-child {
+        color: rgb(134, 240, 151);
+      }
+    }
+  }
+
+  .boxRightSpacing {
+    margin-top: 40px;
+    padding-top: 20px;
+
+    div {
+      margin-bottom: 20px;
+    }
+  }
+
+  .person {
+    position: relative;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    border: 2px solid rgb(104, 124, 105);
+    border-radius: 10px;
+
+    img {
+      display: block;
+    }
+
+    .passCard {
+      top: 0;
+      right: 0;
+      position: absolute;
+    }
+
+    .coinPass {
+      bottom: 0;
+      left: 0;
+      position: absolute;
+    }
+  }
+
+  .list {
+    position: relative;
+    border: 2px solid rgb(104, 124, 105);
+    border-radius: 10px;
+
+    .next {
+      cursor: pointer;
+      color: rgb(134, 240, 181);
+    }
+
+    .data {
+      margin-bottom: 18px;
+
+      span {
+        flex: 1;
+        box-sizing: border-box;
+      }
+    }
+
+    .top {
+      color: rgb(134, 240, 151);
+    }
+
+    .bot {
+      color: rgb(214, 223, 215);
+    }
+
+    .passCard {
+      top: 0;
+      left: 0;
+      position: absolute;
+    }
+
+    .coinPass {
+      top: 0;
+      right: 0;
+      position: absolute;
+    }
+  }
+}
+
+.specialActiveBox {
+  position: relative;
+  background-image: url('/badsada.svg');
+  padding: 3% 0 6%;
+  background-size: 100% 150vh;
+  background-repeat: no-repeat;
+
+  .specialActive {
+    .setCountdown {
+      .ant-statistic-content {
+        .ant-statistic-content-value {
+          color: #d6dfd7;
+        }
+      }
+    }
+
+    .smallCountdown {
+      .ant-statistic-content {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+
+      img {
+        display: block;
+        border-radius: 15px;
+      }
+
+      .right {
+        display: flex;
+        padding: 1.5% 0;
+        box-sizing: border-box;
+        justify-content: space-between;
+        flex-direction: column;
+
+        p {
+          line-height: 1.2;
+          color: rgb(214, 223, 215);
+        }
+
+        p:first-child {
+          font-size: 30px;
+          color: white;
+        }
+      }
+    }
+
+    .bot {
+      width: 90%;
+      margin: 7% auto 0;
+
+      p {
+        line-height: 1.1;
+        margin-bottom: 13px;
+        color: rgb(214, 223, 215);
+      }
+    }
+  }
+}

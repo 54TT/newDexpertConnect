@@ -1,0 +1,441 @@
+.NewpairDetailsOne {
+  box-sizing: border-box;
+  padding: 0 0.6%;
+  overflow-y: auto;
+  .top {
+    margin: 4% 0 7%;
+
+    & > div {
+      display: flex;
+      align-items: center;
+
+      img {
+        display: block;
+        width: 32px;
+        margin-right: 5px;
+      }
+
+      p:first-child {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        margin-right: 5px;
+        background-color: gray;
+
+        span {
+          position: absolute;
+          line-height: 2;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 18px;
+          font-weight: bold;
+          color: rgb(134, 240, 151);
+        }
+      }
+
+      p:last-child {
+        display: flex;
+        flex-direction: column;
+        line-height: 1;
+        span:first-child {
+          color: white;
+          font-size: 18px;
+          margin-bottom: 3px;
+        }
+
+        span:last-child {
+          font-size: 14px;
+          color: rgb(200, 200, 200);
+        }
+      }
+    }
+
+    & > p {
+      background-color: rgb(24, 30, 28);
+      border-radius: 5px;
+      padding: 3.5%;
+      cursor: pointer;
+
+      img {
+        display: block;
+        width: 15px;
+      }
+    }
+  }
+
+  .address {
+    & > div {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      color: white;
+
+      img {
+        cursor: pointer;
+        width: 14px;
+        margin-left: 5px;
+      }
+    }
+
+    & > div:first-child {
+      margin-right: 10px;
+    }
+  }
+
+  .img {
+    padding: 5px 8px;
+    margin-top: 10px;
+    border-radius: 10px;
+    background-color: rgb(45, 45, 45);
+
+    div {
+      border-radius: 5px;
+      width: 8%;
+      padding: 1%;
+      cursor: pointer;
+      img {
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+  .all {
+    border: 2px solid rgb(84, 84, 84);
+    border-radius: 14px;
+    margin-top: 10px;
+    .price {
+      margin-top: 15px;
+      margin-left: 15px;
+      & > p:first-child {
+        color: white;
+        font-size: 22px;
+        margin-bottom: 7px;
+      }
+
+      & > p:last-child {
+        font-size: 13px;
+        margin-bottom: 5px;
+        text-align: center;
+      }
+    }
+  }
+
+  .butt {
+    cursor: pointer;
+    padding: 4% 12px;
+    border-top: 2px solid rgb(84, 84, 84);
+    color: white;
+    span:first-child {
+      font-size: 14px;
+    }
+  }
+  .swap {
+    margin: 15px;
+    & > p:first-child {
+      color: white;
+      margin-bottom: 6px;
+      font-size: 22px;
+    }
+
+    & > .swapTop {
+      color: white;
+      span {
+        flex: 1;
+      }
+      span:nth-child(2) {
+        text-align: center;
+      }
+
+      span:last-child {
+        text-align: right;
+      }
+    }
+  }
+}
+
+.right {
+  .box {
+    width: 95%;
+    margin: 0 auto;
+  }
+  .Swap {
+    background-color: rgb(134, 240, 151);
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 9px;
+  }
+
+  .rightSelect {
+    .ant-select-selector {
+      border-radius: 0 !important;
+      background: rgb(24, 30, 28) !important;
+      border: none;
+      outline: none;
+
+      .ant-select-selection-item {
+        padding-inline-end: 0 !important;
+
+        .rightSelectRow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgb(134, 240, 151);
+
+          .anticon {
+            margin-top: 2px;
+            margin-left: 6px;
+          }
+        }
+      }
+    }
+
+    .ant-select-arrow {
+      display: none;
+    }
+
+    .ant-select-clear {
+      color: white;
+    }
+  }
+
+  .buyCoinBorder {
+    border: 1px solid rgb(104, 124, 105);
+    border-radius: 10px;
+  }
+
+  .success {
+    background-color: rgb(10, 21, 17);
+    position: relative;
+    height: 70vh;
+    margin-top: 6%;
+
+    & > div {
+      width: 100%;
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, 0);
+
+      p {
+        color: white;
+        font-size: 18px;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 6%;
+      }
+
+      img {
+        display: block;
+        margin: 0 auto;
+      }
+    }
+
+    & > p {
+      width: 100%;
+      position: absolute;
+      bottom: 8%;
+      text-align: center;
+      cursor: pointer;
+      font-size: 15px;
+      color: rgb(200, 200, 200);
+    }
+  }
+
+  .buyCoin {
+    padding: 11% 3% 7%;
+
+    .ant-select-selection-item {
+      color: rgb(214, 223, 215);
+    }
+
+    .rightSelect {
+      .ant-select-selector {
+        border: 1px solid rgb(104, 124, 105);
+        border-radius: 10px !important;
+        color: rgb(214, 223, 215);
+
+        .rightSelectRow {
+          display: flex;
+          align-items: start;
+          justify-content: flex-start;
+          color: rgb(214, 223, 215);
+        }
+
+        .ant-select-selection-placeholder {
+          color: white !important;
+        }
+      }
+    }
+
+    .pay {
+      padding: 6%;
+      margin: 3% 0;
+      box-sizing: border-box;
+      background-color: rgb(24, 30, 28);
+
+      .input {
+        background: rgb(135, 145, 136) !important;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+      }
+
+      & > p {
+        line-height: 1;
+        color: rgb(220, 220, 220);
+        margin-bottom: 8px;
+      }
+
+      .num {
+        color: rgb(104, 124, 105);
+        text-align: right;
+        margin-bottom: 5%;
+        margin-top: 3px;
+        font-size: 14.5px;
+      }
+
+      .but {
+        background: linear-gradient(
+          to right,
+          rgb(134, 240, 151),
+          rgb(0, 255, 72)
+        );
+        border-radius: 10px;
+        font-size: 17px;
+        cursor: pointer;
+        padding: 5.3% 0;
+        text-align: center;
+      }
+    }
+
+    .butt {
+      cursor: pointer;
+      padding: 2.5% 4.5%;
+      background-color: rgb(10, 21, 17);
+      border-radius: 5px;
+      color: rgb(190, 190, 190);
+      & > p {
+        display: flex;
+        align-items: center;
+
+        img {
+          margin-right: 5px;
+        }
+      }
+
+      & > div {
+        display: flex;
+        align-items: center;
+
+        p {
+          line-height: 1;
+          padding: 4px;
+          border-radius: 5px;
+          text-align: center;
+        }
+
+        p:first-child {
+          background-color: rgb(104, 124, 105);
+          color: white;
+        }
+
+        p:last-child {
+          background-color: white;
+          margin-left: 7px;
+        }
+      }
+    }
+  }
+
+  .rightTweetBox {
+    .infinite-scroll-component {
+      overflow: hidden !important;
+    }
+  }
+}
+
+.rightPop {
+  padding: 0 !important;
+  background-color: rgb(24, 30, 28);
+
+  .ant-select-item {
+    background-color: rgb(24, 30, 28);
+  }
+
+  .ant-select-item-option-selected {
+    background: linear-gradient(to right, rgb(15, 25, 21), rgb(36, 58, 57));
+
+    .rightSelectRow {
+      color: rgb(134, 240, 151) !important;
+    }
+  }
+
+  //.ant-select-item-option-active {
+  //  background-color: transparent !important;
+  //}
+
+  .rightSelectRow {
+    text-align: center;
+    color: rgb(135, 145, 136);
+
+    .anticon {
+      display: none;
+    }
+  }
+}
+
+.buyCoinPop {
+  padding: 0 !important;
+  background-color: rgb(24, 30, 28);
+
+  .ant-select-item {
+    background-color: rgb(24, 30, 28);
+  }
+
+  .ant-select-item-option-selected {
+    background: linear-gradient(to right, rgb(15, 25, 21), rgb(36, 58, 57));
+
+    .rightSelectRow {
+      color: rgb(134, 240, 151) !important;
+    }
+  }
+
+  .rightSelectRow {
+    color: rgb(214, 223, 215);
+
+    .anticon {
+      display: none;
+    }
+  }
+}
+
+.center {
+  flex: 1;
+  background-color: rgb(5, 19, 19);
+
+  .top {
+    display: flex;
+    align-items: center;
+    padding: 3% 0 0 3%;
+    border-bottom: 1px solid rgb(5, 39, 37);
+
+    p {
+      cursor: pointer;
+      color: white;
+      padding: 0 1.5% 1%;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .selectMore {
+      color: rgb(15, 89, 184) !important;
+      border-bottom: 2px solid rgb(15, 89, 184);
+    }
+  }
+}
+
+iframe {
+  border: none !important;
+}

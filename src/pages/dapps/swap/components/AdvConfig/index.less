@@ -1,0 +1,57 @@
+@import url(@/style/variable.less);
+/* 
+@backgroundColor: #0a1511;
+@modalBackgroundColor: #060e0b;
+@desc-font-color: #8c8c8c;
+@button-color: #86f097;
+@modal-background-color: #2d2d2d;
+@search-border-color: #777777;
+*/
+.adv-config-pop {
+  width: 400px;
+  .ant-popover-content {
+    .ant-popconfirm-message {
+      display: block;
+    }
+    .ant-popover-inner {
+      background-color: @modal-background-color;
+    }
+    .popup-title {
+      font-size: 18px;
+      color: @dark-font-color;
+    }
+    .ant-popconfirm-buttons {
+      display: none;
+    }
+    .adv-slider {
+      width: 150px;
+    }
+  }
+}
+
+.setting-content {
+  .setting-item {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    > span {
+      color: @dark-font-color;
+    }
+    &-back {
+      background: #1e1e1e;
+      border-radius: 20px;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .adv-config-pop {
+    width: 80%;
+    .ant-popover-content {
+      .adv-slider {
+        width: 100px;
+      }
+    }
+  }
+}
