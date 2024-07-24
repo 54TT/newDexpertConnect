@@ -8,9 +8,11 @@ import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import { BigNumber, ethers } from 'ethers';
 import InfoList from '../../component/InfoList';
+import { useNavigate } from 'react-router-dom';
 function ConfirmPage() {
   const { formData } = useContext(MintContext);
   const { loginProvider, chainId } = useContext(CountContext);
+  const history = useNavigate();
   const [loading, setLoading] = useState(false);
   const { getAll } = Request();
   const token = Cookies.get('token');
@@ -47,14 +49,17 @@ function ConfirmPage() {
       const abi = JSON.parse(metadataJson).output.abi;
       const contractFactory = new ethers.ContractFactory(abi, bytecode, signer);
       // 先默认使用手续费版本
-      const { deployTransaction, address } = await contractFactory.deploy(0, {
-        value: BigNumber.from(0.08 * 10 ** 2).mul(BigNumber.from(10).pow(16)),
-      });
+      const { deployTransaction, address, waitForDeployment } =
+        await contractFactory.deploy(0, {
+          value: BigNumber.from(0.08 * 10 ** 2).mul(BigNumber.from(10).pow(16)),
+        });
       reportDeploy({
         contractAddress: address,
         contractId,
         deployTx: deployTransaction.hash,
       });
+      await waitForDeployment();
+      history('/dapps/mint/manageToken');
     } catch (e) {
       console.log(e);
     }

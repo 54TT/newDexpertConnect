@@ -6,6 +6,7 @@ export type ItemDataType = {
   tips?: string | React.ReactNode; // 右下
   id?: string;
   address?: string;
+  [x: string]: any;
 };
 
 interface TokenItemPropsType {

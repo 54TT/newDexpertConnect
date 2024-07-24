@@ -3,7 +3,7 @@ import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import TokenItem from '../../component/TokenItem';
 import Request from '@/components/axios';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout';
 import Cookies from 'js-cookie';
 
@@ -16,6 +16,7 @@ function ManagePairListAndContract() {
   const address = search.get('add');
   const contractId = search.get('cId');
   const token = Cookies.get('token');
+  const [data, setData] = useState([]);
 
   const getTokenPairList = async () => {
     const { data } = await getAll({
@@ -25,7 +26,9 @@ function ManagePairListAndContract() {
       token,
       chainId,
     });
-    console.log(data);
+    if (data.list) {
+      setData(data.list);
+    }
   };
 
   useEffect(() => {
@@ -43,6 +46,20 @@ function ManagePairListAndContract() {
           history(`/dapps/mint/tokenDetail?add=${address}&cId=${contractId}`);
         }}
       />
+      {data?.map?.((item) => (
+        <TokenItem
+          data={{
+            title: `${item.token0}/${item.token1}`,
+            ...item,
+          }}
+          onClick={(data) => {
+            console.log(data);
+            history(
+              `/dapps/mint/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
+            );
+          }}
+        />
+      ))}
     </>
   );
 }

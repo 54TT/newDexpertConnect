@@ -16,10 +16,10 @@ function BottomButton({
   return (
     <div className={`mint-bottom-button ${bottom ? 'mint-fix-bottom' : ''}`}>
       <Button
-        {...props}
         className="action-button"
         loading={loading}
         onClick={onClick}
+        {...props}
       >
         {text}
       </Button>
