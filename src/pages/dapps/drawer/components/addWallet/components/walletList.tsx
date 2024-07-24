@@ -11,7 +11,7 @@ export default function walletList({
   setStatus,
   setAddWallet,
   setWalletId,
-  id,
+  id
 }: any) {
   const { t } = useTranslation();
   const { browser }: any = useContext(CountContext);

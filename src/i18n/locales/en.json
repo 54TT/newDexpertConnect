@@ -265,9 +265,10 @@
   "sniping":{
     "choose":"Choose wallet",
     "detail":"Order details",
-    "Sniping":"Sniping",
+    "Sniping":"Sniper",
+    "Wallet":"Wallet(s)",
     "Terminate":"Terminate",
-    "order":"Order",
+    "order":"Order(s)",
     "Contract":"Contract address",
     "Sniper":"Advanced Settings",
     "Advanced":"Details",
@@ -294,5 +295,20 @@
     "History":"History",
     "management":"Wallet management",
     "Add":"Add Wallet"
+  },
+  "token":{
+    "no":"No token yet",
+    "Sell":"Sell",
+    "Amount":"Amount",
+    "con":"Sell Confirmation",
+    "gas":"Approximate Gas Fee",
+    "later":"May be later",
+    "Confirm":"Confirm",
+    "Selling":"Selling",
+    "succeeded":"Succeeded",
+    "Cancel":"Cancel order",
+    "number":"Order number",
+    "Terminate":"Terminate",
+    "data":" no data yet"
   }
 }

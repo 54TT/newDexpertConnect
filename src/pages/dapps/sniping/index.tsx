@@ -2,14 +2,12 @@ import './index.less';
 import { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
-
 import FillData from './components/fillData';
 import SelectWallet from './components/selectWallet';
 import WalletManage from './components/WalletManage';
 import Order from './components/order';
 import OrderDetail from './components/oriderDetail';
 // import WalletDetail from './components/WalletDetail';
-import Loading from '@/components/allLoad/loading';
 import Drawer from '../drawer';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
@@ -19,7 +17,6 @@ export default function index() {
   const { getAll } = Request();
   const { browser, user, setIsModalOpen }: any = useContext(CountContext);
   // 是否切换链
-  const [isChain, setIsChain] = useState('more');
   const [select, setSelect] = useState('Sniping');
   //  第几步
   const [show, setIsShow] = useState(false);
@@ -35,7 +32,7 @@ export default function index() {
   const [gasPrice, setGasPrice] = useState(0);
   const [MaximumSlip, setMaximumSlip] = useState(0);
   const [wallet, setWallet] = useState(null);
-  const [payType,setPayType]=useState('0');
+  const [payType, setPayType] = useState('0');
   // order  信息
   const [orderPar, setOrderPar] = useState<any>(null);
   const more = {
@@ -55,8 +52,6 @@ export default function index() {
       wallet.map((i: any) => {
         arr.push(i.walletId);
       });
-      console.log(arr);
-      
       const res = await getAll({
         method: 'post',
         url: '/api/v1/sniper/preswap',
@@ -113,7 +108,7 @@ export default function index() {
         token,
       });
       if (res?.status === 200) {
-        setIsShow(false)
+        setIsShow(false);
       }
     }
   };
@@ -136,18 +131,16 @@ export default function index() {
       // 取消订单
       if (show && orderPar?.status === '1') {
         cancelOrder();
-      }else{
-        setIsShow(false)
+      } else {
+        setIsShow(false);
       }
     }
   };
   useEffect(() => {
-    console.log(orderPar);
   }, [orderPar]);
   const operate = {
     params,
     setParams,
-    setIsChain,
     setGasPrice,
     value,
     setValue,
@@ -157,9 +150,9 @@ export default function index() {
     setUseToken,
     setMaximumSlip,
     payType,
-    setPayType
+    setPayType,
+    useToken,
   };
-
   const backChange = (name: string) => {
     return (
       <div className="walletBack">
@@ -188,19 +181,21 @@ export default function index() {
       } else {
         return <FillData {...operate} />;
       }
-    } else if(select === 'order'){
+    } else if (select === 'order') {
       if (show) {
         return (
           <>
             {backChange(t('sniping.detail'))}
-            <OrderDetail orderId={orderPar?.orderCode} tokenInAmount={orderPar?.tokenInAmount} />
+            <OrderDetail
+              orderId={orderPar?.orderCode}
+              tokenInAmount={orderPar?.tokenInAmount}
+            />
           </>
         );
       } else {
         return <Order setIsShow={setIsShow} setOrderPar={setOrderPar} />;
       }
-    }else {
-
+    } else {
       //   return (
       //     <>
       //       {backChange('Wallet list')}
@@ -219,8 +214,8 @@ export default function index() {
         <div className="top">
           {[
             { name: t('sniping.Sniping'), key: 'Sniping' },
-            { name:  t('sniping.order'), key: 'order' },
-            { name: 'Wallet(s)',key: 'wallet' }
+            { name: t('sniping.order'), key: 'order' },
+            { name: t('sniping.Wallet'), key: 'wallet' },
           ].map((i: any) => {
             return (
               <p
@@ -239,7 +234,7 @@ export default function index() {
       {filterPage()}
       {/* confirm */}
       <div
-        className={`confirm ${select==='order'?'order-cancel':''}`}
+        className={`confirm ${select === 'order' ? 'order-cancel' : ''}`}
         onClick={() => {
           if (user?.uid) {
             chooseWallet();
@@ -247,24 +242,20 @@ export default function index() {
             setIsModalOpen(true);
           }
         }}
-        // style={{ display: select === 'order' && !show ? 'none' : 'block' }}
-        style={{ display: select === 'order' ? 'none' : 'block' }}
+        style={{
+          display: select === 'order' || select === 'wallet' ? 'none' : 'block',
+        }}
       >
         {user?.uid
           ? orderPar?.status === '1'
-            ? t("sniping.cancel")
+            ? t('sniping.cancel')
             : orderPar?.status === '2'
-              ? t("sniping.canceled")
+              ? t('sniping.canceled')
               : orderPar?.status === '3'
                 ? '过期'
                 : t('Slider.Confirm')
           : t('Common.Connect Wallet')}
       </div>
-      {isChain === 'more' && (
-        <div className="coveredDust">
-          <Loading browser={browser} />
-        </div>
-      )}
       {user?.uid && <Drawer id={id} />}
     </div>
   );

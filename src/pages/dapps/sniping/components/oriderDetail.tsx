@@ -5,6 +5,7 @@ import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
 import LoadIng from '@components/allLoad/loading';
 import { useTranslation } from 'react-i18next';
+
 import { getScanLink } from '@/utils/getScanLink';
 export default function oriderDetail({ orderId,tokenInAmount}: any) {
   const { t } = useTranslation();
@@ -22,7 +23,6 @@ export default function oriderDetail({ orderId,tokenInAmount}: any) {
     });
     if (res?.status === 200) {
       setPar(res?.data?.orderDetail);
-      console.log(res?.data?.orderDetail);
       setLoad(true);
     } else {
       setLoad(true);
@@ -71,7 +71,7 @@ export default function oriderDetail({ orderId,tokenInAmount}: any) {
             </span>
           </div>
           <div className="more dis" style={{ margin: '10px 0 10px' }}>
-            <span>Service Fee</span>
+            <span>{t('sniping.Service')}</span>
             {par?.payType==='0' &&
               <span>
                 0.2% fee
@@ -137,10 +137,8 @@ export default function oriderDetail({ orderId,tokenInAmount}: any) {
                           style={{ width: '20px' ,cursor:'pointer'}}
                           onClick={(e)=>{
                             e.stopPropagation()
-                            if(par?.walletArr[0]?.tx){
                               // 后端接口需要传回chainId
-                              window.open(getScanLink(par?.walletArr[i].chainID,par.walletArr[i].tx))
-                            }
+                              window.open(getScanLink(i.chainID,i.tx))
                           }}
                         />
                         }

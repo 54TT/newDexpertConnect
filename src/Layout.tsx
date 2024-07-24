@@ -171,7 +171,7 @@ function Layout() {
   }, [newAccount]);
 
   useEffect(() => {
-    if (checkConnection() && isLogin) {
+    if (checkConnection() && isLogin && router.pathname === '/dapps/swap') {
       // setChainId('1');
       // @ts-ignore
       window.ethereum.request({
@@ -323,8 +323,10 @@ function Layout() {
     if (cookie.get('walletRdns') && environment.length > 0) {
       const at = cookie.get('walletRdns');
       const provider = environment.filter((i: any) => i?.info?.rdns === at);
-      setLoginPrivider(provider[0]?.provider);
-      setCurrentSwapChain(provider);
+      if (provider.length > 0) {
+        setLoginPrivider(provider[0]?.provider);
+        setCurrentSwapChain(provider);
+      }
     }
   }, [cookie.get('walletRdns'), environment]);
 
@@ -333,7 +335,6 @@ function Layout() {
       method: 'eth_chainId',
     });
     const walletChainId = Number(walletChainIdHex).toString(10);
-    console.log(walletChainId);
     setChainId(walletChainId);
   };
 

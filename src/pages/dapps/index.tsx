@@ -1,14 +1,14 @@
 import './in.less';
 import BuyBot from './buyBot';
-// import { useContext } from 'react';
-// import { CountContext } from '@/Layout';
+import { useContext } from 'react';
+import { CountContext } from '@/Layout';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swap from './swap';
 import Sniping from './sniping';
 import Limit from './limit';
 export default function index() {
   const params: any = useParams();
-  // const { browser }: any = useContext(CountContext); 
+  const { browser,  }: any = useContext(CountContext);
   const history = useNavigate();
   const top = [
     {
@@ -25,7 +25,7 @@ export default function index() {
       status: params?.id === 'sniping',
       imgAc: '/snipingActive.png',
       img: '/snipingMore.png',
-      name: 'Sniping',
+      name: 'Sniper',
       onClick: () => {
         history('/dapps/sniping');
       },
@@ -55,37 +55,38 @@ export default function index() {
 
   return (
     <div className="dappsBox">
-      <div
-        // style={{ padding: browser ? ' 12px 35%' : '10px 6%' }}
-        className="top"
-      >
-        <div className="back"></div>
-        <div className="box">
-          {top.map((i: any) => {
-            return (
-              <div key={i.key} className="item" onClick={i.onClick}>
-                <div
-                  style={{
-                    backgroundColor: i.status
-                      ? 'rgb(79,79,79)'
-                      : 'rgb(54,54,54)',
-                  }}
-                >
-                  <img src={i.status ? i.imgAc : i.img} alt="" />
+      {browser && (
+        <div
+          // style={{ padding: browser ? ' 12px 35%' : '10px 6%' }}
+          className="top"
+        >
+          <div className="back"></div>
+          <div className="box">
+            {top.map((i: any) => {
+              return (
+                <div key={i.key} className="item" onClick={i.onClick}>
+                  <div
+                    style={{
+                      backgroundColor: i.status
+                        ? 'rgb(79,79,79)'
+                        : 'rgb(54,54,54)',
+                    }}
+                  >
+                    <img src={i.status ? i.imgAc : i.img} alt="" />
+                  </div>
+                  <span
+                    style={{
+                      color: i.status ? 'rgb(134,240,151)' : 'rgb(162,162,162)',
+                    }}
+                  >
+                    {i.name}
+                  </span>
                 </div>
-                <span
-                  style={{
-                    color: i.status ? 'rgb(134,240,151)' : 'rgb(162,162,162)',
-                  }}
-                >
-                  {i.name}
-                </span>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
-      {/* aaaadsdasd */}
+      )}
       {params?.id === 'swap' && <Swap />}
       {params?.id === 'sniping' && <Sniping />}
       {params?.id === 'buyBot' && <BuyBot />}

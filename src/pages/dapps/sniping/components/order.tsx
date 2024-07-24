@@ -11,7 +11,7 @@ import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
 
 export default function order({ setIsShow, setOrderPar }: any) {
-const { t } = useTranslation();
+  const { t } = useTranslation();
   const { getAll } = Request();
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
@@ -68,7 +68,6 @@ const { t } = useTranslation();
       token,
     });
     if (res?.status === 200) {
-      console.log(res?.data);
       if (res?.data?.orderList.length !== 10) {
         setShow(true);
       }
@@ -96,66 +95,96 @@ const { t } = useTranslation();
           loader={null}
           dataLength={data.length}
         >
-          {data.map((i: any, ind: number) => {
-            return (
-              <div className="oriderItem" key={ind}>
-                <div className="top">
-                  <div className="left">
-                    <p>{i?.tokenOutSymbol}</p>
-                    <p>
-                      {i?.tokenOutCa?.slice(0, 4) +
-                        '...' +
-                        i?.tokenOutCa?.slice(-4)}
-                    </p>
+          {data.length > 0 ? (
+            data.map((i: any, ind: number) => {
+              return (
+                <div
+                  className="oriderItem"
+                  style={{
+                    marginBottom: data.length - 1 === ind ? '0' : '10px',
+                  }}
+                  key={ind}
+                >
+                  <div className="top">
+                    <div className="left">
+                      <p>{i?.tokenOutSymbol}</p>
+                      <p>
+                        {i?.tokenOutCa?.slice(0, 4) +
+                          '...' +
+                          i?.tokenOutCa?.slice(-4)}
+                      </p>
+                    </div>
+                    <div style={{color:'rgba(255,255,255,0.55)'}}> <span>{t('token.succeeded')}：</span>{i?.successAmount}</div>
+                    <div className="right">
+                      <p
+                        onClick={() => {
+                          setIsOrderId(i.orderCode);
+                          setIsModalOpen(true);
+                          setOrderPar(i);
+                        }}
+                      >
+                        {i?.status === '1'
+                          ? t('sniping.Terminate')
+                          : i?.status === '2'
+                            ? t('sniping.canceled')
+                            : t('sniping.Expired')}
+                      </p>
+                      <img
+                        src="/orderRight.svg"
+                        alt=""
+                        onClick={() => {
+                          setOrderPar(i);
+                          setIsShow(true);
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="right">
-                    <p
-                      onClick={() => {
-                        setIsOrderId(i.orderCode);
-                        setIsModalOpen(true);
-                        setOrderPar(i);
+                  <p className="line"></p>
+                  <div className="data">
+                    <span>{t('sniping.number')}</span>
+                    <div>{i?.orderCode}</div>
+                  </div>
+                  <div className="data">
+                    <span>{t('sniping.wallet')}</span>
+                    <div>
+                      {i.walletArr.map((it: string, ind: number) => {
+                        return (
+                          <span style={{ marginLeft: '4px' }} key={ind}>
+                            {it}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="data">
+                    <span>{t('sniping.Amount')}</span>
+                    <div>{i?.tokenInAmount}</div>
+                  </div>
+                  <div
+                    className="data"
+                    style={{ flexWrap: 'wrap', marginBottom: '0' }}
+                  >
+                    <span>{t('sniping.time')}</span>
+                    <div
+                      style={{
+                        justifyContent: 'flex-end',
+                        marginTop: '8px',
+                        width: '100%',
                       }}
                     >
-                      {i?.status === '1'
-                        ? t('sniping.Terminate')
-                        : i?.status === '2'
-                          ? t('sniping.canceled')
-                          : t('sniping.Expired')}
-                    </p>
-                    <img
-                      src="/orderRight.svg"
-                      alt=""
-                      onClick={() => {
-                        setOrderPar(i);
-                        setIsShow(true);
-                      }}
-                    />
+                      {i?.orderStartTime + '-' + i?.orderEndTime}
+                    </div>
                   </div>
                 </div>
-                <p className="line"></p>
-                <div className="data">
-                  <span>{t('sniping.number')}</span>
-                  <div>{i?.orderCode}</div>
-                </div>
-                <div className="data">
-                  <span>{t('sniping.wallet')}</span>
-                  <div>
-                    {i.walletArr.map((it: string, ind: number) => {
-                      return <span style={{marginLeft:'4px'}} key={ind}>{it}</span>;
-                    })}
-                  </div>
-                </div>
-                <div className="data">
-                  <span>{t('sniping.Amount')}</span>
-                  <div>{i?.tokenInAmount}</div>
-                </div>
-                <div className="data" style={{flexWrap:'wrap'}}>
-                  <span>{t('sniping.time')}</span>
-                  <div style={{justifyContent:"flex-end",marginTop:"8px",width:"100%"}}>{i?.orderDeadline}</div>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          ) : (
+            <p
+            className='noData'
+            >
+          {t('token.data')}
+            </p>
+          )}
         </InfiniteScroll>
       ) : (
         <LoadIng status={'20'} browser={browser} />
@@ -183,12 +212,12 @@ const { t } = useTranslation();
         onCancel={handleCancel}
       >
         <div className="box">
-          <p className="title">取消订单</p>
-          <p className="ord">订单编号</p>
+          <p className="title">{t('token.Cancel')}</p>
+          <p className="ord">{t('token.number')}</p>
           <p className="num">{orderId}</p>
           <div className="bot">
-            <p onClick={handleCancel}>再考虑一下</p>
-            <p onClick={cancelOrder}>Terminate</p>
+            <p onClick={handleCancel}></p>
+            <p onClick={cancelOrder}>{t('token.Terminate')}</p>
           </div>
         </div>
       </Modal>

@@ -56,8 +56,7 @@ async function submitOrder(order: Order) {
     const flag = createOrder(order)
     return flag;
   } catch (err) {
-    console.log(err);
-    throw err;
+    return null
   }
 }
 

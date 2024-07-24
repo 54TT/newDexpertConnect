@@ -864,8 +864,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
                 return;
               }
               setOpenSelect(true);
-            }}
-          >
+            }}>
             <DefaultTokenImg name={tokenIn?.symbol} icon={tokenIn?.logoUrl} />
             <span>{tokenIn?.symbol}</span>
             {changeAble && (
@@ -1004,8 +1003,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         ]}
         chainId={chainId}
         onChange={(data) => {
-          console.log(data);
-          
           if (currentSetToken.current === 'in') {
             setTokenIn(data);
           } else {

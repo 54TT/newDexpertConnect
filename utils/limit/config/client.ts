@@ -34,7 +34,6 @@ async function createOrder(order: Order): Promise<boolean> {
         return result.rowCount === 1; // 检查受影响的行数
     } catch (err) {
         await client.query('ROLLBACK'); // 回滚事务
-        console.log("err:", err)
         return false;
     } finally {
         client.release();

@@ -264,6 +264,7 @@
     "choose":"选择钱包",
     "detail":"订单详情",
     "Sniping":"狙击",
+    "Wallet":"钱包",
     "Terminate":"中断",
     "order":"订单",
     "Contract":"合约地址",
@@ -292,5 +293,20 @@
     "History":"历史",
     "management":"钱包管理",
     "Add":"添加钱包"
+  },
+  "token":{
+    "no":"暂无代币",
+    "Sell":"卖出",
+    "Amount":"数量",
+    "con":"卖出确认",
+    "gas":"Gas 大概费用",
+    "later":"稍等",
+    "Confirm":"确认",
+    "Selling":"正在卖出",
+    "succeeded":"已成功",
+    "Cancel":"取消订单",
+    "number":"订单编号",
+    "Terminate":"终止",
+    "data":"暂无数据"
   }
 }

@@ -32,7 +32,6 @@ async function createOrder(order: Order): Promise<boolean> {
         return (result as any[])[0]?.affectedRows === 1;
     } catch (err) {
         await connection.rollback(); // Rollback transaction
-        console.log("err:", err);
         return false;
     } finally {
         connection.release();

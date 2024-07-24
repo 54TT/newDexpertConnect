@@ -11,6 +11,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
+
 import { getERC20Contract } from '@utils/contracts';
 import Load from '@/components/allLoad/load';
 import NotificationChange from '@/components/message';
@@ -20,16 +21,11 @@ import _ from 'lodash';
 import SelectTokenModal from '@/components/SelectTokenModal';
 import { ethers } from 'ethers';
 import { getUniswapV2RouterContract } from '@utils/contracts';
-import {
-  CHAIN_NAME_TO_CHAIN_ID_HEX,
-  CHAIN_VERSION_TO_CHAIN_ID,
-} from '@utils/constants';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
 import ChooseChain from '@/components/chooseChain';
 import { swapChain } from '@utils/judgeStablecoin';
 import { config } from '@/config/config.ts';
 export default function fillData({
-  setIsChain,
   setGasPrice,
   token,
   setToken,
@@ -41,10 +37,10 @@ export default function fillData({
   setUseToken,
   setMaximumSlip,
   payType,
-  setPayType
+  setPayType,useToken
 }: any) {
   const { t } = useTranslation();
-  const { loginPrivider, transactionFee, isLogin, user }: any =
+  const { loginPrivider, transactionFee, isLogin,  }: any =
     useContext(CountContext);
   // const [payType, setPayType] = useState('0');
   const [maximumSlipValue, setMaximumSlipValue] = useState(0);
@@ -63,7 +59,6 @@ export default function fillData({
   const changePrivider = (chainId: string, choose?: string) => {
     const newConfig = config[chainId ?? '1'];
     setContractConfig(newConfig);
-    setUserToken(newConfig?.defaultTokenIn);
     setUseToken(newConfig?.defaultTokenIn);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
     if (choose === 'choose') {
@@ -76,22 +71,8 @@ export default function fillData({
   };
 
   useEffect(() => {
-    if (!user?.uid) {
-      setIsChain('error');
-    }
-  }, []);
-  useEffect(() => {
-    if (loginPrivider && isLogin) {
-      changeChain();
-    }
     changePrivider(chainId);
-    return () => {
-      // @ts-ignore
-      (loginPrivider as any)?.removeListener?.('chainChanged', onChainChange);
-    };
   }, [chainId, loginPrivider, isLogin]);
-  //  使用的token
-  const [useToken, setUserToken] = useState<any>();
   const searchChange = async (e: any) => {
     setSearchValue(e.target.value);
     if (e.target.value.length !== 42) {
@@ -182,62 +163,13 @@ export default function fillData({
     getAmount(e);
     setIsShow(true);
   }, 1000);
-  //  判断是否支持的链
-  const supportedChain = (chain: string) => {
-    if (chain === '0x1' || chain === '0x2105' || chain === '0xaa36a7') {
-      const chainID = CHAIN_VERSION_TO_CHAIN_ID[chain];
-      setChainId(chainID);
-      setId(chainID);
-      const data = swapChain.filter((i: any) => i.key === chain);
-      setChain(data[0]);
-      setIsChain('success');
-    } else {
-      NotificationChange('warning', t('Slider.c'));
-      setIsChain('error');
-    }
-  };
-  // 监听切换链
-  const onChainChange = (targetChainId) => {
-    supportedChain(targetChainId);
-  };
-  //  是否切换链
-  const changeChain = async () => {
-    const chain = await loginPrivider.send('eth_chainId', []);
-    if (chain?.result === '0x1') {
-      setIsChain('success');
-    } else {
-      try {
-        loginPrivider?.on('chainChanged', onChainChange);
-        await loginPrivider?.request({
-          method: 'wallet_switchEthereumChain',
-          params: [
-            {
-              chainId: `0x${Number(chainId).toString(16)}`,
-            },
-          ],
-        });
-      } catch (e) {
-        supportedChain(chain?.result);
-        return null;
-      }
-    }
-  };
   const changeWalletChain = async (v: any) => {
-    const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v.value];
     if (loginPrivider) {
       // 有evm钱包环境
       try {
-        //@ts-ignore
-        await loginPrivider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [
-            {
-              chainId: evmChainIdHex,
-            },
-          ],
-        });
         setChainId(v.chainId);
         setId(v.chainId);
+        setToken(null)
         setChain(v);
       } catch (e) {
         return null;
@@ -542,7 +474,6 @@ export default function fillData({
                     type="swap"
                     payType={payType}
                     onChange={(v: string) => {
-                      console.log(v);
                       setPayType(v);
                     }}
                   />
@@ -565,7 +496,6 @@ export default function fillData({
               setIsShow(true);
             }
           }
-          setUserToken(data);
           setUseToken(data);
           setOpen(false);
         }}

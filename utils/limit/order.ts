@@ -106,7 +106,6 @@ export const createOrder = async (
   }
 
   const { order, payload, nonce } = await buildOrder(chainId, recipient, inputAmount, outputAmount, deadlineSeconds, inputToken, outputToken, orderCreator);
-  console.log("nonce:",nonce)
   const validationProvider: any = new OffChainUniswapXOrderValidator();
   const validationResp: OrderValidationResponse = validationProvider.validate(order);
   if(!validationResp.valid){
