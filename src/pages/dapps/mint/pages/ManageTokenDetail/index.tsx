@@ -14,7 +14,7 @@ import { BigNumber, ethers } from 'ethers';
 import { CheckOutlined } from '@ant-design/icons';
 
 function ManageTokenDetail() {
-  const { chainId, loginProvider, contractAddress } = useContext(CountContext);
+  const { chainId, loginProvider } = useContext(CountContext);
   const [search] = useSearchParams();
   const contractId = search.get('cId');
   const [tokenData, setTokenData] = useState<any>();
@@ -22,14 +22,14 @@ function ManageTokenDetail() {
   const { getAll } = Request();
   const token = Cookies.get('token');
   const [erc20Contract, setErc20Contract] = useState<ethers.Contract>();
-  const [isVerify, setIsVerify] = useState(false);
+  const [isVerify] = useState(false);
   const [isOpenTrade, setIsOpenTrade] = useState(false);
   const [isRemoveLimit, setIsRemoveLimit] = useState(false);
   const [isOwn, setIsOwn] = useState(true);
-  const [loadingPage, setLoadingPage] = useState(false);
-  const [ethAmount, setEthAmount] = useState('0');
-  const [tokenAmount, setTokenAmoun] = useState('0');
-  const [tokenBalance, setTokenBalance] = useState('0');
+  const [, setLoadingPage] = useState(false);
+  // const [ethAmount, setEthAmount] = useState('0');
+  // const [tokenAmount, setTokenAmoun] = useState('0');
+  const [, setTokenBalance] = useState('0');
   const getContractDetail = async () => {
     const { data } = await getAll({
       method: 'get',
