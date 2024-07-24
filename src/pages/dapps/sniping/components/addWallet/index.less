@@ -1,0 +1,146 @@
+.addWallet {
+  .item {
+    padding: 14px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 16px;
+    p {
+      color: white;
+    }
+  }
+  & > .top {
+    display: flex;
+    align-items: center;
+    background-color: #2d2d2d;
+    padding: 12px 20px;
+    border-radius: 16px;
+    margin-top: 16px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+    & > img {
+      width: 20px;
+      cursor: pointer;
+    }
+    & > span {
+      font-size: 18px;
+      color: rgb(134, 240, 151);
+    }
+  }
+  .addMethod {
+    .item {
+      background-color: #2d2d2d;
+    }
+  }
+  .importWallet {
+    .item {
+      background-color: #313432;
+      border: 1px solid rgb(134, 240, 151);
+      margin-bottom: 25px;
+    }
+    .import {
+      .information {
+        margin: 20px 0;
+        span:first-child {
+          color: white;
+        }
+        span:last-child {
+          cursor: pointer;
+          color: #3485ff;
+          border-bottom: 1px solid #3485ff;
+        }
+      }
+      .type {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        justify-content: space-between;
+        & > p {
+          color: white;
+        }
+        .typeSelect {
+          border-radius: 16px;
+          height: 38px;
+          .ant-select-arrow {
+            .anticon-down {
+              color: rgb(134, 240, 151);
+              font-size: 13px;
+            }
+          }
+          .ant-select-selector {
+            background-color: #323533;
+            border: none;
+            box-shadow: none;
+            border-radius: 20px;
+            padding: 0 20px;
+
+            .ant-select-selection-item {
+              color: rgba(255, 255, 255, 0.85);
+            }
+          }
+        }
+      }
+      .ent {
+        color: white;
+        margin-bottom: 5px;
+      }
+      .inputKey {
+        background-color: transparent;
+        border: 1px solid white;
+        color: white;
+        .ant-input-suffix {
+          .ant-input-clear-icon {
+            color: white;
+          }
+        }
+      }
+    }
+
+    .create {
+      & > p:first-child {
+        color: white;
+        margin-bottom: 5px;
+      }
+
+      .createInputKey {
+        background-color: transparent;
+        border: 1px solid white;
+        color: white;
+        .ant-input-suffix {
+          .ant-input-clear-icon {
+            color: white;
+          }
+        }
+      }
+    }
+    .buttonBox {
+      position: relative;
+      .button {
+        width: 65%;
+        margin: 20px auto 0;
+        padding: 10px 0;
+        border-radius: 16px;
+        text-align: center;
+        font-size: 15px;
+        font-weight: bold;
+        background-color: rgb(134, 240, 151);
+        cursor: pointer;
+      }
+      .load {
+        position: absolute;
+        top: 50%;
+        width: 66%;
+        display: flex;
+        justify-content: center;
+        border-radius: 16px;
+        height: 100%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+  
+}

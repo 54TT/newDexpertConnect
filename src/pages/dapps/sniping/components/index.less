@@ -142,6 +142,24 @@
     background-color: #2d2d2d;
     border-radius: 16px;
     padding: 16px;
+    .status{
+      display: flex;
+      align-items: center;
+      &>p{
+        border-radius: 4px;
+        padding: 4px;
+        margin-right: 8px;
+        font-size: 14px;
+      }
+      .succ{
+        color: #86F097;
+        border: 1px solid #86F097;
+      }
+      .err{
+        color: #EA6E6E;
+        border: 1px solid #EA6E6E;
+      }
+    }
     .top {
       display: flex;
       align-items: center;
@@ -181,7 +199,7 @@
     .data {
       display: flex;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
       justify-content: space-between;
       & > span:first-child {
         color: rgba(255, 255, 255, 0.55);
@@ -191,6 +209,18 @@
         align-items: center;
         color: rgba(255, 255, 255, 0.85);
       }
+    }
+    .borderBot{
+        display: block;
+        border-bottom: 1px solid #4D4D4D;
+        padding-bottom: 8px;
+        .wallet{
+            font-size: 20px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
     }
   }
 }

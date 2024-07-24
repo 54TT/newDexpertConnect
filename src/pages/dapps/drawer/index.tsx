@@ -135,7 +135,7 @@ export default function index({ id }: any) {
                 <p>{user?.username}</p>
                 <Copy name="dsadasdsad" img="/copySwap.svg" />
               </div>
-              <img src="/walletAdd.svg" alt="" onClick={() => setAddWallet('add')} style={{cursor:'pointer'}}/>
+              <img src="/walletAdd.svg" alt="" onClick={() => setAddWallet('add')} style={{cursor:'pointer',display:'none'}}/>
             </div>
             <p className="price">dsdada</p>
             <div className="select">

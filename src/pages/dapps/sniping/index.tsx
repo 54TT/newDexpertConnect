@@ -2,12 +2,14 @@ import './index.less';
 import { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
+
 import FillData from './components/fillData';
 import SelectWallet from './components/selectWallet';
 import WalletManage from './components/WalletManage';
 import Order from './components/order';
 import OrderDetail from './components/oriderDetail';
 // import WalletDetail from './components/WalletDetail';
+import AddWallet from './components/addWallet';
 import Drawer from '../drawer';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
@@ -33,6 +35,7 @@ export default function index() {
   const [MaximumSlip, setMaximumSlip] = useState(0);
   const [wallet, setWallet] = useState(null);
   const [payType, setPayType] = useState('0');
+  const [addWallet, setAddWallet] = useState(false);
   // order  信息
   const [orderPar, setOrderPar] = useState<any>(null);
   const more = {
@@ -195,6 +198,17 @@ export default function index() {
         return <Order setIsShow={setIsShow} setOrderPar={setOrderPar} />;
       }
     } else {
+      if (addWallet) {
+        return <AddWallet setAddWallet={setAddWallet}/>;
+      } else {
+        return (
+          <WalletManage
+            id={id}
+            setIsShow={setIsShow}
+            setAddWallet={setAddWallet}
+          />
+        );
+      }
       //   return (
       //     <>
       //       {backChange('Wallet list')}
@@ -204,7 +218,6 @@ export default function index() {
       // }else{
       //   // return <WalletManage id={id} setIsShow={setIsShow} />;
       // }
-      return <WalletManage id={id} setIsShow={setIsShow} />;
     }
   };
 
@@ -213,11 +226,11 @@ export default function index() {
       style={{
         height: window.innerHeight - 45 - 46 - 7 + 'px',
       }}
-      className='snipingBox'
+      className="snipingBox"
       id="scrollableSniperOrder"
     >
       <div className="sniping" style={{ width: browser ? '400px' : '95%' }}>
-        {!show && (
+        {!show&&!addWallet && (
           <div className="top">
             {[
               { name: t('sniping.Sniping'), key: 'Sniping' },

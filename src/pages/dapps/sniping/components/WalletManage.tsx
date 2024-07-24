@@ -9,7 +9,7 @@ import WalletDetail from './WalletDetail';
 import getBalance from '@utils/getBalance';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useTranslation } from 'react-i18next';
-export default function WalletManage({ id, setIsShow }: any) {
+export default function WalletManage({ id, setIsShow,setAddWallet }: any) {
 const { t } = useTranslation();
   const { browser, isLogin, chainId }: any = useContext(CountContext);
   const [loading, setLoading] = useState(false);
@@ -86,7 +86,7 @@ const { t } = useTranslation();
   };
   // 创建钱包，未实现
   const createWallet = () => {
-
+    setAddWallet(true)
   };
   const nextPage = () => {
     if (!isNext) {
@@ -131,6 +131,7 @@ const { t } = useTranslation();
                     <div className="wallet-item-middle">
                       <div className="wallet-name">{item.name}</div>
                       <div className="wallet-address">
+                        {/* {item.address} */}
                         {item.address.slice(0, 4) +
                           '...' +
                           item.address.slice(-4)}
@@ -155,7 +156,6 @@ const { t } = useTranslation();
           balance={walletBalance}
           setIsShow={setIsShow}
           setShowWalletDetail={setShowWalletDetail}
-          showWalletDetail={showWalletDetail}
         />
       )}
       {nextLoad && <Load />}
