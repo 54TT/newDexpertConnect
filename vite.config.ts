@@ -19,6 +19,13 @@ export default ({ mode }: { mode: 'development' | 'production' }) => {
         '@utils': resolve(__dirname, 'utils'),
       },
     },
+    // server: {
+    //   proxy: {
+    //     '/api': {
+    //       target: 'http://165.22.51.161:8081',
+    //     },
+    //   },
+    // },
     css: {
       preprocessorOptions: {
         less: {

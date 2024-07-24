@@ -1,0 +1,61 @@
+.launch-form {
+  position: relative;
+  margin: 0 12px;
+  &-show-more {
+    color: #86f097;
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+  &-fix-bottom {
+    position: relative;
+    z-index: 2;
+    margin-left: 12px;
+    margin-top: 12px;
+  }
+  .launch-header-title {
+    font-size: 48px;
+    color: #86f097;
+  }
+  .ant-form-item {
+    margin-bottom: 12px;
+    .ant-row {
+      background-color: rgba(94, 94, 94, 0.3);
+      border-radius: 12px;
+      padding: 2px 4px;
+
+      .ant-col {
+        label {
+          color: rgba(255, 255, 255, 0.85);
+        }
+        .ant-form-item-control-input {
+          input,
+          textarea {
+            background-color: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.85);
+            box-shadow: none;
+          }
+        }
+        .ant-input-number {
+          width: 100%;
+          background-color: transparent;
+          border: none;
+          box-shadow: none;
+          &.ant-input-number-focused {
+            border: none;
+            box-shadow: none;
+          }
+        }
+      }
+    }
+    &-margin-offset {
+      margin-bottom: 12px !important;
+    }
+  }
+}
+.launch-form-header {
+  .launch-header-title {
+    font-size: 48px;
+    color: #86f097;
+  }
+}

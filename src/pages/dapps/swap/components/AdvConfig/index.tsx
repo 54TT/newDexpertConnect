@@ -143,6 +143,7 @@ export const SettingContent: ForwardRefExoticComponent<
       )}
       <div className="setting-item">
         <span>{t('Slider.Order')}</span>
+
         <div className="setting-item-back">
           <ProInputNumber
             inputNumberProps={{ min: 5 }}

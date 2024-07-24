@@ -73,7 +73,7 @@ function Layout() {
   const [contractConfig, setContractConfig] = useState();
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
-  const [loginPrivider, setLoginPrivider] = useState<any>(null);
+  const [loginProvider, setloginProvider] = useState<any>(null);
   const [chainId, setChainId] = useState('1'); // swap 链切换
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
@@ -200,9 +200,38 @@ function Layout() {
       return null;
     }
   };
+
+  const onChainChange = (targetChainId) => {
+    setChainId(Number(targetChainId).toString());
+  };
+
+  useEffect(() => {
+    console.log(loginProvider);
+    if (isLogin && loginProvider) {
+      try {
+        // @ts-ignore
+        loginProvider?.on('chainChanged', onChainChange);
+        loginProvider?.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: `0x${Number(chainId).toString(16)}`,
+            },
+          ],
+        });
+      } catch (e) {
+        return null;
+      }
+    }
+    return () => {
+      // @ts-ignore
+      (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
+    };
+  }, [isLogin, loginProvider, chainId]);
+
   const clear = async () => {
     history('/re-register');
-    setLoginPrivider(null);
+    setloginProvider(null);
     cookie.remove('token');
     cookie.remove('walletRdns');
     cookie.remove('currentAddress');
@@ -324,7 +353,6 @@ function Layout() {
       const at = cookie.get('walletRdns');
       const provider = environment.filter((i: any) => i?.info?.rdns === at);
       if (provider.length > 0) {
-        setLoginPrivider(provider[0]?.provider);
         setCurrentSwapChain(provider);
       }
     }
@@ -336,6 +364,7 @@ function Layout() {
     });
     const walletChainId = Number(walletChainIdHex).toString(10);
     setChainId(walletChainId);
+    setloginProvider(provider[0]?.provider);
   };
 
   const handleLogin = async (i: any) => {
@@ -605,7 +634,7 @@ function Layout() {
     setChainId,
     transactionFee,
     setTransactionFee,
-    loginPrivider,
+    loginProvider,
     environment,
     setEnvironment,
   };
@@ -635,12 +664,11 @@ function Layout() {
               <Route path="/newpairDetails/:id" element={<NewpairDetails />} />
               <Route path="/community/:tab" element={<Community />} />
               <Route path="/app/:id" element={<Dapp />} />
-              <Route path="/dapps/:id" element={<Dapps />} />
+              <Route path="/dapps/:id/*" element={<Dapps />} />
               <Route path="/activity" element={<Active />} />
               <Route path="/oauth/:id/callback" element={<Oauth />} />
               <Route path="/dpass/:id" element={<Dpass />} />
               <Route path="/activityPerson" element={<ActivePerson />} />
-              <Route path="/dapps/*" element={<Dapps />} />
             </Routes>
           </div>
           <img src="/bodyLeft.png" alt="" className="bodyLeftImg" />

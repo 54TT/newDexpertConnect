@@ -3,6 +3,7 @@ import SelectToken from '../SelectToken';
 import './index.less';
 import { ID_TO_CHAIN_NAME_LOW } from '@utils/constants';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;
   chainId: string;
@@ -18,14 +19,14 @@ function SelectTokenModal({
   ...props
 }: SelectTokenModalType) {
   const chainName = useMemo(() => ID_TO_CHAIN_NAME_LOW[chainId], [chainId]);
-
+  const { t } = useTranslation();
   return (
     <Modal
       {...props}
       destroyOnClose
       centered
       wrapClassName="select-token-modal"
-      title="Select Token"
+      title={t('Slider.Select Token')}
       footer={null}
     >
       <SelectToken

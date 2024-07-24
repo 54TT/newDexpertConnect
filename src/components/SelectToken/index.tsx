@@ -30,7 +30,7 @@ const { Search } = Input;
 
 function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
   const [tokenList, setTokenList] = useState<TokenItemData[]>([]);
-  const { provider, isLogin, chainId, loginPrivider } =
+  const { provider, isLogin, chainId, loginProvider } =
     useContext(CountContext);
   const { t } = useTranslation();
   /*   const [showSearch, setShowSearch] = useState(false); */
@@ -135,7 +135,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
 
   const getHistoryTokenList = async () => {
     // @ts-ignore
-    const provider = new ethers.providers.Web3Provider(loginPrivider);
+    const provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await provider.getSigner();
     const address = await signer.getAddress();
     const historyToken = await getHistoryToken({ address, chainId });
@@ -149,7 +149,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     } else {
       setHistoryItems([]);
     }
-  }, [isLogin, chainId, loginPrivider]);
+  }, [isLogin, chainId, loginProvider]);
 
   const memoClickTokenHistory = async (data) => {
     if (!isLogin) return;
