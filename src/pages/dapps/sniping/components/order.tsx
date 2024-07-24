@@ -88,7 +88,7 @@ export default function order({ setIsShow, setOrderPar }: any) {
     getList(1);
   }, []);
   return (
-    <div className="order scrollHei sniperOrder" >
+    <div className="order scrollHei sniperOrder">
       {loading ? (
         <InfiniteScroll
           hasMore={true}
@@ -108,7 +108,7 @@ export default function order({ setIsShow, setOrderPar }: any) {
                   key={ind}
                 >
                   <div className="top">
-                    <div className="left">
+                    <div className="left" >
                       <p>{i?.tokenOutSymbol}</p>
                       <p>
                         {i?.tokenOutCa?.slice(0, 4) +
@@ -116,7 +116,6 @@ export default function order({ setIsShow, setOrderPar }: any) {
                           i?.tokenOutCa?.slice(-4)}
                       </p>
                     </div>
-                    <div style={{color:'rgba(255,255,255,0.55)'}}> <span>{t('token.succeeded')}：</span>{i?.successAmount}</div>
                     <div className="right">
                       <p
                         onClick={() => {
@@ -146,16 +145,29 @@ export default function order({ setIsShow, setOrderPar }: any) {
                     <span>{t('sniping.number')}</span>
                     <div>{i?.orderCode}</div>
                   </div>
-                  <div className="data">
+                  <div
+                    className="data borderBot">
                     <span>{t('sniping.wallet')}</span>
-                    <div>
-                      {i.walletArr.map((it: string, ind: number) => {
-                        return (
-                          <span style={{ marginLeft: '4px' }} key={ind}>
-                            {it}
-                          </span>
-                        );
-                      })}
+                    <div
+                     className='wallet'
+                    >
+                      <div> 
+                        {i.walletArr.map((it: string, ind: number) => {
+                          if (ind < 3) {
+                            return (
+                              <span style={{ marginRight: '4px' }} key={ind}>
+                                {it}
+                              </span>
+                            );
+                          }
+                        })}
+                        {i.walletArr.length > 3 && <span>...</span>}
+                      </div>
+                      <p style={{ color: 'rgba(255,255,255,0.55)' ,fontSize:'13px'}}>
+                        {t('token.there')}
+                        {i.walletArr.length}
+                        {t('token.in')}
+                      </p>
                     </div>
                   </div>
                   <div className="data">
@@ -164,27 +176,21 @@ export default function order({ setIsShow, setOrderPar }: any) {
                   </div>
                   <div
                     className="data"
-                    style={{ flexWrap: 'wrap', marginBottom: '0' }}
                   >
                     <span>{t('sniping.time')}</span>
-                    <div
-                      style={{
-                        marginTop: '8px',
-                        width: '100%',
-                      }}
-                    >
-                      {i?.orderStartTime + '-' + i?.orderEndTime}
+                    <div>
+                      {i?.orderEndTime}
                     </div>
+                  </div>
+                  <div className='status'>
+                    <p className='succ'>Finished 2个</p>
+                    <p className='err'>Fail 2个</p>
                   </div>
                 </div>
               );
             })
           ) : (
-            <p
-            className='noData'
-            >
-          {t('token.data')}
-            </p>
+            <p className="noData">{t('token.data')}</p>
           )}
         </InfiniteScroll>
       ) : (
@@ -217,7 +223,7 @@ export default function order({ setIsShow, setOrderPar }: any) {
           <p className="ord">{t('token.number')}</p>
           <p className="num">{orderId}</p>
           <div className="bot">
-            <p onClick={handleCancel}></p>
+            <p onClick={handleCancel}>{t('token.later')}</p>
             <p onClick={cancelOrder}>{t('token.Terminate')}</p>
           </div>
         </div>
