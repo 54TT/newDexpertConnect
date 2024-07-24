@@ -7,7 +7,6 @@ import {
   Skeleton,
   Collapse,
 } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 import { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
