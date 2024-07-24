@@ -8,7 +8,7 @@ function ManagePairDetail() {
   const [search] = useSearchParams();
   const token0 = search.get('t0');
   const token1 = search.get('t1');
-  const pairAddress = search.get('add');
+  // const pairAddress = search.get('add');
   return (
     <>
       <ToLaunchHeader />
