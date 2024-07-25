@@ -11,6 +11,7 @@
   margin: 12px auto;
   button {
     width: 30%;
+    white-space: normal;
   }
   .ant-btn-primary {
     border: 1px solid rgba(134, 240, 151, 1);
@@ -26,5 +27,37 @@
 .not-owner {
   button {
     cursor: not-allowed;
+  }
+}
+
+.open-trade-modal {
+  max-width: 400px !important;
+  min-width: 350px !important;
+  width: 96vw !important;
+  .ant-modal-title {
+    color: #fff;
+  }
+  .ant-input-number {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid rgba(134, 240, 151, 1);
+    box-shadow: none;
+    border-right: none;
+    input {
+      color: #fff;
+    }
+    &.ant-input-number-focused {
+      border: 1px solid rgba(134, 240, 151, 1);
+      box-shadow: none;
+      border-right: none;
+    }
+  }
+  .ant-input-number-group-addon {
+    border: 1px solid rgba(134, 240, 151, 1);
+    color: #fff;
+    border-left: none;
+  }
+  .ant-btn {
+    margin-top: 12px;
   }
 }

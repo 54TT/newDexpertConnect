@@ -3,7 +3,7 @@ import BottomButton from '../../component/BottomButton';
 import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
-
+import './index.less';
 function ManagePairDetail() {
   const [search] = useSearchParams();
   const token0 = search.get('t0');
@@ -20,10 +20,22 @@ function ManagePairDetail() {
         className="manage-token-detail-info"
         data={[{ label: '!23123', value: '!23123' }]}
       />
-      <div className="">
+      <div className="pair-manage-button">
         <BottomButton text="LockLP" onClick={() => {}} />
-        <BottomButton text="RemoveLP" onClick={() => {}} />
-        <BottomButton text="BurnLP" onClick={() => {}} />
+        <BottomButton
+          className=""
+          ghost
+          danger
+          text="RemoveLP"
+          onClick={() => {}}
+        />
+        <BottomButton
+          className=""
+          ghost
+          danger
+          text="BurnLP"
+          onClick={() => {}}
+        />
       </div>
     </>
   );
