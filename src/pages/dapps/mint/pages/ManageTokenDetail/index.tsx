@@ -282,7 +282,7 @@ function ManageTokenDetail() {
         <></>
       )}
       <CommonModal
-        className="open-trade-modal"
+        className="mint-common-modal"
         open={openTradeModal}
         footer={null}
         title="Open Trade"

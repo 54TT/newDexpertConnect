@@ -5,7 +5,7 @@ function InfoList({ data, className }: { data: any; className?: string }) {
       {data.map((item, index) => (
         <div key={index} className="info-list-item">
           <span>{item.label}：</span>
-          <span>{item.value}</span>
+          <span>{item.show ?? item.value}</span>
         </div>
       ))}
     </div>
