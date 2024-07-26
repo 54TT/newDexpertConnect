@@ -327,7 +327,9 @@ function Layout() {
       setCurrentSwapChain(provider);
     }
   }, [cookie.get('walletRdns'), environment]);
-
+useEffect(() => {
+  console.log(loginPrivider);
+  }, [loginPrivider]);
   const setCurrentSwapChain = async (provider) => {
     const walletChainIdHex = await provider[0]?.provider.request({
       method: 'eth_chainId',

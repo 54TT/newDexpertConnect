@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;
   chainId: string;
-  disabledTokens: string[];
+  disabledTokens?: string[];
   disabled?: boolean;
 }
 
