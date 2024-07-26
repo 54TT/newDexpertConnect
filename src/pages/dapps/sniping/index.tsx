@@ -2,13 +2,16 @@ import './index.less';
 import { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
-
 import FillData from './components/fillData';
 import SelectWallet from './components/selectWallet';
 import WalletManage from './components/WalletManage';
 import Order from './components/order';
 import OrderDetail from './components/oriderDetail';
 // import WalletDetail from './components/WalletDetail';
+import { ethers } from 'ethers';
+import ChooseChain from '@/components/chooseChain';
+import { swapChain } from '@utils/judgeStablecoin';
+import { config } from '@/config/config.ts';
 import AddWallet from './components/addWallet';
 import Drawer from '../drawer';
 import cookie from 'js-cookie';
@@ -17,7 +20,15 @@ import _ from 'lodash';
 export default function index() {
   const { t } = useTranslation();
   const { getAll } = Request();
-  const { browser, user, setIsModalOpen }: any = useContext(CountContext);
+  const {
+    browser,
+    user,
+    setIsModalOpen,
+    loginProvider,
+    isLogin,
+    sniperChainId,
+    setSniperChainId,
+  }: any = useContext(CountContext);
   // 是否切换链
   const [select, setSelect] = useState('Sniping');
   //  第几步
@@ -28,8 +39,20 @@ export default function index() {
   const [useToken, setUseToken] = useState<any>(null);
   //  输入 数量
   const [value, setValue] = useState(0);
-  // 链  id
-  const [id, setId] = useState('1');
+  const [contractConfig, setContractConfig] = useState<any>();
+  // 当前链的
+  const [provider, setProvider] = useState<any>();
+  // 选择链改变   privider
+  const changePrivider = (chainId: string) => {
+    const newConfig = config[chainId ?? '1'];
+    setContractConfig(newConfig);
+    setUseToken(newConfig?.defaultTokenIn);
+    const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
+    setProvider(rpcProvider);
+  };
+  useEffect(() => {
+    changePrivider(sniperChainId);
+  }, [sniperChainId, loginProvider, isLogin]);
   // gas  价格
   const [gasPrice, setGasPrice] = useState(0);
   const [MaximumSlip, setMaximumSlip] = useState(0);
@@ -73,7 +96,7 @@ export default function index() {
           tokenInSymbol: useToken?.symbol,
           tokenInCa: useToken?.contractAddress,
           walletIdArr: arr,
-          chainID: id,
+          chainID: sniperChainId,
           orderDeadline: params?.OrderDeadlineValue.toString(),
           orderDeadlineType: params?.OrderDeadlineType,
           tradeDeadlineType: params?.TradeDeadlineType,
@@ -148,12 +171,14 @@ export default function index() {
     setValue,
     token,
     setToken,
-    setId,
     setUseToken,
     setMaximumSlip,
     payType,
     setPayType,
+    chainId: sniperChainId,
     useToken,
+    provider,
+    contractConfig,
   };
   const backChange = (name: string) => {
     return (
@@ -177,7 +202,11 @@ export default function index() {
         return (
           <>
             {backChange(t('sniping.choose'))}
-            <SelectWallet setWallet={setWallet} id={id} value={value} />
+            <SelectWallet
+              setWallet={setWallet}
+              id={sniperChainId}
+              value={value}
+            />
           </>
         );
       } else {
@@ -195,64 +224,79 @@ export default function index() {
           </>
         );
       } else {
-        return <Order setIsShow={setIsShow} setOrderPar={setOrderPar} />;
+        return <Order setIsShow={setIsShow} setOrderPar={setOrderPar} chainId={sniperChainId}/>;
       }
     } else {
       if (addWallet) {
-        return <AddWallet setAddWallet={setAddWallet}/>;
+        return <AddWallet setAddWallet={setAddWallet} chainId={sniperChainId}/>;
       } else {
         return (
           <WalletManage
-            id={id}
+            id={sniperChainId}
             setIsShow={setIsShow}
             setAddWallet={setAddWallet}
+            contractConfig={contractConfig}
           />
         );
       }
-      //   return (
-      //     <>
-      //       {backChange('Wallet list')}
-      //       {/* <WalletManage id={id} setIsShow={setIsShow} /> */}
-      //     </>
-      //   );
-      // }else{
-      //   // return <WalletManage id={id} setIsShow={setIsShow} />;
-      // }
+    }
+  };
+
+  const changeWalletChain = async (v: any) => {
+    if (loginProvider) {
+      // 有evm钱包环境
+      try {
+        setSniperChainId(v.chainId);
+        setToken(null);
+      } catch (e) {
+        return null;
+      }
     }
   };
 
   return (
     <div
       style={{
-        height: window.innerHeight - 45 - 46 - 7 + 'px',
+        height: window.innerHeight - 45 - 46 - 20 + 'px',
       }}
       className="snipingBox"
       id="scrollableSniperOrder"
     >
       <div className="sniping" style={{ width: browser ? '400px' : '95%' }}>
-        {!show&&!addWallet && (
-          <div className="top">
-            {[
-              { name: t('sniping.Sniping'), key: 'Sniping' },
-              { name: t('sniping.order'), key: 'order' },
-              { name: t('sniping.Wallet'), key: 'wallet' },
-            ].map((i: any) => {
-              return (
-                <p
-                  onClick={() => setSelect(i.key)}
-                  key={i.key}
-                  style={{
-                    color: select === i.key ? 'rgb(134,240,151)' : 'white',
-                  }}
-                >
-                  {i.name}
-                </p>
-              );
-            })}
+        {!show && !addWallet && (
+          <div className="topBox">
+            <div className="top">
+              {[
+                { name: t('sniping.Sniping'), key: 'Sniping' },
+                { name: t('sniping.order'), key: 'order' },
+                { name: t('sniping.Wallet'), key: 'wallet' },
+              ].map((i: any) => {
+                return (
+                  <p
+                    onClick={() => setSelect(i.key)}
+                    key={i.key}
+                    style={{
+                      color: select === i.key ? 'rgb(134,240,151)' : 'white',
+                    }}
+                  >
+                    {i.name}
+                  </p>
+                );
+              })}
+            </div>
+            <ChooseChain
+              disabledChain={true}
+              chainList={swapChain}
+              data={
+                swapChain.filter((i: any) => i.chainId === sniperChainId)?.[0]
+              }
+              onClick={(v) => changeWalletChain(v)}
+              hideChain={true}
+              wrapClassName="swap-chooose-chain"
+            />
           </div>
         )}
         {filterPage()}
-        {/* confirm */}
         <div
           className={`confirm ${select === 'order' ? 'order-cancel' : ''}`}
           onClick={() => {
@@ -277,7 +321,7 @@ export default function index() {
                   : t('Slider.Confirm')
             : t('Common.Connect Wallet')}
         </div>
-        {user?.uid && <Drawer id={id} />}
+        {user?.uid && <Drawer id={sniperChainId} />}
       </div>
     </div>
   );

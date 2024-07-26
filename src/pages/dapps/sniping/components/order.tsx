@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import './index.less';
-import { Modal } from 'antd';
+import { Modal, Dropdown } from 'antd';
 import cookie from 'js-cookie';
 import NotificationChange from '@/components/message';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -9,8 +9,8 @@ import LoadIng from '@components/allLoad/loading';
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
-
-export default function order({ setIsShow, setOrderPar }: any) {
+import InputSearch from './inputSearch';
+export default function order({ setIsShow, setOrderPar, chainId }: any) {
   const { t } = useTranslation();
   const { getAll } = Request();
   const [data, setData] = useState([]);
@@ -21,11 +21,20 @@ export default function order({ setIsShow, setOrderPar }: any) {
   const [orderId, setIsOrderId] = useState('');
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [isOpenDrop, setisOpenDrop] = useState(false);
+  const [select, setSelect] = useState('0');
+  // 是否在搜索
+  const [isSearch, setIsSearch] = useState(false);
   const changePage = () => {
     if (!show) {
       setPage(page + 1);
       setLoad(true);
-      getList(page + 1);
+      if (isSearch) {
+        getList(page + 1, select, searchValue.length === 42 ? searchValue : '');
+      } else {
+        getList(page + 1, '0', '');
+      }
     }
   };
   const handleOk = () => {
@@ -59,13 +68,14 @@ export default function order({ setIsShow, setOrderPar }: any) {
       }
     }
   };
-  const getList = async (page: number) => {
+  const getList = async (page: number, status: string, address: string) => {
     const token = cookie.get('token');
     const res = await getAll({
       method: 'get',
       url: '/api/v1/sniper/getSniperOrderList',
-      data: { orderPage: page },
+      data: { orderPage: page, status, address },
       token,
+      chainId,
     });
     if (res?.status === 200) {
       if (res?.data?.orderList.length !== 10) {
@@ -80,15 +90,109 @@ export default function order({ setIsShow, setOrderPar }: any) {
       setLoading(true);
       setLoad(false);
     } else {
+      setShow(true);
       setLoading(true);
       setLoad(false);
     }
   };
   useEffect(() => {
-    getList(1);
-  }, []);
+    getList(1, '0', '');
+    setPage(1);
+  }, [chainId]);
+  const changeItem = (status: string, name: string) => {
+    return (
+      <span
+        style={{
+          color: select === status ? 'rgb(134,240,151)' : 'white',
+          textAlign: 'center',
+        }}
+        onClick={() => {
+          if (select !== status) {
+            setSelect(status);
+            setIsSearch(true);
+            getList(1, status, searchValue.length === 42 ? searchValue : '');
+            setPage(1);
+          }
+        }}
+      >
+        {name}
+      </span>
+    );
+  };
+
+  const items: any = [
+    {
+      key: '0',
+      label: changeItem('0', t('token.all')),
+    },
+    {
+      key: '1',
+      label: changeItem('1', t('sniping.wait')),
+    },
+    {
+      key: '2',
+      label: changeItem('2', t('sniping.success')),
+    },
+    {
+      key: '3',
+      label: changeItem('3', t('sniping.canceled')),
+    },
+    {
+      key: '4',
+      label: changeItem('4', t('sniping.fail')),
+    },
+  ];
+
+  const enter = async (e: any) => {
+    if (
+      e.key === 'Enter' &&
+      (searchValue.length === 42 || searchValue.length === 0)
+    ) {
+      setIsSearch(true);
+      getList(1, select, searchValue.length === 42 ? searchValue : '');
+      setPage(1);
+    }
+  };
+  const searchChange = async (e: any) => {
+    setSearchValue(e.target.value);
+    if (e.target.value?.length !== 42) {
+      setIsSearch(false);
+    }
+  };
+  const clickSearch = () => {
+    if (searchValue.length === 42 || searchValue.length === 0) {
+      setIsSearch(true);
+      getList(1, select, searchValue.length === 42 ? searchValue : '');
+      setPage(1);
+    }
+  };
+
+  const changeDropdown = (open: boolean) => {
+    setisOpenDrop(open);
+  };
+
   return (
     <div className="order scrollHei sniperOrder">
+      <div className="search">
+        <InputSearch
+          enter={enter}
+          searchChange={searchChange}
+          clickSearch={clickSearch}
+          placeholder={t('sniping.Contract')}
+        />
+        <Dropdown
+          menu={{ items }}
+          trigger={['click']}
+          onOpenChange={changeDropdown}
+          placement="bottom"
+          rootClassName="orderFilterDropdown"
+        >
+          <div className={`status ${isOpenDrop ? 'statusSelect' : ''}`}>
+            <img src="/filterStatus.svg" alt="" />
+          </div>
+        </Dropdown>
+      </div>
+
       {loading ? (
         <InfiniteScroll
           hasMore={true}
@@ -108,7 +212,7 @@ export default function order({ setIsShow, setOrderPar }: any) {
                   key={ind}
                 >
                   <div className="top">
-                    <div className="left" >
+                    <div className="left">
                       <p>{i?.tokenOutSymbol}</p>
                       <p>
                         {i?.tokenOutCa?.slice(0, 4) +
@@ -119,16 +223,20 @@ export default function order({ setIsShow, setOrderPar }: any) {
                     <div className="right">
                       <p
                         onClick={() => {
-                          setIsOrderId(i.orderCode);
-                          setIsModalOpen(true);
-                          setOrderPar(i);
+                          if (i?.status === '1') {
+                            setIsOrderId(i.orderCode);
+                            setIsModalOpen(true);
+                            setOrderPar(i);
+                          }
                         }}
                       >
                         {i?.status === '1'
-                          ? t('sniping.Terminate')
+                          ? t('Active.Cancel')
                           : i?.status === '2'
-                            ? t('sniping.canceled')
-                            : t('sniping.Expired')}
+                            ? t('sniping.success')
+                            : i?.status === '3'
+                              ? t('sniping.canceled')
+                              : t('sniping.fail')}
                       </p>
                       <img
                         src="/orderRight.svg"
@@ -145,13 +253,10 @@ export default function order({ setIsShow, setOrderPar }: any) {
                     <span>{t('sniping.number')}</span>
                     <div>{i?.orderCode}</div>
                   </div>
-                  <div
-                    className="data borderBot">
+                  <div className="data borderBot">
                     <span>{t('sniping.wallet')}</span>
-                    <div
-                     className='wallet'
-                    >
-                      <div> 
+                    <div className="wallet">
+                      <div>
                         {i.walletArr.map((it: string, ind: number) => {
                           if (ind < 3) {
                             return (
@@ -163,7 +268,12 @@ export default function order({ setIsShow, setOrderPar }: any) {
                         })}
                         {i.walletArr.length > 3 && <span>...</span>}
                       </div>
-                      <p style={{ color: 'rgba(255,255,255,0.55)' ,fontSize:'13px'}}>
+                      <p
+                        style={{
+                          color: 'rgba(255,255,255,0.55)',
+                          fontSize: '13px',
+                        }}
+                      >
                         {t('token.there')}
                         {i.walletArr.length}
                         {t('token.in')}
@@ -174,17 +284,18 @@ export default function order({ setIsShow, setOrderPar }: any) {
                     <span>{t('sniping.Amount')}</span>
                     <div>{i?.tokenInAmount}</div>
                   </div>
-                  <div
-                    className="data"
-                  >
+                  <div className="data">
                     <span>{t('sniping.time')}</span>
-                    <div>
-                      {i?.orderEndTime}
-                    </div>
+                    <div>{i?.orderEndTime}</div>
                   </div>
-                  <div className='status'>
-                    <p className='succ'>Finished 2个</p>
-                    <p className='err'>Fail 2个</p>
+                  <div className="status">
+                    <p className="succ">
+                      {t('sniping.Finished')} {i?.successAmount}
+                    </p>
+                    <p className="err">
+                      {' '}
+                      {t('sniping.Failed')} {i?.failAmount}
+                    </p>
                   </div>
                 </div>
               );

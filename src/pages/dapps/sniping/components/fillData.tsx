@@ -1,5 +1,4 @@
 import {
-  Input,
   InputNumber,
   Segmented,
   Select,
@@ -7,23 +6,19 @@ import {
   Skeleton,
   Collapse,
 } from 'antd';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext,  } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
-
 import { getERC20Contract } from '@utils/contracts';
 import Load from '@/components/allLoad/load';
 import NotificationChange from '@/components/message';
 import UsePass from '@/components/UsePass';
 import Decimal from 'decimal.js';
 import _ from 'lodash';
+import InputSearch from './inputSearch';
 import SelectTokenModal from '@/components/SelectTokenModal';
-import { ethers } from 'ethers';
 import { getUniswapV2RouterContract } from '@utils/contracts';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
-import ChooseChain from '@/components/chooseChain';
-import { swapChain } from '@utils/judgeStablecoin';
-import { config } from '@/config/config.ts';
 export default function fillData({
   setGasPrice,
   token,
@@ -32,14 +27,13 @@ export default function fillData({
   setParams,
   value,
   setValue,
-  setId,
   setUseToken,
   setMaximumSlip,
   payType,
-  setPayType,useToken
+  setPayType,useToken,provider,contractConfig,chainId
 }: any) {
   const { t } = useTranslation();
-  const { loginPrivider, transactionFee, isLogin,  }: any =
+  const { loginProvider, transactionFee,  }: any =
     useContext(CountContext);
   // const [payType, setPayType] = useState('0');
   const [maximumSlipValue, setMaximumSlipValue] = useState(0);
@@ -49,28 +43,6 @@ export default function fillData({
   const [tokenInValue, setTokenInValue] = useState(0);
   // 是否显示   价值
   const [isShow, setIsShow] = useState(false);
-  const [chainId, setChainId] = useState('1');
-  const [chain, setChain] = useState<any>();
-  const [contractConfig, setContractConfig] = useState<any>();
-  // 当前链的
-  const [provider, setProvider] = useState<any>();
-  // 选择链改变   privider
-  const changePrivider = (chainId: string, choose?: string) => {
-    const newConfig = config[chainId ?? '1'];
-    setContractConfig(newConfig);
-    setUseToken(newConfig?.defaultTokenIn);
-    const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
-    if (choose === 'choose') {
-      if (searchValue?.length === 42) {
-        setIsToken(true);
-        implement(rpcProvider);
-      }
-    }
-    setProvider(rpcProvider);
-  };
-  useEffect(() => {
-    changePrivider(chainId);
-  }, [chainId, loginPrivider, isLogin]);
   const searchChange = async (e: any) => {
     setSearchValue(e.target.value);
     if (e.target.value.length !== 42) {
@@ -81,10 +53,10 @@ export default function fillData({
     setMaximumSlipValue(e);
     setMaximumSlip(e);
   };
-  const implement = async (moreProvider?: any) => {
+  const implement = async () => {
     try {
       const contract = await getERC20Contract(
-        moreProvider ? moreProvider : provider,
+        provider,
         searchValue
       );
       const getSymbolAsync = contract.symbol();
@@ -161,49 +133,12 @@ export default function fillData({
     getAmount(e);
     setIsShow(true);
   }, 1000);
-  const changeWalletChain = async (v: any) => {
-    if (loginPrivider) {
-      // 有evm钱包环境
-      try {
-        setChainId(v.chainId);
-        setId(v.chainId);
-        setToken(null)
-        setChain(v);
-      } catch (e) {
-        return null;
-      }
-    }
-    // if (evmChainId !== chainId) {
-    //   changePrivider(evmChainId, 'choose');
-    //   setChainId(evmChainId);
-    // }
-  };
   const mask = { 0: '100%', 25: '125%', 50: '150%', 75: '175%', 100: '200%' };
   return (
     <div className="scrollHei sniperOrder" style={{ margin: '20px 0 10px' }}>
-      <div className="Contractaddress">
+      <div className="Contractaddress">  
         {/* 0x7b522bA8C126716bf7c9E5f92951aCae38a680d6 */}
-        <Input
-          size="large"
-          rootClassName="snipingInput"
-          onKeyDown={enter}
-          placeholder={t('sniping.Contract')}
-          allowClear
-          onChange={searchChange}
-          suffix={
-            <img src="/searchToken.svg" alt=""  style={{
-              cursor: 'pointer',
-            }}  onClick={clickSearch}/>
-          }
-        />
-        <ChooseChain
-          disabledChain={true}
-          data={chain}
-          chainList={swapChain}
-          onClick={(v) => changeWalletChain(v)}
-          hideChain={true}
-          wrapClassName="swap-chooose-chain"
-        />
+        <InputSearch enter={enter} searchChange={searchChange} clickSearch={clickSearch} placeholder={t('sniping.Contract')}/>
       </div>
       <div className="token">
         <p className="Information">{t('Slider.Token')}</p>
@@ -476,7 +411,7 @@ export default function fillData({
         disabledTokens={[useToken?.contractAddress?.toLowerCase?.()]}
         chainId={chainId}
         onChange={(data) => {
-          if (loginPrivider) {
+          if (loginProvider) {
             if (value) {
               getAmount(value, data);
               setIsShow(true);

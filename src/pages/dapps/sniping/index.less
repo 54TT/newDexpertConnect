@@ -20,19 +20,25 @@
       font-size: 18px;
     }
   }
-  & > .top {
+  & > .topBox {
     display: flex;
-    padding: 12px 0;
     margin-top: 16px;
-    background-color: #2d2d2d;
     align-items: center;
-    border-radius: 14px;
-    & > p {
-      flex: 1;
-      cursor: pointer;
-      font-size: 17px;
-      font-weight: bold;
-      text-align: center;
+    & > .top {
+      display: flex;
+      width: 100%;
+      margin-right: 8px;
+      padding: 12px 0;
+      background-color: #2d2d2d;
+      align-items: center;
+      border-radius: 14px;
+      & > p {
+        flex: 1;
+        cursor: pointer;
+        font-size: 17px;
+        font-weight: bold;
+        text-align: center;
+      }
     }
   }
   .Contractaddress {
@@ -42,10 +48,10 @@
     justify-content: space-between;
     box-sizing: border-box;
     height: 36px;
-    .ant-input-affix-wrapper{
-      transition: all .2s ease;
+    .ant-input-affix-wrapper {
+      transition: all 0.2s ease;
     }
-    input{
+    input {
       background: #2d2d2d !important;
     }
   }
@@ -62,7 +68,6 @@
   .snipingInput {
     padding: 5px 10px;
     box-shadow: none;
-    margin-right: 8px;
     border-color: transparent;
     background-color: rgb(45, 45, 45);
     input {
@@ -80,24 +85,23 @@
     // border: 1px solid rgb(134, 240, 151);
     border-color: rgb(134, 240, 151);
   }
-  .sniperCollapse{
+  .sniperCollapse {
     background-color: #2d2d2d;
     border: none;
     margin-top: 10px;
-    .ant-collapse-item{
+    .ant-collapse-item {
       .ant-collapse-header {
         border-radius: 10px;
-        .ant-collapse-header-text{
+        .ant-collapse-header-text {
           font-size: 16px;
-      color: rgb(220, 220, 220);
-
+          color: rgb(220, 220, 220);
         }
       }
-      .ant-collapse-content{
-        border-top-color: #4C4C4C;
+      .ant-collapse-content {
+        border-top-color: #4c4c4c;
 
         background-color: transparent;
-        .ant-collapse-content-box{
+        .ant-collapse-content-box {
           padding: 0 !important;
         }
       }
@@ -270,7 +274,6 @@
       rgba(0, 0, 0, 0) 100%
     );
   }
-
   .confirm {
     background-color: rgb(134, 240, 151);
     padding: 12px 0;
@@ -349,7 +352,7 @@
       margin-top: 10px;
       align-items: center;
       justify-content: space-between;
-      &>span {
+      & > span {
         font-weight: bold;
         color: white;
       }
@@ -373,7 +376,7 @@
             background-color: rgb(134, 240, 151) !important;
             border-radius: 30px;
             padding: 0 15px;
-            &:hover{
+            &:hover {
               border-color: transparent !important;
             }
           }
@@ -418,7 +421,7 @@
     }
   }
 }
-.snipingBox{
+.snipingBox {
   overflow-y: auto;
   padding-bottom: 20px;
   -ms-overflow-style: none;
@@ -427,7 +430,7 @@
 .snipingBox::-webkit-scrollbar {
   display: none;
 }
-.order-cancel{
+.order-cancel {
   background: transparent !important;
   border: 1px solid #ea6e6e;
   color: #ea6e6e;

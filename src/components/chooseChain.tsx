@@ -37,7 +37,6 @@ function ChooseChain({
     chainId: '1',
     key: '0x1',
   });
-
   const [open, setOpen] = useState<any>(false);
   const click = throttle(
     function (i: any) {
@@ -52,6 +51,7 @@ function ChooseChain({
         ) {
           if (onClick) {
             onClick(i);
+            setValue(i)
           }
           if (onChange) {
             onChange(i.value);

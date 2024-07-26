@@ -117,7 +117,7 @@ function ManageTokenDetail() {
       const tx = await erc20Contract.removeLimits();
       console.log(tx);
     } catch (e) {
-      console.log(e);
+      return null
     }
   };
 

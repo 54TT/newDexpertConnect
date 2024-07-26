@@ -7,7 +7,7 @@ import LoadIng from '@components/allLoad/loading';
 import { useTranslation } from 'react-i18next';
 
 import { getScanLink } from '@/utils/getScanLink';
-export default function oriderDetail({ orderId,tokenInAmount}: any) {
+export default function oriderDetail({ orderId, tokenInAmount }: any) {
   const { t } = useTranslation();
   const { getAll } = Request();
   const { browser }: any = useContext(CountContext);
@@ -59,34 +59,24 @@ export default function oriderDetail({ orderId,tokenInAmount}: any) {
           <div className="line"></div>
           <p className="sni">{t('sniping.Sniper')}</p>
           <div className="more dis" style={{ margin: '10px 0 10px' }}>
-            <span >{t('sniping.Max')}</span>
+            <span>{t('sniping.Max')}</span>
             <span>
-              {par?.slippageType === '1' ? 'Auto' : par?.slippage*100+' %' || '0'}
+              {par?.slippageType === '1'
+                ? 'Auto'
+                : par?.slippage * 100 + ' %' || '0'}
             </span>
           </div>
           <div className="more dis" style={{ margin: '10px 0 10px' }}>
             <span>{t('sniping.Gas')}</span>
             <span>
-              {par?.gasPriceType === '1' ? 'Auto' : par?.gasPrice+'%' || '0'}
+              {par?.gasPriceType === '1' ? 'Auto' : par?.gasPrice + '%' || '0'}
             </span>
           </div>
           <div className="more dis" style={{ margin: '10px 0 10px' }}>
             <span>{t('sniping.Service')}</span>
-            {par?.payType==='0' &&
-              <span>
-                0.5% fee
-              </span>
-            }
-            {par?.payType==='1' &&
-              <span>
-                Golden Card
-              </span>
-            }
-            {par?.payType==='2' &&
-              <span>
-                Dpass Card
-              </span>
-            }
+            {par?.payType === '0' && <span>0.5% fee</span>}
+            {par?.payType === '1' && <span>Golden Card</span>}
+            {par?.payType === '2' && <span>Dpass Card</span>}
           </div>
           <div className="line"></div>
           <p className="wallet">{t('sniping.wallet')}</p>
@@ -107,44 +97,49 @@ export default function oriderDetail({ orderId,tokenInAmount}: any) {
                   >
                     <div>
                       <span>{i?.walletName}</span>
-                      <p className="walletAddress">{i?.walletAddress.slice(0,6)+'...'+i?.walletAddress.slice(-4)}</p>
+                      <p className="walletAddress">
+                        {i?.walletAddress.slice(0, 6) +
+                          '...' +
+                          i?.walletAddress.slice(-4)}
+                      </p>
                     </div>
                     <div className="num">
-                        <span
-                          style={{
-                            color:
-                              i?.orderStatus === '1'
-                                ? 'rgb(134,240,151)'
-                                : i?.orderStatus === '2'
-                                  ? '#EA6E6E'
-                                  : 'rgba(255,255,255,0.55)',
-                          }}
-                        >
-                          {i?.orderStatus === '6'
-                            ? t('sniping.Expired')
-                            : i?.orderStatus === '5'
-                              ? t('sniping.cancele')
-                              : i?.orderStatus === '3' || i?.orderStatus === '4'
-                                ? t('sniping.wait')
-                                : i?.orderStatus === '2'
-                                  ? t('sniping.failed')
-                                  : t('sniping.get') +' '+
-                                    i?.tokenOutAmount +
-                                    i?.tokenOutName}
-                        </span>
-                        { i?.tx &&
-                          <img
+                      <span
+                        style={{
+                          color:
+                            i?.orderStatus === '1'
+                              ? 'rgb(134,240,151)'
+                              : i?.orderStatus === '2'
+                                ? '#EA6E6E'
+                                : 'rgba(255,255,255,0.55)',
+                        }}
+                      >
+                        {i?.orderStatus === '6'
+                          ? t('sniping.Expired')
+                          : i?.orderStatus === '5'
+                            ? t('sniping.cancele')
+                            : i?.orderStatus === '3' || i?.orderStatus === '4'
+                              ? t('sniping.wait')
+                              : i?.orderStatus === '2'
+                                ? t('sniping.failed')
+                                : t('sniping.get') +
+                                  ' ' +
+                                  i?.tokenOutAmount +
+                                  i?.tokenOutName}
+                      </span>
+                      {i?.tx && (
+                        <img
                           src="/ethLogo111.svg"
                           alt=""
-                          style={{ width: '20px' ,cursor:'pointer'}}
-                          onClick={(e)=>{
-                            e.stopPropagation()
-                              // 后端接口需要传回chainId
-                              window.open(getScanLink(i.chainID,i.tx))
+                          style={{ width: '20px', cursor: 'pointer' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // 后端接口需要传回chainId
+                            window.open(getScanLink(i.chainID, i.tx));
                           }}
                         />
-                        }
-                      </div>
+                      )}
+                    </div>
                   </div>
                 );
               })
@@ -160,7 +155,7 @@ export default function oriderDetail({ orderId,tokenInAmount}: any) {
           </div>
           <div className="more dis">
             <span>{t('sniping.Amount')}</span>
-            <span>{tokenInAmount===''?0:tokenInAmount} ETH</span>
+            <span>{tokenInAmount === '' ? 0 : tokenInAmount} ETH</span>
           </div>
         </div>
       ) : (

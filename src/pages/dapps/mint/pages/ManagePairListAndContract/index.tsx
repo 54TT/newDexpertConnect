@@ -53,7 +53,6 @@ function ManagePairListAndContract() {
             ...item,
           }}
           onClick={(data) => {
-            console.log(data);
             history(
               `/dapps/mint/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
             );

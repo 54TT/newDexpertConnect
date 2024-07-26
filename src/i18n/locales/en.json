@@ -277,7 +277,11 @@
     "Advanced":"Details",
     "Service":"Service Fee",
     "cancel":"Cancel",
-    "canceled":"Order canceled",
+    "canceled":"Canceled",
+    "success":"Excuted",
+    "fail":"Failed",
+    "Finished":"Completeed",
+    "Failed":"Fail",
     "Expired":"Expired",
     "number":"Order number",
     "wallet":"Wallet(s) for this transaction",
@@ -326,6 +330,11 @@
     "key":"Enter your private key string here:",
     "wallet":"wallet name",
     "names":"Please enter wallet name",
-    "Creates":"Create"
+    "Creates":"Create",
+      "The":"The total amount",
+    "Delete":"Delete wallet",
+    "del":"Delete Wallet",
+    "to":"Confirm to delete wallet",
+    "all":"All"
   }
 }

@@ -58,7 +58,7 @@ const Request = () => {
   ) => {
     const abc = await requestA({
       method,
-      params: method === 'get' ? data : method === 'delete' ? undefined : '',
+      params: method === 'get' ? data : method === 'delete' ? data : '',
       data: method === 'get' ? '' : method === 'delete' ? undefined : data,
       url,
       headers: {

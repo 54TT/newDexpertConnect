@@ -3,7 +3,7 @@ import './index.less';
 import AddMethod from './components/addMethod';
 import ImportAndCreate from './components/importAndCreate';
 import { useTranslation } from 'react-i18next';
-export default function index({setAddWallet}:any) {
+export default function index({setAddWallet,chainId}:any) {
 const { t } = useTranslation();
   const [status, setStatus] = useState('addMethod');
   return (
@@ -26,7 +26,7 @@ const { t } = useTranslation();
       { status === 'addMethod' ? (
         <AddMethod setStatus={setStatus} />
       ) : (
-        <ImportAndCreate setAddWallet={setAddWallet} status={status} />
+        <ImportAndCreate setAddWallet={setAddWallet} status={status} chainId={chainId}/>
       )}
     </div>
   );

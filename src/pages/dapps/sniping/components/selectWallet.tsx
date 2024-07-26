@@ -24,6 +24,7 @@ export default function selectWallet({ setWallet, id, value }: any) {
       url: '/api/v1/wallet/list',
       data: { page },
       token,
+      chainId:id
     });
     if (res?.status === 200) {
       let address: any = [];

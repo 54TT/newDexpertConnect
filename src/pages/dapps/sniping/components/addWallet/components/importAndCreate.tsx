@@ -4,7 +4,7 @@ import cookie from 'js-cookie';
 import Load from '@/components/allLoad/load.tsx';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-export default function importWallet({  status ,setAddWallet}: any) {
+export default function importWallet({  status ,setAddWallet,chainId}: any) {
 const { t } = useTranslation();
   const { getAll } = Request();
   const [value, setValue] = useState('');
@@ -32,6 +32,7 @@ const { t } = useTranslation();
           privateKey: status === 'Create' ? undefined : privateKey,
         },
         token,
+        chainId
       });
       if (res?.status === 200 && res?.data?.code === 200) {
         setAddWallet(false);

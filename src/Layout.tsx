@@ -60,7 +60,6 @@ const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
   () => import('./pages/activity/components/specialDetail.tsx')
 );
-
 const web3Modal = new Web3Modal({
   projectId: DEFAULT_PROJECT_ID,
   themeMode: 'dark',
@@ -74,6 +73,7 @@ function Layout() {
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
   const [loginProvider, setloginProvider] = useState<any>(null);
+  const [sniperChainId, setSniperChainId] = useState('1');
   const [chainId, setChainId] = useState('1'); // swap 链切换
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
@@ -206,7 +206,6 @@ function Layout() {
   };
 
   useEffect(() => {
-    console.log(loginProvider);
     if (isLogin && loginProvider) {
       try {
         // @ts-ignore
@@ -636,7 +635,7 @@ function Layout() {
     setTransactionFee,
     loginProvider,
     environment,
-    setEnvironment,
+    setEnvironment,sniperChainId, setSniperChainId
   };
   const clients = new ApolloClient({
     uri: chain[switchChain],
