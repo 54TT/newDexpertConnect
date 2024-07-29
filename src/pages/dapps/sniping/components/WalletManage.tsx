@@ -169,7 +169,7 @@ export default function WalletManage({ id, setIsShow, setAddWallet,contractConfi
                 );
               })
             ) : (
-              <p className="no-wallet">no wallet yet</p>
+              <p className="no-wallet">{t('token.oo')}</p>
             )}
           </InfiniteScroll>
         ) : (

@@ -9,7 +9,7 @@ import Limit from './limit';
 import Mint from './mint';
 export default function index() {
   const params: any = useParams();
-  const { browser,  }: any = useContext(CountContext);
+  const { browser }: any = useContext(CountContext);
   const history = useNavigate();
   const top = [
     {
@@ -86,6 +86,7 @@ export default function index() {
                   <span
                     style={{
                       color: i.status ? 'rgb(134,240,151)' : 'rgb(162,162,162)',
+                      width: i.key === 'buyBot' ? '120px' : 'auto',
                     }}
                   >
                     {i.name}

@@ -96,7 +96,9 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
     }
   };
   useEffect(() => {
+    setLoading(false);
     getList(1, '0', '');
+    setLoading(false);
     setPage(1);
   }, [chainId]);
   const changeItem = (status: string, name: string) => {
@@ -112,6 +114,7 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
             setIsSearch(true);
             getList(1, status, searchValue.length === 42 ? searchValue : '');
             setPage(1);
+            setLoading(false);
           }
         }}
       >
@@ -150,6 +153,7 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
     ) {
       setIsSearch(true);
       getList(1, select, searchValue.length === 42 ? searchValue : '');
+      setLoading(false);
       setPage(1);
     }
   };
@@ -163,6 +167,7 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
     if (searchValue.length === 42 || searchValue.length === 0) {
       setIsSearch(true);
       getList(1, select, searchValue.length === 42 ? searchValue : '');
+      setLoading(false);
       setPage(1);
     }
   };

@@ -277,6 +277,7 @@ export default function index() {
                     key={i.key}
                     style={{
                       color: select === i.key ? 'rgb(134,240,151)' : 'white',
+                      fontWeight:select === i.key ? 'bold':'normal'
                     }}
                   >
                     {i.name}

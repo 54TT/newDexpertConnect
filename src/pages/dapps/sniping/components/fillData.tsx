@@ -6,7 +6,7 @@ import {
   Skeleton,
   Collapse,
 } from 'antd';
-import { useState, useContext,  } from 'react';
+import { useState, useContext } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
 import { getERC20Contract } from '@utils/contracts';
@@ -30,11 +30,14 @@ export default function fillData({
   setUseToken,
   setMaximumSlip,
   payType,
-  setPayType,useToken,provider,contractConfig,chainId
+  setPayType,
+  useToken,
+  provider,
+  contractConfig,
+  chainId,
 }: any) {
   const { t } = useTranslation();
-  const { loginProvider, transactionFee,  }: any =
-    useContext(CountContext);
+  const { loginProvider, transactionFee }: any = useContext(CountContext);
   // const [payType, setPayType] = useState('0');
   const [maximumSlipValue, setMaximumSlipValue] = useState(0);
   const [searchValue, setSearchValue] = useState('');
@@ -44,8 +47,9 @@ export default function fillData({
   // 是否显示   价值
   const [isShow, setIsShow] = useState(false);
   const searchChange = async (e: any) => {
-    setSearchValue(e.target.value);
-    if (e.target.value.length !== 42) {
+    const yy = e.target.value.replace(/\s*/g, '');
+    setSearchValue(yy);
+    if (yy.length !== 42) {
       setToken(null);
     }
   };
@@ -55,10 +59,7 @@ export default function fillData({
   };
   const implement = async () => {
     try {
-      const contract = await getERC20Contract(
-        provider,
-        searchValue
-      );
+      const contract = await getERC20Contract(provider, searchValue);
       const getSymbolAsync = contract.symbol();
       const getNameAsync = contract.name();
       const getDecimalsAsync = contract.decimals();
@@ -136,19 +137,24 @@ export default function fillData({
   const mask = { 0: '100%', 25: '125%', 50: '150%', 75: '175%', 100: '200%' };
   return (
     <div className="scrollHei sniperOrder" style={{ margin: '20px 0 10px' }}>
-      <div className="Contractaddress">  
+      <div className="Contractaddress">
         {/* 0x7b522bA8C126716bf7c9E5f92951aCae38a680d6 */}
-        <InputSearch enter={enter} searchChange={searchChange} clickSearch={clickSearch} placeholder={t('sniping.Contract')}/>
+        <InputSearch
+          enter={enter}
+          searchChange={searchChange}
+          clickSearch={clickSearch}
+          placeholder={t('sniping.Contract')}
+        />
       </div>
       <div className="token">
         <p className="Information">{t('Slider.Token')}</p>
         <div className="selectTo">
-          <p>{token?.symbol?token?.symbol:'-----'}</p>
-          <p>{token?.name?token?.name:'----'}</p>
+          <p>{token?.symbol ? token?.symbol : '-----'}</p>
+          <p>{token?.name ? token?.name : '----'}</p>
         </div>
         <div className="address">
           <p>{t('Slider.address')}</p>
-          <p>{token?.contractAddress?token?.contractAddress:'.....'}</p>
+          <p>{token?.contractAddress ? token?.contractAddress : '.....'}</p>
         </div>
         {isToken && (
           <div className="posi">
@@ -398,7 +404,7 @@ export default function fillData({
                     onChange={(v: string) => {
                       setPayType(v);
                     }}
-                    status='0.5%'
+                    status="0.5%"
                   />
                 </div>
               </div>
