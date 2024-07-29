@@ -49,16 +49,15 @@ function ConfirmPage() {
       const abi = JSON.parse(metadataJson).output.abi;
       const contractFactory = new ethers.ContractFactory(abi, bytecode, signer);
       // 先默认使用手续费版本
-      const { deployTransaction, address, waitForDeployment } =
-        await contractFactory.deploy(0, {
-          value: BigNumber.from(0.08 * 10 ** 2).mul(BigNumber.from(10).pow(16)),
-        });
+      const { deployTransaction, address } = await contractFactory.deploy(0, {
+        value: BigNumber.from(0.08 * 10 ** 2).mul(BigNumber.from(10).pow(16)),
+      });
       reportDeploy({
         contractAddress: address,
         contractId,
         deployTx: deployTransaction.hash,
       });
-      await waitForDeployment();
+      await deployTransaction.wait();
       history('/dapps/mint/manageToken');
     } catch (e) {
       console.log(e);

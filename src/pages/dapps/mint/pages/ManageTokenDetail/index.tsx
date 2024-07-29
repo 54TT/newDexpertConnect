@@ -1,4 +1,4 @@
-import { Button, ConfigProvider, Input, InputNumber, Modal } from 'antd';
+import { Button, ConfigProvider, InputNumber } from 'antd';
 import BottomButton from '../../component/BottomButton';
 import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
@@ -10,10 +10,9 @@ import Cookies from 'js-cookie';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { CountContext } from '@/Layout';
 import { LaunchERC20Abi } from '@abis/LaunchERC20Abi';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { CheckOutlined } from '@ant-design/icons';
 import CommonModal from '@/components/CommonModal';
-
 function ManageTokenDetail() {
   const { chainId, loginProvider } = useContext(CountContext);
   const [search] = useSearchParams();
@@ -64,7 +63,6 @@ function ManageTokenDetail() {
     const tokenContract = new ethers.Contract(address, LaunchERC20Abi, signer);
 
     setErc20Contract(tokenContract);
-
     const isOwn = (await tokenContract.owner()) === walletAddress;
     setIsOwn(isOwn);
 
@@ -175,7 +173,7 @@ function ManageTokenDetail() {
     const tokenBalance = await erc20Contract.balanceOf(walletAddress);
     try {
       if (await approve(erc20Contract.address, tokenBalance)) {
-        const tx = await erc20Contract.openTrading(BigNumber.from(10).pow(20), {
+        const tx = await erc20Contract.openTrading(tokenBalance, {
           value: ethers.utils.parseEther(ethAmount.toString()),
         });
         setOpenTradeModal(false);
@@ -191,7 +189,7 @@ function ManageTokenDetail() {
           chainId,
         });
         const recipent = await tx.wait();
-        if (recipent === 1) {
+        if (recipent.status === 1) {
           setOpenTradeLoading(false);
           setIsOpenTrade(true);
         }

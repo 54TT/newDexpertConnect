@@ -4,14 +4,16 @@ import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout';
 import { BigNumber, ethers } from 'ethers';
-import { UniswapV2FactoryAbi } from '@abis/UniswapV2FactoryAbi';
 import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
 import CommonModal from '@/components/CommonModal';
 import { zeroAddress } from '@utils/constants';
 import Decimal from 'decimal.js';
+import { UniswapV2RouterAbi } from '@abis/UniswapV2RouterAbi';
+import { UncxAbi } from '@abis/UncxAbi';
+import dayjs from 'dayjs';
 function ManagePairDetail() {
   const [search] = useSearchParams();
   const token0 = search.get('t0');
@@ -75,6 +77,81 @@ function ManagePairDetail() {
     getPairInfo();
   };
 
+  const removeLp = async () => {
+    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
+    const signer = await web3Provider.getSigner();
+    const v2RouterContract = new ethers.Contract(
+      contractConfig.uniswapV2RouterAddress,
+      UniswapV2RouterAbi,
+      signer
+    );
+    const walletAddress = await signer.getAddress();
+    console.log('walletAddress', walletAddress);
+    const token0 = await pairContract.token0();
+    const balance = await pairContract.balanceOf(walletAddress);
+    const approveTx = await pairContract.approve(
+      contractConfig.uniswapV2RouterAddress,
+      balance
+    );
+    console.log(approveTx, balance);
+    const { status } = await approveTx.wait();
+    console.log(token0, balance.toString());
+
+    if (status === 1) {
+      const deadline = dayjs().add(10, 'm').unix();
+      const removeLiquidityTx = await v2RouterContract.removeLiquidityETH(
+        token0,
+        balance,
+        0,
+        0,
+        walletAddress,
+        deadline
+      );
+      await removeLiquidityTx.wait();
+      getPairInfo();
+    }
+  };
+
+  const approve = async (
+    contract: ethers.Contract,
+    to: string,
+    amount: BigNumber
+  ) => {
+    const tx = await contract.approve(to, amount);
+    const recipent = await tx.wait();
+    console.log(recipent);
+    return recipent.status === 1;
+  };
+
+  const lockLpToken = async () => {
+    const { uncxAddress } = contractConfig;
+    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
+    const signer = await web3Provider.getSigner();
+    const walletAddress = await signer.getAddress();
+    const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
+    const fee = (await uncxContract.gFees()).ethFee;
+    const lockAmount = BigNumber.from('1000000000000000000');
+    const unlockDate = dayjs().add(10, 'day').unix();
+    const referral = walletAddress;
+    const feeInEth = true;
+    const withdradwer = walletAddress;
+    console.log(fee.toString());
+    if (await approve(pairContract, uncxAddress, lockAmount)) {
+      const tx = await uncxContract.lockLPToken(
+        pairAddress,
+        lockAmount,
+        unlockDate,
+        zeroAddress,
+        feeInEth,
+        withdradwer,
+        {
+          value: fee,
+        }
+      );
+      console.log(tx);
+    }
+  };
+
   return (
     <>
       <ToLaunchHeader />
@@ -84,7 +161,7 @@ function ManagePairDetail() {
       />
       <InfoList className="manage-token-detail-info" data={infoData} />
       <div className="pair-manage-button">
-        <BottomButton text="LockLP" onClick={() => {}} />
+        <BottomButton text="LockLP" onClick={() => lockLpToken()} />
         <BottomButton
           className=""
           ghost
@@ -115,7 +192,10 @@ function ManagePairDetail() {
           ghost
           danger
           text="Confirm"
-          onClick={() => setRemoveLpModal(true)}
+          onClick={async () => {
+            await removeLp();
+            setRemoveLpModal(true);
+          }}
         />
       </CommonModal>
       <CommonModal
