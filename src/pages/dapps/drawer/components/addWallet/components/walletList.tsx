@@ -2,16 +2,15 @@ import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
 import { useEffect, useState, useContext } from 'react';
 import Loading from '@/components/allLoad/loading.tsx';
-import Load from '@/components/allLoad/load';
 import { CountContext } from '@/Layout.tsx';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import getBalance from '@/../utils/getBalance';
 import { useTranslation } from 'react-i18next';
+import InfiniteScrollPage from '@/components/InfiniteScroll';
 export default function walletList({
   setStatus,
   setAddWallet,
   setWalletId,
-  id
+  id,
 }: any) {
   const { t } = useTranslation();
   const { browser }: any = useContext(CountContext);
@@ -86,60 +85,47 @@ export default function walletList({
   useEffect(() => {
     getWalletList(1);
   }, []);
+
+  const items = (i: any) => {
+    return (
+      <div className="wallet" key={i?.privateKey}>
+        <div className="left">
+          <img src="/backLeft.svg" alt="" />
+          <div>
+            <p>{i?.name}</p>
+            <p>$0</p>
+          </div>
+        </div>
+        <div
+          onClick={() => {
+            setAddWallet('set');
+            setWalletId(i);
+          }}
+          className="right"
+        >
+          <p></p>
+          <p></p>
+          <p></p>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="walletList">
       <div className="box" id="scrollableWalletList">
         {load ? (
-          <InfiniteScroll
-            hasMore={true}
+          <InfiniteScrollPage
+            data={list}
             next={changePage}
+            items={items}
+            nextLoad={nextLoad}
+            no={t('token.oo')}
             scrollableTarget={'scrollableWalletList'}
-            loader={null}
-            dataLength={list.length}
-          >
-            {list.length > 0 ? (
-              list.map((i: any) => {
-                return (
-                  <div className="wallet" key={i?.privateKey}>
-                    <div className="left">
-                      <img src="/backLeft.svg" alt="" />
-                      <div>
-                        <p>{i?.name}</p>
-                        <p>$0</p>
-                      </div>
-                    </div>
-                    <div
-                      onClick={() => {
-                        setAddWallet('set');
-                        setWalletId(i);
-                      }}
-                      className="right"
-                    >
-                      <p></p>
-                      <p></p>
-                      <p></p>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <p
-                style={{
-                  textAlign: 'center',
-                  marginTop: '20px',
-                  color: 'white',
-                }}
-              >
-                No wallet yet
-              </p>
-            )}
-          </InfiniteScroll>
+          />
         ) : (
           <Loading status={'20'} browser={browser} />
         )}
-        <div style={{ visibility: nextLoad ? 'visible' : 'hidden' }}>
-          <Load />
-        </div>
       </div>
       <div className="add" onClick={() => setStatus('addMethod')}>
         <span>{t('sniping.Add')}</span>
@@ -147,6 +133,4 @@ export default function walletList({
       </div>
     </div>
   );
-
-
 }

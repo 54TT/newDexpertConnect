@@ -4,13 +4,17 @@ import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
 import { CountContext } from '@/Layout';
 import Loading from '@components/allLoad/loading';
-import Load from '@/components/allLoad/load';
 import WalletDetail from './WalletDetail';
 import getBalance from '@utils/getBalance';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
-export default function WalletManage({ id, setIsShow, setAddWallet,contractConfig }: any) {
+import InfiniteScrollPage from '@/components/InfiniteScroll';
+export default function WalletManage({
+  id,
+  setIsShow,
+  setAddWallet,
+  contractConfig,
+}: any) {
   const { t } = useTranslation();
   const { browser, isLogin }: any = useContext(CountContext);
   const [loading, setLoading] = useState(false);
@@ -68,8 +72,6 @@ export default function WalletManage({ id, setIsShow, setAddWallet,contractConfi
             setWalletList(exWallet);
           }
         }
-      } else {
-        setWalletList([]);
       }
       if (res?.data?.list.length !== 10) {
         setIsNext(true);
@@ -124,6 +126,31 @@ export default function WalletManage({ id, setIsShow, setAddWallet,contractConfi
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  const items = (item: any, index: number) => {
+    return (
+      <div
+        style={{
+          marginBottom: walletList.length - 1 === index ? '0px' : '6px',
+        }}
+        className="walletList-item"
+        onClick={() => {
+          selectWallet(item);
+          setIsShow(true);
+        }}
+        key={index}
+      >
+        <div className="wallet-item-middle">
+          <div className="wallet-name">{item.name}</div>
+          <div className="wallet-address">
+            {item.address.slice(0, 4) + '...' + item.address.slice(-4)}
+          </div>
+        </div>
+        <span className="wallet-balance">{item.balance} ETH</span>
+      </div>
+    );
+  };
+
   return (
     <div
       className="wallet-manage"
@@ -131,44 +158,14 @@ export default function WalletManage({ id, setIsShow, setAddWallet,contractConfi
     >
       <div className="scrollHei sniperOrder">
         {loading && !showWalletDetail ? (
-          <InfiniteScroll
-            hasMore={true}
+          <InfiniteScrollPage
+            data={walletList}
             next={nextPage}
+            items={items}
+            nextLoad={nextLoad}
+            no={t('token.oo')}
             scrollableTarget={'scrollableSniperOrder'}
-            loader={null}
-            dataLength={walletList.length}
-          >
-            {walletList.length > 0 ? (
-              walletList.map((item: any, index: number) => {
-                return (
-                  <div
-                    style={{
-                      marginBottom:
-                        walletList.length - 1 === index ? '0px' : '6px',
-                    }}
-                    className="walletList-item"
-                    onClick={() => {
-                      selectWallet(item);
-                      setIsShow(true);
-                    }}
-                    key={index}
-                  >
-                    <div className="wallet-item-middle">
-                      <div className="wallet-name">{item.name}</div>
-                      <div className="wallet-address">
-                        {item.address.slice(0, 4) +
-                          '...' +
-                          item.address.slice(-4)}
-                      </div>
-                    </div>
-                    <span className="wallet-balance">{item.balance} ETH</span>
-                  </div>
-                );
-              })
-            ) : (
-              <p className="no-wallet">{t('token.oo')}</p>
-            )}
-          </InfiniteScroll>
+          />
         ) : (
           !showWalletDetail && <Loading status={'20'} browser={browser} />
         )}
@@ -214,7 +211,6 @@ export default function WalletManage({ id, setIsShow, setAddWallet,contractConfi
           </div>
         </div>
       </Modal>
-      {nextLoad && <Load />}
       {/* 添加钱包，未实现 */}
       {loading && !showWalletDetail && (
         <span className="add-wallet" onClick={createWallet}>

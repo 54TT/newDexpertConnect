@@ -2,12 +2,13 @@ import './index.less';
 import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
 import { useEffect, useState, useContext } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import Loading from '@/components/allLoad/loading';
-import Load from '@/components/allLoad/load';
 import { CountContext } from '@/Layout.tsx';
 import getBalance from '@/../utils/getBalance';
+import { useTranslation } from 'react-i18next';
+import InfiniteScrollPage from '@/components/InfiniteScroll';
 export default function selectWallet({ setWallet, id, value }: any) {
+  const { t } = useTranslation();
   const { browser }: any = useContext(CountContext);
   const { getAll } = Request();
   const [data, setData] = useState([]);
@@ -83,89 +84,65 @@ export default function selectWallet({ setWallet, id, value }: any) {
   useEffect(() => {
     getWalletList(1);
   }, []);
+
+  const items = (i: any) => {
+    return (
+      <div
+        onClick={() => {
+          if (Number(i.balance) && Number(i.balance) >= value) {
+            const data = select.filter(
+              (item: any) =>
+                item?.privateKey === i.privateKey && item?.name === i.name
+            );
+            if (data.length > 0) {
+              const tt = select.filter((item: any) => item?.name !== i.name);
+              setSelect(tt);
+              setIsSelect(!isSelect);
+              setWallet(tt);
+            } else {
+              select.push(i);
+              setSelect(select);
+              setIsSelect(!isSelect);
+              setWallet(select);
+            }
+          }
+        }}
+        style={{
+          border:
+            select.filter(
+              (item: any) =>
+                item?.privateKey === i.privateKey && item?.name === i?.name
+            ).length > 0
+              ? '1px solid rgb(134,240,151)'
+              : '1px solid transparent',
+          cursor: Number(i.balance) ? 'pointer' : 'not-allowed',
+        }}
+        className="wallet"
+        key={i.privateKey + i.name}
+      >
+        <div className="left">
+            <p>{i.name}</p>
+            <p>{i.address.slice(0, 4) + '...' + i.address.slice(-4)}</p>
+        </div>
+        <p>{i.balance || 0}ETH</p>
+      </div>
+    );
+  };
   return (
     <div className="allWallet scrollHei sniperOrder">
       {load ? (
-        <InfiniteScroll
-          hasMore={true}
+        <InfiniteScrollPage
+          data={data}
           next={changePage}
-          scrollableTarget={'scrollableSniperOrder'}
-          loader={null}
-          dataLength={data.length}
+          items={items}
+          nextLoad={nextLoad}
+          no={t('token.oo')}
           style={{ overflow: 'hidden' }}
-        >
-          {data.length > 0 ? (
-            data.map((i: any) => {
-              return (
-                <div
-                  onClick={() => {
-                    if (Number(i.balance) && Number(i.balance) >= value) {
-                      const data = select.filter(
-                        (item: any) =>
-                          item?.privateKey === i.privateKey &&
-                          item?.name === i.name
-                      );
-                      if (data.length > 0) {
-                        const tt = select.filter(
-                          (item: any) =>
-                            item?.name !== i.name
-                        );
-                        setSelect(tt);
-                        setIsSelect(!isSelect);
-                        setWallet(tt);
-                      } else {
-                        select.push(i);
-                        setSelect(select);
-                        setIsSelect(!isSelect);
-                        setWallet(select);
-                      }
-                    }
-                  }}
-                  style={{
-                    border:
-                      select.filter(
-                        (item: any) =>
-                          item?.privateKey === i.privateKey &&
-                          item?.name === i?.name
-                      ).length > 0
-                        ? '1px solid rgb(134,240,151)'
-                        : '1px solid transparent',
-                    cursor: Number(i.balance) ? 'pointer' : 'not-allowed',
-                  }}
-                  className="wallet"
-                  key={i.privateKey + i.name}
-                >
-                  <div className="left">
-                    <img src="/abc.png" alt="" />
-                    <div>
-                      <p>{i.name}</p>
-                      <p>
-                        {i.address.slice(0, 4) + '...' + i.address.slice(-4)}
-                      </p>
-                    </div>
-                  </div>
-                  <p>{i.balance || 0}ETH</p>
-                </div>
-              );
-            })
-          ) : (
-            <p
-              style={{
-                textAlign: 'center',
-                marginTop: '20px',
-                color: 'white',
-              }}
-            >
-              No wallet yet
-            </p>
-          )}
-        </InfiniteScroll>
+          scrollableTarget={'scrollableSniperOrder'}
+        />
       ) : (
         <Loading status={'20'} browser={browser} />
       )}
-      <div style={{ visibility: nextLoad ? 'visible' : 'hidden' }}>
-        <Load />
-      </div>
     </div>
   );
 }

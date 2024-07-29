@@ -3,13 +3,12 @@ import './index.less';
 import { Modal, Dropdown, Tooltip } from 'antd';
 import cookie from 'js-cookie';
 import NotificationChange from '@/components/message';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import Load from '@components/allLoad/load.tsx';
 import LoadIng from '@components/allLoad/loading';
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
 import InputSearch from './inputSearch';
+import InfiniteScrollPage from '@/components/InfiniteScroll';
 export default function order({ setIsShow, setOrderPar, chainId }: any) {
   const { t } = useTranslation();
   const { getAll } = Request();
@@ -168,6 +167,109 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
     setisOpenDrop(open);
   };
 
+  const itemPage = (i: any, ind: number) => {
+    return (
+      <div
+        className="oriderItem"
+        style={{
+          marginBottom: data.length - 1 === ind ? '0' : '10px',
+        }}
+        key={ind}
+      >
+        <div className="top">
+          <div className="left">
+            <p>{i?.tokenOutSymbol}</p>
+            <Tooltip title={i?.tokenOutCa}>
+              <p>
+                {i?.tokenOutCa?.slice(0, 4) + '...' + i?.tokenOutCa?.slice(-4)}
+              </p>
+            </Tooltip>
+          </div>
+          <div className="right">
+            <p
+              style={{
+                border: i?.status === '1' ? '1px solid #ea6e6e' : 'none',
+                color: i?.status === '1' ? '#ea6e6e' : '#7C7C7C',
+              }}
+              onClick={() => {
+                if (i?.status === '1') {
+                  setIsOrderId(i.orderCode);
+                  setIsModalOpen(true);
+                  setOrderPar(i);
+                }
+              }}
+            >
+              {i?.status === '1'
+                ? t('Active.Cancel')
+                : i?.status === '2'
+                  ? t('sniping.success')
+                  : i?.status === '3'
+                    ? t('sniping.canceled')
+                    : t('sniping.fail')}
+            </p>
+            <img
+              src="/orderRight.svg"
+              alt=""
+              onClick={() => {
+                setOrderPar(i);
+                setIsShow(true);
+              }}
+            />
+          </div>
+        </div>
+        <p className="line"></p>
+        <div className="data">
+          <span>{t('sniping.number')}</span>
+          <div>{i?.orderCode}</div>
+        </div>
+        <div className="data borderBot">
+          <span>{t('sniping.wallet')}</span>
+          <div className="wallet">
+            <div>
+              {i.walletArr.map((it: string, ind: number) => {
+                if (ind < 3) {
+                  return (
+                    <span style={{ marginRight: '4px' }} key={ind}>
+                      {it}
+                    </span>
+                  );
+                }
+              })}
+              {i.walletArr.length > 3 && <span>...</span>}
+            </div>
+            <p
+              style={{
+                color: 'rgba(255,255,255,0.55)',
+                fontSize: '13px',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {t('token.there')}
+              {i.walletArr.length}
+              {t('token.in')}
+            </p>
+          </div>
+        </div>
+        <div className="data">
+          <span>{t('sniping.Amount')}</span>
+          <div>{i?.tokenInAmount}</div>
+        </div>
+        <div className="data">
+          <span>{t('sniping.time')}</span>
+          <div>{i?.orderEndTime}</div>
+        </div>
+        <div className="status">
+          <p className="succ">
+            {t('sniping.Finished')} {i?.successAmount}
+          </p>
+          <p className="err">
+            {' '}
+            {t('sniping.Failed')} {i?.failAmount}
+          </p>
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="order scrollHei sniperOrder">
       <div className="search">
@@ -201,140 +303,17 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
           </div>
         </Dropdown>
       </div>
-
       {loading ? (
-        <InfiniteScroll
-          hasMore={true}
+        <InfiniteScrollPage
+          data={data}
           next={changePage}
+          items={itemPage}
+          nextLoad={load}
+          no={t('token.data')}
           scrollableTarget={'scrollableSniperOrder'}
-          loader={null}
-          dataLength={data.length}
-        >
-          {data.length > 0 ? (
-            data.map((i: any, ind: number) => {
-              return (
-                <div
-                  className="oriderItem"
-                  style={{
-                    marginBottom: data.length - 1 === ind ? '0' : '10px',
-                  }}
-                  key={ind}
-                >
-                  <div className="top">
-                    <div className="left">
-                      <p>{i?.tokenOutSymbol}</p>
-                      <Tooltip title={i?.tokenOutCa}>
-                        <p>
-                          {i?.tokenOutCa?.slice(0, 4) +
-                            '...' +
-                            i?.tokenOutCa?.slice(-4)}
-                        </p>
-                      </Tooltip>
-                    </div>
-                    <div className="right">
-                      <p
-                        style={{
-                          border:
-                            i?.status === '1' ? '1px solid #ea6e6e' : 'none',
-                          color: i?.status === '1' ? '#ea6e6e' : '#7C7C7C',
-                        }}
-                        onClick={() => {
-                          if (i?.status === '1') {
-                            setIsOrderId(i.orderCode);
-                            setIsModalOpen(true);
-                            setOrderPar(i);
-                          }
-                        }}
-                      >
-                        {i?.status === '1'
-                          ? t('Active.Cancel')
-                          : i?.status === '2'
-                            ? t('sniping.success')
-                            : i?.status === '3'
-                              ? t('sniping.canceled')
-                              : t('sniping.fail')}
-                      </p>
-                      <img
-                        src="/orderRight.svg"
-                        alt=""
-                        onClick={() => {
-                          setOrderPar(i);
-                          setIsShow(true);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <p className="line"></p>
-                  <div className="data">
-                    <span>{t('sniping.number')}</span>
-                    <div>{i?.orderCode}</div>
-                  </div>
-                  <div className="data borderBot">
-                    <span>{t('sniping.wallet')}</span>
-                    <div className="wallet">
-                      <div>
-                        {i.walletArr.map((it: string, ind: number) => {
-                          if (ind < 3) {
-                            return (
-                              <span style={{ marginRight: '4px' }} key={ind}>
-                                {it}
-                              </span>
-                            );
-                          }
-                        })}
-                        {i.walletArr.length > 3 && <span>...</span>}
-                      </div>
-                      <p
-                        style={{
-                          color: 'rgba(255,255,255,0.55)',
-                          fontSize: '13px',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {t('token.there')}
-                        {i.walletArr.length}
-                        {t('token.in')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="data">
-                    <span>{t('sniping.Amount')}</span>
-                    <div>{i?.tokenInAmount}</div>
-                  </div>
-                  <div className="data">
-                    <span>{t('sniping.time')}</span>
-                    <div>{i?.orderEndTime}</div>
-                  </div>
-                  <div className="status">
-                    <p className="succ">
-                      {t('sniping.Finished')} {i?.successAmount}
-                    </p>
-                    <p className="err">
-                      {' '}
-                      {t('sniping.Failed')} {i?.failAmount}
-                    </p>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <p className="noData">{t('token.data')}</p>
-          )}
-        </InfiniteScroll>
+        />
       ) : (
         <LoadIng status={'20'} browser={browser} />
-      )}
-      {load && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            visibility: load ? 'visible' : 'hidden',
-          }}
-        >
-          <Load />
-        </div>
       )}
       <Modal
         title=""

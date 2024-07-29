@@ -243,6 +243,7 @@ export default function WalletDetail({
               <p>{wallet?.address}</p>
             </div>
             <div className="token-list">
+              {/* 拥有  token */}
               {tokenList.length > 0 ? (
                 tokenList.map((item: any) => (
                   <div
