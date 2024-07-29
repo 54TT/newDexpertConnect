@@ -5,6 +5,7 @@ import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
 import { useState, useEffect, useContext } from 'react';
 import Loading from '@/components/allLoad/loading';
+import { getScanLink } from '../../../../utils/getScanLink';
 export default function sellTokenModal({
   handleCancel,
   wallet,
@@ -161,7 +162,7 @@ export default function sellTokenModal({
 
   const content = (
     <div className="contentBox">
-      {result !== 'more' && (
+      {!pageLoad && (
         <div className="title">
           {isApproveToken ? t('token.con') : 'Approve'}
         </div>
@@ -172,9 +173,9 @@ export default function sellTokenModal({
             {tokenItem?.iconLink ? (
               <img src={tokenItem?.iconLink} alt="" />
             ) : (
-              <p className="logo">{tokenItem.name.slice(0, 1)}</p>
+              <p className="logo">{tokenItem?.name.slice(0, 1)}</p>
             )}
-            <span className="token">代币</span>
+            <span className="token">{tokenItem?.name}</span>
           </div>
           <p>
             Amount: <span>{amount}</span>
@@ -228,10 +229,17 @@ export default function sellTokenModal({
                   src="/ethLogo.svg"
                   alt=""
                   onClick={() => {
-                    // window.open('')
+                    const link = getScanLink(chainId, tx?.tx);
+                    window.open(link);
                   }}
                 />
-                <p onClick={handleCancel}>x</p>
+                <p
+                  onClick={() =>
+                    handleCancel(result === 'success' ? 'show' : '')
+                  }
+                >
+                  x
+                </p>
               </div>
             )}
             <img
@@ -250,7 +258,6 @@ export default function sellTokenModal({
                 <Load />
               </div>
             )}
-
             {content}
           </div>
         ) : (

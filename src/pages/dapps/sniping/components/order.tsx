@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import './index.less';
-import { Modal, Dropdown } from 'antd';
+import { Modal, Dropdown, Tooltip } from 'antd';
 import cookie from 'js-cookie';
 import NotificationChange from '@/components/message';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -107,6 +107,7 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
         style={{
           color: select === status ? 'rgb(134,240,151)' : 'white',
           textAlign: 'center',
+          fontWeight: select === status ? 'bold' : 'normal',
         }}
         onClick={() => {
           if (select !== status) {
@@ -163,15 +164,6 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
       setIsSearch(false);
     }
   };
-  const clickSearch = () => {
-    if (searchValue.length === 42 || searchValue.length === 0) {
-      setIsSearch(true);
-      getList(1, select, searchValue.length === 42 ? searchValue : '');
-      setLoading(false);
-      setPage(1);
-    }
-  };
-
   const changeDropdown = (open: boolean) => {
     setisOpenDrop(open);
   };
@@ -179,12 +171,13 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
   return (
     <div className="order scrollHei sniperOrder">
       <div className="search">
-        <InputSearch
-          enter={enter}
-          searchChange={searchChange}
-          clickSearch={clickSearch}
-          placeholder={t('sniping.Contract')}
-        />
+        <div className="searchBox">
+          <InputSearch
+            enter={enter}
+            searchChange={searchChange}
+            placeholder={t('sniping.Contract')}
+          />
+        </div>
         <Dropdown
           menu={{ items }}
           trigger={['click']}
@@ -194,6 +187,17 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
         >
           <div className={`status ${isOpenDrop ? 'statusSelect' : ''}`}>
             <img src="/filterStatus.svg" alt="" />
+            {isOpenDrop && (
+              <div className="left">
+                <div></div>
+              </div>
+            )}
+
+            {isOpenDrop && (
+              <div className="right">
+                <div></div>
+              </div>
+            )}
           </div>
         </Dropdown>
       </div>
@@ -219,14 +223,21 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
                   <div className="top">
                     <div className="left">
                       <p>{i?.tokenOutSymbol}</p>
-                      <p>
-                        {i?.tokenOutCa?.slice(0, 4) +
-                          '...' +
-                          i?.tokenOutCa?.slice(-4)}
-                      </p>
+                      <Tooltip title={i?.tokenOutCa}>
+                        <p>
+                          {i?.tokenOutCa?.slice(0, 4) +
+                            '...' +
+                            i?.tokenOutCa?.slice(-4)}
+                        </p>
+                      </Tooltip>
                     </div>
                     <div className="right">
                       <p
+                        style={{
+                          border:
+                            i?.status === '1' ? '1px solid #ea6e6e' : 'none',
+                          color: i?.status === '1' ? '#ea6e6e' : '#7C7C7C',
+                        }}
                         onClick={() => {
                           if (i?.status === '1') {
                             setIsOrderId(i.orderCode);
@@ -277,6 +288,7 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
                         style={{
                           color: 'rgba(255,255,255,0.55)',
                           fontSize: '13px',
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         {t('token.there')}

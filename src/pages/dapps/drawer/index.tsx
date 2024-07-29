@@ -132,10 +132,20 @@ export default function index({ id }: any) {
                   style={{ borderRadius: '50%' }}
                   alt=""
                 />
-                <p>{user?.username}</p>
+                <p>
+                
+                  {user?.username
+                    ? user?.username.slice(0, 4) + '...'
+                    : user?.username}
+                </p>
                 <Copy name="dsadasdsad" img="/copySwap.svg" />
               </div>
-              <img src="/walletAdd.svg" alt="" onClick={() => setAddWallet('add')} style={{cursor:'pointer',display:'none'}}/>
+              <img
+                src="/walletAdd.svg"
+                alt=""
+                onClick={() => setAddWallet('add')}
+                style={{ cursor: 'pointer', display: 'none' }}
+              />
             </div>
             <p className="price">dsdada</p>
             <div className="select">

@@ -28,6 +28,7 @@ export default function WalletDetail({
   const [slider, setSlider] = useState(0);
   const [loading, setLoading] = useState(false);
   const [totalUSDT, setTotalUSDT] = useState(0);
+  const [refresh, setRefresh] = useState(false);
   const [isApproveToken, setIsApproveToken] = useState(false);
   //   token  sell  总数
   const [total, setTotal] = useState('');
@@ -47,11 +48,11 @@ export default function WalletDetail({
     });
     if (res?.status === 200) {
       setTokenList(res?.data?.walletAssets);
-      if (page === 1) {
-        if (res?.data?.walletAssets.length > 0) {
-          setTokenItem(res?.data?.walletAssets[0]);
-        }
-      }
+      // if (page === 1) {
+      //   if (res?.data?.walletAssets.length > 0) {
+      //     setTokenItem(res?.data?.walletAssets[0]);
+      //   }
+      // }
       setLoading(true);
       setIsLoad(true);
     }
@@ -77,7 +78,7 @@ export default function WalletDetail({
       getWalletDetail(wallet?.walletId, 1);
       getWalletTotal(wallet?.walletId);
     }
-  }, [wallet?.walletId]);
+  }, [wallet?.walletId, refresh]);
   // 滑点
   const changeSlider = (e: number) => {
     const data = Number((e * Number(tokenItem?.quantity)) / 100)
@@ -89,9 +90,13 @@ export default function WalletDetail({
     setSlider(e);
   };
   // 取消
-  const handleCancel = () => {
+  const handleCancel = (show?: any) => {
     setIsModalOpen(false);
     setIsApproveToken(false);
+    if (show === 'show') {
+      setRefresh(true);
+      setLoading(false);
+    }
   };
   //  输入数量
   const changeAmount = (e: any) => {
@@ -191,6 +196,7 @@ export default function WalletDetail({
             {updateName === 'set' && (
               <Input
                 value={value}
+                maxLength={20}
                 rootClassName="setInput"
                 onChange={changeName}
                 suffix={
@@ -243,7 +249,14 @@ export default function WalletDetail({
                     className={`token-list-item ${tokenItem?.address === item?.address ? 'activeItem' : ''}`}
                     key={item?.address}
                   >
-                    <div className="item-header">
+                    <div
+                      className="item-header"
+                      onClick={() => {
+                        if (item?.address !== tokenItem?.address) {
+                          setTokenItem(item);
+                        }
+                      }}
+                    >
                       <span className="token-symbol">
                         {item?.name?.slice(0, 1)}
                       </span>
@@ -267,16 +280,15 @@ export default function WalletDetail({
                             onChange={changeAmount}
                             rootClassName="amountInput"
                           />
+                          <img
+                            src="/down-icon-small.svg"
+                            onClick={() => {
+                              setTokenItem(null);
+                            }}
+                          />
                         </div>
                       ) : (
-                        <img
-                          src="/down-icon-small.svg"
-                          onClick={() => {
-                            if (item?.address !== tokenItem?.address) {
-                              setTokenItem(item);
-                            }
-                          }}
-                        />
+                        <img src="/down-icon-small.svg" />
                       )}
                     </div>
                     {tokenItem?.address === item?.address && (
@@ -286,8 +298,18 @@ export default function WalletDetail({
                           value={slider}
                           onChange={changeSlider}
                         />
+                        <p className="botPclass">
+                          {t('token.sum')}:
+                          <span>
+                            {Number(item?.amount)
+                              ? Number(item?.amount)
+                                  .toFixed(4)
+                                  .replace(/\.?0*$/, '')
+                              : '0'}
+                          </span>
+                        </p>
                         <div className="bott">
-                          <p>
+                          <p className="botPclass">
                             {t('token.The')}:
                             <span>
                               {Number(item?.quantity)

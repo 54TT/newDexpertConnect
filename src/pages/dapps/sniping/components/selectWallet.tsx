@@ -24,11 +24,11 @@ export default function selectWallet({ setWallet, id, value }: any) {
       url: '/api/v1/wallet/list',
       data: { page },
       token,
-      chainId:id
+      chainId: id,
     });
     if (res?.status === 200) {
       let address: any = [];
-      if (res?.data?.list.length > 0) { 
+      if (res?.data?.list.length > 0) {
         res?.data?.list.map((i: any) => {
           address.push(i.address);
         });
@@ -101,11 +101,14 @@ export default function selectWallet({ setWallet, id, value }: any) {
                   onClick={() => {
                     if (Number(i.balance) && Number(i.balance) >= value) {
                       const data = select.filter(
-                        (item: any) => item?.privateKey === i.privateKey
+                        (item: any) =>
+                          item?.privateKey === i.privateKey &&
+                          item?.name === i.name
                       );
                       if (data.length > 0) {
                         const tt = select.filter(
-                          (item: any) => item?.privateKey !== i.privateKey
+                          (item: any) =>
+                            item?.name !== i.name
                         );
                         setSelect(tt);
                         setIsSelect(!isSelect);
@@ -121,14 +124,16 @@ export default function selectWallet({ setWallet, id, value }: any) {
                   style={{
                     border:
                       select.filter(
-                        (item: any) => item?.privateKey === i.privateKey
+                        (item: any) =>
+                          item?.privateKey === i.privateKey &&
+                          item?.name === i?.name
                       ).length > 0
                         ? '1px solid rgb(134,240,151)'
                         : '1px solid transparent',
                     cursor: Number(i.balance) ? 'pointer' : 'not-allowed',
                   }}
                   className="wallet"
-                  key={i.privateKey}
+                  key={i.privateKey + i.name}
                 >
                   <div className="left">
                     <img src="/abc.png" alt="" />

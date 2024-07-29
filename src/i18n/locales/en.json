@@ -76,7 +76,7 @@
     "Customize": "Customize",
     "Gas": "Gas Fee",
     "Order": "Order expire in",
-    "Trade": "On-chain confimtion waiting time",
+    "Trade": "On-chain confirmtion waiting time",
     "Maximum": "Maximum slippage",
     "Total": "Token Total",
     "Confirm": "Confirm",
@@ -328,7 +328,7 @@
     "Select":"Select Type",
     "Private":"Private Key",
     "key":"Enter your private key string here:",
-    "wallet":"wallet name",
+    "wallet":"Wallet name",
     "names":"Please enter wallet name",
     "Creates":"Create",
       "The":"The total amount",
@@ -336,6 +336,7 @@
     "del":"Delete Wallet",
     "to":"Confirm to delete wallet",
     "all":"All",
-    "oo":"No wallet yet"
+    "oo":"No wallet yet",
+    "sum":"lump sum"
   }
 }

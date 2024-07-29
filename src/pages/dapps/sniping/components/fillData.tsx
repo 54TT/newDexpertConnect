@@ -84,16 +84,14 @@ export default function fillData({
     }
   };
   const enter = async (e: any) => {
+    if( e.key === 'Enter'){
+      e.preventDefault();
+    }
     if (searchValue?.length === 42 && e.key === 'Enter') {
       setIsToken(true);
       implement();
     }
-  };
-  const clickSearch = () => {
-    if (searchValue?.length === 42) {
-      setIsToken(true);
-      implement();
-    }
+   
   };
   //  获取输出  价格
   const getAmount = async (value: number, token?: any, moreProvider?: any) => {
@@ -121,7 +119,6 @@ export default function fillData({
       amount = await getAmountOut.apply(null, param);
       setIsShow(false);
       setTokenInValue(Number(amount.toString()) || 0);
-      // setAmountOut(Number(amount.toString()));
     } catch (e) {
       setIsShow(false);
       return null;
@@ -142,7 +139,6 @@ export default function fillData({
         <InputSearch
           enter={enter}
           searchChange={searchChange}
-          clickSearch={clickSearch}
           placeholder={t('sniping.Contract')}
         />
       </div>
@@ -201,17 +197,6 @@ export default function fillData({
               setValue(e);
             }}
           />
-          {/* <p
-            onClick={() => {
-              if (Number(balance)) {
-                getAmount(balance, quotePath);
-                setIsShow(true);
-                setValue(balance);
-              }
-            }}
-          >
-            {t('Slider.max')}
-          </p> */}
         </div>
         <div className="amount">
           <div>
@@ -221,10 +206,6 @@ export default function fillData({
               <Skeleton.Button active size="small" />
             )}
           </div>
-          {/* <div>
-            Balance: 
-            {isBalance ? <Skeleton.Button active size="small" /> : balance}
-          </div> */}
         </div>
       </div>
       <Collapse

@@ -53,11 +53,11 @@ const { t } = useTranslation();
         <p style={{display:"none"}}></p>
       </div>
       {
-        // Inport
+        // Import
         status === 'Create' ? (
           <div className="create">
             <p>{t('token.name')}</p>
-            <Input className="createInputKey" allowClear onChange={change} />
+            <Input className="createInputKey" allowClear  maxLength={20} onChange={change} />
             <p
               style={{
                 visibility: isShow ? 'visible' : 'hidden',
@@ -87,13 +87,11 @@ const { t } = useTranslation();
               />
             </div>
             <p className="ent">{t('token.key')}</p>
-            <Input
-              className="inputKey"
+            <Input.TextArea className="inputKey"
               allowClear
-              onChange={(e: any) => setPrivateKey(e.target.value || '')}
-            />
-            <p className="ent">{t('token.wallet')}</p>
-            <Input className="inputKey" allowClear onChange={change} />
+              onChange={(e: any) => setPrivateKey(e.target.value || '')} autoSize />
+            <p className="ent" style={{marginTop:'10px'}}>{t('token.wallet')}</p>
+            <Input className="inputKey" allowClear maxLength={20} onChange={change} />
             <p
               style={{
                 visibility: isShow ? 'visible' : 'hidden',

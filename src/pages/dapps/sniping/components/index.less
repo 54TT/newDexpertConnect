@@ -130,22 +130,53 @@
   font-size: 16px;
   margin-top: 20px;
   margin-bottom: 10px;
-  .search{
+  .search {
+    .searchBox {
+      position: relative;
+      z-index: 1000;
+      width: 100%;
+    }
     display: flex;
+    padding-right: 10px;
     margin-bottom: 16px;
-   
-    .statusSelect{
-      background-color: gray;
-    }
-    .status:hover{
-      background-color: gray;
-    }
-    .status{
+
+    .status {
       cursor: pointer;
       padding: 8px;
-      margin-left: 5px;
-      border-radius: 6px 6px 0 0 ;
- 
+      margin-left: 10px;
+      position: relative;
+      & > div {
+        position: absolute;
+        top: 0;
+        width: 36px;
+        background-color: #454545;
+        height: 34px;
+        div {
+          width: 100%;
+          height: 100%;
+          background-color: #161916;
+        }
+      }
+      .right {
+        right: 100%;
+        div {
+          border-radius: 0 0 14px 0;
+        }
+      }
+      .left {
+        left: 100%;
+        div {
+          border-radius: 0 0 0 14px;
+        }
+      }
+    }
+    .status:hover {
+      background-color: #454545;
+      border-radius: 8px;
+    }
+    .statusSelect {
+      background-color: #454545;
+      border-radius: 8px 8px 0 0 !important;
     }
     align-items: center;
   }
@@ -185,9 +216,7 @@
         display: flex;
         align-items: center;
         p {
-          color: #ea6e6e;
           cursor: pointer;
-          border: 1px solid #ea6e6e;
           border-radius: 8px;
           padding: 8px 12px;
         }
@@ -237,6 +266,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        &>div{
+          width: 100%;
+          margin-right: 8px;
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+        }
       }
     }
   }
@@ -407,10 +443,11 @@
           .amount {
             display: flex;
             align-items: center;
+            justify-content: flex-end;
             color: rgba(255, 255, 255, 0.85);
             .amountInput {
               background-color: #353535;
-              width: 100%;
+              width: 40%;
               border: none;
               margin-left: 3px;
               outline: none;
@@ -429,11 +466,14 @@
               color: white;
               background-color: #353535;
             }
+            & > img {
+              transform: rotate(180deg);
+            }
           }
           img {
             width: 14px;
             cursor: pointer;
-            padding: 10px;
+            padding: 5px;
             transform: rotate(90deg);
             transition: all 0.3s;
           }
@@ -450,16 +490,16 @@
               background-color: rgb(134, 240, 151);
             }
           }
+          .botPclass {
+            color: rgba(255, 255, 255, 0.55);
+            span {
+              font-size: 14px;
+            }
+          }
           .bott {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            p:first-child {
-              color: rgba(255, 255, 255, 0.55);
-              span {
-                font-size: 14px;
-              }
-            }
             p:last-child {
               border: 1px solid #ea6e6e;
               border-radius: 8px;
@@ -480,7 +520,7 @@
           color: #2d2d2d;
           border-radius: 10px;
           text-align: center;
-          line-height: 1.3;
+          line-height: 1.4;
         }
         .token-name {
           text-align: left;
@@ -528,11 +568,6 @@
 }
 .activeItem {
   background-color: #212121;
-  .item-header {
-    img {
-      transform: rotate(0deg) !important;
-    }
-  }
 }
 .delWallet {
   .ant-modal {
@@ -583,7 +618,7 @@
     max-width: 500px;
     width: 40% !important;
     .ant-modal-content {
-      padding: 20px !important;
+      padding: 30px 30px 10px 30px !important;
       border-radius: 20px;
       background-color: #2e2e2e !important;
       .amount {
@@ -615,9 +650,9 @@
   .contentBox {
     & > .approveGas {
       color: white;
-      font-size: 16px;
+      font-size: 14px;
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 15px;
       margin-top: 30px;
     }
     & > .body {
@@ -682,10 +717,10 @@
       justify-content: center;
       & > p {
         width: 40%;
-        margin: 0 5%;
+        margin: 0 8%;
         text-align: center;
-        padding: 10px 0;
-        font-size: 20px;
+        padding: 8px 0;
+        font-size: 16px;
         font-weight: bold;
         border-radius: 10px;
         cursor: pointer;

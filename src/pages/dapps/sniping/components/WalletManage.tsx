@@ -153,9 +153,6 @@ export default function WalletManage({ id, setIsShow, setAddWallet,contractConfi
                     }}
                     key={index}
                   >
-                    <span className="wallet-logo">
-                      {item.name.toUpperCase().slice(0, 1)}
-                    </span>
                     <div className="wallet-item-middle">
                       <div className="wallet-name">{item.name}</div>
                       <div className="wallet-address">
