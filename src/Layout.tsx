@@ -67,6 +67,7 @@ const web3Modal = new Web3Modal({
   walletConnectVersion: 1,
 });
 export const CountContext = createContext(null);
+Decimal.set({ toExpPos: 32 });
 function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
@@ -170,20 +171,20 @@ function Layout() {
     }
   }, [newAccount]);
 
-  useEffect(() => {
-    if (checkConnection() && isLogin) {
-      // setChainId('1');
-      // @ts-ignore
-      window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [
-          {
-            chainId: '0x1',
-          },
-        ],
-      });
-    }
-  }, [isLogin]);
+  // useEffect(() => {
+  //   if (checkConnection() && isLogin) {
+  //     // setChainId('1');
+  //     // @ts-ignore
+  //     window.ethereum.request({
+  //       method: 'wallet_switchEthereumChain',
+  //       params: [
+  //         {
+  //           chainId: '0x1',
+  //         },
+  //       ],
+  //     });
+  //   }
+  // }, [isLogin]);
 
   const createClient = async () => {
     try {
@@ -206,8 +207,11 @@ function Layout() {
   };
 
   useEffect(() => {
-    console.log(loginProvider);
     if (isLogin && loginProvider) {
+      let changeChainId = '1';
+      if (Object.keys(config).includes(chainId)) {
+        changeChainId = chainId;
+      }
       try {
         // @ts-ignore
         loginProvider?.on('chainChanged', onChainChange);
@@ -215,7 +219,7 @@ function Layout() {
           method: 'wallet_switchEthereumChain',
           params: [
             {
-              chainId: `0x${Number(chainId).toString(16)}`,
+              chainId: `0x${Number(changeChainId).toString(16)}`,
             },
           ],
         });
@@ -362,7 +366,12 @@ function Layout() {
     });
     console.log(walletChainIdHex);
     const walletChainId = Number(walletChainIdHex).toString(10);
-    setChainId(walletChainId);
+    let changeChainId = '1';
+    if (Object.keys(config).includes(walletChainId)) {
+      changeChainId = walletChainId;
+    }
+    console.log(changeChainId);
+    setChainId(changeChainId);
     setloginProvider(provider[0]?.provider);
   };
 

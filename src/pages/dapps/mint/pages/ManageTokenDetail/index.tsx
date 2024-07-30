@@ -63,6 +63,8 @@ function ManageTokenDetail() {
     const tokenContract = new ethers.Contract(address, LaunchERC20Abi, signer);
 
     setErc20Contract(tokenContract);
+    console.log(await tokenContract.owner());
+    console.log(walletAddress);
     const isOwn = (await tokenContract.owner()) === walletAddress;
     setIsOwn(isOwn);
 
@@ -291,6 +293,7 @@ function ManageTokenDetail() {
             value={ethAmount}
             addonAfter="ETH"
             onChange={(v) => {
+              console.log(v);
               setEthAmount(v);
             }}
           />

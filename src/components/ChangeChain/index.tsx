@@ -2,6 +2,7 @@ import { swapChain } from '@utils/judgeStablecoin';
 import ChooseChain, { ChooseChainValueType } from '../chooseChain';
 import { useContext } from 'react';
 import { CountContext } from '@/Layout';
+import { config } from '../../config/config';
 
 export interface ChangeChainPropsType {
   wrapClassName?: string; // 弹窗的classname
@@ -21,6 +22,10 @@ function ChangeChain({
   const changeWalletChain = async (v: ChooseChainValueType) => {
     const evmChainIdHex = v.key;
     const evmChainId = v.chainId;
+    // if (Object.keys(config).includes(evmChainId)) {
+
+    // }
+    console.log(v);
     if (!isLogin) {
       setChainId(evmChainId);
     } else {
@@ -36,6 +41,7 @@ function ChangeChain({
           ],
         });
       } catch (e) {
+        console.log(e);
         return null;
       }
     }

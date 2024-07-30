@@ -16,8 +16,14 @@ export const DEFAULT_MAIN_CHAINS = [
   'kadena:mainnet01',
 ];
 
-export type ChainId = '-1' | '-2' | '1' | '11155111' | '8453';
-export type ChainName = 'solana' | 'ton' | 'eth' | 'base' | 'eth-sepolia';
+export type ChainId = '-1' | '-2' | '1' | '11155111' | '8453' | '995';
+export type ChainName =
+  | 'solana'
+  | 'ton'
+  | 'eth'
+  | 'base'
+  | 'eth-sepolia'
+  | '5ire';
 
 export const ChainID_TO_ChainName: Record<ChainId, ChainName> = {
   '-1': 'solana',
@@ -25,6 +31,7 @@ export const ChainID_TO_ChainName: Record<ChainId, ChainName> = {
   '1': 'eth',
   '11155111': 'eth-sepolia',
   '8453': 'base',
+  '995': '5ire',
 };
 
 //  链的  id
@@ -151,6 +158,7 @@ export const CHAIN_NAME_TO_CHAIN_ID = {
   Base: '8453',
   BSC: '56',
   Sepolia: '11155111',
+  '5ire': '995',
 };
 
 export const CHAIN_VERSION_TO_CHAIN_ID = {
@@ -171,6 +179,7 @@ export const CHAIN_NAME_TO_CHAIN_ID_HEX = {
   Base: '0x2105',
   BSC: '0x38',
   Sepolia: '0xaa36a7',
+  '5ire': '0x3e3',
 };
 
 // 传给后端需要用这个map
@@ -182,6 +191,7 @@ export const ID_TO_CHAIN_NAME_LOW = {
   '8453': 'base',
   '56': 'bsc',
   '11155111': 'eth-sepolia',
+  '995': '5ire',
 };
 
 export const CHAIN_ID_TO_CHAIN_NAME = () =>

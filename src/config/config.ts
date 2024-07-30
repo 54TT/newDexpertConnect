@@ -1,4 +1,4 @@
-type ChainIdList = '1' | '11155111' | '8453';
+type ChainIdList = '1' | '11155111' | '8453' | '995';
 export const config: Record<ChainIdList, any> = {
   '1': {
     rpcUrl:
@@ -91,6 +91,45 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FactoryAddress: '0x33128a8fC17869897dcE68Ed026d694621f6FDfD',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
     uncxAddress: '0xc4E637D37113192F4F1F060DaEbD7758De7F4131',
+    universalRouterAddress: '0x0067f21ca3530ca23846612ea64f17c2932f1f63',
+    wethAddress: '0x4200000000000000000000000000000000000006',
+    wethUsdtPairAddress: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C',
+    wethDecimal: 18,
+    usdtAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    usdtDecimal: 6,
+    ethAddress: '0x0000000000000000000000000000000000000000',
+    zeroAddress: '0x0000000000000000000000000000000000000000',
+    uniswapV3FeeAmounts: [500, 3000, 10000],
+    quoterAddress: '0x2121136F02acb8162e4E7C74Cc8A064e3C40A10c',
+    scan: 'https://basescan.org/tx/',
+    defaultTokenIn: {
+      name: 'ETH',
+      symbol: 'ETH',
+      logoUrl: '/eth-logo.svg',
+      contractAddress: '0x0000000000000000000000000000000000000000',
+      balance: '0',
+      decimals: '18',
+    },
+    defaultTokenOut: {
+      name: 'USDC',
+      symbol: 'USDC',
+      logoUrl: '/usdc.svg',
+      contractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      balance: '0',
+      decimals: '6',
+    },
+  },
+  '995': {
+    rpcUrl: 'https://rpc.5ire.network',
+    /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
+    verificationURL: 'https://api.basescan.org/api',
+    chainId: 995,
+    verificationApiKey: '26DA1KNJPI4SMP8GUDAUA4611JIHQK16AD',
+    uniswapV2RouterAddress: '0x4e823D28e97b06f4230132701b4f40a2467dB4F2',
+    uniswapV2FactoryAddress: '0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6',
+    uniswapV3FactoryAddress: '0x33128a8fC17869897dcE68Ed026d694621f6FDfD',
+    permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
+    uncxAddress: '0x6Dd2d8479C1a78D0EF7F2327B5A70afe01bB55E2',
     universalRouterAddress: '0x0067f21ca3530ca23846612ea64f17c2932f1f63',
     wethAddress: '0x4200000000000000000000000000000000000006',
     wethUsdtPairAddress: '0x88A43bbDF9D098eEC7bCEda4e2494615dfD9bB9C',

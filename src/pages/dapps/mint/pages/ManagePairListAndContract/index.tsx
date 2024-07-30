@@ -22,7 +22,9 @@ function ManagePairListAndContract() {
     const { data } = await getAll({
       method: 'get',
       url: '/api/v1/launch-bot/pairs',
-      data: {},
+      data: {
+        contractId,
+      },
       token,
       chainId,
     });
@@ -53,7 +55,6 @@ function ManagePairListAndContract() {
             ...item,
           }}
           onClick={(data) => {
-            console.log(data);
             history(
               `/dapps/mint/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
             );
