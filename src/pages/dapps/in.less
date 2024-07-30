@@ -1,6 +1,10 @@
 .dappsBox {
-  .top {
+  & > .top {
     position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+    z-index: 100;
     .back {
       position: absolute;
       z-index: -2;
@@ -13,12 +17,13 @@
     .box {
       display: flex;
       align-items: center;
-      font-size: 16px;
+      font-size: 17px;
       justify-content: space-between;
       .item {
         display: flex;
         cursor: pointer;
         position: relative;
+        margin: 0 19px;
         z-index: 10;
         align-items: center;
         & > div {
@@ -37,7 +42,6 @@
         }
         & > span {
           margin-left: 4px;
-          width: 100px;
         }
       }
     }

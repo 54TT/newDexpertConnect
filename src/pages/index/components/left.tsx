@@ -1,5 +1,4 @@
 import { Select, Tooltip, Input, Modal } from 'antd';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import Loading from '@/components/allLoad/loading.tsx';
 import Load from '@/components/allLoad/load.tsx';
 import NewPair from './newPairDate.tsx';
@@ -8,10 +7,10 @@ import { CountContext } from '@/Layout.tsx';
 import newPair from '@/components/getNewPair.tsx';
 import { useTranslation } from 'react-i18next';
 import { getGas } from '@/../utils/getGas.ts';
-import Nodata from '@/components/Nodata.tsx';
 import ChooseChain from '@/components/chooseChain.tsx';
 import { chainParams } from '@utils/judgeStablecoin.ts';
 import { SearchOutlined } from '@ant-design/icons';
+import InfiniteScrollPage from '@/components/InfiniteScroll';
 const { Search } = Input;
 function Left() {
   const hei = useRef<any>();
@@ -214,33 +213,25 @@ function Left() {
               overflowY: 'auto',
             }}
           >
-            <InfiniteScroll
-              hasMore={true}
-              scrollableTarget="scrollableNew"
+            {wait ? (
+              <Loading status={'20'} browser={browser} />
+            ) : (
+              <InfiniteScrollPage
+              data={tableDta}
               next={changePage}
-              loader={null}
-              dataLength={tableDta.length}
-            >
-              {wait ? (
-                <Loading status={'20'} browser={browser} />
-              ) : tableDta.length > 0 ? (
-                <NewPair tableDta={tableDta} time={time} setDta={setDta} />
-              ) : (
-                <Nodata />
-              )}
-            </InfiniteScroll>
+              items={<NewPair tableDta={tableDta} time={time} setDta={setDta} />}
+              nextLoad={moreLoad}
+              no={''}
+               show='show'
+              scrollableTarget={'scrollableNew'}
+            />
+            )}
           </div>
         </div>
       </div>
-      <div
-        style={{
-          visibility: moreLoad && tableDta.length > 0 ? 'initial' : 'hidden',
-        }}
-      >
-        <Load />
-      </div>
       <Modal
         open={searchModal}
+        centered
         onCancel={() => setSearchModal(false)}
         footer={null}
       >

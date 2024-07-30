@@ -27,7 +27,7 @@ const getBalanceRpcEther = async (
   try {
     address = await signer.getAddress();
   } catch (e) {
-    console.log(e);
+    return null
   }
   const balance: BigNumber = await erc20Contract?.balanceOf(address);
   if (balance.isZero()) return new Decimal(balance.toString());

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;
   chainId: string;
-  disabledTokens: string[];
+  disabledTokens?: string[];
   disabled?: boolean;
 }
 

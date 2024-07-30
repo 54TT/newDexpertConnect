@@ -3,7 +3,6 @@ import { getUniversalRouterContract } from './contracts';
 import Decimal from 'decimal.js';
 export const getSwapFee = async ({ chainId, provider, payType, swapType }) => {
   let fee = new Decimal(0);
-
   if (payType == 0) {
     const { universalRouterAddress } = config[chainId];
     const universalRouterContract = await getUniversalRouterContract(

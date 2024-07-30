@@ -149,7 +149,7 @@ function ManageTokenDetail() {
 
       console.log(tx);
     } catch (e) {
-      console.log(e);
+      return null
     }
     setRemoveLimitLoading(false);
   };

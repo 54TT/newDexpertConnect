@@ -63,12 +63,8 @@ const PostDetail = () => {
       },
       token,
     });
-    console.log(data);
-
     setLocalDetail(data);
   };
-  console.log(localDetail);
-
   const getCommentOrReplyData = async (page = 1) => {
     setPage(page);
     let params = {};
