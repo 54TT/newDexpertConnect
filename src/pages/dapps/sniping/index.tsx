@@ -290,7 +290,11 @@ export default function index() {
               ].map((i: any) => {
                 return (
                   <p
-                    onClick={() => setSelect(i.key)}
+                    onClick={() => {
+                      if (user?.uid) {
+                        setSelect(i.key);
+                      }
+                    }}
                     key={i.key}
                     style={{
                       color: select === i.key ? 'rgb(134,240,151)' : 'white',

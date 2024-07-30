@@ -5,6 +5,7 @@ import { useEffect, useState, useContext } from 'react';
 import SellTokenModal from './sellTokenModal';
 import { useTranslation } from 'react-i18next';
 import Loading from '@/components/allLoad/loading';
+import Load from '@/components/allLoad/load';
 import { CountContext } from '@/Layout';
 import InfiniteScrollPage from '@/components/InfiniteScroll';
 export default function WalletDetail({
@@ -35,6 +36,7 @@ export default function WalletDetail({
   const [page, setPage] = useState(1);
   //   token  sell  总数
   const [total, setTotal] = useState('');
+  const [sellLoad, setSellLoad] = useState(false);
   const [load, setLoad] = useState(false);
   const { getAll } = Request();
   const getWalletDetail = async (page: number) => {
@@ -169,9 +171,11 @@ export default function WalletDetail({
         setIsApproveToken(true);
       }
       setIsModalOpen(true);
+      setSellLoad(false);
+    } else {
+      setSellLoad(false);
     }
   };
-
   const changePage = () => {
     if (!status) {
       getWalletDetail(page + 1);
@@ -180,97 +184,99 @@ export default function WalletDetail({
     }
   };
 
-  const items=(item:any)=>{
-    return   <div
-    className={`token-list-item ${tokenItem?.address === item?.address ? 'activeItem' : ''}`}
-    key={item?.address}
-  >
-    <div
-      className="item-header"
-      onClick={() => {
-        if (item?.address !== tokenItem?.address) {
-          setTokenItem(item);
-        }
-      }}
-    >
-      <span className="token-symbol">
-        {item?.name?.slice(0, 1)}
-      </span>
-      <span className="token-name">{item?.name}</span>
-      {tokenItem?.address === item?.address ? (
-        <div className="amount">
-          <span style={{ whiteSpace: 'nowrap' }}>
-            {t('token.Amount')}
-          </span>
-          {/* <input type="text" className="amountInput" /> */}
-          <InputNumber
-            controls={false}
-            value={amount}
-            max={
-              Number(item?.quantity)
-                ? Number(item?.quantity).toFixed(4)
-                : 0
+  const items = (item: any) => {
+    return (
+      <div
+        className={`token-list-item ${tokenItem?.address === item?.address ? 'activeItem' : ''}`}
+        key={item?.address}
+      >
+        <div
+          className="item-header"
+          onClick={() => {
+            if (item?.address !== tokenItem?.address) {
+              setTokenItem(item);
             }
-            min={0}
-            stringMode={true}
-            onChange={changeAmount}
-            rootClassName="amountInput"
-          />
-          <img
-            src="/down-icon-small.svg"
-            onClick={() => {
-              setTokenItem(null);
-            }}
-          />
+          }}
+        >
+          <span className="token-symbol">{item?.name?.slice(0, 1)}</span>
+          <span className="token-name">{item?.name}</span>
+          {tokenItem?.address === item?.address ? (
+            <div className="amount">
+              <span style={{ whiteSpace: 'nowrap' }}>{t('token.Amount')}</span>
+              {/* <input type="text" className="amountInput" /> */}
+              <InputNumber
+                controls={false}
+                value={amount}
+                max={
+                  Number(item?.quantity) ? Number(item?.quantity).toFixed(4) : 0
+                }
+                min={0}
+                stringMode={true}
+                onChange={changeAmount}
+                rootClassName="amountInput"
+              />
+              <img
+                src="/down-icon-small.svg"
+                onClick={() => {
+                  setTokenItem(null);
+                }}
+              />
+            </div>
+          ) : (
+            <img src="/down-icon-small.svg" />
+          )}
         </div>
-      ) : (
-        <img src="/down-icon-small.svg" />
-      )}
-    </div>
-    {tokenItem?.address === item?.address && (
-      <div className="slider">
-        <Slider
-          rootClassName="upAllBack"
-          value={slider}
-          onChange={changeSlider}
-        />
-        <p className="botPclass">
-          {t('token.sum')}:
-          <span>
-            {Number(item?.amount)
-              ? Number(item?.amount)
-                  .toFixed(4)
-                  .replace(/\.?0*$/, '')
-              : '0'}
-          </span>
-        </p>
-        <div className="bott">
-          <p className="botPclass">
-            {t('token.The')}:
-            <span>
-              {Number(item?.quantity)
-                ? Number(item?.quantity)
-                    .toFixed(4)
-                    .replace(/\.?0*$/, '')
-                : '0'}
-            </span>
-          </p>
-          <p
-            onClick={() => {
-              if (Number(amount)) {
-                isApprove();
-                setTotal(item?.quantity);
-              }
-            }}
-          >
-            {t('token.Sell')}
-          </p>
-        </div>
+        {tokenItem?.address === item?.address && (
+          <div className="slider">
+            <Slider
+              rootClassName="upAllBack"
+              value={slider}
+              onChange={changeSlider}
+            />
+            <p className="botPclass">
+              {t('token.sum')}:
+              <span>$
+                {Number(item?.amount)
+                  ? Number(item?.amount)
+                      .toFixed(4)
+                      .replace(/\.?0*$/, '')
+                  : '0'}
+              </span>
+            </p>
+            <div className="bott">
+              <p className="botPclass">
+                {t('token.The')}:
+                <span>
+                  {Number(item?.quantity)
+                    ? Number(item?.quantity)
+                        .toFixed(4)
+                        .replace(/\.?0*$/, '')
+                    : '0'}
+                </span>
+              </p>
+              <div
+                className='sure'
+                onClick={() => {
+                  if (Number(amount)) {
+                    setSellLoad(true);
+                    isApprove();
+                    setTotal(item?.quantity);
+                  }
+                }}
+              >
+                {t('token.Sell')}
+                {sellLoad && (
+                  <div>
+                    <Load />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    )}
-  </div>
-
-  }
+    );
+  };
 
   const modal = {
     handleCancel,
