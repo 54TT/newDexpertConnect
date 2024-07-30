@@ -6,6 +6,7 @@ import SellTokenModal from './sellTokenModal';
 import { useTranslation } from 'react-i18next';
 import Loading from '@/components/allLoad/loading';
 import { CountContext } from '@/Layout';
+import InfiniteScrollPage from '@/components/InfiniteScroll';
 export default function WalletDetail({
   setShowWalletDetail,
   setIsShow,
@@ -30,40 +31,44 @@ export default function WalletDetail({
   const [totalUSDT, setTotalUSDT] = useState(0);
   const [refresh, setRefresh] = useState(false);
   const [isApproveToken, setIsApproveToken] = useState(false);
+  const [status, setStatus] = useState(false);
+  const [page, setPage] = useState(1);
   //   token  sell  总数
   const [total, setTotal] = useState('');
+  const [load, setLoad] = useState(false);
   const { getAll } = Request();
-  const getWalletDetail = async (id: number, page: number) => {
+  const getWalletDetail = async (page: number) => {
     const token = cookie.get('token');
     const res = await getAll({
       method: 'post',
       url: '/api/v1/wallet/assets',
       data: {
-        walletId: id.toString(),
-        page: page,
+        walletId: wallet?.walletId,
+        page,
         pageSize: 10,
       },
       token,
       chainId,
     });
     if (res?.status === 200) {
-      setTokenList(res?.data?.walletAssets);
-      // if (page === 1) {
-      //   if (res?.data?.walletAssets.length > 0) {
-      //     setTokenItem(res?.data?.walletAssets[0]);
-      //   }
-      // }
+      if (page === 1) {
+        setTokenList(res?.data?.walletAssets);
+      } else {
+      }
+      if (res?.data?.walletAssets?.length !== 10) {
+        setStatus(true);
+      }
       setLoading(true);
       setIsLoad(true);
     }
   };
-  const getWalletTotal = async (id: number) => {
+  const getWalletTotal = async () => {
     const token = cookie.get('token');
     const res = await getAll({
       method: 'post',
       url: '/api/v1/wallet/assets/total',
       data: {
-        walletId: id.toString(),
+        walletId: wallet?.walletId,
       },
       token,
       chainId,
@@ -75,8 +80,8 @@ export default function WalletDetail({
   // 获取默认数据
   useEffect(() => {
     if (wallet?.walletId) {
-      getWalletDetail(wallet?.walletId, 1);
-      getWalletTotal(wallet?.walletId);
+      getWalletDetail(1);
+      getWalletTotal();
     }
   }, [wallet?.walletId, refresh]);
   // 滑点
@@ -167,6 +172,106 @@ export default function WalletDetail({
     }
   };
 
+  const changePage = () => {
+    if (!status) {
+      getWalletDetail(page + 1);
+      setPage(page + 1);
+      setLoad(true);
+    }
+  };
+
+  const items=(item:any)=>{
+    return   <div
+    className={`token-list-item ${tokenItem?.address === item?.address ? 'activeItem' : ''}`}
+    key={item?.address}
+  >
+    <div
+      className="item-header"
+      onClick={() => {
+        if (item?.address !== tokenItem?.address) {
+          setTokenItem(item);
+        }
+      }}
+    >
+      <span className="token-symbol">
+        {item?.name?.slice(0, 1)}
+      </span>
+      <span className="token-name">{item?.name}</span>
+      {tokenItem?.address === item?.address ? (
+        <div className="amount">
+          <span style={{ whiteSpace: 'nowrap' }}>
+            {t('token.Amount')}
+          </span>
+          {/* <input type="text" className="amountInput" /> */}
+          <InputNumber
+            controls={false}
+            value={amount}
+            max={
+              Number(item?.quantity)
+                ? Number(item?.quantity).toFixed(4)
+                : 0
+            }
+            min={0}
+            stringMode={true}
+            onChange={changeAmount}
+            rootClassName="amountInput"
+          />
+          <img
+            src="/down-icon-small.svg"
+            onClick={() => {
+              setTokenItem(null);
+            }}
+          />
+        </div>
+      ) : (
+        <img src="/down-icon-small.svg" />
+      )}
+    </div>
+    {tokenItem?.address === item?.address && (
+      <div className="slider">
+        <Slider
+          rootClassName="upAllBack"
+          value={slider}
+          onChange={changeSlider}
+        />
+        <p className="botPclass">
+          {t('token.sum')}:
+          <span>
+            {Number(item?.amount)
+              ? Number(item?.amount)
+                  .toFixed(4)
+                  .replace(/\.?0*$/, '')
+              : '0'}
+          </span>
+        </p>
+        <div className="bott">
+          <p className="botPclass">
+            {t('token.The')}:
+            <span>
+              {Number(item?.quantity)
+                ? Number(item?.quantity)
+                    .toFixed(4)
+                    .replace(/\.?0*$/, '')
+                : '0'}
+            </span>
+          </p>
+          <p
+            onClick={() => {
+              if (Number(amount)) {
+                isApprove();
+                setTotal(item?.quantity);
+              }
+            }}
+          >
+            {t('token.Sell')}
+          </p>
+        </div>
+      </div>
+    )}
+  </div>
+
+  }
+
   const modal = {
     handleCancel,
     wallet,
@@ -243,110 +348,15 @@ export default function WalletDetail({
               <p>{wallet?.address}</p>
             </div>
             <div className="token-list">
+              <InfiniteScrollPage
+                data={tokenList}
+                next={changePage}
+                items={items}
+                nextLoad={load}
+                no={t('token.no')}
+                scrollableTarget={''}
+              />
               {/* 拥有  token */}
-              {tokenList.length > 0 ? (
-                tokenList.map((item: any) => (
-                  <div
-                    className={`token-list-item ${tokenItem?.address === item?.address ? 'activeItem' : ''}`}
-                    key={item?.address}
-                  >
-                    <div
-                      className="item-header"
-                      onClick={() => {
-                        if (item?.address !== tokenItem?.address) {
-                          setTokenItem(item);
-                        }
-                      }}
-                    >
-                      <span className="token-symbol">
-                        {item?.name?.slice(0, 1)}
-                      </span>
-                      <span className="token-name">{item?.name}</span>
-                      {tokenItem?.address === item?.address ? (
-                        <div className="amount">
-                          <span style={{ whiteSpace: 'nowrap' }}>
-                            {t('token.Amount')}
-                          </span>
-                          {/* <input type="text" className="amountInput" /> */}
-                          <InputNumber
-                            controls={false}
-                            value={amount}
-                            max={
-                              Number(item?.quantity)
-                                ? Number(item?.quantity).toFixed(4)
-                                : 0
-                            }
-                            min={0}
-                            stringMode={true}
-                            onChange={changeAmount}
-                            rootClassName="amountInput"
-                          />
-                          <img
-                            src="/down-icon-small.svg"
-                            onClick={() => {
-                              setTokenItem(null);
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <img src="/down-icon-small.svg" />
-                      )}
-                    </div>
-                    {tokenItem?.address === item?.address && (
-                      <div className="slider">
-                        <Slider
-                          rootClassName="upAllBack"
-                          value={slider}
-                          onChange={changeSlider}
-                        />
-                        <p className="botPclass">
-                          {t('token.sum')}:
-                          <span>
-                            {Number(item?.amount)
-                              ? Number(item?.amount)
-                                  .toFixed(4)
-                                  .replace(/\.?0*$/, '')
-                              : '0'}
-                          </span>
-                        </p>
-                        <div className="bott">
-                          <p className="botPclass">
-                            {t('token.The')}:
-                            <span>
-                              {Number(item?.quantity)
-                                ? Number(item?.quantity)
-                                    .toFixed(4)
-                                    .replace(/\.?0*$/, '')
-                                : '0'}
-                            </span>
-                          </p>
-                          <p
-                            onClick={() => {
-                              if (Number(amount)) {
-                                isApprove();
-                                setTotal(item?.quantity);
-                              }
-                            }}
-                          >
-                            {t('token.Sell')}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <p
-                  style={{
-                    textAlign: 'center',
-                    color: 'rgba(255,255,255,0.55)',
-                    fontSize: '22px',
-                    margin: '20px 0',
-                  }}
-                >
-                  {t('token.no')}
-                </p>
-              )}
             </div>
           </div>
         </>
