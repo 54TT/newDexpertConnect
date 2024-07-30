@@ -41,7 +41,6 @@ import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
 import { config } from './config/config.ts';
-import checkConnection from '@utils/checkConnect.ts';
 import { ethers } from 'ethers';
 import Decimal from 'decimal.js';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
@@ -224,7 +223,14 @@ function Layout() {
           ],
         });
       } catch (e) {
-        return null;
+        // loginProvider?.addEthereumChain({
+        //   method: 'wallet_switchEthereumChain',
+        //   params: [
+        //     {
+        //       chainId: `0x${Number(changeChainId).toString(16)}`,
+        //     },
+        //   ],
+        // });
       }
     }
     return () => {
@@ -364,14 +370,12 @@ function Layout() {
     const walletChainIdHex = await provider[0]?.provider.request({
       method: 'eth_chainId',
     });
-    console.log(walletChainIdHex);
     const walletChainId = Number(walletChainIdHex).toString(10);
-    let changeChainId = '1';
+    let supprotChainId = '1';
     if (Object.keys(config).includes(walletChainId)) {
-      changeChainId = walletChainId;
+      supprotChainId = walletChainId;
     }
-    console.log(changeChainId);
-    setChainId(changeChainId);
+    setChainId(supprotChainId);
     setloginProvider(provider[0]?.provider);
   };
 

@@ -30,13 +30,14 @@ function LockLpList() {
   const [lpTokenBalance, setLpTokenBalance] = useState('0');
   const [lockDate, setLockDate] = useState<Dayjs>(null);
   const [toLockAmount, setToLockAmount] = useState('0');
-  const history = useNavigate();
+  const [uncxContract, setUncxContract] = useState<ethers.Contract>();
   const getLockList = async () => {
     const { uncxAddress, wethAddress } = contractConfig;
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await web3Provider.getSigner();
     const address = await signer.getAddress();
     const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
+    setUncxContract(uncxContract);
     const lockNum = await uncxContract.getUserNumLocksForToken(
       address,
       pairAddress
@@ -68,7 +69,7 @@ function LockLpList() {
           <div>
             <div>解锁时间</div>
             <div>
-              {dayjs.unix(unlockDate.toString()).format('MMM DD, YYYY')}
+              {dayjs.unix(unlockDate.toString()).format('YYYY/MM/DD HH')}
             </div>
           </div>
         ),
@@ -130,6 +131,10 @@ function LockLpList() {
     }
   }, [chainId, loginProvider]);
 
+  const withdraw = async (index, lockId, amount) => {
+    await uncxContract.withdraw(pairAddress, index, lockId, amount);
+  };
+
   return (
     <>
       <ToLaunchHeader />
@@ -138,11 +143,18 @@ function LockLpList() {
         className="launch-manage-token-header"
         title={'锁定流动性'}
       />
-      {infoData?.map?.((item) => (
+      {infoData?.map?.((item, index) => (
         <TokenItem
           data={{
             ...item,
-            desc: <BottomButton text="Unlock" onClick={() => {}} />,
+            desc: (
+              <BottomButton
+                text="Unlock"
+                onClick={() => {
+                  withdraw(index, item.lockId, item.lockAmount);
+                }}
+              />
+            ),
           }}
         />
       ))}

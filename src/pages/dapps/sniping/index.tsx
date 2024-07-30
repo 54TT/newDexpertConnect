@@ -19,7 +19,7 @@ import getBalanceRpc from '@utils/getBalanceRpc';
 import SelectTokenModal from '@/components/SelectTokenModal';
 import { getUniswapV2RouterContract } from '@utils/contracts';
 import {
-  CHAIN_NAME_TO_CHAIN_ID_HEX,
+  CHAIN_NAME_TO_CHAIN_ID,
   CHAIN_VERSION_TO_CHAIN_ID,
 } from '@utils/constants';
 import { getV3AmountOut } from '@utils/swap/v3/getAmountOut';
@@ -553,7 +553,8 @@ export default function index() {
     }
   };
   const changeWalletChain = async (v: any) => {
-    const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v.value];
+    const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v.value];
+    const evmChainIdHex = `0x${Number(evmChainId).toString(16)}`;
     if (loginProvider) {
       // 有evm钱包环境
       try {

@@ -37,7 +37,6 @@ function ChooseChain({
     chainId: '1',
     key: '0x1',
   });
-
   const [open, setOpen] = useState<any>(false);
   const click = throttle(
     function (i: any) {
@@ -80,7 +79,10 @@ function ChooseChain({
             <img
               src={i?.icon}
               alt=""
-              style={{ width: i?.value === 'Arbitrum' ? '20px' : '18px' }}
+              style={{
+                width: i?.value === 'Arbitrum' ? '20px' : '18px',
+                borderRadius: '100%',
+              }}
             />
             <span
               style={{
@@ -111,7 +113,11 @@ function ChooseChain({
       overlayClassName={`headerPopoverShow ${wrapClassName}`}
     >
       <div className={'boxPopover disDis'}>
-        <img src={value?.icon} alt="" style={{ width: '22px' }} />
+        <img
+          src={value?.icon}
+          alt=""
+          style={{ width: '22px', borderRadius: '100%' }}
+        />
         {!disabled && (
           <img
             src="/down.svg"
