@@ -42,24 +42,24 @@ export default function index() {
       },
       key: 'buyBot',
     },
-    {
-      imgAc: '/snipingActive.png',
-      img: '/snipingMore.png',
-      status: params?.id === 'limit',
-      name: 'Limit',
-      onClick: () => {
-        history('/dapps/limit');
-      },
-      key: 'limit',
-    },
-    {
-      status: params?.id === 'mint',
-      name: 'mint',
-      onClick: () => {
-        history('/dapps/mint');
-      },
-      key: 'mint',
-    },
+    // {
+    //   imgAc: '/snipingActive.png',
+    //   img: '/snipingMore.png',
+    //   status: params?.id === 'limit',
+    //   name: 'Limit',
+    //   onClick: () => {
+    //     history('/dapps/limit');
+    //   },
+    //   key: 'limit',
+    // },
+    // {
+    //   status: params?.id === 'mint',
+    //   name: 'mint',
+    //   onClick: () => {
+    //     history('/dapps/mint');
+    //   },
+    //   key: 'mint',
+    // },
   ];
 
   return (
