@@ -66,9 +66,9 @@ export default function sellTokenModal({
       setTx(res?.data);
       setIsTx(!isTx);
       setPageLoad(true);
-      setSureLoad(false)
-    }else{
-      setSureLoad(false)
+      setSureLoad(false);
+    } else {
+      setSureLoad(false);
       setPageLoad(true);
     }
   };
@@ -225,7 +225,7 @@ export default function sellTokenModal({
   }, [tx, isTx]);
 
   return (
-    <div className="sellModal" style={{marginBottom:!loading?'10%':'0'}}>
+    <div className="sellModal" style={{ marginBottom: !loading ? '10%' : '0' }}>
       {/* 确认   授权 */}
       {loading ? (
         pageLoad ? (
@@ -272,11 +272,16 @@ export default function sellTokenModal({
           <div className="modalBox">
             {content}
             <div className="butt">
-              <p className='p' onClick={handleCancel}>{t('token.later')}</p>
-              <div className='sure p' onClick={()=>{
-                sellToken()
-                setSureLoad(true)
-              }}> 
+              <p className="p" onClick={handleCancel}>
+                {t('token.later')}
+              </p>
+              <div
+                className="sure p"
+                onClick={() => {
+                  sellToken();
+                  setSureLoad(true);
+                }}
+              >
                 {isApproveToken ? t('token.Confirm') : 'Approve'}
                 {sureLoad && (
                   <div>
