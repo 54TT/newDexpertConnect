@@ -7,7 +7,7 @@ import { CountContext } from '@/Layout.tsx';
 import getBalance from '@/../utils/getBalance';
 import { useTranslation } from 'react-i18next';
 import InfiniteScrollPage from '@/components/InfiniteScroll';
-export default function selectWallet({ setWallet, id, value }: any) {
+export default function selectWallet({ setWallet, id, value,setAddLink }: any) {
   const { t } = useTranslation();
   const { browser }: any = useContext(CountContext);
   const { getAll } = Request();
@@ -139,6 +139,7 @@ export default function selectWallet({ setWallet, id, value }: any) {
           no={t('token.oo')}
           style={{ overflow: 'hidden' }}
           scrollableTarget={'scrollableSniperOrder'}
+          setAddLink={setAddLink}
         />
       ) : (
         <Loading status={'20'} browser={browser} />

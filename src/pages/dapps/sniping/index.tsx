@@ -29,7 +29,7 @@ export default function index() {
     sniperChainId,
     setSniperChainId,
   }: any = useContext(CountContext);
-  // 是否切换链
+  // 是否切换
   const [select, setSelect] = useState('Sniping');
   //  第几步
   const [show, setIsShow] = useState(false);
@@ -40,6 +40,7 @@ export default function index() {
   //  输入 数量
   const [value, setValue] = useState(0);
   const [contractConfig, setContractConfig] = useState<any>();
+  const [addLink, setAddLink] = useState(false);
   // 当前链的
   const [provider, setProvider] = useState<any>();
   // 选择链改变   privider
@@ -162,7 +163,14 @@ export default function index() {
       }
     }
   };
-  useEffect(() => {}, [orderPar]);
+  useEffect(() => {
+    if (addLink) {
+      setIsShow(false);
+      setAddWallet(true);
+      setSelect('wallet');
+    }
+  }, [addLink]);
+
   const operate = {
     params,
     setParams,
@@ -206,6 +214,7 @@ export default function index() {
               setWallet={setWallet}
               id={sniperChainId}
               value={value}
+              setAddLink={setAddLink}
             />
           </>
         );
@@ -224,11 +233,19 @@ export default function index() {
           </>
         );
       } else {
-        return <Order setIsShow={setIsShow} setOrderPar={setOrderPar} chainId={sniperChainId}/>;
+        return (
+          <Order
+            setIsShow={setIsShow}
+            setOrderPar={setOrderPar}
+            chainId={sniperChainId}
+          />
+        );
       }
     } else {
       if (addWallet) {
-        return <AddWallet setAddWallet={setAddWallet} chainId={sniperChainId}/>;
+        return (
+          <AddWallet setAddWallet={setAddWallet} chainId={sniperChainId} />
+        );
       } else {
         return (
           <WalletManage
@@ -277,7 +294,7 @@ export default function index() {
                     key={i.key}
                     style={{
                       color: select === i.key ? 'rgb(134,240,151)' : 'white',
-                      fontWeight:select === i.key ? 'bold':'normal'
+                      fontWeight: select === i.key ? 'bold' : 'normal',
                     }}
                   >
                     {i.name}
