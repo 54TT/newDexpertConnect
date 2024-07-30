@@ -44,7 +44,7 @@ function ConfirmPage() {
     setLoading(true);
     try {
       const { data } = await getByteCode();
-      const { wethDecimal } = contractConfig;
+      const { decimals, launchFee } = contractConfig;
       const { bytecode, metadataJson, contractId } = data;
       const ethersProvider = new ethers.providers.Web3Provider(loginProvider);
       const signer = await ethersProvider.getSigner();
@@ -53,7 +53,7 @@ function ConfirmPage() {
       // 先默认使用手续费版本
 
       const { deployTransaction, address } = await contractFactory.deploy(0, {
-        value: toWeiWithDecimal('0.08', wethDecimal),
+        value: toWeiWithDecimal(launchFee, decimals),
       });
       reportDeploy({
         contractAddress: address,
