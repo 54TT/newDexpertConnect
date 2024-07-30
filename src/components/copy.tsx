@@ -1,12 +1,12 @@
-import { CheckCircleOutlined } from '@ant-design/icons';
 import copy from 'copy-to-clipboard';
 import { Popover } from 'antd';
 import { throttle } from 'lodash';
 import { useContext } from 'react';
 import { CountContext } from '../Layout.tsx';
-
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 function Copy({ name, setSelect, select, img }: any) {
+  const { t } = useTranslation();
   const { isCopy, setIsCopy }: any = useContext(CountContext);
   useEffect(() => {
     if (isCopy) {
@@ -21,11 +21,16 @@ function Copy({ name, setSelect, select, img }: any) {
       placement="top"
       title={''}
       overlayClassName={'newPairLeftPopover'}
-      content={isCopy ? 'Pair Copied successfully' : 'copy to clipboard'}
+      content={isCopy ? t('token.Copied') : t('token.copy')}
     >
+      {/*  */}
       {(isCopy && !select) || (isCopy && select === 'select') ? (
-        <CheckCircleOutlined
+        <img
+          src="/copySucc.svg"
+          alt=""
           style={{
+            width: '15px',
+            height: '15px',
             fontSize: '15px',
             marginLeft: '5px',
             color: img ? 'rgb(134,240,151)' : 'black',
@@ -36,7 +41,12 @@ function Copy({ name, setSelect, select, img }: any) {
           src={img ? img : '/copy.svg'}
           alt=""
           loading={'lazy'}
-          style={{ width: '15px', cursor: 'pointer', marginLeft: '5px' }}
+          style={{
+            width: '15px',
+            height: '15px',
+            cursor: 'pointer',
+            marginLeft: '8px',
+          }}
           onClick={throttle(
             function () {
               copy(name);

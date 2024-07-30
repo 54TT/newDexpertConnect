@@ -4,15 +4,23 @@ export default function inputSearch({
   searchChange,
   placeholder,
 }: any) {
+
+const clickSearch=()=>{
+  enter('click')
+}
   return (
-    <Input.TextArea
-      rootClassName="snipingInput"
-      onKeyDown={enter}
-      placeholder={placeholder}
-      allowClear
-      maxLength={100}
-      onChange={searchChange}
-      autoSize
-    />
+
+    <Input
+    rootClassName="snipingInput"
+    onKeyDown={enter}
+    placeholder={placeholder}
+    allowClear
+    onChange={searchChange}
+    suffix={
+      <img src="/searchToken.svg" alt=""  style={{
+        cursor: 'pointer',
+      }}  onClick={clickSearch}/>
+    }
+  />
   );
 }

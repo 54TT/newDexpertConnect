@@ -327,6 +327,9 @@ export default function index() {
           style={{
             display:
               select === 'order' || select === 'wallet' ? 'none' : 'block',
+            backgroundColor:
+              params && value && token ? 'rgb(134, 240, 151)' : 'rgb(45,45,45)',
+            color: params && value && token ? 'black' : '#A0A0A0',
           }}
         >
           {user?.uid

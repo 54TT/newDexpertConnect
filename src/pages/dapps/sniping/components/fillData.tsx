@@ -83,15 +83,13 @@ export default function fillData({
       return null;
     }
   };
-  const enter = async (e: any) => {
-    if( e.key === 'Enter'){
-      e.preventDefault();
+  const enter = async (e?: any) => {
+    if (searchValue?.length === 42) {
+     if (e?.key === 'Enter'||e === 'click') {
+        setIsToken(true);
+        implement();
+      }
     }
-    if (searchValue?.length === 42 && e.key === 'Enter') {
-      setIsToken(true);
-      implement();
-    }
-   
   };
   //  获取输出  价格
   const getAmount = async (value: number, token?: any, moreProvider?: any) => {
@@ -133,7 +131,7 @@ export default function fillData({
   }, 1000);
   const mask = { 0: '100%', 25: '125%', 50: '150%', 75: '175%', 100: '200%' };
   return (
-    <div className="scrollHei sniperOrder" style={{ margin: '20px 0 10px' }}>
+    <div className="scrollHei sniperOrder" style={{ margin: '16px 0 8px' }}>
       <div className="Contractaddress">
         {/* 0x7b522bA8C126716bf7c9E5f92951aCae38a680d6  */}
         <InputSearch
@@ -144,11 +142,17 @@ export default function fillData({
       </div>
       <div className="token">
         <p className="Information">{t('Slider.Token')}</p>
-        <div className="selectTo">
+        <div
+          className="selectTo"
+          style={{ color: token?.symbol ? 'white' : '#A0A0A0' }}
+        >
           <p>{token?.symbol ? token?.symbol : '-----'}</p>
           <p>{token?.name ? token?.name : '----'}</p>
         </div>
-        <div className="address">
+        <div
+          className="address"
+          style={{ color: token?.contractAddress ? 'white' : '#A0A0A0' }}
+        >
           <p>{t('Slider.address')}</p>
           <p>{token?.contractAddress ? token?.contractAddress : '.....'}</p>
         </div>

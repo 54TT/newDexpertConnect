@@ -8,7 +8,9 @@ import WalletDetail from './WalletDetail';
 import getBalance from '@utils/getBalance';
 import { Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
+
 import InfiniteScrollPage from '@/components/InfiniteScroll';
+import Copy from '@/components/copy';
 export default function WalletManage({
   id,
   setIsShow,
@@ -16,7 +18,7 @@ export default function WalletManage({
   contractConfig,
 }: any) {
   const { t } = useTranslation();
-  const { browser, isLogin }: any = useContext(CountContext);
+  const { browser, isLogin, setIsCopy }: any = useContext(CountContext);
   const [loading, setLoading] = useState(false);
   const [nextLoad, setNextLoad] = useState(false);
   const [walletList, setWalletList] = useState([]);
@@ -26,6 +28,8 @@ export default function WalletManage({
   const [wallet, setWallet] = useState<any>();
   const [isLoad, setIsLoad] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  //
+  const [copyItem, setCopyItem] = useState(null);
   const { getAll } = Request();
   const getWalletList = async (page: number) => {
     const token = cookie.get('token');
@@ -142,8 +146,29 @@ export default function WalletManage({
       >
         <div className="wallet-item-middle">
           <div className="wallet-name">{item.name}</div>
-          <div className="wallet-address">
+          <div
+            className="wallet-address"
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
             {item.address.slice(0, 4) + '...' + item.address.slice(-4)}
+            <div
+              onClick={(e: any) => {
+                setIsCopy(true);
+                setCopyItem(item);
+                e.stopPropagation();
+              }}
+            >
+              <Copy
+                name={item.address}
+                img={'/copy.svg'}
+                select={
+                  copyItem?.address === item.address &&
+                  copyItem?.name === item.name
+                    ? 'select'
+                    : 'no'
+                }
+              />
+            </div>
           </div>
         </div>
         <span className="wallet-balance">{item.balance} ETH</span>
@@ -154,7 +179,7 @@ export default function WalletManage({
   return (
     <div
       className="wallet-manage"
-      style={{ marginTop: showWalletDetail ? '0' : '20px' }}
+      style={{ marginTop: showWalletDetail ? '0' : '16px' }}
     >
       <div className="scrollHei sniperOrder">
         {loading && !showWalletDetail ? (

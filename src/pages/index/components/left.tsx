@@ -231,6 +231,7 @@ function Left() {
       </div>
       <Modal
         open={searchModal}
+        centered
         onCancel={() => setSearchModal(false)}
         footer={null}
       >

@@ -178,12 +178,12 @@ export default function sellTokenModal({
             <span className="token">{tokenItem?.name}</span>
           </div>
           <p>
-            Amount: <span>{amount}</span>
+            {t('token.Amount')}: <span>{amount}</span>
           </p>
         </div>
         <div className="center">
           <img src="/jianLeft.svg" alt="" />
-          <span>Sell</span>
+          <span> {t('token.Sell')}</span>
           <img src="/jianRight.svg" alt="" />
         </div>
         <div className="left">
@@ -192,7 +192,7 @@ export default function sellTokenModal({
             <span className="token">Eth</span>
           </div>
           <p>
-            Amount:
+            {t('token.Amount')}:
             <span>
               {Number(ethValue)
                 .toFixed(8)
@@ -201,7 +201,9 @@ export default function sellTokenModal({
           </p>
         </div>
       </div>
-      <p className="approveGas">Approximate Gas Fee:{gasPar?.gasPriceInGwei}</p>
+      <p className="approveGas">
+        {t('token.Gas')}:{gasPar?.gasPriceInGwei}
+      </p>
     </div>
   );
   useEffect(() => {
@@ -217,7 +219,7 @@ export default function sellTokenModal({
   }, [tx, isTx]);
 
   return (
-    <div className="sellModal">
+    <div className="sellModal" style={{marginBottom:!loading?'10%':'0'}}>
       {/* 确认   授权 */}
       {loading ? (
         pageLoad ? (

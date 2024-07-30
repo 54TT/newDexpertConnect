@@ -146,15 +146,14 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
     },
   ];
 
-  const enter = async (e: any) => {
-    if (
-      e.key === 'Enter' &&
-      (searchValue.length === 42 || searchValue.length === 0)
-    ) {
-      setIsSearch(true);
-      getList(1, select, searchValue.length === 42 ? searchValue : '');
-      setLoading(false);
-      setPage(1);
+  const enter = async (e?: any) => {
+    if (searchValue.length === 42 || searchValue.length === 0) {
+      if (e.key === 'Enter' || e === 'click') {
+        setIsSearch(true);
+        getList(1, select, searchValue.length === 42 ? searchValue : '');
+        setLoading(false);
+        setPage(1);
+      }
     }
   };
   const searchChange = async (e: any) => {

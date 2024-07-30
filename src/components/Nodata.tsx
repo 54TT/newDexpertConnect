@@ -12,7 +12,7 @@ function Nodata({ name, setAddLink }: any) {
       <img src="/noData.svg" style={{ width: '13%',minWidth:"100px" }} alt="" />
       <p
         style={{
-          fontSize: '16px',
+          fontSize: '20px',
           color: 'rgb(220,220,220)',
           paddingTop: '15px',
         }}

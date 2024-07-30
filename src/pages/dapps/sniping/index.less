@@ -8,9 +8,9 @@
     display: flex;
     align-items: center;
     background-color: #2d2d2d;
-    padding: 12px 20px;
+    padding: 17px 20px;
     border-radius: 16px;
-    margin-top: 16px;
+    margin-top: 26px;
     justify-content: space-between;
     img {
       cursor: pointer;
@@ -22,20 +22,20 @@
   }
   & > .topBox {
     display: flex;
-    margin-top: 16px;
+    margin-top: 26px;
     align-items: center;
     & > .top {
       display: flex;
       width: 100%;
       margin-right: 8px;
-      padding: 12px 0;
+      padding: 17px 0;
       background-color: #2d2d2d;
       align-items: center;
-      border-radius: 14px;
+      border-radius: 18px;
       & > p {
         flex: 1;
         cursor: pointer;
-        font-size: 17px;
+        font-size: 18px;
         font-weight: bold;
         text-align: center;
       }
@@ -44,10 +44,11 @@
   .Contractaddress {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     justify-content: space-between;
     box-sizing: border-box;
     .ant-input-affix-wrapper {
+      border-radius: 12px !important;
       transition: all 0.2s ease;
     }
     input {
@@ -63,17 +64,16 @@
     background-color: rgba(0, 0, 0, 00.4);
     width: 100%;
   }
-  // .ant-input-outlined:
   .snipingInput {
-    padding: 4px 0;
+    padding: 12px;
     box-shadow: none;
     border-color: transparent;
     background-color: rgb(45, 45, 45);
-    textarea {
+    input {
       color: white;
       background-color: rgb(45, 45, 45);
     }
-    textarea::placeholder {
+    input::placeholder {
       color: #969696;
     }
     .ant-input-clear-icon {
@@ -87,10 +87,11 @@
   .sniperCollapse {
     background-color: #2d2d2d;
     border: none;
-    margin-top: 10px;
+    border-radius: 18px;
+    margin-top: 8px;
     .ant-collapse-item {
       .ant-collapse-header {
-        border-radius: 10px;
+        padding: 14px 16px !important;
         .ant-collapse-header-text {
           font-size: 16px;
           color: rgb(220, 220, 220);
@@ -107,9 +108,9 @@
     }
   }
   .tokenIn {
-    border-radius: 10px;
+    border-radius: 18px;
     position: relative;
-    margin-top: 10px;
+    margin-top: 8px;
     z-index: 10;
     overflow: hidden;
     padding: 10px 15px;
@@ -183,7 +184,7 @@
     }
   }
   .token {
-    border-radius: 10px;
+    border-radius: 18px;
     position: relative;
     z-index: 10;
     overflow: hidden;
@@ -203,12 +204,10 @@
       border-bottom: 2px solid rgb(58, 58, 58);
       p:first-child {
         font-weight: bold;
-        color: white;
         font-size: 24px;
       }
       p:last-child {
         font-size: 15px;
-        color: rgb(160, 160, 160);
       }
     }
     .address {
@@ -216,7 +215,6 @@
         font-size: 15px;
         margin: 15px 0 3px 0;
         font-weight: bold;
-        color: white;
       }
       p:last-child {
         word-wrap: break-word;
@@ -238,7 +236,6 @@
       }
     }
   }
-
   .back {
     width: 150px;
     height: 150px;
@@ -274,11 +271,10 @@
     );
   }
   .confirm {
-    background-color: rgb(134, 240, 151);
-    padding: 12px 0;
+    padding: 18px 0;
     cursor: pointer;
     text-align: center;
-    border-radius: 15px;
+    border-radius: 18px;
     font-size: 24px;
     font-weight: bold;
   }
@@ -286,7 +282,7 @@
     position: relative;
     z-index: 10;
     overflow: hidden;
-    border-radius: 0 0 10px 10px;
+    border-radius: 0 0 18px 18px;
     padding: 15px;
     background-color: rgb(45, 45, 45);
     .gasPrice {

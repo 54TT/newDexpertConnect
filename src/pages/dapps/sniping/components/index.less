@@ -1,5 +1,5 @@
 .allWallet {
-  margin: 10px 0;
+  margin: 8px 0;
   .wallet {
     background-color: #2d2d2d;
     border-radius: 16px;
@@ -12,15 +12,15 @@
 
   .wallet {
     .left {
-        p:first-child {
-          font-size: 16px;
-          color: white;
-        }
-        p:last-child {
-          font-size: 14px;
-          margin-top: 4px;
-          color: #a0a0a0;
-        }
+      p:first-child {
+        font-size: 16px;
+        color: white;
+      }
+      p:last-child {
+        font-size: 14px;
+        margin-top: 4px;
+        color: #a0a0a0;
+      }
     }
     & > p {
       color: white;
@@ -30,7 +30,7 @@
   }
 }
 .oriderDetailBox {
-  margin-top: 20px;
+  margin-top: 16px;
 }
 .oriderDetail {
   font-size: 17px;
@@ -122,29 +122,31 @@
 }
 .order {
   font-size: 16px;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 16px;
+  margin-bottom: 8px;
   .search {
     .searchBox {
       position: relative;
       z-index: 1000;
       width: 100%;
+      .snipingInput {
+        border-radius: 12px !important;
+      }
     }
     display: flex;
     padding-right: 10px;
-    margin-bottom: 16px;
-
+    margin-bottom: 8px;
     .status {
       cursor: pointer;
-      padding: 8px;
+      padding: 14px;
       margin-left: 10px;
       position: relative;
       & > div {
         position: absolute;
         top: 0;
-        width: 36px;
+        width: 51px;
         background-color: #454545;
-        height: 34px;
+        height: 46px;
         div {
           width: 100%;
           height: 100%;
@@ -260,7 +262,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        &>div{
+        & > div {
           width: 100%;
           margin-right: 8px;
           display: flex;
@@ -276,7 +278,7 @@
   .walletList-item {
     display: flex;
     align-items: center;
-    padding: 8px 24px;
+    padding: 16px 24px;
     background-color: #2d2d2d;
     width: 100%;
     border-radius: 18px;
@@ -347,15 +349,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 16px 0 20px;
+    margin: 26px 0 16px;
     background-color: #2d2d2d;
     width: 100%;
-    padding: 12px 20px;
+    padding: 17px 20px;
     border-radius: 18px;
     box-sizing: border-box;
     & > .setInput {
       position: absolute;
-      top: 6px;
+      top: 10px;
       line-height: 1;
       background-color: #404040;
       border-radius: 8px;
@@ -423,8 +425,7 @@
         // justify-content: space-between;
         flex-direction: column;
         overflow: hidden;
-        width: 98%;
-        margin: 0 auto;
+        width: 100%;
         padding: 12px 10px;
         // background: #212121;
         transition: all 0.3s;
@@ -486,10 +487,8 @@
             }
           }
           .botPclass {
+            font-size: 12px;
             color: rgba(255, 255, 255, 0.55);
-            span {
-              font-size: 14px;
-            }
           }
           .bott {
             display: flex;
@@ -550,7 +549,7 @@
   margin-top: 16px;
   font-size: 14px;
   text-align: center;
-  margin: 20px auto 0;
+  margin: 16px auto 0;
   color: #86f097;
   cursor: pointer;
 }
@@ -613,7 +612,7 @@
     max-width: 500px;
     width: 40% !important;
     .ant-modal-content {
-      padding: 30px 30px 10px 30px !important;
+      padding: 20px 20px 10px 20px !important;
       border-radius: 20px;
       background-color: #2e2e2e !important;
       .amount {
@@ -647,8 +646,8 @@
       color: white;
       font-size: 14px;
       text-align: center;
-      margin-bottom: 15px;
-      margin-top: 30px;
+      margin-bottom: 14px;
+      margin-top: 60px;
     }
     & > .body {
       display: flex;
@@ -701,7 +700,7 @@
     & > .title {
       text-align: center;
       color: white;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       font-size: 26px;
     }
   }
@@ -709,10 +708,9 @@
     .butt {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       & > p {
-        width: 40%;
-        margin: 0 8%;
+        width: 45%;
         text-align: center;
         padding: 8px 0;
         font-size: 16px;

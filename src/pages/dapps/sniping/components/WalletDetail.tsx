@@ -368,6 +368,7 @@ export default function WalletDetail({
         rootClassName="walletDetailDelToken"
         open={isModalOpen}
         footer={null}
+        centered
         destroyOnClose={true}
         keyboard={false}
         maskClosable={false}
