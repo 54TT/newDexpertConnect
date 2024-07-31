@@ -1,4 +1,4 @@
-import { Input } from 'antd';
+import { Input, Select } from 'antd';
 // import BottomButton from '../BottomButton';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
@@ -84,6 +84,7 @@ function ManageTokenList() {
       />
       <div className="launch-manage-token-search">
         <Search />
+        <Select />
       </div>
       <div className="mint-scroll scroll">
         {data.map((item: TokenItemDataType) => (

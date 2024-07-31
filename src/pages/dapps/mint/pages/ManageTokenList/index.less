@@ -8,8 +8,53 @@
   .mint-scroll {
     height: calc(100% - 100px);
     overflow: overlay;
+    .launch-token-item {
+      height: 54px;
+    }
   }
   &-search {
-    width: 100%;
+    display: flex;
+    margin: 12px 16px;
+    .ant-input-search {
+      width: 50%;
+      margin-right: 12px;
+      border: 1px solid rgba(134, 240, 151, 1);
+      border-radius: 8px;
+      input {
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        box-shadow: none;
+        margin-top: 1px;
+      }
+      button {
+        background-color: transparent;
+        border: none;
+      }
+      .ant-input-group-addon {
+        .ant-btn-icon {
+          > span {
+            color: rgba(134, 240, 151, 1);
+          }
+        }
+      }
+    }
+    .ant-select {
+      flex: 1;
+      border: 1px solid rgba(134, 240, 151, 1);
+      border-radius: 8px;
+      .ant-select-arrow {
+        > span {
+          color: rgba(134, 240, 151, 1);
+        }
+      }
+      .ant-select-selector {
+        background-color: transparent;
+        border: none;
+        input {
+          color: #fff;
+        }
+      }
+    }
   }
 }

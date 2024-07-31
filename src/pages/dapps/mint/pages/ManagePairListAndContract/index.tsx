@@ -6,6 +6,7 @@ import Request from '@/components/axios';
 import { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout';
 import Cookies from 'js-cookie';
+import './index.less';
 
 function ManagePairListAndContract() {
   const { chainId } = useContext(CountContext);
@@ -22,7 +23,9 @@ function ManagePairListAndContract() {
     const { data } = await getAll({
       method: 'get',
       url: '/api/v1/launch-bot/pairs',
-      data: {},
+      data: {
+        contractId,
+      },
       token,
       chainId,
     });
@@ -37,7 +40,7 @@ function ManagePairListAndContract() {
   }, [chainId]);
 
   return (
-    <>
+    <div className="launch-manage-pair">
       <ToLaunchHeader />
       <PageHeader className="launch-manage-token-header" title={tokenSymbol} />
       <TokenItem
@@ -59,7 +62,7 @@ function ManagePairListAndContract() {
           }}
         />
       ))}
-    </>
+    </div>
   );
 }
 

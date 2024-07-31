@@ -41,7 +41,6 @@ import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
 import { config } from './config/config.ts';
-import checkConnection from '@utils/checkConnect.ts';
 import { ethers } from 'ethers';
 import Decimal from 'decimal.js';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
@@ -66,6 +65,7 @@ const web3Modal = new Web3Modal({
   walletConnectVersion: 1,
 });
 export const CountContext = createContext(null);
+Decimal.set({ toExpPos: 32 });
 function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
@@ -170,20 +170,20 @@ function Layout() {
     }
   }, [newAccount]);
 
-  useEffect(() => {
-    if (checkConnection() && isLogin && router.pathname === '/dapps/swap') {
-      // setChainId('1');
-      // @ts-ignore
-      window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [
-          {
-            chainId: '0x1',
-          },
-        ],
-      });
-    }
-  }, [isLogin]);
+  // useEffect(() => {
+  //   if (checkConnection() && isLogin) {
+  //     // setChainId('1');
+  //     // @ts-ignore
+  //     window.ethereum.request({
+  //       method: 'wallet_switchEthereumChain',
+  //       params: [
+  //         {
+  //           chainId: '0x1',
+  //         },
+  //       ],
+  //     });
+  //   }
+  // }, [isLogin]);
 
   const createClient = async () => {
     try {
@@ -207,6 +207,10 @@ function Layout() {
 
   useEffect(() => {
     if (isLogin && loginProvider) {
+      let changeChainId = '1';
+      if (Object.keys(config).includes(chainId)) {
+        changeChainId = chainId;
+      }
       try {
         // @ts-ignore
         loginProvider?.on('chainChanged', onChainChange);
@@ -214,12 +218,19 @@ function Layout() {
           method: 'wallet_switchEthereumChain',
           params: [
             {
-              chainId: `0x${Number(chainId).toString(16)}`,
+              chainId: `0x${Number(changeChainId).toString(16)}`,
             },
           ],
         });
       } catch (e) {
-        return null;
+        // loginProvider?.addEthereumChain({
+        //   method: 'wallet_switchEthereumChain',
+        //   params: [
+        //     {
+        //       chainId: `0x${Number(changeChainId).toString(16)}`,
+        //     },
+        //   ],
+        // });
       }
     }
     return () => {
@@ -362,7 +373,11 @@ function Layout() {
       method: 'eth_chainId',
     });
     const walletChainId = Number(walletChainIdHex).toString(10);
-    setChainId(walletChainId);
+    let supprotChainId = '1';
+    if (Object.keys(config).includes(walletChainId)) {
+      supprotChainId = walletChainId;
+    }
+    setChainId(supprotChainId);
     setloginProvider(provider[0]?.provider);
   };
 

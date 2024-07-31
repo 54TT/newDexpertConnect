@@ -6,12 +6,13 @@ import { MintContext } from '../..';
 import Request from '@/components/axios';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import InfoList from '../../component/InfoList';
 import { useNavigate } from 'react-router-dom';
+import { toWeiWithDecimal } from '@utils/convertEthUnit';
 function ConfirmPage() {
   const { formData } = useContext(MintContext);
-  const { loginProvider, chainId } = useContext(CountContext);
+  const { loginProvider, chainId, contractConfig } = useContext(CountContext);
   const history = useNavigate();
   const [loading, setLoading] = useState(false);
   const { getAll } = Request();
@@ -43,22 +44,23 @@ function ConfirmPage() {
     setLoading(true);
     try {
       const { data } = await getByteCode();
+      const { decimals, launchFee } = contractConfig;
       const { bytecode, metadataJson, contractId } = data;
       const ethersProvider = new ethers.providers.Web3Provider(loginProvider);
       const signer = await ethersProvider.getSigner();
       const abi = JSON.parse(metadataJson).output.abi;
       const contractFactory = new ethers.ContractFactory(abi, bytecode, signer);
       // 先默认使用手续费版本
-      const { deployTransaction, address, waitForDeployment } =
-        await contractFactory.deploy(0, {
-          value: BigNumber.from(0.08 * 10 ** 2).mul(BigNumber.from(10).pow(16)),
-        });
+
+      const { deployTransaction, address } = await contractFactory.deploy(0, {
+        value: toWeiWithDecimal(launchFee, decimals),
+      });
       reportDeploy({
         contractAddress: address,
         contractId,
         deployTx: deployTransaction.hash,
       });
-      await waitForDeployment();
+      await deployTransaction.wait();
       history('/dapps/mint/manageToken');
     } catch (e) {
       return null

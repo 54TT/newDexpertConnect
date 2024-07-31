@@ -32,10 +32,7 @@ import { PermitSingle, getPermitSignature } from '@utils/permit2';
 import { BigNumber, ethers } from 'ethers';
 import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
-import {
-  CHAIN_NAME_TO_CHAIN_ID,
-  CHAIN_NAME_TO_CHAIN_ID_HEX,
-} from '@utils/constants';
+import { CHAIN_NAME_TO_CHAIN_ID } from '@utils/constants';
 import useButtonDesc from '@/hook/useButtonDesc';
 import { useTranslation } from 'react-i18next';
 import UsePass from '@/components/UsePass';
@@ -676,8 +673,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   }, [contractConfig]);
 
   const changeWalletChain = async (v: string) => {
-    const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
+    const evmChainIdHex = `0x${Number(evmChainId).toString(16)}`;
     if (!isLogin) {
       setChainId(evmChainId);
     } else {

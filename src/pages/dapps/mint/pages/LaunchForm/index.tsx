@@ -62,101 +62,84 @@ function LaunchForm({ formData, setFormData }) {
           onFinish={(data) => onFinishForm(data)}
           labelCol={{ span: 8 }}
           labelWrap
-          wrapperCol={{ span: 16 }}
-          labelAlign="left"
+          wrapperCol={{ span: 24 }}
+          labelAlign="right"
         >
           <Form.Item
-            label="合约文件名称"
             name="filename"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <Input />
+            <Input placeholder="合约文件名称" />
           </Form.Item>
           <Form.Item
-            label="代币名称"
             name="name"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <Input />
+            <Input placeholder="代币名称" />
           </Form.Item>
           <Form.Item
-            label="代币符号"
             name="symbol"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <Input />
+            <Input placeholder="代币符号" />
           </Form.Item>
           <Form.Item
-            label="代币供应量"
             name="totalSupply"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <InputNumber />
+            <InputNumber placeholder="最大供应量" />
           </Form.Item>
           <Form.Item
-            label="小数点"
             name="decimals"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <Input />
+            <Input placeholder="decimals" />
           </Form.Item>
-          <Form.Item label="描述" name="description">
-            <TextArea autoSize style={{ minHeight: '66px' }} />
+          <Form.Item name="description">
+            <TextArea
+              placeholder="描述"
+              autoSize
+              style={{ minHeight: '66px' }}
+            />
           </Form.Item>
           {/* <Form.Item label="购买数量" name="buyCount" hidden={!showAdv}>
             <InputNumber />
           </Form.Item> */}
-          <Form.Item label="初始购买税" name="initialBuyTax" hidden={!showAdv}>
-            <InputNumber />
+          <Form.Item name="initialBuyTax" hidden={!showAdv}>
+            <InputNumber placeholder="初始购买税" />
           </Form.Item>
-          <Form.Item label="初始销售税" name="initialSellTax" hidden={!showAdv}>
-            <InputNumber />
+          <Form.Item name="initialSellTax" hidden={!showAdv}>
+            <InputNumber placeholder="初始销售税" />
           </Form.Item>
-          <Form.Item label="最终购买税" name="finalBuyTax" hidden={!showAdv}>
-            <InputNumber />
+          <Form.Item name="finalBuyTax" hidden={!showAdv}>
+            <InputNumber placeholder="最终购买税" />
           </Form.Item>
-          <Form.Item label="最终销售税" name="finalSellTax" hidden={!showAdv}>
-            <InputNumber />
+          <Form.Item name="finalSellTax" hidden={!showAdv}>
+            <InputNumber placeholder="最终销售税" />
           </Form.Item>
-          <Form.Item label="减少购买税" name="reduceBuyTaxAt" hidden={!showAdv}>
-            <InputNumber />
+          <Form.Item name="reduceBuyTaxAt" hidden={!showAdv}>
+            <InputNumber placeholder="减少购买税" />
           </Form.Item>
-          <Form.Item
-            label="减少销售税"
-            name="reduceSellTaxAt"
-            hidden={!showAdv}
-          >
-            <InputNumber />
+          <Form.Item name="reduceSellTaxAt" hidden={!showAdv}>
+            <InputNumber placeholder="减少销售税" />
           </Form.Item>
-          <Form.Item
-            label="Prevent Swap Before"
-            name="preventSwapBefore"
-            hidden={!showAdv}
-          >
-            <InputNumber />
+          <Form.Item name="preventSwapBefore" hidden={!showAdv}>
+            <InputNumber placeholder="Prevent Swap Before" />
           </Form.Item>
-          <Form.Item label="最大交易数量" name="maxTxAmount" hidden={!showAdv}>
-            <InputNumber />
+          <Form.Item name="maxTxAmount" hidden={!showAdv}>
+            <InputNumber placeholder="最大交易数量" />
           </Form.Item>
-          <Form.Item
-            label="最大钱包大小"
-            name="maxWalletSize"
-            hidden={!showAdv}
-          >
-            <InputNumber />
+          <Form.Item name="maxWalletSize" hidden={!showAdv}>
+            <InputNumber placeholder="最大钱包大小" />
           </Form.Item>
-          <Form.Item label="最大交易税" name="maxTaxSwap" hidden={!showAdv}>
-            <InputNumber />
+          <Form.Item name="maxTaxSwap" hidden={!showAdv}>
+            <InputNumber placeholder="最大交易税" />
           </Form.Item>
-          <Form.Item
-            label="税收互换门槛"
-            name="taxSwapThreshold"
-            hidden={!showAdv}
-          >
-            <InputNumber />
+          <Form.Item name="taxSwapThreshold" hidden={!showAdv}>
+            <InputNumber placeholder="税收互换门槛" />
           </Form.Item>
-          <Form.Item label="税收互换门槛" name="buyCount" hidden={true}>
-            <InputNumber />
+          <Form.Item name="buyCount" hidden={true}>
+            <InputNumber placeholder="税收互换门槛" />
           </Form.Item>
         </Form>
       </div>

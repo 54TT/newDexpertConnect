@@ -131,7 +131,7 @@ export const chainParams = [
   },
   { value: 'Celo', icon: '/Celo.svg', hide: true },
 ];
-export const swapChain = [
+const chainList = [
   { value: 'Ethereum', icon: '/EthereumCoin.svg', chainId: '1', key: '0x1' },
   {
     value: 'Arbitrum',
@@ -162,9 +162,35 @@ export const swapChain = [
     chainId: '8453',
   },
   {
+    value: '5ire test',
+    icon: '/unkonwLogo.png',
+    key: '0x3e3',
+    chainId: '997',
+  },
+  {
+    value: '5ie',
+    icon: '/unkonwLogo.png',
+    chainId: '995',
+  },
+  {
+    value: 'bitLayer',
+    icon: '/bitlayer.jpg',
+    chainId: '200810',
+  },
+  {
+    value: 'bitLayer test',
+    icon: '/bitlayer.jpg',
+    chainId: '200910',
+  },
+  {
     value: 'Sepolia',
     icon: '/unkonwLogo.png',
     key: '0xaa36a7',
     chainId: '11155111',
   },
 ];
+
+export const swapChain = chainList.map((item) => ({
+  ...item,
+  key: Number(item.chainId).toString(16),
+}));

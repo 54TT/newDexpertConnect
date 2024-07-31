@@ -10,13 +10,13 @@ export type ItemDataType = {
 };
 
 interface TokenItemPropsType {
-  onClick: (data: ItemDataType) => void;
+  onClick?: (data: ItemDataType) => void;
   data: ItemDataType;
 }
 function TokenItem({ onClick, data }: TokenItemPropsType) {
   const { title, remark, desc, tips } = data;
   return (
-    <div className="launch-token-item" onClick={() => onClick(data)}>
+    <div className="launch-token-item" onClick={() => onClick?.(data)}>
       <div className="dis">
         {title && <div className="launch-token-item-title">{title}</div>}
         {remark && <div className="launch-token-item-remark">{remark}</div>}

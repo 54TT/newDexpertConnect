@@ -1,4 +1,4 @@
-import { Button, ConfigProvider, Modal } from 'antd';
+import { Button, ConfigProvider, InputNumber } from 'antd';
 import BottomButton from '../../component/BottomButton';
 import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
@@ -10,9 +10,9 @@ import Cookies from 'js-cookie';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { CountContext } from '@/Layout';
 import { LaunchERC20Abi } from '@abis/LaunchERC20Abi';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { CheckOutlined } from '@ant-design/icons';
-
+import CommonModal from '@/components/CommonModal';
 function ManageTokenDetail() {
   const { chainId, loginProvider } = useContext(CountContext);
   const [search] = useSearchParams();
@@ -22,14 +22,21 @@ function ManageTokenDetail() {
   const { getAll } = Request();
   const token = Cookies.get('token');
   const [erc20Contract, setErc20Contract] = useState<ethers.Contract>();
-  const [isVerify] = useState(false);
+  const [isVerify, setIsVerify] = useState(false);
   const [isOpenTrade, setIsOpenTrade] = useState(false);
   const [isRemoveLimit, setIsRemoveLimit] = useState(false);
   const [isOwn, setIsOwn] = useState(true);
   const [, setLoadingPage] = useState(false);
-  // const [ethAmount, setEthAmount] = useState('0');
-  // const [tokenAmount, setTokenAmoun] = useState('0');
+  const [openTradeModal, setOpenTradeModal] = useState(false);
+  const [ethBalance, setEthBalance] = useState('0');
+  const [ethAmount, setEthAmount] = useState(0);
   const [, setTokenBalance] = useState('0');
+
+  // 按钮正在执行状态
+  const [openTradeLoading, setOpenTradeLoading] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [removeLimitLoading, setRemoveLimitLoading] = useState(false);
+  const [renounceLoading, setRenounceLoading] = useState(false);
   const getContractDetail = async () => {
     const { data } = await getAll({
       method: 'get',
@@ -38,6 +45,9 @@ function ManageTokenDetail() {
       token,
       chainId,
     });
+    if (data.isVerify === '1') {
+      setIsVerify(true);
+    }
     setTokenData(data);
   };
 
@@ -49,10 +59,12 @@ function ManageTokenDetail() {
     setLoadingPage(true);
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = web3Provider.getSigner();
-    const walletAddress = signer.getAddress();
+    const walletAddress = await signer.getAddress();
     const tokenContract = new ethers.Contract(address, LaunchERC20Abi, signer);
-    setErc20Contract(tokenContract);
 
+    setErc20Contract(tokenContract);
+    console.log(await tokenContract.owner());
+    console.log(walletAddress);
     const isOwn = (await tokenContract.owner()) === walletAddress;
     setIsOwn(isOwn);
 
@@ -64,6 +76,9 @@ function ManageTokenDetail() {
 
     const IsTradeOpen = await tokenContract.tradingOpen();
     setIsOpenTrade(IsTradeOpen);
+
+    const ethWei = (await signer.getBalance()).toString();
+    setEthBalance(ethers.utils.formatEther(ethWei));
     setLoadingPage(true);
   };
 
@@ -94,13 +109,23 @@ function ManageTokenDetail() {
   const verifyingContract = async () => {
     if (!isOwn) return;
     if (isVerify) return;
-    await getAll({
-      method: 'post',
-      url: '/api/v1/launch-bot/contract/verify',
-      data: { contractId },
-      token,
-      chainId,
-    });
+    setVerifyLoading(true);
+    try {
+      const data = await getAll({
+        method: 'post',
+        url: '/api/v1/launch-bot/contract/verify',
+        data: { contractId },
+        token,
+        chainId,
+      });
+      if (data.data.tx) {
+        setVerifyLoading(false);
+        setIsVerify(true);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setVerifyLoading(false);
   };
 
   const removeLimit = async () => {
@@ -114,11 +139,19 @@ function ManageTokenDetail() {
       //   LaunchERC20Abi,
       //   signer
       // );
+      setRemoveLimitLoading(true);
       const tx = await erc20Contract.removeLimits();
+      const recipent = await tx.wait();
+      setRemoveLimitLoading(false);
+      if (recipent === 1) {
+        setIsRemoveLimit(true);
+      }
+
       console.log(tx);
     } catch (e) {
       return null
     }
+    setRemoveLimitLoading(false);
   };
 
   const approve = async (spender, amount) => {
@@ -131,33 +164,57 @@ function ManageTokenDetail() {
   const openTrade = async () => {
     if (!isOwn) return;
     if (isOpenTrade) return;
-    const decimals = await erc20Contract.decimals();
-    const totalSupply = await erc20Contract.totalSupply();
-    const maxCount = BigNumber.from(totalSupply).mul(
-      BigNumber.from(10).pow(decimals)
-    );
-    if (await approve(erc20Contract.address, maxCount)) {
-      const tx = await erc20Contract.openTrading(BigNumber.from(10).pow(20), {
-        value: ethers.utils.parseEther('0.01'),
-      });
-      await getAll({
-        method: 'post',
-        url: '/api/v1/launch-bot/tx/status/check',
-        data: {
-          tx: tx.hash,
-          txType: '7',
-          txTableId: contractId,
-        },
-        token,
-        chainId,
-      });
+    if (ethAmount === 0 || ethAmount === null) {
+      return;
     }
+    setOpenTradeLoading(true);
+    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
+    const signer = web3Provider.getSigner();
+    const walletAddress = await signer.getAddress();
+    // const decimals = await erc20Contract.decimals();
+    const tokenBalance = await erc20Contract.balanceOf(walletAddress);
+    try {
+      if (await approve(erc20Contract.address, tokenBalance)) {
+        const tx = await erc20Contract.openTrading(tokenBalance, {
+          value: ethers.utils.parseEther(ethAmount.toString()),
+        });
+        setOpenTradeModal(false);
+        await getAll({
+          method: 'post',
+          url: '/api/v1/launch-bot/tx/status/check',
+          data: {
+            tx: tx.hash,
+            txType: '7',
+            txTableId: contractId,
+          },
+          token,
+          chainId,
+        });
+        const recipent = await tx.wait();
+        if (recipent.status === 1) {
+          setOpenTradeLoading(false);
+          setIsOpenTrade(true);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setOpenTradeLoading(false);
   };
 
   const renounceOwnerShip = async () => {
     if (!isOwn) return;
-    const tx = await erc20Contract.renounceOwnership();
-    console.log(tx);
+    try {
+      const tx = await erc20Contract.renounceOwnership();
+      const recipent = tx.wait();
+      if (recipent === 1) {
+        setRenounceLoading(false);
+        setIsOwn(false);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setRenounceLoading(false);
   };
 
   return (
@@ -182,6 +239,7 @@ function ManageTokenDetail() {
           <Button
             type={isVerify ? 'primary' : 'default'}
             ghost
+            loading={verifyLoading}
             onClick={() => verifyingContract()}
           >
             Verify Contract {isVerify ? <CheckOutlined /> : ''}
@@ -189,13 +247,19 @@ function ManageTokenDetail() {
           <Button
             type={isOpenTrade ? 'primary' : 'default'}
             ghost
-            onClick={() => openTrade()}
+            loading={openTradeLoading}
+            onClick={() => {
+              if (!isOwn) return;
+              if (isOpenTrade) return;
+              setOpenTradeModal(true);
+            }}
           >
             Open Trade {isOpenTrade ? <CheckOutlined /> : ''}
           </Button>
           <Button
             type={isRemoveLimit ? 'primary' : 'default'}
             ghost
+            loading={removeLimitLoading}
             onClick={() => removeLimit()}
           >
             Remove Limits {isRemoveLimit ? <CheckOutlined /> : ''}
@@ -207,6 +271,7 @@ function ManageTokenDetail() {
           ghost
           danger
           bottom
+          loading={renounceLoading}
           text="Renounce OwnerShip"
           className=""
           onClick={() => {
@@ -216,7 +281,34 @@ function ManageTokenDetail() {
       ) : (
         <></>
       )}
-      <Modal></Modal>
+      <CommonModal
+        className="mint-common-modal"
+        open={openTradeModal}
+        footer={null}
+        title="Open Trade"
+        onCancel={() => setOpenTradeModal(false)}
+      >
+        <div>
+          <InputNumber
+            value={ethAmount}
+            addonAfter="ETH"
+            onChange={(v) => {
+              console.log(v);
+              setEthAmount(v);
+            }}
+          />
+          <div
+            style={{ color: '#fff', marginTop: '6px' }}
+          >{`ETH Balance: ${ethBalance}`}</div>
+        </div>
+        <BottomButton
+          text="Open Trade"
+          loading={openTradeLoading}
+          onClick={() => {
+            openTrade();
+          }}
+        />
+      </CommonModal>
     </>
   );
 }

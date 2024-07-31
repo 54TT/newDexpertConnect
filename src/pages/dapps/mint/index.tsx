@@ -8,6 +8,7 @@ import ConfirmPage from './pages/ConfirmPage/index.tsx';
 import ManagePairListAndContract from './pages/ManagePairListAndContract';
 import ManageTokenDetail from './pages/ManageTokenDetail/index.tsx';
 import ManagePairDetail from './pages/ManagePairDetail/index.tsx';
+import LockLpList from './pages/LockLpList/index.tsx';
 
 export const MintContext = createContext(null);
 const initFormData: Partial<FormDataType> = {
@@ -52,6 +53,7 @@ function Mint() {
               />
               <Route path="/tokenDetail" element={<ManageTokenDetail />} />
               <Route path="/pairDetail" element={<ManagePairDetail />} />
+              <Route path="/lockLpList" element={<LockLpList />} />
               <Route path="/confirm/:from" element={<ConfirmPage />} />
             </Routes>
           </div>
