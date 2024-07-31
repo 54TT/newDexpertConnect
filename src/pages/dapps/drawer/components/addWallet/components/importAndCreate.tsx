@@ -55,7 +55,7 @@ export default function importWallet({ setStatus, status }: any) {
         status === 'Create' ? (
           <div className="create">
             <p>name</p>
-            <Input className="createInputKey" allowClear onChange={change} />
+            <Input className="createInputKey"   autoComplete={'off'} allowClear onChange={change} />
             <p
               style={{
                 visibility: isShow ? 'visible' : 'hidden',
@@ -88,11 +88,12 @@ export default function importWallet({ setStatus, status }: any) {
             <p className="ent">Enter your private key string here:</p>
             <Input
               className="inputKey"
+              autoComplete={'off'}
               allowClear
               onChange={(e: any) => setPrivateKey(e.target.value || '')}
             />
             <p className="ent">wallet name</p>
-            <Input className="inputKey" allowClear onChange={change} />
+            <Input className="inputKey"   autoComplete={'off'} allowClear onChange={change} />
             <p
               style={{
                 visibility: isShow ? 'visible' : 'hidden',

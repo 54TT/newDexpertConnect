@@ -19,6 +19,7 @@ export default function setWallet({ walletId }: any) {
         </div>
         <Input.TextArea
           autoSize={true}
+          autoComplete={'off'}
           readOnly
           value={walletId?.privateKey || ''}
           className="setInput"

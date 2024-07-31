@@ -8,6 +8,8 @@ interface PageHeaderProps {
   desc?: string | React.ReactNode;
   className?: string;
   disabled?: boolean; // 是否可修改链
+  name?: any;
+  setStep?: any;
 }
 function PageHeader({
   arrow = true,
@@ -15,6 +17,7 @@ function PageHeader({
   desc = '',
   className = '',
   disabled = true,
+  name,
 }: PageHeaderProps) {
   const history = useNavigate();
   return (
@@ -24,7 +27,15 @@ function PageHeader({
           {arrow && (
             <LeftOutlined
               className="launch-header-arrow-left-icon"
-              onClick={() => history(-1)}
+              onClick={() => {
+                if (name === 'tokenList') {
+                  history('/dapps/mint');
+                } else if(name){
+                  name('form')
+                }else {
+                  history(-1);
+                }
+              }}
             />
           )}
         </div>

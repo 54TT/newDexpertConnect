@@ -25,7 +25,7 @@ export type ChainId =
   | '995'
   | '997'
   | '200810'
-  | '200910';
+  | '200901';
 export type ChainName =
   | 'solana'
   | 'ton'
@@ -46,7 +46,7 @@ export const ChainID_TO_ChainName: Record<ChainId, ChainName> = {
   '995': '5ire',
   '997': '5ire test',
   '200810': 'bitLayer test',
-  '200910': 'bitLayer',
+  '200901': 'bitLayer',
 };
 
 //  链的  id
@@ -176,7 +176,7 @@ export const CHAIN_NAME_TO_CHAIN_ID = {
   '5ire': '995',
   '5ire-test': '997',
   Biylayer: '200810',
-  'Bitlayer-test': '200910',
+  'Bitlayer-test': '200901',
 };
 
 export const CHAIN_VERSION_TO_CHAIN_ID = {
@@ -201,7 +201,7 @@ export const ID_TO_CHAIN_NAME_LOW = {
   '995': '5ire',
   '997': '5ire-test',
   '200810': 'bitlayer-test',
-  '200910': 'bitlater',
+  '200901': 'bitlater',
 };
 
 export const CHAIN_ID_TO_CHAIN_NAME = () =>

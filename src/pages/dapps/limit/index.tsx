@@ -17,6 +17,7 @@ export default function index() {
               // onKeyDown={enter}
               placeholder={t('sniping.Contract')}
               allowClear
+              autoComplete={'off'}
               // onChange={searchChange}
               suffix={
                 <SearchOutlined

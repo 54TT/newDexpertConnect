@@ -4,7 +4,7 @@ type ChainIdList =
   | '8453'
   | '995'
   | '997'
-  | '200910'
+  | '200901'
   | '200810'
   | '97';
 export const config: Record<ChainIdList, any> = {
@@ -260,9 +260,9 @@ export const config: Record<ChainIdList, any> = {
       decimals: '6',
     },
   },
-  '200910': {
-    rpcUrl: 'https://testnet-rpc.bitlayer.org',
-    chainId: 200910,
+  '200901': {
+    rpcUrl: 'https://rpc.bitlayer.org',
+    chainId: 200901,
     name: 'Bitlayer',
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',

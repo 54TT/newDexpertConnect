@@ -57,7 +57,7 @@ const { t } = useTranslation();
         status === 'Create' ? (
           <div className="create">
             <p>{t('token.name')}</p>
-            <Input className="createInputKey" allowClear  maxLength={20} onChange={change} />
+            <Input className="createInputKey"   autoComplete={'off'} allowClear  maxLength={20} onChange={change} />
             <p
               style={{
                 visibility: isShow ? 'visible' : 'hidden',
@@ -87,11 +87,11 @@ const { t } = useTranslation();
               />
             </div>
             <p className="ent">{t('token.key')}</p>
-            <Input.TextArea className="inputKey"
+            <Input.TextArea className="inputKey"  autoComplete={'off'}
               allowClear
               onChange={(e: any) => setPrivateKey(e.target.value || '')} autoSize />
             <p className="ent" style={{marginTop:'10px'}}>{t('token.wallet')}</p>
-            <Input className="inputKey" allowClear maxLength={20} onChange={change} />
+            <Input className="inputKey"   autoComplete={'off'} allowClear maxLength={20} onChange={change} />
             <p
               style={{
                 visibility: isShow ? 'visible' : 'hidden',

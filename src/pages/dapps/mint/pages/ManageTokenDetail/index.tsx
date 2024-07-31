@@ -121,7 +121,7 @@ function ManageTokenDetail() {
         setIsVerify(true);
       }
     } catch (e) {
-      return null
+      return null;
     }
     setVerifyLoading(false);
   };
@@ -144,9 +144,8 @@ function ManageTokenDetail() {
       if (recipent === 1) {
         setIsRemoveLimit(true);
       }
-
     } catch (e) {
-      return null
+      return null;
     }
     setRemoveLimitLoading(false);
   };
@@ -194,7 +193,7 @@ function ManageTokenDetail() {
         }
       }
     } catch (e) {
-      return null
+      return null;
     }
     setOpenTradeLoading(false);
   };
@@ -209,7 +208,7 @@ function ManageTokenDetail() {
         setIsOwn(false);
       }
     } catch (e) {
-      return null
+      return null;
     }
     setRenounceLoading(false);
   };
@@ -289,6 +288,8 @@ function ManageTokenDetail() {
           <InputNumber
             value={ethAmount}
             addonAfter="ETH"
+            controls={false}
+            stringMode={true}
             onChange={(v) => {
               setEthAmount(v);
             }}

@@ -308,6 +308,7 @@ export default function WalletDetail({
               <Input
                 value={value}
                 maxLength={20}
+                autoComplete={'off'}
                 rootClassName="setInput"
                 onChange={changeName}
                 suffix={

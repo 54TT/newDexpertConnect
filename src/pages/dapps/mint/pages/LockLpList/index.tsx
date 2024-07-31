@@ -24,7 +24,6 @@ function LockLpList() {
   const pairAddress = search.get('add');
   // pair展示
   const [infoData, setInfoData] = useState([]);
-
   // 锁定流动性弹窗相关参数
   const [openModal, setOpenModal] = useState(false);
   const [lpTokenBalance, setLpTokenBalance] = useState('0');
@@ -42,7 +41,6 @@ function LockLpList() {
       address,
       pairAddress
     );
-
     const lpTokenBalance = await getBalanceRpcEther(
       web3Provider,
       pairAddress,
@@ -59,7 +57,6 @@ function LockLpList() {
       return Promise.all(promiseList);
     };
     const lockList = await getUncxLockList();
-
     const data = lockList.map((item) => {
       const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
         item;
@@ -68,7 +65,7 @@ function LockLpList() {
           <div>
             <div>解锁时间</div>
             <div>
-              {dayjs.unix(unlockDate.toString()).format('YYYY/MM/DD HH')}
+              {dayjs.unix(unlockDate.toString()).format('YYYY/MM/DD HH:mm:ss')}
             </div>
           </div>
         ),
@@ -123,15 +120,13 @@ function LockLpList() {
     }
   };
   useEffect(() => {
-    if (chainId && loginProvider) {
+    if (loginProvider && contractConfig?.chainId === Number(chainId)) {
       getLockList();
     }
-  }, [chainId, loginProvider]);
-
+  }, [chainId, loginProvider, contractConfig]);
   const withdraw = async (index, lockId, amount) => {
     await uncxContract.withdraw(pairAddress, index, lockId, amount);
   };
-
   return (
     <>
       <ToLaunchHeader />
@@ -142,13 +137,17 @@ function LockLpList() {
       />
       {infoData?.map?.((item, index) => (
         <TokenItem
+          key={item?.owner}
           data={{
             ...item,
             desc: (
               <BottomButton
                 text="Unlock"
+                isBack={dayjs(dayjs.unix(1722452400)).isAfter(dayjs())}
                 onClick={() => {
-                  withdraw(index, item.lockId, item.lockAmount);
+                  if (dayjs(dayjs.unix(1722452400)).isAfter(dayjs())) {
+                    withdraw(index, item.lockId, item.lockAmount);
+                  }
                 }}
               />
             ),

@@ -21,7 +21,6 @@ export const toWeiWithDecimal = (
   amount: string,
   decimal: number
 ): BigNumberish => {
-  console.log(new Decimal(amount).mul(new Decimal(10).pow(decimal)).valueOf());
   return BigNumber.from(
     new Decimal(amount).mul(new Decimal(10).pow(decimal)).toString()
   );

@@ -20,6 +20,8 @@ function InputNumberWithString({ value, onChange }: InputWithBigNumberProps) {
   return (
     <Input
       value={showValue}
+      autoComplete={'off'}
+      allowClear
       onChange={(v) => handleOnChange(v)}
       onBlur={() => setShowValue(value)}
     />
