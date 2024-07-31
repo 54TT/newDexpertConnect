@@ -1,4 +1,4 @@
-import { ethers,BigNumber,Wallet,Contract } from "ethers"
+import { ethers,BigNumber,Contract,Signer } from "ethers"
 import { DutchOrderBuilder } from "@uniswap/uniswapx-sdk";
 import {OffChainUniswapXOrderValidator} from "./OffChainUniswapXOrderValidator";
 import ERC20ABI from "./ERC20ABI.json";
@@ -67,7 +67,7 @@ async function buildOrder(
   deadlineSeconds:number,
   inputToken:string,
   outputToken:string,
-  orderCreator:Wallet,
+  orderCreator:Signer,
 ) {
   const config=chainConfig[chainId]
   const reactorAddress=config.reactorAddress
@@ -77,12 +77,13 @@ async function buildOrder(
   const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds
   // 未知
   const decayStartTime = Math.round(new Date().getTime() / 1000)
+  const creatAddress=await orderCreator.getAddress()
   // 生成荷兰式订单，传入相关参数
   const order=new DutchOrderBuilder(chainId,reactorAddress,permist2Address).
     deadline(deadline)
     .decayEndTime(deadline)
     .decayStartTime(decayStartTime)
-    .swapper(orderCreator.address)
+    .swapper(creatAddress)
     .nonce(BigNumber.from(nonce))
     .input({ token:inputToken,startAmount:inputAmount,endAmount:inputAmount })
     .output({token:outputToken,startAmount:outputAmount,endAmount:outputAmount,recipient:recipient})
@@ -105,7 +106,7 @@ async function buildOrder(
 
 export const createOrder = async (
   chainId:number,
-  orderCreator:any,
+  orderCreator:Signer,
   inputToken:string,
   outputToken:string,
   recipient:string,
@@ -129,10 +130,10 @@ export const createOrder = async (
   const outputTokenSymbol = await outputTokenContract.symbol();
   const outputTokenDecimals = await outputTokenContract.decimals();
   // 授权额度
-  const inputPermit2Allowance: BigNumber = await inputTokenContract.allowance(orderCreator.address, permit2Address);
-  const outputPermit2Allowance: BigNumber = await outputTokenContract.allowance(orderCreator.address, permit2Address);
-  const inputReactorAllowance: BigNumber = await inputTokenContract.allowance(orderCreator.address, reactorAddress);
-  const outputReactorAllowance: BigNumber = await outputTokenContract.allowance(orderCreator.address, reactorAddress);
+  const inputPermit2Allowance: BigNumber = await inputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
+  const outputPermit2Allowance: BigNumber = await outputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
+  const inputReactorAllowance: BigNumber = await inputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
+  const outputReactorAllowance: BigNumber = await outputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
 
   if (inputPermit2Allowance.lt(ethers.constants.MaxUint256.div(2))) {
     await inputTokenContract.approve(permit2Address, ethers.constants.MaxUint256);
@@ -150,10 +151,9 @@ if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
 
   // 构建荷兰式拍卖订单，并获得签名
   console.log('buildOrder')
-  const { order ,payload,nonce }=await buildOrder(chainId,recipient,inputAmount,outputAmount,deadlineSeconds,inputToken,outputToken,orderCreator)
-  console.log(order);
-  console.log(payload);
-  console.log(nonce)
+  try {
+    const { order ,payload,nonce }=await buildOrder(chainId,recipient,inputAmount,outputAmount,deadlineSeconds,inputToken,outputToken,orderCreator)
+  
   const validationProvider: OffChainUniswapXOrderValidator = new OffChainUniswapXOrderValidator();
   const validationResp: OrderValidationResponse = validationProvider.validate(order);
   if(!validationResp.valid){
@@ -214,6 +214,8 @@ if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
   }
 
   return orderParams
-  
+} catch (error) {
+    
+}
   // return 'test'
 }

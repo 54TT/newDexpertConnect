@@ -3,27 +3,25 @@ import SelectTokenModal from "@/components/SelectTokenModal"
 import DefaultTokenImg from "@/components/DefaultTokenImg"
 import { useContext, useEffect, useRef, useState,useCallback} from "react"
 import { CountContext } from '@/Layout';
-// import Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
 import checkConnection from "@utils/checkConnect";
-import { ethers,Wallet } from "ethers";
+import {  ethers } from "ethers";
 import getBalanceRpc from "@utils/getBalanceRpc";
 import Decimal from "decimal.js";
-import { InputNumber,Skeleton,Select  } from "antd";
+import { InputNumber,Skeleton,Select ,Button, Input } from "antd";
 import { debounce } from "lodash";
 import { getAmountOut } from "@utils/swap/v2/getAmountOut";
 import { getUniswapV2RouterContract } from "@utils/contracts";
 import { getSwapFee } from '@utils/getSwapFee';
-import Permit2ABI from "@utils/limit/Permit2ABI.json"
 // import { ERC20Abi } from '@abis/ERC20Abi';
 import { createOrder } from "@utils/limit/createOrder";
-import { PermitSingle, getPermitSignature } from '@utils/permit2';
-import { expandToDecimalsBN } from '@utils/utils';
+import Request from '@/components/axios';
 
 // interface CreateOrderType{
 //   initChainId?:string;
 //   initToken?:[tokenIn:TokenItemData,tokenOut:TokenItemData];
 // }
-export default function CreateOrder() {
+export default function CreateOrder(getOrderList) {
   const {
     provider,
     contractConfig,
@@ -32,10 +30,10 @@ export default function CreateOrder() {
     // setChainId,
     transactionFee,
     setTransactionFee,
-    // user,
+    user,
     isLogin,
   } = useContext(CountContext)
-  // const { getAll } = Request();
+  const { getAll } = Request();
   const [showSelectModal, setShowSelectModal] = useState(false)
   // const [buttonLoading,setButtonLoading]=useState(false)
   const currentSetToken=useRef<'in'|'out'>('in')
@@ -43,14 +41,15 @@ export default function CreateOrder() {
   const [payTokenBalance,setPayTokenBalance]=useState<Decimal>(new Decimal(0))
   const [receiveTokenBalance,setReceiveTokenBalance]=useState<Decimal>(new Decimal(0))
   const [payToken,setPayToken]=useState<TokenItemData>()
-  const [payTokenAmount,setPayTokenAmount]=useState<number | null>(0)
-  const [receiveTokenAmount,setReceiveTokenAmount]=useState<number | null>(0)
+  const [payTokenAmount,setPayTokenAmount]=useState<string | null>('')
+  const [receiveTokenAmount,setReceiveTokenAmount]=useState<string | null>('')
   const [receiveToken,setReceiveToken]=useState<TokenItemData>()
   // const [ratename,setRatename]=useState('ETH')
   const [isExchangeRate,setIsExchangeRate]=useState(false)
   const [tokenRate,setTokenRate]=useState(0)
   const [payRate,setPayRate]=useState(0)
   const [rateLoading,setRateLoading]=useState(true)
+  const [createLoading,setCreateLoading]=useState(false)
   const [isShowUnitPrice,setIsShowUnitPrice]=useState(false)
   // paytoken的单位价格，U
   const [payTokenUnitPrice,setPayTokenUnitPrice]=useState<number>(0)
@@ -85,123 +84,91 @@ export default function CreateOrder() {
   
 
   // 提交订单
-  async function submitOrder() {
-    const provider = new ethers.providers.Web3Provider(loginPrivider);
-    const wallet = provider.getSigner();
-    console.log(wallet);
-    console.log(await wallet.getAddress());
-    console.log(wallet.provider);
-    
-    
-    // try{
-    //   const token = Cookies.get('token');
-    //   const res=await getAll({
-    //     method:'post',
-    //     url:'/api/v1/limit/createOrder',
-    //     data:{orderParams},
-    //     token,
-    //     chainId
-    //   })
-    //   if(res.status===200){
-    //     console.log(res.data);
-    //   }
-    // }catch(err){
-    //   console.log(err);
-    // }
-  }
-  // 获取授权签名
-  const signPermit=async ({
-    signerAddress,
-    token,
-    amount,
-    permit2Contract,
-    signer
-  })=>{
-    const { universalRouterAddress } = contractConfig;
-    const dateTimeStamp=Number(String(Date.now()).slice(0, 10)) + 3600;
-    const permitSingle:PermitSingle = {
-      sigDeadline: dateTimeStamp,
-      spender: universalRouterAddress,
-      details: {
+  async function submitOrder(order) {
+    console.log('---send order---');
+    try{
+      const token = Cookies.get('token');
+      const res=await getAll({
+        method:'post',
+        url:'/api/v1/limit/createOrder',
+        data:{
+          "order": {
+            ...order,
+            "decayStartTime": "1721049887",
+            "decayEndTime": "1721136287",
+            "deadline": "1721136287",
+            "fillerAt": "1721136287",
+            uid:user.uid,
+          }
+        },
         token,
-        amount,
-        expiration: 0,
-        nonce: 0,
-      },
-    };
-    let signatureData;;
-    try {
-      const { eip712Domain, PERMIT2_PERMIT_TYPE, permit } =
-        await getPermitSignature(
-          Number(chainId),
-          permitSingle,
-          permit2Contract,
-          signerAddress
-        );
-
-      const signature = await signer._signTypedData(
-        eip712Domain,
-        PERMIT2_PERMIT_TYPE,
-        permit
-      );
-      signatureData = { permit, signature };
-    } catch (e) {
-      console.log(e)
+        chainId
+      })
+      // console.log(res);
+      
+      if(res.status===200){
+        console.log('oreder submit success');
+        getOrderList(1)
+        setCreateLoading(false)
+      }
+    }catch(err){
+      console.log(err);
+      setCreateLoading(false)
     }
-    return signatureData
   }
+
   // 创建订单
   const approveOder=async ()=>{
     console.log('createOrder:');
-    const permit2Address='0x000000000022d473030f116ddee9f6b43ac78ba3'
     const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
     const signer = await web3Provider.getSigner();
-    const signerAddress = await signer.getAddress();
-    const permit2Contract=new ethers.Contract(
-      permit2Address,
-      Permit2ABI,
-      signer
-    )
-    const decimals =payToken.decimals;
-    const signature=await signPermit({
-      signerAddress,
-      token:payToken.contractAddress,
-      amount: expandToDecimalsBN(new Decimal(payTokenAmount), Number(decimals)),
-      permit2Contract,
-      signer
-    })
-    console.log('signature:',signature);
-    if(signature){
+    // console.log(await signer.getAddress())
 
+    // console.log(payTokenAmountInWei);
+    // console.log(receiveTokenAmount);
+    // console.log(receiveToken.decimals);
+    // console.log(Number(receiveTokenAmount).toFixed(Number(receiveToken.decimals)));
     
-    // const successApprove = recipent===1
-    // 获取签名
-    const priviteKey='140773e922cca018749e89c02f0943486796ffc124bc88bba7b28e9f6aa16c6c'
-    const sepoliaProvider = new ethers.providers.JsonRpcProvider('https://ethereum-sepolia-rpc.publicnode.com');
-    const orderCreator=new Wallet(priviteKey,sepoliaProvider)
-    // const provider = new ethers.providers.Web3Provider(loginPrivider);
-    // const wallet = provider.getSigner();
-    console.log(orderCreator);
-    // console.log(wallet);
-    const receipt: string = "0x0000000000000000000000000000000000000000";
+    // const receipt: string = "0x0000000000000000000000000000000000000000";
+    // const receipt: string = '0xafdDE8C379Bd2A54d4e7aB1dcBbF8b7332F61200';
+    const receipt: string = await signer.getAddress();
+    console.log('receipt:',receipt);
 
-    if(payTokenAmount!==0&&receiveTokenAmount!==0){
-      const payTokenAmountInWei = ethers.utils.parseUnits(payTokenAmount.toString(), 18);
-      const receiveTokenAmountInWei = ethers.utils.parseUnits(receiveTokenAmount.toString(), 18);
+    if(payTokenAmount && receiveTokenAmount){
+      console.log('---createOrder---')
+      const payTokenAmountInWei = ethers.utils.parseUnits(payTokenAmount, payToken.decimals);
+      const receiveTokenAmountInwei =ethers.utils.parseUnits(Number(receiveTokenAmount).toFixed(Number(receiveToken.decimals)).toString(), receiveToken.decimals);
+      console.log(payTokenAmountInWei);
+      console.log(receiveTokenAmountInwei);
+
       // 发起创建订单请求
       try {
         const orderReponse=await createOrder(
-          chainId,orderCreator,payToken.contractAddress,receiveToken.contractAddress,receipt,payTokenAmountInWei,receiveTokenAmountInWei,expires
+          chainId,
+          signer,
+          payToken.contractAddress,
+          receiveToken.contractAddress,
+          // '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
+          // '0xb72bc8971d5e595776592e8290be6f31937097c6',
+          receipt,
+          payTokenAmountInWei,
+          receiveTokenAmountInwei,
+          // BigNumber.from(1000000),
+          // BigNumber.from(1000000),
+          // expandToDecimalsBN(new Decimal(payTokenAmount),Number(payToken.decimals)),
+          // expandToDecimalsBN(new Decimal(receiveTokenAmount),Number(receiveToken.decimals)),
+          expires
         )
-        console.log(orderReponse);
+        // console.log(orderReponse);
         // submitOrder(orderReponse)
-        submitOrder()
+        submitOrder(orderReponse)
       } catch (error) {
         console.log(error);
+        setCreateLoading(false)
         throw(error)
       }
     }
-  }
+  // }
   }
   // 当前token的余额
   const getTokenBalance=useCallback(
@@ -211,7 +178,7 @@ export default function CreateOrder() {
         const injectProvider=new ethers.providers.Web3Provider(loginPrivider)
         const balance=await getBalanceRpc(injectProvider,token,wethAddress)
         dispatch(balance)
-        console.log('balance:'+Number(balance));
+        // console.log('balance:'+Number(balance));
         
       }
     },
@@ -248,7 +215,7 @@ export default function CreateOrder() {
     ].filter((item)=>item!==null)
     let amount:Decimal;
     amount=await getAmountOut.apply(null,params)
-    console.log(token.symbol,' Unit price:'+Number(amount.toFixed(6)));
+    // console.log(token.symbol,' Unit price:'+Number(amount.toFixed(6)));
     if(type==='pay') setPayTokenUnitPrice(Number(amount.toFixed(6)))
     if(type==='receive') setReceiveTokenUnitPrice(Number(amount.toFixed(6)))
   }
@@ -274,7 +241,7 @@ export default function CreateOrder() {
     ].filter((item)=>item!==null)
     let amount:Decimal;
     amount=await getAmountOut.apply(null,params)
-    console.log('paytoken-receivetoken:'+Number(amount.toFixed(6)));
+    // console.log('paytoken-receivetoken:'+Number(amount.toFixed(6)));
     setPayRate(Number(amount.toFixed(6)))
     setRateLoading(false)
     setTokenRate(Number(amount.toFixed(6)))
@@ -282,20 +249,20 @@ export default function CreateOrder() {
   // 计算receice的token数量
   const getAmount=async(
     type: 'pay' | 'receive',
-    value: number | null,
+    value: string | null,
     // quotePath: string[]
   ) => {
-    if(value==null||value===0) return;
+    if(value==null||value==='0'||value==='') return;
     if(((type==='pay' || type==='receive')&& !payToken?.contractAddress) || !receiveToken?.contractAddress){
       return;
     }
     // setButtonLoading(true)
       if(type==='pay'){
-        console.log('pay')
+        // console.log('pay')
         try {
-          console.log(payTokenAmount);
-          console.log(tokenRate);
-          console.log(payTokenAmount*tokenRate)
+          // console.log(payTokenAmount);
+          // console.log(tokenRate);
+          // console.log(payTokenAmount*tokenRate)
           // setTokenRate(Number(amount.toString()))
         } catch (error) {
           console.log(error);
@@ -308,6 +275,7 @@ export default function CreateOrder() {
   }
   // 获取汇率
   const getTokenRateDebounce=useCallback(debounce(getExchangeRate,500),[payToken,receiveToken,provider])
+
   // 防抖获取数据
   const getAmountDebounce=useCallback(debounce(getAmount,500),[
     payToken,
@@ -326,7 +294,7 @@ export default function CreateOrder() {
   useEffect(()=>{
     if(isLogin){
       getTokenBalance(payToken?.contractAddress,setPayTokenBalance)
-      console.log(payToken?.symbol);
+      // console.log(payToken?.symbol);
     }
     getToeknUnitPrice(payToken,'pay')
   },[payToken,isLogin,loginPrivider,chainId])
@@ -338,43 +306,39 @@ export default function CreateOrder() {
   useEffect(()=>{
     if(isLogin){
       getTokenBalance(receiveToken?.contractAddress,setReceiveTokenBalance)
-      console.log(receiveToken?.symbol);
+      // console.log(receiveToken?.symbol);
     }
   },[receiveToken,isLogin,loginPrivider,chainId])
   useEffect(()=>{
-    console.log('payTokenBalance:'+payTokenBalance)
-    console.log('receiveTokenBalance:'+receiveTokenBalance)
+    // console.log('payTokenBalance:'+payTokenBalance)
+    // console.log('receiveTokenBalance:'+receiveTokenBalance)
   },[payTokenBalance,receiveTokenBalance])
   useEffect(()=>{
-    console.log(tokenRate);
-    if(tokenRate!==0){
+    // console.log(tokenRate);
+    if(Number(payTokenAmount)<=Number(payTokenBalance)){
+      if(tokenRate!==0&&payTokenAmount){
+        setRateLoading(false)
+        setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
+      }
+    }else{
+      setPayTokenAmount(String(payTokenBalance))
       setRateLoading(false)
-      setReceiveTokenAmount(Number(payTokenAmount*tokenRate))
+      setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
     }
+    
     if(tokenRate===0){
       setRateLoading(true)
       getTokenRateDebounce()
     }
   },[tokenRate])
-  // const initData=()=>{
-  //   if(initToken?.length){
-  //     const [initTokenIn, initTokenOut] = initToken;
-  //     setPayToken(initTokenIn)
-  //     setReceiveToken(initTokenOut)
-  //   }
-  //   if(initChainId){
-  //     setChainId(initChainId)
-  //   }
-  // }
-  // useEffect(()=>{
-  //   initData()
-  // },[initToken])
   // 过期时间
   useEffect(() => {
-    console.log('exprie in:'+expires);
+    // console.log('exprie in:'+expires);
   },[expires])
   useEffect(()=>{
-    setReceiveTokenAmount(Number(payTokenAmount*tokenRate))
+    if(payTokenAmount){
+      setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
+    }
     getToeknUnitPrice(receiveToken,'receive')
   },[payTokenAmount])
   // receivetoken的数量改变，获取单位价格，计算receivetoken的市价
@@ -391,8 +355,8 @@ export default function CreateOrder() {
   },[contractConfig])
   // toekn发生改变
   useEffect(()=>{
-    console.log(payToken);
-    console.log(receiveToken);
+    // console.log(payToken);
+    // console.log(receiveToken);
     getExchangeRate()
     setRateLoading(true)
     setTokenRate(0)
@@ -428,7 +392,19 @@ export default function CreateOrder() {
               <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
             </div>
           </div>
-          <InputNumber
+          <Input 
+            rootClassName="amount-input"
+            variant="borderless"
+            value={payTokenAmount}
+            placeholder="0"
+            onChange={(e)=>{
+              if(Number(e.target.value)<=Number(payTokenBalance)) setPayTokenAmount(e.target.value)
+              if(Number(e.target.value)>Number(payTokenBalance)) setPayTokenAmount(payTokenBalance.toString())
+              if(currentInputToken.current!=='pay')
+                currentInputToken.current='pay'
+            }}
+          />
+          {/* <InputNumber
             className="token-input"
             variant="borderless"
             controls={false}
@@ -439,14 +415,14 @@ export default function CreateOrder() {
                 currentInputToken.current='pay'
               getAmountDebounce('pay',v)
             }}
-          />
+          /> */}
         </div>
         <div className="token-card-footer dis-between">
           <span className="token-card-footer-left">
             {payToken?.symbol}
           </span>
           <span className="token-card-footer-right">
-            ~${(payTokenAmount*payTokenUnitPrice)?.toFixed(6)||0}
+            ~${(Number(payTokenAmount)*payTokenUnitPrice)?.toFixed(6)||0}
           </span>
         </div>
       </div>
@@ -479,26 +455,38 @@ export default function CreateOrder() {
               <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
             </div>
           </div>
-          <InputNumber
+          <Input 
+            rootClassName="amount-input"
+            variant="borderless"
+            placeholder="0"
+            value={receiveTokenAmount}
+            onChange={(e)=>{
+              setReceiveTokenAmount(e.target.value)
+              if(currentInputToken.current!=='receive')
+                currentInputToken.current='receive'
+              getAmountDebounce('receive',e.target.value)
+            }}
+          />
+          {/* <InputNumber
             className="token-input"
             variant="borderless"
             controls={false}
             value={receiveTokenAmount}
             onChange={(v)=>{
               setReceiveTokenAmount(v || 0)
-              setPayTokenAmount(Number(v/tokenRate)<Number(payTokenBalance)?Number(v/tokenRate):Number(payTokenBalance))
+              // setPayTokenAmount(Number(v/tokenRate)<Number(payTokenBalance)?Number(v/tokenRate):Number(payTokenBalance))
               if(currentInputToken.current!=='receive')
                 currentInputToken.current='receive'
               getAmountDebounce('receive',v)
             }}
-          />
+          /> */}
         </div>
         <div className="token-card-footer dis-between">
           <span className="token-card-footer-left">
             {receiveToken?.symbol}
           </span>
           <span className="token-card-footer-right">
-            ~${(receiveTokenAmount*receiveTokenUnitPrice)?.toFixed(6)||0}
+            ~${(Number(receiveTokenAmount)*receiveTokenUnitPrice)?.toFixed(6)||0}
           </span>
         </div>
       </div>
@@ -549,14 +537,26 @@ export default function CreateOrder() {
       </div>
     </div>
     {/* <span className="approve-btn">Approve</span> */}
-    <span
-      className={`place-btn ${payToken&&receiveToken&&payTokenAmount!==0 && receiveTokenAmount!==0 ? 'order-active' : ''} ` }
+    {/* <span
+      className={`place-btn ${payToken&&receiveToken&&payTokenAmount && receiveTokenAmount ? 'order-active' : ''} ` }
       onClick={() => {
         approveOder()
         // submitOrder()
       }
-}
-    >{isLogin?'Place an order':'Connect Wallet'}</span>
+    }
+    >{isLogin?'Place an order':'Connect Wallet'}</span> */}
+    <Button
+      rootClassName="create-order-btn"
+      className={`${payToken&&receiveToken&&payTokenAmount && receiveTokenAmount ? 'order-active' : ''} ` }
+      loading={createLoading}
+      disabled={!payTokenAmount && !receiveTokenAmount}
+      onClick={() => {
+        approveOder()
+        setCreateLoading(true)
+      }}
+    >
+      {isLogin?'Place an order':'Connect Wallet'}
+    </Button>
     <div className="unit-price">
       <div className="unit-price-row">
         <div

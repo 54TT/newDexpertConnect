@@ -197,6 +197,7 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {historyItems.map((item) => (
               <div
+                key={item.contractAddress}
                 className={`history-token-item ${disabledTokens?.includes?.(item.contractAddress) ? 'disable-token' : ''}`}
                 onClick={() => handleTokenSelect(item)}
               >

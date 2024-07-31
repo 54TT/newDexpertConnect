@@ -1,21 +1,53 @@
-import { useEffect  } from 'react';
-import { Input } from 'antd';
+import { useEffect, useState,useContext  } from 'react';
+import { CountContext } from '@/Layout';
+import { Input,Dropdown,Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import OrderCard from './components/OrderCard';
 import CreateOrder from './components/CreateOrder';
+import Cookies from 'js-cookie';
+import Request from '@/components/axios';
+import OrderDetail from './components/OrderDetail';
+import ExecuteWindow from './components/ExcuteWindow';
+// import ExcuteWindow from './components/ExcuteWindow';
 // useContext
 import './index.less';
-// import cookie from 'js-cookie';
+import Loading from '@/components/allLoad/loading';
 // import { BigNumber, ethers } from 'ethers';
 // import { CountContext } from '@/Layout';
 // import { createOrder,  } from "@/../utils/limit/order"
 // import Request from '@/components/axios.tsx';
 export default function index() {
-  // const {user,chainId}=useContext(CountContext)
-  // const { loginPrivider } = useContext(CountContext);
+  const {
+    // provider,
+    // contractConfig,
+    loginPrivider,
+    chainId,
+    // setChainId,
+    // transactionFee,
+    // setTransactionFee,
+    // user,
+    // isLogin,
+  } = useContext(CountContext)
   const {t}=useTranslation()
-  // const { getAll } = Request();
+  const [currentIndex,setCurrentIndex]=useState(0)
+  const { getAll } = Request();
+  const [orderList,setOrderList]=useState([])
+  const [orderLoading,setOrderLoading]=useState(true)
+  const [showExecuteWindow,setShowExecuteWindow]=useState(false)
+  const [selectedOrder,setSelectedOrder]=useState()
+  // 展示订单详情
+  const [showDetailsWindow,setShowDetailsWindow]=useState(false)
+  const items:any = [
+    {
+      key: '0',
+      label:<p>Excuteing</p>
+    },
+    {
+      key:'1',
+      label:<p>History</p>
+    }
+  ];
   // const [nonce, setNonce] = useState('');
   // // 获取签名
   // const getNoce = async () => {
@@ -52,11 +84,53 @@ export default function index() {
     // });
     // console.log(res)
   // };
-
+  
+  // 获取订单列表
+  const getOrderList=async(page:number)=>{
+    try{
+      const token = Cookies.get('token');
+      const res=await getAll({
+        method:'post',
+        url:'/api/v1/limit/getOrderList',
+        data:{
+          uid:0,
+          search:"",
+          page:page,
+        },
+        token,
+        chainId
+      })
+      console.log(res.data.orders);
+      if(res.status===200){
+        setOrderList(res.data.orders)
+        setOrderLoading(false)
+      }
+  }catch(err){
+    setOrderLoading(false)
+    console.log(err)
+  }
+}
+  useEffect(() => {
+    console.log(showDetailsWindow);
+    
+  }, [showDetailsWindow]);
+  useEffect(() => {
+    console.log(selectedOrder);
+    
+  }, [selectedOrder]);
   useEffect(() => {
     // getNoce();
+    getOrderList(1)
   }, []);
   return (
+    <>
+    { (showDetailsWindow && selectedOrder) &&
+      <OrderDetail
+        order={selectedOrder}
+        setShowDetailsWindow={setShowDetailsWindow}
+        setShowExecuteWindow={setShowExecuteWindow}
+      />
+    }
     <div className="limit">
       <div className="limit-left">
         <div className="limit-left-header">
@@ -80,20 +154,72 @@ export default function index() {
               }
               />
               <div style={{borderRight:"2px solid #565656"}}></div>
-              <span className='orders-btn active'>Live Orders</span>
-              <span className='orders-btn'>Ongoning Order(s)</span>
-              <span className='orders-btn'>My Order(s)</span>
+              <span className={`orders-btn ${currentIndex===0?'active':''}`}
+              onClick={()=>{
+                setCurrentIndex(0)
+                getOrderList(1)
+                setOrderLoading(true)
+              }}>Live Orders</span>
+              <span className={`orders-btn ${currentIndex===1?'active':''}`}
+                onClick={()=>setCurrentIndex(1)}>Ongoning Order(s)</span>
+              <Dropdown
+                rootClassName='orders-type'
+                menu={{items}}
+                trigger={['click']}>
+                <span
+                  className={`orders-btn ${currentIndex===2?'active':''}`}
+                  onClick={()=>setCurrentIndex(2)}
+                >My Order(s)</span>
+              </Dropdown>
         </div>
         <div className="limit-left-body">
-          <OrderCard />
-          <OrderCard />
-          <OrderCard />
-          <OrderCard />
+          {orderLoading&&<Loading />}
+          {/* {
+            orderList?.length>0&&!orderLoading?(
+              <Flex wrap gap="small">
+                {orderList.map((item:any,index:number)=>(
+                  <OrderCard
+                    key={index}
+                    order={item}
+                  />
+                ))}
+              </Flex>
+            ):(<></>)
+          } */}
+          {
+            orderList?.length>0&&!orderLoading?(
+              orderList.map((item:any,index:number)=>(
+                <OrderCard
+                  key={index}
+                  order={item}
+                  chainId={chainId}
+                  loginPrivider={loginPrivider}
+                  setShowExecuteWindow={setShowExecuteWindow}
+                  setSelectedOrder={setSelectedOrder}
+                  setShowDetailsWindow={setShowDetailsWindow}
+                />
+              ))
+            ):(<></>)
+          }
         </div>
       </div>
       <div className="limit-right">
-        <CreateOrder />
+        <CreateOrder getOrderList={getOrderList} />
       </div>
+      <Modal
+        maskClosable={false}
+        centered
+        open={showExecuteWindow}
+        onCancel={()=>setShowExecuteWindow(false)}
+        footer={null}
+        destroyOnClose
+      >
+        <ExecuteWindow
+          order={selectedOrder}
+          setShowDetailsWindow={setShowDetailsWindow}
+          setShowExecuteWindow={setShowExecuteWindow}
+        />
+      </Modal>
       {/* <div
         className="top border"
         onClick={() => {
@@ -106,5 +232,6 @@ export default function index() {
       </div> */}
       <div className="bot"></div>
     </div>
+    </>
   );
 }
