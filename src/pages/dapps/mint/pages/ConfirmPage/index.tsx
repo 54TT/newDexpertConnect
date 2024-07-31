@@ -64,7 +64,8 @@ function ConfirmPage() {
       await deployTransaction.wait();
       history('/dapps/mint/manageToken');
     } catch (e) {
-      return null
+      console.log(e);
+      return null;
     }
     setLoading(false);
   };

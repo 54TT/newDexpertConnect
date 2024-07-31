@@ -68,6 +68,7 @@ export const config: Record<ChainIdList, any> = {
     wethUsdtPairAddress: '0x77f1a0ab2b0af8343640490264c65be6581bde3c',
     wethDecimal: 18,
     decimals: 18,
+    launchFee: '0.08',
     usdtAddress: '0xb72bc8971d5e595776592e8290be6f31937097c6',
     usdtDecimal: 6,
     ethAddress: '0x0000000000000000000000000000000000000000',
