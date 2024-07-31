@@ -63,8 +63,6 @@ function ManageTokenDetail() {
     const tokenContract = new ethers.Contract(address, LaunchERC20Abi, signer);
 
     setErc20Contract(tokenContract);
-    console.log(await tokenContract.owner());
-    console.log(walletAddress);
     const isOwn = (await tokenContract.owner()) === walletAddress;
     setIsOwn(isOwn);
 
@@ -123,7 +121,7 @@ function ManageTokenDetail() {
         setIsVerify(true);
       }
     } catch (e) {
-      console.log(e);
+      return null
     }
     setVerifyLoading(false);
   };
@@ -147,7 +145,6 @@ function ManageTokenDetail() {
         setIsRemoveLimit(true);
       }
 
-      console.log(tx);
     } catch (e) {
       return null
     }
@@ -197,7 +194,7 @@ function ManageTokenDetail() {
         }
       }
     } catch (e) {
-      console.log(e);
+      return null
     }
     setOpenTradeLoading(false);
   };
@@ -212,7 +209,7 @@ function ManageTokenDetail() {
         setIsOwn(false);
       }
     } catch (e) {
-      console.log(e);
+      return null
     }
     setRenounceLoading(false);
   };
@@ -293,7 +290,6 @@ function ManageTokenDetail() {
             value={ethAmount}
             addonAfter="ETH"
             onChange={(v) => {
-              console.log(v);
               setEthAmount(v);
             }}
           />

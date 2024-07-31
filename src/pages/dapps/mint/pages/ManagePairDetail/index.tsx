@@ -66,7 +66,6 @@ function ManagePairDetail() {
     };
 
     const lockAmount = await calcLockAmount();
-    console.log(lockAmount);
     const infoData = {
       paidAddress: {
         label: 'Pair address',
@@ -111,17 +110,13 @@ function ManagePairDetail() {
       signer
     );
     const walletAddress = await signer.getAddress();
-    console.log('walletAddress', walletAddress);
     const token0 = await pairContract.token0();
     const balance = await pairContract.balanceOf(walletAddress);
     const approveTx = await pairContract.approve(
       contractConfig.uniswapV2RouterAddress,
       balance
     );
-    console.log(approveTx, balance);
     const { status } = await approveTx.wait();
-    console.log(token0, balance.toString());
-
     if (status === 1) {
       const deadline = dayjs().add(10, 'm').unix();
       const removeLiquidityTx = await v2RouterContract.removeLiquidityETH(

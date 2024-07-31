@@ -50,8 +50,9 @@ function ConfirmPage() {
       const signer = await ethersProvider.getSigner();
       const abi = JSON.parse(metadataJson).output.abi;
       const contractFactory = new ethers.ContractFactory(abi, bytecode, signer);
+      console.log(1111111111)
+      console.log(decimals)
       // 先默认使用手续费版本
-
       const { deployTransaction, address } = await contractFactory.deploy(0, {
         value: toWeiWithDecimal(launchFee, decimals),
       });

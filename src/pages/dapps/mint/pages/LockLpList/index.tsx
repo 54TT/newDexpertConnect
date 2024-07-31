@@ -61,7 +61,6 @@ function LockLpList() {
     const lockList = await getUncxLockList();
 
     const data = lockList.map((item) => {
-      console.log(item);
       const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
         item;
       return {
@@ -103,10 +102,8 @@ function LockLpList() {
     const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
     const fee = (await uncxContract.gFees()).ethFee;
     const decimals = await pairContract.decimals();
-    console.log(decimals);
     const lockAmount = toWeiWithDecimal(toLockAmount, decimals);
     const unlockDate = lockDate.unix();
-    console.log(unlockDate);
     const feeInEth = true;
     const withdradwer = walletAddress;
 
