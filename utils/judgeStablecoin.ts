@@ -163,13 +163,13 @@ const chainList = [
   },
   {
     value: '5ire test',
-    icon: '/unkonwLogo.png',
+    icon: '/5ire.png',
     key: '0x3e3',
     chainId: '997',
   },
   {
-    value: '5ie',
-    icon: '/unkonwLogo.png',
+    value: '5ire',
+    icon: '/5ire.png',
     chainId: '995',
   },
   {
@@ -180,7 +180,7 @@ const chainList = [
   {
     value: 'bitLayer test',
     icon: '/bitlayer.jpg',
-    chainId: '200910',
+    chainId: '200901',
   },
   {
     value: 'Sepolia',

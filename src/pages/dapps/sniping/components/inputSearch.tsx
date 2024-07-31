@@ -11,6 +11,7 @@ const clickSearch=()=>{
   return (
 
     <Input
+    autoComplete={'off'}
     rootClassName="snipingInput"
     onKeyDown={enter}
     placeholder={placeholder}

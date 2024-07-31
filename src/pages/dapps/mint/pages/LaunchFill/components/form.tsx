@@ -1,64 +1,14 @@
 import { Form, Input, InputNumber } from 'antd';
-import { useState } from 'react';
-import './index.less';
-import PageHeader from '../../component/PageHeader';
-import BottomButton from '../../component/BottomButton';
-import { useForm } from 'antd/es/form/Form';
-import { useNavigate } from 'react-router-dom';
-
 const { TextArea } = Input;
-
-export interface FormDataType {
-  filename: string;
-  name: string;
-  symbol: string;
-  totalSupply: string;
-  decimals: string;
-  description: string;
-  initialBuyTax: string;
-  initialSellTax: string;
-  finalBuyTax: string;
-  finalSellTax: string;
-  reduceBuyTaxAt: string;
-  reduceSellTaxAt: string;
-  maxTxAmount: string;
-  maxWalletSize: string;
-  maxTaxSwap: string;
-  taxSwapThreshold: string;
-  buyCount: string;
-  preventSwapBefore: string;
-  payTokenType: string;
-}
-
-function LaunchForm({ formData, setFormData }) {
+import { useState } from 'react';
+export default function form({ form, formData ,onFinishForm}) {
   const [showAdv, setShowAdv] = useState(false);
-  const history = useNavigate();
-  // const [beforeTips, setBeforeTips] = useState(false);
-  const [form] = useForm();
-
-  const onFinishForm = (data) => {
-    const formatData = Object.keys(data).reduce((prev, key) => {
-      prev[key] = String(data[key]);
-      return prev;
-    }, {});
-    setFormData(formatData);
-    history('/dapps/mint/confirm/form');
-  };
-
   return (
     <>
-      <PageHeader
-        className="launch-form-header"
-        arrow={true}
-        title="Launch"
-        desc="填写代币详细信息"
-        disabled={false}
-      />
       <div className="launch-form mint-scroll scroll">
         <Form
           form={form}
           initialValues={formData}
-          onChange={(data) => console.log(data)}
           onFinish={(data) => onFinishForm(data)}
           labelCol={{ span: 8 }}
           labelWrap
@@ -69,31 +19,35 @@ function LaunchForm({ formData, setFormData }) {
             name="filename"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <Input placeholder="合约文件名称" />
+            <Input placeholder="合约文件名称" autoComplete={'off'} />
           </Form.Item>
           <Form.Item
             name="name"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <Input placeholder="代币名称" />
+            <Input placeholder="代币名称" autoComplete={'off'} />
           </Form.Item>
           <Form.Item
             name="symbol"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <Input placeholder="代币符号" />
+            <Input placeholder="代币符号" autoComplete={'off'} />
           </Form.Item>
           <Form.Item
             name="totalSupply"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <InputNumber placeholder="最大供应量" />
+            <InputNumber
+              placeholder="最大供应量"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item
             name="decimals"
             rules={[{ required: true, message: 'Please input!' }]}
           >
-            <Input placeholder="decimals" />
+            <Input placeholder="decimals" autoComplete={'off'} />
           </Form.Item>
           <Form.Item name="description">
             <TextArea
@@ -103,43 +57,91 @@ function LaunchForm({ formData, setFormData }) {
             />
           </Form.Item>
           {/* <Form.Item label="购买数量" name="buyCount" hidden={!showAdv}>
-            <InputNumber />
+            <InputNumber controls={false} stringMode={true}/>
           </Form.Item> */}
           <Form.Item name="initialBuyTax" hidden={!showAdv}>
-            <InputNumber placeholder="初始购买税" />
+            <InputNumber
+              placeholder="初始购买税"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="initialSellTax" hidden={!showAdv}>
-            <InputNumber placeholder="初始销售税" />
+            <InputNumber
+              placeholder="初始销售税"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="finalBuyTax" hidden={!showAdv}>
-            <InputNumber placeholder="最终购买税" />
+            <InputNumber
+              placeholder="最终购买税"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="finalSellTax" hidden={!showAdv}>
-            <InputNumber placeholder="最终销售税" />
+            <InputNumber
+              placeholder="最终销售税"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="reduceBuyTaxAt" hidden={!showAdv}>
-            <InputNumber placeholder="减少购买税" />
+            <InputNumber
+              placeholder="减少购买税"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="reduceSellTaxAt" hidden={!showAdv}>
-            <InputNumber placeholder="减少销售税" />
+            <InputNumber
+              placeholder="减少销售税"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="preventSwapBefore" hidden={!showAdv}>
-            <InputNumber placeholder="Prevent Swap Before" />
+            <InputNumber
+              placeholder="Prevent Swap Before"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="maxTxAmount" hidden={!showAdv}>
-            <InputNumber placeholder="最大交易数量" />
+            <InputNumber
+              placeholder="最大交易数量"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="maxWalletSize" hidden={!showAdv}>
-            <InputNumber placeholder="最大钱包大小" />
+            <InputNumber
+              placeholder="最大钱包大小"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="maxTaxSwap" hidden={!showAdv}>
-            <InputNumber placeholder="最大交易税" />
+            <InputNumber
+              placeholder="最大交易税"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="taxSwapThreshold" hidden={!showAdv}>
-            <InputNumber placeholder="税收互换门槛" />
+            <InputNumber
+              placeholder="税收互换门槛"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
           <Form.Item name="buyCount" hidden={true}>
-            <InputNumber placeholder="税收互换门槛" />
+            <InputNumber
+              placeholder="税收互换门槛"
+              controls={false}
+              stringMode={true}
+            />
           </Form.Item>
         </Form>
       </div>
@@ -157,9 +159,7 @@ function LaunchForm({ formData, setFormData }) {
           </p>
         )}
       </div>
-      <BottomButton text="创建代币" onClick={() => form.submit()} />
+      <p className="Advanced">Advanced Options</p>
     </>
   );
 }
-
-export default LaunchForm;

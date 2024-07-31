@@ -6,7 +6,6 @@ const approve = async (
 ) => {
   const tx = await contract.approve(to, amount);
   const recipent = await tx.wait();
-  console.log(recipent);
   return recipent.status === 1;
 };
 export default approve;

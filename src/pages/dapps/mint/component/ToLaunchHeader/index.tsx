@@ -16,7 +16,7 @@ function ToLaunchHeader() {
         <img src="/arrowDownBlack.svg" alt="" />
       </div>
       <div className="launch-home-button">
-        <div onClick={() => history('/dapps/mint/form')}>Launch</div>
+        <div onClick={() => history('/dapps/mint/fillIn')}>Launch</div>
       </div>
     </div>
   );

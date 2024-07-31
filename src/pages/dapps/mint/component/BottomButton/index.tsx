@@ -5,18 +5,21 @@ interface MintBottomButtonProps extends ButtonProps {
   onClick: () => void;
   bottom?: boolean;
   loading?: boolean;
+  isBack?: boolean;
 }
 function BottomButton({
   text,
   onClick,
   bottom = false,
   loading = false,
+  isBack,
   ...props
 }: MintBottomButtonProps) {
   return (
     <div className={`mint-bottom-button ${bottom ? 'mint-fix-bottom' : ''}`}>
       <Button
-        className="action-button"
+        className={`action-button `}
+        style={{ backgroundColor: isBack ? 'gray' : '' }}
         loading={loading}
         onClick={onClick}
         {...props}

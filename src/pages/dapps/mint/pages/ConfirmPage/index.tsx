@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import BottomButton from '../../component/BottomButton';
 import PageHeader from '../../component/PageHeader';
 import './index.less';
-import { MintContext } from '../..';
+import { MintContext } from '../../index';
 import Request from '@/components/axios';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
@@ -11,8 +11,9 @@ import InfoList from '../../component/InfoList';
 import { useNavigate } from 'react-router-dom';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
 function ConfirmPage() {
-  const { formData } = useContext(MintContext);
-  const { loginProvider, chainId, contractConfig } = useContext(CountContext);
+  // launchTokenPass, setLaunchTokenPass
+  const { formData, } = useContext(MintContext);
+  const { loginProvider, chainId, contractConfig , } = useContext(CountContext);
   const history = useNavigate();
   const [loading, setLoading] = useState(false);
   const { getAll } = Request();
@@ -51,6 +52,7 @@ function ConfirmPage() {
       const abi = JSON.parse(metadataJson).output.abi;
       const contractFactory = new ethers.ContractFactory(abi, bytecode, signer);
       // 先默认使用手续费版本
+      // launchTokenPass, setLaunchTokenPass   pass或者收费
       const { deployTransaction, address } = await contractFactory.deploy(0, {
         value: toWeiWithDecimal(launchFee, decimals),
       });
@@ -61,11 +63,11 @@ function ConfirmPage() {
       });
       await deployTransaction.wait();
       history('/dapps/mint/manageToken');
+      setLoading(false);
     } catch (e) {
-      console.log(e);
+      setLoading(false);
       return null;
     }
-    setLoading(false);
   };
 
   return (

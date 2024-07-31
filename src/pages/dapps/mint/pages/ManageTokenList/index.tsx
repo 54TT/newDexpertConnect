@@ -79,6 +79,7 @@ function ManageTokenList() {
       <ToLaunchHeader />
       <PageHeader
         disabled={false}
+        name={'tokenList'}
         className="launch-manage-token-header"
         title={'代币管理'}
       />

@@ -53,8 +53,10 @@ export default function index() {
     //   key: 'limit',
     // },
     {
+      imgAc: '/mainActive.svg',
+      img: '/mainMore.svg',
       status: params?.id === 'mint',
-      name: 'mint',
+      name: 'Mint',
       onClick: () => {
         history('/dapps/mint');
       },
@@ -81,7 +83,11 @@ export default function index() {
                         : 'rgb(54,54,54)',
                     }}
                   >
-                    <img src={i.status ? i.imgAc : i.img} alt="" />
+                    <img
+                      src={i.status ? i.imgAc : i.img}
+                      alt=""
+                      style={{ width: i.key === 'mint' ? '10px' : '' }}
+                    />
                   </div>
                   <span
                     style={{

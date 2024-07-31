@@ -16,13 +16,12 @@ function LaunchHome() {
             <div className="w5"></div>
             <div className="w6"></div>
           </div>
-
           <div className="launch-home-top-icon">
             <img src="/launchTop.svg" alt="" />
           </div>
           <div
             className="launch-home-button"
-            onClick={() => history('/dapps/mint/form')}
+            onClick={() => history('/dapps/mint/fillIn')}
           >
             Launch
           </div>

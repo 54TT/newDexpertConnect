@@ -494,12 +494,19 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            p:last-child {
+            & > .sure {
+              position: relative;
               border: 1px solid #ea6e6e;
               border-radius: 8px;
               padding: 4px 16px;
               cursor: pointer;
               color: #ea6e6e;
+              & > div {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+              }
             }
           }
         }
@@ -709,7 +716,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      & > p {
+      & > .p {
         width: 45%;
         text-align: center;
         padding: 8px 0;
@@ -722,9 +729,16 @@
         border: 1px solid rgb(134, 240, 151);
         color: rgb(134, 240, 151);
       }
-      & > p:last-child {
+      & > .sure {
         background-color: rgb(134, 240, 151);
         color: black;
+        position: relative;
+        & > div {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
       }
     }
     .token {
@@ -760,8 +774,8 @@
         height: 22px;
       }
     }
-    .logo {
-      width: 40px;
+    & > .logo {
+      width: 45px;
       margin: 0 auto;
     }
   }

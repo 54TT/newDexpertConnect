@@ -1,0 +1,164 @@
+.launchAll {
+  overflow: hidden;
+  .launch-form {
+    position: relative;
+    margin: 0 12px;
+    &-show-more {
+      color: #86f097;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    &-fix-bottom {
+      position: relative;
+      z-index: 2;
+      margin-left: 12px;
+    }
+    .launch-header-title {
+      font-size: 48px;
+      color: #86f097;
+    }
+
+    .ant-form-item {
+      margin-bottom: 10px;
+      .ant-row {
+        background-color: rgba(94, 94, 94, 0.3);
+        border-radius: 12px;
+        padding: 6px;
+
+        .ant-col {
+          label {
+            color: rgba(255, 255, 255, 0.85);
+          }
+          .ant-form-item-control-input {
+            input,
+            textarea {
+              background-color: transparent;
+              border: none;
+              color: white;
+              box-shadow: none;
+              &::placeholder {
+                color: rgba(255, 255, 255, 0.55);
+              }
+            }
+          }
+          .ant-input-number {
+            width: 100%;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            &.ant-input-number-focused {
+              border: none;
+              box-shadow: none;
+            }
+          }
+        }
+      }
+      &-margin-offset {
+        margin-bottom: 12px !important;
+      }
+    }
+  }
+  .launch-form-header {
+    .launch-header-title {
+      font-size: 40px;
+      font-weight: bold;
+      color: #86f097;
+    }
+  }
+  .Advanced {
+    color: #86f097;
+    display: inline-block;
+    border-bottom: 1px solid #86f097;
+    cursor: pointer;
+    margin: 0 12px 8px;
+  }
+
+  .passBox {
+    width: 85%;
+    margin: 10px auto 0;
+    .showBot {
+      width: 100%;
+      position: absolute;
+      bottom: 85px;
+      left: 0;
+      .hint {
+        width: 85%;
+        margin: 0 auto;
+      }
+    }
+    .passItem {
+      & > div {
+        background-color: rgba(94, 94, 94, 0.3);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        justify-content: space-between;
+        padding: 16px 24px;
+      }
+
+      .select {
+        border-radius: 50%;
+        padding: 5px;
+      }
+      & > .item {
+        margin-bottom: 8px;
+
+        & > div {
+          display: flex;
+          align-items: center;
+          .left {
+            width: 40px;
+            height: 40px;
+            box-sizing: border-box;
+            background-color: red;
+            border-radius: 50%;
+            position: relative;
+            img {
+              position: absolute;
+              width: 20px;
+              top: 50%;
+              left: 50%;
+              transform: translate(-40%, -50%);
+            }
+          }
+          .right {
+            margin-left: 10px;
+            p:first-child {
+              font-size: 16px;
+              margin-bottom: 4px;
+              color: white;
+            }
+            p:last-child {
+              font-size: 12px;
+              color: rgba(255, 255, 255, 0.55);
+            }
+          }
+        }
+      }
+      .more {
+        & > p:first-child {
+          color: white;
+          font-size: 16px;
+        }
+      }
+    }
+    .hint {
+      color: rgba(255, 255, 255, 0.55);
+      text-align: center;
+    }
+
+    .title {
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 20px;
+      text-align: center;
+    }
+  }
+  .bott {
+    width: 100%;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+  }
+}

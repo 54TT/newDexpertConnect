@@ -18,7 +18,6 @@ function ManagePairListAndContract() {
   const contractId = search.get('cId');
   const token = Cookies.get('token');
   const [data, setData] = useState([]);
-
   const getTokenPairList = async () => {
     const { data } = await getAll({
       method: 'get',
@@ -51,6 +50,7 @@ function ManagePairListAndContract() {
       />
       {data?.map?.((item) => (
         <TokenItem
+        key={item?.pairAddress}
           data={{
             title: `${item.token0}/${item.token1}`,
             ...item,
