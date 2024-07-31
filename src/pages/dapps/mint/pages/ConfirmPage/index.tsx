@@ -51,7 +51,6 @@ function ConfirmPage() {
       const abi = JSON.parse(metadataJson).output.abi;
       const contractFactory = new ethers.ContractFactory(abi, bytecode, signer);
       // 先默认使用手续费版本
-
       const { deployTransaction, address } = await contractFactory.deploy(0, {
         value: toWeiWithDecimal(launchFee, decimals),
       });
@@ -63,7 +62,8 @@ function ConfirmPage() {
       await deployTransaction.wait();
       history('/dapps/mint/manageToken');
     } catch (e) {
-      return null
+      console.log(e);
+      return null;
     }
     setLoading(false);
   };
