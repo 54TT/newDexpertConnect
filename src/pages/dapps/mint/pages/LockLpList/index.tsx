@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import { CountContext } from '@/Layout';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { ethers } from 'ethers';
 import { UncxAbi } from '@abis/UncxAbi';
 import TokenItem from '../../component/TokenItem';
