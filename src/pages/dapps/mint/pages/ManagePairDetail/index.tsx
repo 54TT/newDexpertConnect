@@ -71,7 +71,7 @@ function ManagePairDetail() {
       paidAddress: {
         label: 'Pair address',
         value: pairAddress,
-        show: `${pairAddress.slice(0, 3)}...${pairAddress.slice(pairAddress.length - 3)}`,
+        show: `${pairAddress.slice(0, 4)}...${pairAddress.slice(pairAddress.length - 4)}`,
       },
       balance: {
         label: 'Balance',

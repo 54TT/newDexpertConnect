@@ -52,14 +52,14 @@ export default function index() {
     //   },
     //   key: 'limit',
     // },
-    // {
-    //   status: params?.id === 'mint',
-    //   name: 'mint',
-    //   onClick: () => {
-    //     history('/dapps/mint');
-    //   },
-    //   key: 'mint',
-    // },
+    {
+      status: params?.id === 'mint',
+      name: 'mint',
+      onClick: () => {
+        history('/dapps/mint');
+      },
+      key: 'mint',
+    },
   ];
 
   return (
