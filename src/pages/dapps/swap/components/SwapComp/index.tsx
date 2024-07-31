@@ -456,7 +456,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           recipientAddress,
           permit,
           signature,
-        ])
+        ]);
       }
       if (currentInputToken.current === 'in') {
         if (quotePath === '0') {
@@ -839,7 +839,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
                 return;
               }
               setOpenSelect(true);
-            }}>
+            }}
+          >
             <DefaultTokenImg name={tokenIn?.symbol} icon={tokenIn?.logoUrl} />
             <span>{tokenIn?.symbol}</span>
             {changeAble && (

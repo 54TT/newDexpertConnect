@@ -192,5 +192,5 @@ const chainList = [
 
 export const swapChain = chainList.map((item) => ({
   ...item,
-  key: Number(item.chainId).toString(16),
+  key: `0x${Number(item.chainId).toString(16)}`,
 }));
