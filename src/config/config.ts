@@ -261,6 +261,7 @@ export const config: Record<ChainIdList, any> = {
     },
   },
   '200901': {
+    rpcUrl: 'https://rpc.bitlayer.org',
     chainId: 200901,
     name: 'Bitlayer',
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',

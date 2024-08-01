@@ -25,7 +25,7 @@ export const initFormData: Partial<FormDataType> = {
   payTokenType: '0',
 };
 function Mint() {
-  const [launchTokenPass, setLaunchTokenPass] = useState('');
+  const [launchTokenPass, setLaunchTokenPass] = useState('more');
   const [formData, setFormData] = useState<Partial<FormDataType>>(initFormData);
   const minContextValue = {
     formData,
