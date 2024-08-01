@@ -107,7 +107,7 @@ export default function form({ form, formData, onFinishForm }) {
               </Form.Item>
               <Form.Item name="preventSwapBefore">
                 <InputNumber
-                  placeholder="Prevent Swap Before"
+                  placeholder={t('token.Before')}
                   controls={false}
                   stringMode={true}
                 />
@@ -158,7 +158,6 @@ export default function form({ form, formData, onFinishForm }) {
           </p>
         )}
       </div>
-      <p className="Advanced">{t('token.gao')}</p>
     </>
   );
 }

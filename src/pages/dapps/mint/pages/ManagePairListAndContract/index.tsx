@@ -7,19 +7,27 @@ import { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout';
 import Cookies from 'js-cookie';
 import './index.less';
-
+import InfiniteScrollPage from '@/components/InfiniteScroll';
+import Loading from '@/components/allLoad/loading';
+import { useTranslation } from 'react-i18next';
 function ManagePairListAndContract() {
-  const { chainId } = useContext(CountContext);
+  const { t } = useTranslation();
+  const { chainId, browser } = useContext(CountContext);
   const { getAll } = Request();
   const [search] = useSearchParams();
   const history = useNavigate();
   const tokenSymbol = search.get('t');
   const address = search.get('add');
+  const [loading, setLoading] = useState(false);
+  const [isNext, setIsNext] = useState(false);
+  const [nextLoad, setNextLoad] = useState(false);
+  const [page, setPage] = useState(1);
+
   const contractId = search.get('cId');
   const token = Cookies.get('token');
   const [data, setData] = useState([]);
   const getTokenPairList = async () => {
-    const { data } = await getAll({
+    const res = await getAll({
       method: 'get',
       url: '/api/v1/launch-bot/pairs',
       data: {
@@ -28,16 +36,45 @@ function ManagePairListAndContract() {
       token,
       chainId,
     });
-    if (data.list) {
-      setData(data.list);
+    if (res?.status === 200) {
+      setLoading(true);
+      setData(res?.data?.list);
+      if (res?.data?.list?.length !== 10) {
+        setIsNext(true);
+      }
+    } else {
+      setLoading(true);
+    }
+  };
+
+  const changePage = () => {
+    if (!isNext) {
+      getTokenPairList();
+      setPage(page + 1);
+      setNextLoad(true);
     }
   };
 
   useEffect(() => {
-    // getContractDetail();
     getTokenPairList();
   }, [chainId]);
 
+  const items = (item: any) => {
+    return (
+      <TokenItem
+        key={item?.pairAddress}
+        data={{
+          title: `${item.token0}/${item.token1}`,
+          ...item,
+        }}
+        onClick={(data) => {
+          history(
+            `/dapps/tokencreation/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
+          );
+        }}
+      />
+    );
+  };
   return (
     <div className="launch-manage-pair">
       <ToLaunchHeader />
@@ -45,23 +82,23 @@ function ManagePairListAndContract() {
       <TokenItem
         data={{ title: '合约', address }}
         onClick={() => {
-          history(`/dapps/tokencreation/tokenDetail?add=${address}&cId=${contractId}`);
+          history(
+            `/dapps/tokencreation/tokenDetail?add=${address}&cId=${contractId}`
+          );
         }}
       />
-      {data?.map?.((item) => (
-        <TokenItem
-        key={item?.pairAddress}
-          data={{
-            title: `${item.token0}/${item.token1}`,
-            ...item,
-          }}
-          onClick={(data) => {
-            history(
-              `/dapps/tokencreation/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
-            );
-          }}
+      {loading ? (
+        <InfiniteScrollPage
+          data={data}
+          next={changePage}
+          items={items}
+          nextLoad={nextLoad}
+          no={t('token.noPair')}
+          scrollableTarget={'launchTokenList'}
         />
-      ))}
+      ) : (
+        <Loading status={'20'} browser={browser} />
+      )}
     </div>
   );
 }

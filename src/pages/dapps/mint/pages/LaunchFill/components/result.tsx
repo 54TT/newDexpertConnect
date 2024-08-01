@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import { useNavigate } from 'react-router-dom';
 import Load from '@/components/allLoad/load';
+import { useTranslation } from 'react-i18next';
 export default function resultBox({
   loading,
   result,
@@ -16,6 +17,7 @@ export default function resultBox({
   setLoading,
 }: any) {
   const history = useNavigate();
+const { t } = useTranslation();
   const { launchTokenPass, formData }: any = useContext(MintContext);
   const { loginProvider, chainId, contractConfig } = useContext(CountContext);
   const { getAll } = Request();
@@ -83,7 +85,7 @@ export default function resultBox({
     <div className="resultBox">
       <div className="back">
         <p className="with">
-          {result === 'loading' ? '正在部署' : 'Done'}
+          {result === 'loading' ? t('token.Deploying') : t('token.Done')}
           {result === 'loading' && <Load />}
         </p>
         <p
@@ -98,7 +100,7 @@ export default function resultBox({
               result === 'loading' ? '#434343' : 'rgb(134,240,151)',
           }}
         >
-          Back To Main Menu
+         {t('token.Back')}
         </p>
       </div>
       <img src="/resultBack.svg" alt="" style={{ width: '80%' }} />

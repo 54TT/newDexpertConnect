@@ -16,7 +16,11 @@ interface TokenItemPropsType {
 function TokenItem({ onClick, data }: TokenItemPropsType) {
   const { title, remark, desc, tips } = data;
   return (
-    <div className="launch-token-item" onClick={() => onClick?.(data)}>
+    <div
+      className="launch-token-item"
+      onClick={() => onClick?.(data)}
+      style={{ cursor: 'pointer' }}
+    >
       <div className="dis">
         {title && <div className="launch-token-item-title">{title}</div>}
         {remark && <div className="launch-token-item-remark">{remark}</div>}

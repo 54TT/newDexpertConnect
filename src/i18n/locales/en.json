@@ -368,6 +368,16 @@
     "Fee":"Service Fee Payment",
     "need":"0.08 ETH service fee applied for Token Creation. Free for D Pass or Golden Pass holder",
     "Notice":"Important Notice:",
-    "be":" Please be aware that deploying a smart contract through the Launch bot will incur a service fee of 0.08 ETH. This fee is used for ongoing development, marketing, and token buybacks."
+    "be":" Please be aware that deploying a smart contract through the Launch bot will incur a service fee of 0.08 ETH. This fee is used for ongoing development, marketing, and token buybacks.",
+    "Before":"Prevent Swap Before",
+    "Back":"Back To Main Menu",
+    "Deploying":"Deploying",
+    "Done":"Done",
+    "me":"Token management" ,
+    "Banlance":"Banlance",
+    "Lock":"Lock amount",
+    "Pairaddress":"Pair address",
+    "noPair": "No pair address yet"
+
   }
 }

@@ -1,78 +1,95 @@
 import { Input, Select } from 'antd';
-// import BottomButton from '../BottomButton';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
-// import TokenItem, { ItemDataType } from '../TokenItem';
 import './index.less';
+import Loading from '@/components/allLoad/loading';
 import Request from '@/components/axios';
 import Cookies from 'js-cookie';
 import { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout';
 import TokenItem from '../../component/TokenItem';
 import { useNavigate } from 'react-router-dom';
+import InfiniteScrollPage from '@/components/InfiniteScroll';
 const { Search } = Input;
-interface TokenItemDataType {
-  address: string;
-  contractId: string;
-  name: string;
-  symbol: string;
-}
+// interface TokenItemDataType {
+//   address: string;
+//   contractId: string;
+//   name: string;
+//   symbol: string;
+// }
+import { useTranslation } from 'react-i18next';
 function ManageTokenList() {
-  const { chainId } = useContext(CountContext);
+  const { t } = useTranslation();
+  const { chainId, browser } = useContext(CountContext);
   const { getAll } = Request();
   const [data, setData] = useState([]);
+  console.log(data);
+  const [loading, setLoading] = useState(false);
+  const [isNext, setIsNext] = useState(false);
+  const [nextLoad, setNextLoad] = useState(false);
+  // const [searchPar, setSearchPar] = useState('');
+  const [page, setPage] = useState(1);
   const history = useNavigate();
-  // const data = [
-  //   {
-  //     title: '123',
-  //     desc: '123',
-  //     tips: '123',
-  //     remark: '123',
-  //   },
-  //   {
-  //     title: '123',
-  //     desc: '123',
-  //     tips: '123',
-  //     remark: '123',
-  //   },
-  //   {
-  //     title: '123',
-  //     desc: '123',
-  //     tips: '123',
-  //     remark: '123',
-  //   },
-  //   {
-  //     title: '123',
-  //     desc: '123',
-  //     tips: '123',
-  //     remark: '123',
-  //   },
-  //   {
-  //     title: '123',
-  //     desc: '123',
-  //     tips: '123',
-  //     remark: '123',
-  //   },
-  // ];
-  const getTokenList = async ({ page = 1, search = null }) => {
+  const getTokenList = async (nu: number, value?: string) => {
     const token = Cookies.get('token');
-    const { data } = await getAll({
+    const res = await getAll({
       method: 'get',
       url: '/api/v1/launch-bot/contract/list',
       data: {
-        page,
+        page: nu,
         pageSize: 5,
-        search,
+        search: value,
       },
       token,
       chainId,
     });
-    setData(data.data);
+    if (res?.status === 200) {
+      if (nu === 1) {
+        setData(res?.data?.data);
+      } else {
+        const t = data.concat(res?.data?.data);
+        setData([...t]);
+      }
+      if (res?.data?.data?.length != 10) {
+        setIsNext(true);
+      }
+      setLoading(true);
+      setNextLoad(false);
+    } else {
+      setLoading(true);
+      setNextLoad(false);
+    }
   };
-
+  const changePage = () => {
+    if (!isNext) {
+      getTokenList(page + 1);
+      setPage(page + 1);
+      setNextLoad(true);
+    }
+  };
   useEffect(() => {
-    getTokenList({});
+    getTokenList(1, '');
+    setPage(1);
+    setLoading(false)
   }, [chainId]);
+  const items = (item: any) => {
+    return (
+      <TokenItem
+        key={item.contractId}
+        data={{
+          title: item.symbol,
+          desc: item.name,
+          id: item.contractId,
+          address: item.address,
+        }}
+        onClick={({ id, address, title }) =>
+          history(
+            `/dapps/tokencreation/managePair?cId=${id}&add=${address}&t=${title}`
+          )
+        }
+      />
+    );
+  };
 
   return (
     <div className="launch-manage-token">
@@ -81,28 +98,29 @@ function ManageTokenList() {
         disabled={false}
         name={'tokenList'}
         className="launch-manage-token-header"
-        title={'代币管理'}
+        title={t('token.me')}
       />
       <div className="launch-manage-token-search">
         <Search />
         <Select />
       </div>
-      <div className="mint-scroll scroll">
-        {data.map((item: TokenItemDataType) => (
-          <TokenItem
-            data={{
-              title: item.symbol,
-              desc: item.name,
-              id: item.contractId,
-              address: item.address,
-            }}
-            onClick={({ id, address, title }) =>
-              history(
-                `/dapps/tokencreation/managePair?cId=${id}&add=${address}&t=${title}`
-              )
-            }
+      <div
+        className="mint-scroll scroll"
+        id="launchTokenList"
+        style={{ height: '340px' }}
+      >
+        {loading ? (
+          <InfiniteScrollPage
+            data={data}
+            next={changePage}
+            items={items}
+            nextLoad={nextLoad}
+            no={t('token.no')}
+            scrollableTarget={'launchTokenList'}
           />
-        ))}
+        ) : (
+          <Loading status={'20'} browser={browser} />
+        )}
       </div>
     </div>
   );

@@ -7,6 +7,8 @@ import Pass from './components/pass';
 import Result from './components/result';
 import Confirm from './components/confirm';
 import { useTranslation } from 'react-i18next';
+
+
 export interface FormDataType {
   filename: string;
   name: string;
@@ -37,7 +39,7 @@ function LaunchForm({ formData, setFormData }) {
   const [result, setResult] = useState('loading');
   const [form] = useForm();
   // form-----填写表单    pass-----选择pass卡  confirm---创建token确认页面  result---loading和结果页面
-  const [step, setStep] = useState('result');
+  const [step, setStep] = useState('form');
   // 提交表单
   const onFinishForm = (data) => {
     const par = Object.keys(data).reduce((prev, key) => {
@@ -46,7 +48,7 @@ function LaunchForm({ formData, setFormData }) {
     }, {});
     if (par) {
       setStep('pass');
-      setFormData({ ...par, ...formData, buyCount: '0' });
+      setFormData({ ...formData,...par, buyCount: '0' });
     }
   };
   const change = () => {

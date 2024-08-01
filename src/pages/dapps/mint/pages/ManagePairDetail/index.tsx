@@ -14,6 +14,7 @@ import Decimal from 'decimal.js';
 import { UniswapV2RouterAbi } from '@abis/UniswapV2RouterAbi';
 import dayjs from 'dayjs';
 import { UncxAbi } from '@abis/UncxAbi';
+import Loading from '@/components/allLoad/loading';
 import getBalanceRpcEther from '@utils/getBalanceRpc';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
 function ManagePairDetail() {
@@ -22,13 +23,16 @@ function ManagePairDetail() {
   const token1 = search.get('t1');
   const pairAddress = search.get('add');
   const history = useNavigate();
-  const { loginProvider, contractConfig } = useContext(CountContext);
+  const { loginProvider, contractConfig, chainId, browser } =
+    useContext(CountContext);
   const [tokenBalance, setTokenBalance] = useState('0');
   const [infoData, setInfoData] = useState<any>();
   const [burnLpModal, setBurnLpModal] = useState(false);
   const [removeLpModal, setRemoveLpModal] = useState(false);
+  const [isButton, setIsButton] = useState(false);
+  //  loading
+  const [loading, setLoading] = useState(false);
   const [pairContract, setPairContract] = useState<ethers.Contract>();
-
   const getPairInfo = async () => {
     const { uncxAddress, wethAddress } = contractConfig;
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
@@ -87,49 +91,62 @@ function ManagePairDetail() {
       },
     };
     setInfoData(infoData);
+    setLoading(true);
   };
-
+  console.log(chainId);
+  console.log(contractConfig);
   useEffect(() => {
-    getPairInfo();
-  }, [loginProvider]);
-
+    if (Number(chainId) === contractConfig?.chainId) {
+      getPairInfo();
+    }
+  }, [loginProvider, chainId, contractConfig]);
   const burnLP = async () => {
-    const tx = await pairContract.transfer(
-      zeroAddress,
-      BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
-    );
-    await tx.wait();
-    getPairInfo();
+    try {
+      const tx = await pairContract.transfer(
+        zeroAddress,
+        BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
+      );
+      await tx.wait();
+      getPairInfo();
+      setIsButton(false);
+    } catch (e) {
+      setIsButton(false);
+    }
   };
 
   const removeLp = async () => {
-    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-    const signer = await web3Provider.getSigner();
-    const v2RouterContract = new ethers.Contract(
-      contractConfig.uniswapV2RouterAddress,
-      UniswapV2RouterAbi,
-      signer
-    );
-    const walletAddress = await signer.getAddress();
-    const token0 = await pairContract.token0();
-    const balance = await pairContract.balanceOf(walletAddress);
-    const approveTx = await pairContract.approve(
-      contractConfig.uniswapV2RouterAddress,
-      balance
-    );
-    const { status } = await approveTx.wait();
-    if (status === 1) {
-      const deadline = dayjs().add(10, 'm').unix();
-      const removeLiquidityTx = await v2RouterContract.removeLiquidityETH(
-        token0,
-        balance,
-        0,
-        0,
-        walletAddress,
-        deadline
+    try {
+      const web3Provider = new ethers.providers.Web3Provider(loginProvider);
+      const signer = await web3Provider.getSigner();
+      const v2RouterContract = new ethers.Contract(
+        contractConfig.uniswapV2RouterAddress,
+        UniswapV2RouterAbi,
+        signer
       );
-      await removeLiquidityTx.wait();
-      getPairInfo();
+      const walletAddress = await signer.getAddress();
+      const token0 = await pairContract.token0();
+      const balance = await pairContract.balanceOf(walletAddress);
+      const approveTx = await pairContract.approve(
+        contractConfig.uniswapV2RouterAddress,
+        balance
+      );
+      const { status } = await approveTx.wait();
+      if (status === 1) {
+        const deadline = dayjs().add(10, 'm').unix();
+        const removeLiquidityTx = await v2RouterContract.removeLiquidityETH(
+          token0,
+          balance,
+          0,
+          0,
+          walletAddress,
+          deadline
+        );
+        await removeLiquidityTx.wait();
+        getPairInfo();
+      }
+      setIsButton(false);
+    } catch (e) {
+      setIsButton(false);
     }
   };
 
@@ -149,30 +166,40 @@ function ManagePairDetail() {
         className="launch-manage-token-header"
         title={`${token0}/${token1}`}
       />
-      <InfoList className="manage-token-detail-info" data={data} />
-      <div className="pair-manage-button">
-        <BottomButton text="LockLP" onClick={() => lockLpToken()} />
-        <BottomButton
-          className=""
-          ghost
-          danger
-          text="RemoveLP"
-          onClick={() => setRemoveLpModal(true)}
-        />
-        <BottomButton
-          className=""
-          ghost
-          danger
-          text="BurnLP"
-          onClick={() => setBurnLpModal(true)}
-        />
-      </div>
+      {loading ? (
+        <>
+          <InfoList className="manage-token-detail-info" data={data} />
+          <div className="pair-manage-button">
+            <BottomButton text="LockLP" onClick={() => lockLpToken()} />
+            <BottomButton
+              className=""
+              ghost
+              danger
+              text="RemoveLP"
+              onClick={() => setRemoveLpModal(true)}
+            />
+            <BottomButton
+              className=""
+              ghost
+              danger
+              text="BurnLP"
+              onClick={() => setBurnLpModal(true)}
+            />
+          </div>
+        </>
+      ) : (
+        <Loading status={'20'} browser={browser} />
+      )}
       <CommonModal
         open={removeLpModal}
         title="Remove LP"
         footer={null}
         className="mint-common-modal"
-        onCancel={() => setRemoveLpModal(false)}
+        onCancel={() => {
+          if (!isButton) {
+            setRemoveLpModal(false);
+          }
+        }}
       >
         <div style={{ color: '#fff' }}>
           Your LP token will be send to Zero Address
@@ -181,9 +208,11 @@ function ManagePairDetail() {
           className=""
           ghost
           danger
+          loading={isButton}
           text="Confirm"
           onClick={async () => {
-            await removeLp();
+            setIsButton(true);
+            removeLp();
             setRemoveLpModal(true);
           }}
         />
@@ -193,7 +222,11 @@ function ManagePairDetail() {
         open={burnLpModal}
         footer={null}
         title="Burn LP"
-        onCancel={() => setBurnLpModal(false)}
+        onCancel={() => {
+          if (!isButton) {
+            setBurnLpModal(false);
+          }
+        }}
       >
         <div style={{ color: '#fff' }}>
           Your LP token will be send to Zero Address
@@ -202,8 +235,12 @@ function ManagePairDetail() {
           className=""
           ghost
           danger
+          loading={isButton}
           text="Confirm"
-          onClick={() => burnLP()}
+          onClick={() => {
+            setIsButton(true);
+            burnLP();
+          }}
         />
       </CommonModal>
     </>

@@ -29,6 +29,8 @@ function LockLpList() {
   const [lpTokenBalance, setLpTokenBalance] = useState('0');
   const [lockDate, setLockDate] = useState<Dayjs>(null);
   const [toLockAmount, setToLockAmount] = useState('0');
+  // lock   loading
+  const [lockLoing, setLockLoing] = useState(false);
   const [uncxContract, setUncxContract] = useState<ethers.Contract>();
   const getLockList = async () => {
     const { uncxAddress, wethAddress } = contractConfig;
@@ -85,38 +87,42 @@ function LockLpList() {
     });
     setInfoData(data);
   };
-
   const lockLp = async () => {
-    const { uncxAddress } = contractConfig;
-    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-    const signer = await web3Provider.getSigner();
-    const walletAddress = await signer.getAddress();
-    const pairContract = new ethers.Contract(
-      pairAddress,
-      UniswapV2PairAbi,
-      signer
-    );
-    const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
-    const fee = (await uncxContract.gFees()).ethFee;
-    const decimals = await pairContract.decimals();
-    const lockAmount = toWeiWithDecimal(toLockAmount, decimals);
-    const unlockDate = lockDate.unix();
-    const feeInEth = true;
-    const withdradwer = walletAddress;
-
-    if (await approve(pairContract, uncxAddress, lockAmount)) {
-      const tx = await uncxContract.lockLPToken(
+    try {
+      const { uncxAddress } = contractConfig;
+      const web3Provider = new ethers.providers.Web3Provider(loginProvider);
+      const signer = await web3Provider.getSigner();
+      const walletAddress = await signer.getAddress();
+      const pairContract = new ethers.Contract(
         pairAddress,
-        lockAmount,
-        unlockDate,
-        zeroAddress,
-        feeInEth,
-        withdradwer,
-        {
-          value: fee,
-        }
+        UniswapV2PairAbi,
+        signer
       );
-      console.log(tx);
+      const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
+      const fee = (await uncxContract.gFees()).ethFee;
+      const decimals = await pairContract.decimals();
+      const lockAmount = toWeiWithDecimal(toLockAmount, decimals);
+      const unlockDate = lockDate.unix();
+      const feeInEth = true;
+      const withdradwer = walletAddress;
+      if (await approve(pairContract, uncxAddress, lockAmount)) {
+        const tx = await uncxContract.lockLPToken(
+          pairAddress,
+          lockAmount,
+          unlockDate,
+          zeroAddress,
+          feeInEth,
+          withdradwer,
+          {
+            value: fee,
+          }
+        );
+        console.log(tx);
+      }
+      getLockList()
+      setLockLoing(false);
+    } catch (e) {
+      setLockLoing(false);
     }
   };
   useEffect(() => {
@@ -143,15 +149,17 @@ function LockLpList() {
             desc: (
               <BottomButton
                 text="Unlock"
+                loading={lockLoing}
                 isBack={dayjs(
                   dayjs.unix(Number(item?.unlockDate?.toString()))
                 ).isAfter(dayjs())}
                 onClick={() => {
                   if (
-                    dayjs(
+                    !dayjs(
                       dayjs.unix(Number(item?.unlockDate?.toString()))
                     ).isAfter(dayjs())
                   ) {
+                    setLockLoing(true);
                     withdraw(index, item.lockId, item.lockAmount);
                   }
                 }}
@@ -164,7 +172,9 @@ function LockLpList() {
         text="Lock LP"
         bottom
         onClick={() => {
-          setOpenModal(true);
+          if (!lockLoing) {
+            setOpenModal(true);
+          }
         }}
       />
       <CommonModal
@@ -172,7 +182,11 @@ function LockLpList() {
         open={openModal}
         footer={null}
         title="Lock LP"
-        onCancel={() => setOpenModal(false)}
+        onCancel={() => {
+          if (!lockLoing) {
+            setOpenModal(false);
+          }
+        }}
       >
         <div>
           <div className="locklp-list-title">Lock Amount</div>
@@ -200,7 +214,9 @@ function LockLpList() {
         </div>
         <BottomButton
           text="Confirm"
+          loading={lockLoing}
           onClick={() => {
+            setLockLoing(true);
             lockLp();
           }}
         />
