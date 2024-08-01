@@ -39,43 +39,7 @@
       font-family: 'AaHouDiHei';
     }
   }
-  &-bottom {
-    position: absolute;
-    bottom: -55%;
-    width: 1000px;
-    display: flex;
-    justify-content: space-around;
-    .rocket {
-      animation-name: rocket-up-and-down;
-      animation-duration: 5s;
-      /* 动画无限循环 */
-      animation-iteration-count: infinite;
-      /* 动画的计时函数，这里是线性 */
-      animation-timing-function: linear;
-    }
-    .cloud {
-      width: 100%;
-      position: relative;
-      bottom: -60px;
-      /* 动画持续时间 */
-      animation-duration: 5.2s;
-      /* 动画无限循环 */
-      animation-iteration-count: infinite;
-      /* 动画的计时函数，这里是线性 */
-      animation-timing-function: linear;
-      /* 确保元素的中心点用作旋转的基点 */
-      transform-origin: center;
-      &-right {
-        right: 20%;
-        animation-name: clockwise-rotate;
-      }
-      &-left {
-        left: 20%;
-        animation-name: counterclockwise-rotate;
-        animation-duration: 4.8s;
-      }
-    }
-  }
+  
   .choose-chain {
     position: absolute;
     right: 12px;

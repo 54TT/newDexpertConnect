@@ -267,6 +267,7 @@ function Layout() {
       url: '/api/v1/userinfo/' + id,
       data: {},
       token,
+      chainId
     });
     if (data?.status === 200) {
       const user = data?.data?.data;

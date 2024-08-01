@@ -62,6 +62,7 @@ export default function index({ id }: any) {
       url: '/api/v1/d_pass/info',
       data: {},
       token,
+      chainId: id.toString(),
     });
     if (res?.status === 200) {
       setData(res?.data);
@@ -133,7 +134,6 @@ export default function index({ id }: any) {
                   alt=""
                 />
                 <p>
-                
                   {user?.username
                     ? user?.username.slice(0, 4) + '...'
                     : user?.username}

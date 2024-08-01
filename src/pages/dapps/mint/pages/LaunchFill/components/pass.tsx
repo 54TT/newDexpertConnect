@@ -5,9 +5,11 @@ import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
 import Loading from '@/components/allLoad/loading';
 import { MintContext } from '../../../index';
+import { useTranslation } from 'react-i18next';
 export default function pass() {
+  const { t } = useTranslation();
   const { getAll } = Request();
-  const { browser }: any = useContext(CountContext);
+  const { browser,chainId }: any = useContext(CountContext);
   const { launchTokenPass, setLaunchTokenPass }: any = useContext(MintContext);
   const [params, setParams] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -18,6 +20,7 @@ export default function pass() {
       url: '/api/v1/d_pass/info',
       data: {},
       token,
+      chainId
     });
     if (res?.status === 200) {
       setParams(res?.data);
@@ -67,10 +70,9 @@ export default function pass() {
   }, []);
   return (
     <div className="passBox">
-      <p className="title">Service Fee Payment</p>
+      <p className="title">{t('token.Fee')}</p>
       <p className="hint" style={{ fontSize: '15px', margin: '8px 0' }}>
-        0.08 ETH service fee applied for Token Creation. Free for D Pass or
-        Golden Pass holder
+        {t('token.need')}
       </p>
       {loading ? (
         <div className="passItem">
@@ -100,7 +102,7 @@ export default function pass() {
               setLaunchTokenPass('more' === launchTokenPass ? '' : 'more');
             }}
           >
-            <p>Service Fee Payment</p>
+            <p>{t('token.Fee')}</p>
             <p
               className="select"
               style={{
@@ -116,12 +118,8 @@ export default function pass() {
         <Loading status={'20'} browser={browser} />
       )}
       <div className="showBot">
-        <p className="hint">Important Notice:</p>
-        <p className="hint">
-          Please be aware that deploying a smart contract through the Launch bot
-          will incur a service fee of 0.08 ETH. This fee is used for ongoing
-          development, marketing, and token buybacks.
-        </p>
+        <p className="hint">{t('token.Notice')}</p>
+        <p className="hint">{t('token.be')}</p>
       </div>
     </div>
   );

@@ -112,6 +112,7 @@ export default function index() {
           payType: payType,
         },
         token: tokens,
+        chainId:sniperChainId
       });
       if (res?.status === 200) {
         setSelect('order');
@@ -134,6 +135,7 @@ export default function index() {
         url: '/api/v1/preswap/cancel',
         data: { orderId: orderPar?.orderCode },
         token,
+        chainId:sniperChainId
       });
       if (res?.status === 200) {
         setIsShow(false);

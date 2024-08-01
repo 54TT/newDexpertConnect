@@ -20,6 +20,7 @@ export default function oriderDetail({ orderId, tokenInAmount }: any) {
       url: '/api/v1/sniper/getSniperOrderDetail',
       data: { orderCode: orderId },
       token,
+      
     });
     if (res?.status === 200) {
       setPar(res?.data?.orderDetail);

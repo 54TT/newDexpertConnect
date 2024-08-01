@@ -53,6 +53,7 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
         url: '/api/v1/preswap/cancel',
         data: { orderId: orderId },
         token,
+        chainId
       });
       if (res?.status === 200) {
         const tt = data?.map((i: any) => {

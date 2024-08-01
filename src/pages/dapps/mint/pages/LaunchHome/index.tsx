@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import './index.less';
 import { useContext, useEffect } from 'react';
 import { MintContext, initFormData } from '../../index';
+import Back from '../../component/Background'
 import ChangeChain from '@/components/ChangeChain';
 function LaunchHome() {
   const history = useNavigate();
@@ -32,11 +33,8 @@ function LaunchHome() {
           </div>
           <ChangeChain hideChain={true} disabledChain={true} />
         </div>
-        <div className="launch-home-bottom">
-          <img className="cloud-left cloud" src="/cloudLeft.svg" alt="" />
-          <img className="rocket" src="/rocket.svg" alt="" />
-          <img className="cloud-right cloud" src="/cloudRight.svg" alt="" />
-        </div>
+        <Back/>
+     
       </div>
       <div className="launch-home-manage_token">
         <span

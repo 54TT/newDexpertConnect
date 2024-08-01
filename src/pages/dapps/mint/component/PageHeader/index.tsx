@@ -30,9 +30,9 @@ function PageHeader({
               onClick={() => {
                 if (name === 'tokenList') {
                   history('/dapps/tokencreation');
-                } else if(name){
-                  name('form')
-                }else {
+                } else if (name) {
+                  name();
+                } else {
                   history(-1);
                 }
               }}

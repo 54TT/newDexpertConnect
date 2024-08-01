@@ -2,9 +2,8 @@ import './index.less';
 import LaunchFill, { FormDataType } from './pages/LaunchFill/index.tsx';
 import { Route, Routes } from 'react-router-dom';
 import LaunchHome from './pages/LaunchHome/index.tsx';
-import { useState, createContext,  } from 'react';
+import { useState, createContext } from 'react';
 import ManageTokenList from './pages/ManageTokenList';
-import ConfirmPage from './pages/ConfirmPage/index.tsx';
 import ManagePairListAndContract from './pages/ManagePairListAndContract';
 import ManageTokenDetail from './pages/ManageTokenDetail/index.tsx';
 import ManagePairDetail from './pages/ManagePairDetail/index.tsx';
@@ -16,7 +15,6 @@ export const initFormData: Partial<FormDataType> = {
   maxTxAmount: '20000',
   maxTaxSwap: '10000',
   taxSwapThreshold: '0',
-  buyCount: '0',
   maxWalletSize: '20000',
   initialBuyTax: '0',
   initialSellTax: '0',
@@ -29,8 +27,13 @@ export const initFormData: Partial<FormDataType> = {
 function Mint() {
   const [launchTokenPass, setLaunchTokenPass] = useState('');
   const [formData, setFormData] = useState<Partial<FormDataType>>(initFormData);
-  const minContextValue = { formData, launchTokenPass, setLaunchTokenPass,setFormData };
-  
+  const minContextValue = {
+    formData,
+    launchTokenPass,
+    setLaunchTokenPass,
+    setFormData,
+  };
+
   return (
     <div
       className="dis mint"
@@ -55,7 +58,6 @@ function Mint() {
               <Route path="/tokenDetail" element={<ManageTokenDetail />} />
               <Route path="/pairDetail" element={<ManagePairDetail />} />
               <Route path="/lockLpList" element={<LockLpList />} />
-              <Route path="/confirm/:from" element={<ConfirmPage />} />
             </Routes>
           </div>
         </MintContext.Provider>

@@ -2,17 +2,9 @@ import { Form, Input, InputNumber } from 'antd';
 const { TextArea } = Input;
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-export default function form({ form, formData ,onFinishForm}) {
-const { t } = useTranslation();
+export default function form({ form, formData, onFinishForm }) {
+  const { t } = useTranslation();
   const [showAdv, setShowAdv] = useState(false);
-
-
-
-
-
-
-
-
   return (
     <>
       <div className="launch-form mint-scroll scroll">
@@ -29,7 +21,10 @@ const { t } = useTranslation();
             name="filename"
             rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input placeholder={t('token.document')} autoComplete={'off'} />
+            <Input
+              placeholder={t('token.document') + '   ( ' + t('token.first') + ' )'}
+              autoComplete={'off'}
+            />
           </Form.Item>
           <Form.Item
             name="name"
@@ -55,9 +50,9 @@ const { t } = useTranslation();
           </Form.Item>
           <Form.Item
             name="decimals"
-            rules={[{ required: true, message:t('token.input') }]}
+            rules={[{ required: true, message: t('token.input') }]}
           >
-            <InputNumber placeholder={t('token.decimals')} controls={false} />
+            <InputNumber placeholder={t('token.decimals')} readOnly controls={false} />
           </Form.Item>
           <Form.Item name="description">
             <TextArea
@@ -66,90 +61,87 @@ const { t } = useTranslation();
               style={{ minHeight: '66px' }}
             />
           </Form.Item>
-          <Form.Item name="initialBuyTax" hidden={!showAdv}>
-            <InputNumber
-              placeholder={t('token.tax')}
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="initialSellTax" hidden={!showAdv}>
-            <InputNumber
-              placeholder={t('token.sel')}
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="finalBuyTax" hidden={!showAdv}>
-            <InputNumber
-              placeholder={t('token.final')}
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="finalSellTax" hidden={!showAdv}>
-            <InputNumber
-              placeholder={t('token.sela')}
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="reduceBuyTaxAt" hidden={!showAdv}>
-            <InputNumber
-              placeholder={t('token.redu')}
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="reduceSellTaxAt" hidden={!showAdv}>
-            <InputNumber
-              placeholder={t('token.reduce')}
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="preventSwapBefore" hidden={!showAdv}>
-            <InputNumber
-              placeholder="Prevent Swap Before"
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="maxTxAmount" hidden={!showAdv}>
-            <InputNumber
-              placeholder={t('token.of')}
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="maxWalletSize" hidden={!showAdv}>
-            <InputNumber
-              placeholder={t('token.size')}
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="maxTaxSwap" hidden={!showAdv}>
-            <InputNumber
-              placeholder="最大交易税"
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="taxSwapThreshold" hidden={!showAdv}>
-            <InputNumber
-              placeholder="税收互换门槛"
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
-          <Form.Item name="buyCount" hidden={true}>
-            <InputNumber
-              placeholder="税收互换门槛"
-              controls={false}
-              stringMode={true}
-            />
-          </Form.Item>
+          {showAdv && (
+            <>
+              <Form.Item name="initialBuyTax">
+                <InputNumber
+                  placeholder={t('token.tax')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="initialSellTax">
+                <InputNumber
+                  placeholder={t('token.sel')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="finalBuyTax">
+                <InputNumber
+                  placeholder={t('token.final')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="finalSellTax">
+                <InputNumber
+                  placeholder={t('token.sela')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="reduceBuyTaxAt">
+                <InputNumber
+                  placeholder={t('token.redu')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="reduceSellTaxAt">
+                <InputNumber
+                  placeholder={t('token.reduce')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="preventSwapBefore">
+                <InputNumber
+                  placeholder="Prevent Swap Before"
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="maxTxAmount">
+                <InputNumber
+                  placeholder={t('token.of')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="maxWalletSize">
+                <InputNumber
+                  placeholder={t('token.size')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="maxTaxSwap">
+                <InputNumber
+                  placeholder={t('token.taxs')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+              <Form.Item name="taxSwapThreshold">
+                <InputNumber
+                  placeholder={t('token.swap')}
+                  controls={false}
+                  stringMode={true}
+                />
+              </Form.Item>
+            </>
+          )}
         </Form>
       </div>
       <div className="launch-form-fix-bottom">
@@ -158,15 +150,15 @@ const { t } = useTranslation();
             className="launch-form-show-more"
             onClick={() => setShowAdv(false)}
           >
-            隐藏更多选项
+            {t('token.hide')}
           </p>
         ) : (
           <p className="launch-form-show-more" onClick={() => setShowAdv(true)}>
-            展示更多选项
+            {t('token.show')}
           </p>
         )}
       </div>
-      <p className="Advanced">Advanced Options</p>
+      <p className="Advanced">{t('token.gao')}</p>
     </>
   );
 }
