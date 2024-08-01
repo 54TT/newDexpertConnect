@@ -175,12 +175,12 @@ const chainList = [
   {
     value: 'bitLayer',
     icon: '/bitlayer.jpg',
-    chainId: '200810',
+    chainId: '200901',
   },
   {
     value: 'bitLayer test',
     icon: '/bitlayer.jpg',
-    chainId: '200901',
+    chainId: '200810',
   },
   {
     value: 'Sepolia',
