@@ -117,7 +117,6 @@ function LaunchForm({ formData, setFormData }) {
       return null;
     }
   };
-
   return (
     <div className="launchAll">
       {step !== 'result' && (

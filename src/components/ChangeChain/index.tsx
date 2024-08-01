@@ -9,7 +9,6 @@ export interface ChangeChainPropsType {
   disabledChain?: boolean; // 不可选有disable属性的链
   disabled?: boolean; // 不允许编辑链
 }
-
 function ChangeChain({
   wrapClassName,
   hideChain = true,
