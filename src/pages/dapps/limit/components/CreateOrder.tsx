@@ -82,7 +82,20 @@ export default function CreateOrder(getOrderList) {
   ]
 
   
-
+  // number去零
+  const numberToFixed=(num:number)=>{
+    // 检查是否有小数部分
+    if (num % 1 === 0) {
+      // 如果是整数，直接返回整数部分
+      return num.toString();
+    } else {
+    // 如果有小数部分，使用 toFixed 并移除尾部的无意义零
+    let numStr = num.toFixed(6);
+    numStr = numStr.replace(/(\.\d*?[1-9])0+$/, '$1'); // 移除小数点后的无意义零
+    numStr = numStr.replace(/\.$/, ''); // 移除末尾的小数点
+    return numStr;
+  }
+  }
   // 提交订单
   async function submitOrder(order) {
     console.log('---send order---');
@@ -567,8 +580,23 @@ export default function CreateOrder(getOrderList) {
           <img style={{width:'14px',transform:`rotate(${isShowUnitPrice?'180deg':'0deg'})`}} src="/arrowDown.svg" />
         </div>
         <div className="unit-price-row-right">
-          <span>{(1/tokenRate).toFixed(8)}{payToken?.symbol} ~ </span>
-          <span style={{color:'#86f097'}}>${((1/tokenRate)*payTokenUnitPrice).toFixed(8)}</span>
+          {
+            rateLoading?(
+              <Skeleton.Button active size="small" />
+            ):(
+              <span>{numberToFixed(1/tokenRate)} </span>
+            )
+          }
+          <span>{payToken?.symbol} ~ </span>
+          <span style={{color:'#86f097'}}>$</span>
+          {
+            rateLoading?(
+              <Skeleton.Button active size="small" />
+            ):(
+              <span style={{color:'#86f097'}}>{numberToFixed(((1/tokenRate)*payTokenUnitPrice))}</span>
+            )
+          }
+          
           {/* <span style={{color:'#86f097'}}>${}</span> */}
         </div>
       </div>
@@ -577,8 +605,24 @@ export default function CreateOrder(getOrderList) {
           <span>{payToken?.symbol} price</span>
         </div>
         <div>
-          <span>{tokenRate.toFixed(4)} {receiveToken?.symbol} ~ </span>
-          <span style={{color:'#86f097'}}>$ {(tokenRate*receiveTokenUnitPrice).toFixed(8)}</span>
+          {
+            rateLoading?(
+              <Skeleton.Button active size="small" />
+            ):(
+              <span>{numberToFixed(tokenRate)} </span>
+            )
+          }
+          <span>{receiveToken?.symbol} ~ </span>
+          <span style={{color:'#86f097'}}>
+            $ 
+          </span>
+          {
+            rateLoading?(
+              <Skeleton.Button active size="small" />
+            ):(
+              <span style={{color:'#86f097'}}>{numberToFixed(tokenRate*receiveTokenUnitPrice)}</span>
+            )
+          }
         </div>
       </div>
     </div>

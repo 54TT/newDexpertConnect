@@ -1,6 +1,6 @@
 import { useEffect, useState,useContext  } from 'react';
 import { CountContext } from '@/Layout';
-import { Input,Dropdown,Modal } from 'antd';
+import { Input,Dropdown,Modal, } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import OrderCard from './components/OrderCard';
@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import Request from '@/components/axios';
 import OrderDetail from './components/OrderDetail';
 import ExecuteWindow from './components/ExcuteWindow';
+import InfiniteScroll from "react-infinite-scroll-component";
 // import ExcuteWindow from './components/ExcuteWindow';
 // useContext
 import './index.less';
@@ -35,6 +36,10 @@ export default function index() {
   const [orderList,setOrderList]=useState([])
   const [orderLoading,setOrderLoading]=useState(true)
   const [showExecuteWindow,setShowExecuteWindow]=useState(false)
+  // 订单请求页码参数
+  const [orderPage,setOrderPage]=useState<number>(1)
+  // 是否还有更多的订单
+  const [hasMore,setHasMore]=useState(true)
   const [selectedOrder,setSelectedOrder]=useState()
   // 展示订单详情
   const [showDetailsWindow,setShowDetailsWindow]=useState(false)
@@ -84,7 +89,12 @@ export default function index() {
     // });
     // console.log(res)
   // };
-  
+  // more order
+  const moreOrder=async()=>{
+    console.log('get more order');
+    setOrderPage(orderPage+1)
+    await getOrderList(orderPage +1)
+  }
   // 获取订单列表
   const getOrderList=async(page:number)=>{
     try{
@@ -100,10 +110,20 @@ export default function index() {
         token,
         chainId
       })
-      console.log(res.data.orders);
+      // console.log(res.data.orders);
       if(res.status===200){
-        setOrderList(res.data.orders)
-        setOrderLoading(false)
+        if(res.data.orders.length===0||res.data.orders.length<10){
+          console.log(res.data.orders.length);
+          
+          setHasMore(false)
+        }else{
+          console.log(res.data.orders.length);
+          if(page===1)  setOrderList(res.data.orders)
+            else{
+              setOrderList(prevOrders=>[...prevOrders,...res.data.orders])
+          }
+          setOrderLoading(false)
+        }
       }
   }catch(err){
     setOrderLoading(false)
@@ -131,6 +151,8 @@ export default function index() {
         setShowExecuteWindow={setShowExecuteWindow}
       />
     }
+    {
+      !showDetailsWindow &&
     <div className="limit">
       <div className="limit-left">
         <div className="limit-left-header">
@@ -176,21 +198,38 @@ export default function index() {
           {orderLoading&&<Loading />}
           {/* {
             orderList?.length>0&&!orderLoading?(
-              <Flex wrap gap="small">
-                {orderList.map((item:any,index:number)=>(
-                  <OrderCard
-                    key={index}
-                    order={item}
-                  />
-                ))}
-              </Flex>
+              <List>
+                {
+                  orderList.map((item:any,index:number)=>(
+                    <OrderCard
+                      key={index}
+                      order={item}
+                      chainId={chainId}
+                      loginPrivider={loginPrivider}
+                      setShowExecuteWindow={setShowExecuteWindow}
+                      setSelectedOrder={setSelectedOrder}
+                      setShowDetailsWindow={setShowDetailsWindow}
+                    />
+                  ))
+                }
+
+
+              </List>
             ):(<></>)
           } */}
           {
             orderList?.length>0&&!orderLoading?(
-              orderList.map((item:any,index:number)=>(
+              <div id='order-list'>
+                <InfiniteScroll
+                  hasMore={hasMore}
+                  next={moreOrder}
+                  scrollableTarget='order-list'
+                  loader={null}
+                  dataLength={orderList.length}
+                >
+              {orderList.map((item:any)=>(
                 <OrderCard
-                  key={index}
+                  key={item.orderHash}
                   order={item}
                   chainId={chainId}
                   loginPrivider={loginPrivider}
@@ -198,7 +237,10 @@ export default function index() {
                   setSelectedOrder={setSelectedOrder}
                   setShowDetailsWindow={setShowDetailsWindow}
                 />
-              ))
+              ))}
+              {}
+              </InfiniteScroll>
+              </div>
             ):(<></>)
           }
         </div>
@@ -232,6 +274,7 @@ export default function index() {
       </div> */}
       <div className="bot"></div>
     </div>
+    }
     </>
   );
 }

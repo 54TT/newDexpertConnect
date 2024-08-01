@@ -1,9 +1,10 @@
+@import url(@/style/variable.less);
 .limit {
   display: flex;
   margin: 10px auto 0;
   justify-content: center;
   min-width: 40vw; 
-  max-width: 95%;
+  max-width: 1920px;
   &-left{
     width: 70%;
     min-height: 100vh;
@@ -37,10 +38,29 @@
       }
     }
     &-body{
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
+      // display: flex;
+      // justify-content: space-between;
+      // flex-wrap: wrap;
+      // gap: 10px;
+      #order-list{
+        margin-top: 8px;
+        height: 75vh;
+        overflow-y: auto;
+        // height: calc(100% - 600px);
+        .beautiful-scroll();
+
+        .order-card{
+          display: inline-block;
+        }
+        .infinite-scroll-component {
+          overflow-y: auto;
+          // height: 600px !important;
+          display: flex;
+          flex-wrap: wrap;
+          padding: 0 10px;
+          gap:10px
+        }
+      }
     }
     .ant-input-affix-wrapper-focused{
       border: 1px solid #86f097;
@@ -48,6 +68,8 @@
   }
   &-right{
     width: 30%;
+    max-width: 430px;
+    margin-right: 8px;
   }
   .top{
     color: white;

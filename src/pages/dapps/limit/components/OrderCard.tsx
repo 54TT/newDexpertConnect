@@ -1,8 +1,9 @@
 import './index.less'
 import {Progress,Modal } from 'antd'
 import DefaultTokenImg from '@/components/DefaultTokenImg'
-import { useState } from 'react'
-import { ethers, BigNumber } from 'ethers'
+import { useEffect, useState } from 'react'
+import {BigNumber} from 'bignumber.js';
+import { ethers, BigNumber as BNtype } from 'ethers'
 import {chainConfig} from '@utils/limit/constants'
 import Permit2ABI from '@utils/limit/Permit2ABI.json'
 export default function OrderCard({
@@ -14,9 +15,9 @@ export default function OrderCard({
   loginPrivider
 }: any) {
   const [showCancelWindow,setShowCancelWindow]=useState(false)
-  const bitmapPositions=(nonce:BigNumber)=>{
+  const bitmapPositions=(nonce:BNtype)=>{
     const wordPos = nonce.shr(8);
-    const bitPos = nonce.and(BigNumber.from(0xFF)); // Equivalent to extracting the last 8 bits
+    const bitPos = nonce.and(BNtype.from(0xFF)); // Equivalent to extracting the last 8 bits
     return { wordPos, bitPos };
   }
   // 取消订单
@@ -28,13 +29,23 @@ export default function OrderCard({
     const provider = config.provider
     const permit2Address = config.permit2Address
     const permit2Contract = new ethers.Contract(permit2Address, Permit2ABI, provider);
-    const { wordPos, bitPos }: any = bitmapPositions(BigNumber.from(order.nonce));
+    const { wordPos, bitPos }: any = bitmapPositions(BNtype.from(order.nonce));
     const mask = 1 << bitPos;
     const res= await permit2Contract.connect(signer).invalidateUnorderedNonces(wordPos, mask);
     console.log(res);
     
   }
-
+  // bignumber转换number
+  const BNtoNumber=(bn,decimals)=>{
+    // console.log(bn,decimals);
+    // console.log(BigNumber(bn).dividedBy(new BigNumber(10).pow(decimals)).toNumber())
+    let num = BigNumber(bn).dividedBy(new BigNumber(10).pow(decimals))
+    if(num.modulo(1).isZero()){
+      return num.toNumber().toString()
+    }else{
+      return num.toNumber().toFixed(6).replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.$/, '')
+    }
+  }
   const timeBefore=(timeStamp:number)=>{
     const now=new Date()
     const then=new Date(timeStamp*1000)
@@ -55,6 +66,10 @@ export default function OrderCard({
       return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
     }
   }
+
+  useEffect(()=>{
+    // console.log(order);
+  },[order])
   return (
     <div
       className=" order-card"
@@ -88,7 +103,7 @@ export default function OrderCard({
             <span>OFFER</span>
             <div className='token-item-info'>
               <DefaultTokenImg name={order.inputTokenSymbol} icon={''} />
-              <span style={{color:'#fff',fontSize:'14px',fontWeight:'700'}}> 1.5M pts</span>
+              <span style={{color:'#fff',fontSize:'14px',fontWeight:'700'}}>{BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals)} </span>
             </div>
             <span style={{fontSize:'12px'}}>$0.0000066 /point</span>
           </span>
@@ -98,7 +113,7 @@ export default function OrderCard({
           <span className='for order-token-item'>
             <span>FOR</span>
             <div className='token-item-info'>
-              <span style={{color:'#fff',fontSize:'14px',fontWeight:'700'}}>999 </span>
+              <span style={{color:'#fff',fontSize:'14px',fontWeight:'700'}}>{BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)} </span>
               <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
             </div>
             <span style={{fontSize:'12px'}}>$999</span>
@@ -124,11 +139,15 @@ export default function OrderCard({
         rootClassName='cancel-window'
         title="取消订单"
         open={showCancelWindow}
-        onOk={()=>{
+        onOk={(e)=>{
+          e.stopPropagation()
           setShowCancelWindow(false)
           cancelOrder(order)
         }}
-        onCancel={()=>{setShowCancelWindow(false)}}
+        onCancel={(e)=>{
+          e.stopPropagation()
+          setShowCancelWindow(false)
+        }}
         okText="确认"
         cancelText="取消"
       >

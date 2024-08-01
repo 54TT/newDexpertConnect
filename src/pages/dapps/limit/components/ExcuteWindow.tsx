@@ -193,7 +193,7 @@ const ExecuteWindow = ({order,setShowDetailsWindow,setShowExecuteWindow}) => {
               />
               </ConfigProvider>
             </div>
-            <span>{silderValue}%</span>
+            <span style={{lineHeight:'42px'}}>{silderValue}%</span>
           </div>
         </div>
       </div>
