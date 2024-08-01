@@ -65,7 +65,7 @@ const web3Modal = new Web3Modal({
   walletConnectVersion: 1,
 });
 export const CountContext = createContext(null);
-Decimal.set({ toExpPos: 18, precision: 18 });
+Decimal.set({ toExpPos: 24, precision: 24 });
 function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
