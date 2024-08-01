@@ -1,8 +1,18 @@
 import { Form, Input, InputNumber } from 'antd';
 const { TextArea } = Input;
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 export default function form({ form, formData ,onFinishForm}) {
+const { t } = useTranslation();
   const [showAdv, setShowAdv] = useState(false);
+
+
+
+
+
+
+
+
   return (
     <>
       <div className="launch-form mint-scroll scroll">
@@ -17,86 +27,83 @@ export default function form({ form, formData ,onFinishForm}) {
         >
           <Form.Item
             name="filename"
-            rules={[{ required: true, message: 'Please input!' }]}
+            rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input placeholder="合约文件名称" autoComplete={'off'} />
+            <Input placeholder={t('token.document')} autoComplete={'off'} />
           </Form.Item>
           <Form.Item
             name="name"
-            rules={[{ required: true, message: 'Please input!' }]}
+            rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input placeholder="代币名称" autoComplete={'off'} />
+            <Input placeholder={t('token.token')} autoComplete={'off'} />
           </Form.Item>
           <Form.Item
             name="symbol"
-            rules={[{ required: true, message: 'Please input!' }]}
+            rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input placeholder="代币符号" autoComplete={'off'} />
+            <Input placeholder={t('token.symbol')} autoComplete={'off'} />
           </Form.Item>
           <Form.Item
             name="totalSupply"
-            rules={[{ required: true, message: 'Please input!' }]}
+            rules={[{ required: true, message: t('token.input') }]}
           >
             <InputNumber
-              placeholder="最大供应量"
+              placeholder={t('token.max')}
               controls={false}
               stringMode={true}
             />
           </Form.Item>
           <Form.Item
             name="decimals"
-            rules={[{ required: true, message: 'Please input!' }]}
+            rules={[{ required: true, message:t('token.input') }]}
           >
-            <Input placeholder="decimals" autoComplete={'off'} />
+            <InputNumber placeholder={t('token.decimals')} controls={false} />
           </Form.Item>
           <Form.Item name="description">
             <TextArea
-              placeholder="描述"
+              placeholder={t('token.describe')}
               autoSize
               style={{ minHeight: '66px' }}
             />
           </Form.Item>
-          {/* <Form.Item label="购买数量" name="buyCount" hidden={!showAdv}>
-            <InputNumber controls={false} stringMode={true}/>
-          </Form.Item> */}
           <Form.Item name="initialBuyTax" hidden={!showAdv}>
             <InputNumber
-              placeholder="初始购买税"
+              placeholder={t('token.tax')}
               controls={false}
               stringMode={true}
             />
           </Form.Item>
           <Form.Item name="initialSellTax" hidden={!showAdv}>
             <InputNumber
-              placeholder="初始销售税"
+              placeholder={t('token.sel')}
               controls={false}
               stringMode={true}
             />
           </Form.Item>
           <Form.Item name="finalBuyTax" hidden={!showAdv}>
             <InputNumber
-              placeholder="最终购买税"
+              placeholder={t('token.final')}
               controls={false}
               stringMode={true}
             />
           </Form.Item>
           <Form.Item name="finalSellTax" hidden={!showAdv}>
             <InputNumber
-              placeholder="最终销售税"
+              placeholder={t('token.sela')}
               controls={false}
               stringMode={true}
             />
           </Form.Item>
           <Form.Item name="reduceBuyTaxAt" hidden={!showAdv}>
             <InputNumber
-              placeholder="减少购买税"
+              placeholder={t('token.redu')}
               controls={false}
               stringMode={true}
             />
           </Form.Item>
           <Form.Item name="reduceSellTaxAt" hidden={!showAdv}>
             <InputNumber
-              placeholder="减少销售税"
+              placeholder={t('token.reduce')}
               controls={false}
               stringMode={true}
             />
@@ -110,14 +117,14 @@ export default function form({ form, formData ,onFinishForm}) {
           </Form.Item>
           <Form.Item name="maxTxAmount" hidden={!showAdv}>
             <InputNumber
-              placeholder="最大交易数量"
+              placeholder={t('token.of')}
               controls={false}
               stringMode={true}
             />
           </Form.Item>
           <Form.Item name="maxWalletSize" hidden={!showAdv}>
             <InputNumber
-              placeholder="最大钱包大小"
+              placeholder={t('token.size')}
               controls={false}
               stringMode={true}
             />

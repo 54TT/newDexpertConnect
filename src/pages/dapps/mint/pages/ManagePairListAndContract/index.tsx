@@ -45,7 +45,7 @@ function ManagePairListAndContract() {
       <TokenItem
         data={{ title: '合约', address }}
         onClick={() => {
-          history(`/dapps/mint/tokenDetail?add=${address}&cId=${contractId}`);
+          history(`/dapps/tokencreation/tokenDetail?add=${address}&cId=${contractId}`);
         }}
       />
       {data?.map?.((item) => (
@@ -57,7 +57,7 @@ function ManagePairListAndContract() {
           }}
           onClick={(data) => {
             history(
-              `/dapps/mint/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
+              `/dapps/tokencreation/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
             );
           }}
         />

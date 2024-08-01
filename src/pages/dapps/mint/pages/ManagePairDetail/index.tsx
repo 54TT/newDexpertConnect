@@ -133,7 +133,7 @@ function ManagePairDetail() {
   };
 
   const lockLpToken = async () => {
-    history(`/dapps/mint/lockLpList?add=${pairAddress}`);
+    history(`/dapps/tokencreation/lockLpList?add=${pairAddress}`);
   };
 
   const data = useMemo(

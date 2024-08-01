@@ -98,7 +98,7 @@ function ManageTokenList() {
             }}
             onClick={({ id, address, title }) =>
               history(
-                `/dapps/mint/managePair?cId=${id}&add=${address}&t=${title}`
+                `/dapps/tokencreation/managePair?cId=${id}&add=${address}&t=${title}`
               )
             }
           />

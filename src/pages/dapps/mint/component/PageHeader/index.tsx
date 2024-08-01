@@ -29,7 +29,7 @@ function PageHeader({
               className="launch-header-arrow-left-icon"
               onClick={() => {
                 if (name === 'tokenList') {
-                  history('/dapps/mint');
+                  history('/dapps/tokencreation');
                 } else if(name){
                   name('form')
                 }else {

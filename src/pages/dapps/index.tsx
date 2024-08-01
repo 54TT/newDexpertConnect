@@ -55,15 +55,14 @@ export default function index() {
     {
       imgAc: '/mainActive.svg',
       img: '/mainMore.svg',
-      status: params?.id === 'mint',
-      name: 'Mint',
+      status: params?.id === 'tokencreation',
+      name: 'Token Creation',
       onClick: () => {
-        history('/dapps/mint');
+        history('/dapps/tokencreation');
       },
       key: 'mint',
     },
   ];
-
   return (
     <div className="dappsBox">
       {browser && (
@@ -107,7 +106,7 @@ export default function index() {
       {params?.id === 'sniping' && <Sniping />}
       {params?.id === 'buyBot' && <BuyBot />}
       {params?.id === 'limit' && <Limit />}
-      {params?.id === 'mint' && <Mint />}
+      {params?.id === 'tokencreation' && <Mint />}
     </div>
   );
 }

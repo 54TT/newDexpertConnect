@@ -11,7 +11,7 @@ import InfoList from '../../component/InfoList';
 import { useNavigate } from 'react-router-dom';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
 function ConfirmPage() {
-  // launchTokenPass, setLaunchTokenPass
+  // launchTokenPass, setLaunchTokenPass;
   const { formData, } = useContext(MintContext);
   const { loginProvider, chainId, contractConfig , } = useContext(CountContext);
   const history = useNavigate();
@@ -62,7 +62,7 @@ function ConfirmPage() {
         deployTx: deployTransaction.hash,
       });
       await deployTransaction.wait();
-      history('/dapps/mint/manageToken');
+      history('/dapps/tokencreation/manageToken');
       setLoading(false);
     } catch (e) {
       setLoading(false);

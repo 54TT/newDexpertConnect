@@ -1,9 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import './index.less';
+import { useContext, useEffect } from 'react';
+import { MintContext, initFormData } from '../../index';
 import ChangeChain from '@/components/ChangeChain';
 function LaunchHome() {
   const history = useNavigate();
-
+  const { setFormData }: any = useContext(MintContext);
+  useEffect(() => {
+    setFormData(initFormData);
+  }, []);
   return (
     <>
       <div className="launch-home">
@@ -21,7 +26,7 @@ function LaunchHome() {
           </div>
           <div
             className="launch-home-button"
-            onClick={() => history('/dapps/mint/fillIn')}
+            onClick={() => history('/dapps/tokencreation/fillIn')}
           >
             Launch
           </div>
@@ -36,7 +41,7 @@ function LaunchHome() {
       <div className="launch-home-manage_token">
         <span
           onClick={() => {
-            history('/dapps/mint/manageToken');
+            history('/dapps/tokencreation/manageToken');
           }}
         >
           代币管理

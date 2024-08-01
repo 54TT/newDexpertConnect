@@ -1,9 +1,10 @@
 import './index.less';
 import PageHeader from '../../component/PageHeader';
-import { useState,useContext } from 'react';
+import { useState, useContext } from 'react';
 import BottomButton from '../../component/BottomButton';
 import FormD from './components/form';
 import Pass from './components/pass';
+import { useTranslation } from 'react-i18next';
 export interface FormDataType {
   filename: string;
   name: string;
@@ -25,12 +26,13 @@ export interface FormDataType {
   preventSwapBefore: string;
   payTokenType: string;
 }
-import {MintContext} from '../../index'
+import { MintContext } from '../../index';
 import { useForm } from 'antd/es/form/Form';
 import { useNavigate } from 'react-router-dom';
 function LaunchForm({ formData, setFormData }) {
   const history = useNavigate();
-  const { launchTokenPass,  }: any = useContext(MintContext);
+const { t } = useTranslation();
+  const { launchTokenPass }: any = useContext(MintContext);
   const [form] = useForm();
   // form-----填写表单    pass-----选择pass卡
   const [step, setStep] = useState('form');
@@ -51,7 +53,7 @@ function LaunchForm({ formData, setFormData }) {
         className="launch-form-header"
         arrow={true}
         title="Launch"
-        desc="填写代币详细信息"
+        desc={t('token.fill')}
         disabled={false}
         name={step === 'form' ? '' : setStep}
       />
@@ -60,20 +62,20 @@ function LaunchForm({ formData, setFormData }) {
       ) : (
         <Pass />
       )}
-      <div className="bott">
-        <BottomButton
-          text="创建代币"
-          onClick={() => {
-            if (step === 'form') {
-              form.submit();
-            } else {
-              if (launchTokenPass) {
-                history('/dapps/mint/confirm/form');
-              }
+      
+      <BottomButton
+        bottom={true}
+        text={t('token.create')}
+        onClick={() => {
+          if (step === 'form') {
+            form.submit();
+          } else {
+            if (launchTokenPass) {
+              history('/dapps/tokencreation/confirm/form');
             }
-          }}
-        />
-      </div>
+          }
+        }}
+      />
     </div>
   );
 }
