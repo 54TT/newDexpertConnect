@@ -15,6 +15,7 @@ import { UniswapV2RouterAbi } from '@abis/UniswapV2RouterAbi';
 import dayjs from 'dayjs';
 import { UncxAbi } from '@abis/UncxAbi';
 import getBalanceRpcEther from '@utils/getBalanceRpc';
+import { toWeiWithDecimal } from '@utils/convertEthUnit';
 function ManagePairDetail() {
   const [search] = useSearchParams();
   const token0 = search.get('t0');
@@ -95,7 +96,7 @@ function ManagePairDetail() {
   const burnLP = async () => {
     const tx = await pairContract.transfer(
       zeroAddress,
-      BigNumber.from(tokenBalance)
+      BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
     );
     await tx.wait();
     getPairInfo();

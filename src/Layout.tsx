@@ -65,7 +65,7 @@ const web3Modal = new Web3Modal({
   walletConnectVersion: 1,
 });
 export const CountContext = createContext(null);
-Decimal.set({ toExpPos: 32 });
+Decimal.set({ toExpPos: 18, precision: 18 });
 function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
@@ -650,7 +650,9 @@ function Layout() {
     setTransactionFee,
     loginProvider,
     environment,
-    setEnvironment,sniperChainId, setSniperChainId
+    setEnvironment,
+    sniperChainId,
+    setSniperChainId,
   };
   const clients = new ApolloClient({
     uri: chain[switchChain],
