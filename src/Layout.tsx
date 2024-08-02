@@ -54,7 +54,7 @@ const NewpairDetails = React.lazy(
 const Index = React.lazy(() => import('./pages/index/index.tsx'));
 const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Dapps = React.lazy(() => import('./pages/dapps/index.tsx'));
-const Community = React.lazy(() => import('./pages/community/index.tsx'));
+// const Community = React.lazy(() => import('./pages/community/index.tsx'));
 const Active = React.lazy(() => import('./pages/activity/index.tsx'));
 const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
@@ -635,7 +635,9 @@ function Layout() {
     setTransactionFee,
     loginProvider,
     environment,
-    setEnvironment,sniperChainId, setSniperChainId
+    setEnvironment,
+    sniperChainId,
+    setSniperChainId,
   };
   const clients = new ApolloClient({
     uri: chain[switchChain],
