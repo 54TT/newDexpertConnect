@@ -74,8 +74,12 @@ async function buildOrder(
   const permist2Address=config.permit2Address
   const nonce=generateRandomNonce()
 
-  const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds
-  // 未知
+  const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds+(8*60*60)
+  console.log('---now time---')
+  // 获取现在的时间
+  console.log(new Date().toUTCString())
+  console.log('---deadline---')
+  console.log(new Date(deadline*1000).toUTCString())
   const decayStartTime = Math.round(new Date().getTime() / 1000)
   const creatAddress=await orderCreator.getAddress()
   // 生成荷兰式订单，传入相关参数
@@ -94,6 +98,7 @@ async function buildOrder(
     console.log("domain:",domain)
     console.log("types:",types)
     console.log("values:",values)
+    // @ts-ignore
     const signature=await orderCreator._signTypedData(domain,types,values)
     console.log("signature:"+signature);
     const encodedOrder=order.serialize()
@@ -215,7 +220,7 @@ if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
 
   return orderParams
 } catch (error) {
-    
+    console.log(error)
 }
   // return 'test'
 }

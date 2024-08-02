@@ -104,17 +104,7 @@ const OrderHistory = () => {
     }
   ]
 
-  // 监听orderHistoryTable滚动加载数据
-  const handleScroll = (e) => {
-    const { scrollTop, clientHeight, scrollHeight } = e.target;
-    if (scrollTop + clientHeight >= scrollHeight - 10) {
-      setLoading(true)
-      setTimeout(() => {
-        setOrderList([...orderList,...mockOrderList])
-        setLoading(false)
-      }, 1000);
-    }
-  };
+
   const moreHistory=()=>{
     setLoading(true)
     setTimeout(() => {
@@ -138,18 +128,29 @@ const OrderHistory = () => {
         </div>
       </div>
       <div className="order-history-content">
+        
         <Table
           rootClassName="order-history-table"
           dataSource={orderList}
           columns={column}
           pagination={false}
           // scroll={{ y: 200 }}
+          // pagination={{ pageSize: 10 }}
           // onScroll={(e) => {
           //   handleScroll(e)
           // }}
-          footer={() => (loading ? <Spin /> : null)}
+          // footer={() => (loading ? <Spin /> : null)}
         />
-        <button onClick={() => {moreHistory()}}>more history</button>
+        { loading ? 
+          <Spin />
+          :(
+            <div className="more-history-container">
+            <span className="more-history" onClick={() => {moreHistory()}}>More History</span>
+            <div className="more-icon"  onClick={() => {moreHistory()}}></div>
+          </div>
+        )
+        }
+        
         {/* <div className="order-history-content-header">
           <span>Time</span>
           <span>FILLAMOUNT</span>
@@ -178,6 +179,7 @@ const OrderHistory = () => {
           } */}
         </div>
       </div>
+
     </div>
   )
 }

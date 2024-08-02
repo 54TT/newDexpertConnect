@@ -12,7 +12,7 @@ import { SUPPORTED_CHAINS } from './constants'
 
 export const SORT_REGEX = /(\w+)\(([0-9]+)(?:,([0-9]+))?\)/
 const UINT256_MAX = BigNumber.from(1).shl(256).sub(1)
-
+// @ts-ignore
 const COSIGNER = checkDefined(import.meta.env.VITE_LABS_COSIGNER)
 // const COSIGNER = checkDefined(process.env.LABS_COSIGNER)
 

@@ -8,6 +8,7 @@ import {chainConfig} from '@utils/limit/constants'
 import Permit2ABI from '@utils/limit/Permit2ABI.json'
 export default function OrderCard({
   order,
+  type,
   setSelectedOrder,
   chainId,
   setShowExecuteWindow,
@@ -68,11 +69,17 @@ export default function OrderCard({
   }
 
   useEffect(()=>{
-    // console.log(order);
+    console.log(order.orderStatus);
   },[order])
   return (
     <div
-      className=" order-card"
+      className={"order-card " + 
+        (type === 'my' ? 'my-order' : '') +
+        (type === 'open' ? 'open-order' : '')+
+        (type === 'error' ? 'error-order' : '')+
+        (type === 'cancelled' ? 'cancelled-order' : '')+
+        (type === 'filled' ? 'filled-order' : '')
+      }
       onClick={() => {
         console.log('show order details');
         setSelectedOrder(order);
@@ -83,7 +90,7 @@ export default function OrderCard({
         <div>
           <div className='order-card-header-left'>
             <span>{order.inputTokenName} </span>
-            <span>{order.inputToken.slice(0,4)}...{order.inputToken.slice(-4)}</span>
+            <span style={{display:'block',marginTop:'4px'}}>{order.inputToken.slice(0,6)}...{order.inputToken.slice(-8)}</span>
           </div>
           <span className="partial" >PARTIAL FILL</span>
         </div>

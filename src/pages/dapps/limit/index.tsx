@@ -2,7 +2,7 @@ import { useEffect, useState,useContext  } from 'react';
 import { CountContext } from '@/Layout';
 import { Input,Dropdown,Modal, } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import OrderCard from './components/OrderCard';
 import CreateOrder from './components/CreateOrder';
 import Cookies from 'js-cookie';
@@ -27,10 +27,10 @@ export default function index() {
     // setChainId,
     // transactionFee,
     // setTransactionFee,
-    // user,
+    user,
     // isLogin,
   } = useContext(CountContext)
-  const {t}=useTranslation()
+  // const {t}=useTranslation()
   const [currentIndex,setCurrentIndex]=useState(0)
   const { getAll } = Request();
   const [orderList,setOrderList]=useState([])
@@ -46,11 +46,17 @@ export default function index() {
   const items:any = [
     {
       key: '0',
-      label:<p>Excuteing</p>
+      label:<p onClick={(e)=>{
+        console.log(e.target);
+        setCurrentIndex(2)
+      }}>Excuteing</p>
     },
     {
       key:'1',
-      label:<p>History</p>
+      label:<p onClick={(e)=>{
+        console.log(e.target);
+        setCurrentIndex(2)
+      }}>History</p>
     }
   ];
   // const [nonce, setNonce] = useState('');
@@ -96,22 +102,26 @@ export default function index() {
     await getOrderList(orderPage +1)
   }
   // 获取订单列表
-  const getOrderList=async(page:number)=>{
+  const getOrderList=async(page:number,uid?:number)=>{
+    if(uid) console.log('ger user orders');
+    
     try{
       const token = Cookies.get('token');
       const res=await getAll({
         method:'post',
         url:'/api/v1/limit/getOrderList',
         data:{
-          uid:0,
           search:"",
+          uid:0,
           page:page,
         },
         token,
         chainId
       })
       // console.log(res.data.orders);
-      if(res.status===200){
+      if(res?.status===200){
+        console.log(res.data.orders);
+        
         if(res.data.orders.length===0||res.data.orders.length<10){
           console.log(res.data.orders.length);
           
@@ -161,7 +171,7 @@ export default function index() {
               rootClassName="limit-input"
               variant='borderless'
               // onKeyDown={enter}
-              placeholder={t('sniping.Contract')}
+              placeholder={'token address'}
               allowClear
               // onChange={searchChange}
               suffix={
@@ -179,44 +189,39 @@ export default function index() {
               <span className={`orders-btn ${currentIndex===0?'active':''}`}
               onClick={()=>{
                 setCurrentIndex(0)
-                getOrderList(1)
-                setOrderLoading(true)
-              }}>Live Orders</span>
-              <span className={`orders-btn ${currentIndex===1?'active':''}`}
-                onClick={()=>setCurrentIndex(1)}>Ongoning Order(s)</span>
+                // getOrderList(1)
+                // setOrderLoading(true)
+                setHasMore(true)
+              }}>
+                <p>Live Orders</p>
+              </span>
+              {/* <span className={`orders-btn ${currentIndex===1?'active':''}`}
+                onClick={()=>setCurrentIndex(1)}>
+                <p>
+                  Ongoing Order(s)
+                </p>
+              </span> */}
               <Dropdown
                 rootClassName='orders-type'
-                menu={{items}}
-                trigger={['click']}>
+                menu={{items,selectable: true,}}
+                trigger={['hover']}
+              >
                 <span
                   className={`orders-btn ${currentIndex===2?'active':''}`}
-                  onClick={()=>setCurrentIndex(2)}
-                >My Order(s)</span>
+                  onClick={()=>{
+                    setCurrentIndex(2)
+                    getOrderList(1,user.uid)
+                  }
+                  }
+                >
+                  <p>
+                    My Order(s)
+                  </p>
+                </span>
               </Dropdown>
         </div>
         <div className="limit-left-body">
-          {orderLoading&&<Loading />}
-          {/* {
-            orderList?.length>0&&!orderLoading?(
-              <List>
-                {
-                  orderList.map((item:any,index:number)=>(
-                    <OrderCard
-                      key={index}
-                      order={item}
-                      chainId={chainId}
-                      loginPrivider={loginPrivider}
-                      setShowExecuteWindow={setShowExecuteWindow}
-                      setSelectedOrder={setSelectedOrder}
-                      setShowDetailsWindow={setShowDetailsWindow}
-                    />
-                  ))
-                }
-
-
-              </List>
-            ):(<></>)
-          } */}
+          {orderLoading&&<Loading status={'20'} />}
           {
             orderList?.length>0&&!orderLoading?(
               <div id='order-list'>
@@ -227,8 +232,38 @@ export default function index() {
                   loader={null}
                   dataLength={orderList.length}
                 >
-              {orderList.map((item:any)=>(
+                {currentIndex===2?(
+                  orderList.filter((item:any)=>item?.uid===user?.uid).map((item)=>(
+                    <OrderCard
+                      type={item?.uid===user?.uid?'my':''}
+                      key={item.orderHash}
+                      order={item}
+                      chainId={chainId}
+                      loginPrivider={loginPrivider}
+                      setShowExecuteWindow={setShowExecuteWindow}
+                      setSelectedOrder={setSelectedOrder}
+                      setShowDetailsWindow={setShowDetailsWindow}
+                    />
+                  ))
+                ):(
+                  orderList.map((item:any)=>(
+                    <OrderCard
+                      type={item?.uid===user?.uid?'my':''}
+                      key={item.orderHash}
+                      order={item}
+                      chainId={chainId}
+                      loginPrivider={loginPrivider}
+                      setShowExecuteWindow={setShowExecuteWindow}
+                      setSelectedOrder={setSelectedOrder}
+                      setShowDetailsWindow={setShowDetailsWindow}
+                    />
+                  ))
+                )
+
+                }
+              {/* {orderList.map((item:any)=>(
                 <OrderCard
+                  type={item.uid===user.uid?'my':''}
                   key={item.orderHash}
                   order={item}
                   chainId={chainId}
@@ -237,8 +272,7 @@ export default function index() {
                   setSelectedOrder={setSelectedOrder}
                   setShowDetailsWindow={setShowDetailsWindow}
                 />
-              ))}
-              {}
+              ))} */}
               </InfiniteScroll>
               </div>
             ):(<></>)
@@ -272,7 +306,7 @@ export default function index() {
       >
         ppppppp
       </div> */}
-      <div className="bot"></div>
+      {/* <div className="bot"></div> */}
     </div>
     }
     </>

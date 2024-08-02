@@ -21,7 +21,7 @@ import Request from '@/components/axios';
 //   initChainId?:string;
 //   initToken?:[tokenIn:TokenItemData,tokenOut:TokenItemData];
 // }
-export default function CreateOrder(getOrderList) {
+export default function CreateOrder({getOrderList}) {
   const {
     provider,
     contractConfig,
@@ -60,9 +60,19 @@ export default function CreateOrder(getOrderList) {
   // 过期时间数组
   const expiresList=[
     {
+      name:'1m',
+      label:'1m',
+      value:60
+    },
+    {
       name:'1h',
       label:'1h',
       value:3600
+    },
+    {
+      name:'12h',
+      label:'12h',
+      value:12*60*60,
     },
     {
       name:'1d',
@@ -87,7 +97,7 @@ export default function CreateOrder(getOrderList) {
     // 检查是否有小数部分
     if (num % 1 === 0) {
       // 如果是整数，直接返回整数部分
-      return num.toString();
+      return num?.toString();
     } else {
     // 如果有小数部分，使用 toFixed 并移除尾部的无意义零
     let numStr = num.toFixed(6);
@@ -109,7 +119,7 @@ export default function CreateOrder(getOrderList) {
             ...order,
             "decayStartTime": "1721049887",
             "decayEndTime": "1721136287",
-            "deadline": "1721136287",
+            // "deadline": "1721136287",
             "fillerAt": "1721136287",
             uid:user.uid,
           }
@@ -117,9 +127,9 @@ export default function CreateOrder(getOrderList) {
         token,
         chainId
       })
-      // console.log(res);
+      console.log(res);
       
-      if(res.status===200){
+      if(res?.status===200){
         console.log('oreder submit success');
         getOrderList(1)
         setCreateLoading(false)
@@ -127,23 +137,18 @@ export default function CreateOrder(getOrderList) {
     }catch(err){
       console.log(err);
       setCreateLoading(false)
+    }finally{
+      setCreateLoading(false)
     }
   }
 
   // 创建订单
   const approveOder=async ()=>{
     console.log('createOrder:');
+    console.log('---now time---')
+    console.log(new Date(new Date().getTime()*1000))
     const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
     const signer = await web3Provider.getSigner();
-    // console.log(await signer.getAddress())
-
-    // console.log(payTokenAmountInWei);
-    // console.log(receiveTokenAmount);
-    // console.log(receiveToken.decimals);
-    // console.log(Number(receiveTokenAmount).toFixed(Number(receiveToken.decimals)));
-    
-    // const receipt: string = "0x0000000000000000000000000000000000000000";
-    // const receipt: string = '0xafdDE8C379Bd2A54d4e7aB1dcBbF8b7332F61200';
     const receipt: string = await signer.getAddress();
     console.log('receipt:',receipt);
 
@@ -339,7 +344,8 @@ export default function CreateOrder(getOrderList) {
       setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
     }
     
-    if(tokenRate===0){
+    if(tokenRate===0||tokenRate===undefined){
+      setTokenRate(0)
       setRateLoading(true)
       getTokenRateDebounce()
     }
@@ -384,7 +390,7 @@ export default function CreateOrder(getOrderList) {
           </span>
           { isLogin?(
             <span className="token-card-header-right">
-              Balance:{payTokenBalance?.toFixed(4).toString?.()||'0'}
+              Balance:{payTokenBalance?.toString?.()||'0'}
             </span>
           ):(<></>)
           }
@@ -474,6 +480,9 @@ export default function CreateOrder(getOrderList) {
             placeholder="0"
             value={receiveTokenAmount}
             onChange={(e)=>{
+              if (/^\d*\.?\d*$/.test(e.target.value)) {
+                setReceiveTokenAmount(e.target.value);
+              }
               setReceiveTokenAmount(e.target.value)
               if(currentInputToken.current!=='receive')
                 currentInputToken.current='receive'
