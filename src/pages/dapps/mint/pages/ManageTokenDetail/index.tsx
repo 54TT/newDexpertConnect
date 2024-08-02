@@ -6,32 +6,40 @@ import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
 import { useSearchParams } from 'react-router-dom';
 import Request from '@/components/axios';
+import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { CountContext } from '@/Layout';
 import { LaunchERC20Abi } from '@abis/LaunchERC20Abi';
 import { ethers } from 'ethers';
-import { CheckOutlined } from '@ant-design/icons';
+import NotificationChange from '@/components/message';
+import { CheckCircleOutlined, RightOutlined } from '@ant-design/icons';
 import CommonModal from '@/components/CommonModal';
+import { useTranslation } from 'react-i18next';
 function ManageTokenDetail() {
-  const { chainId, loginProvider } = useContext(CountContext);
+  const { t } = useTranslation();
+  const { chainId, loginProvider, browser } = useContext(CountContext);
   const [search] = useSearchParams();
   const contractId = search.get('cId');
   const [tokenData, setTokenData] = useState<any>();
+  const [isLoading, setIsLoading] = useState(false);
   const address = search.get('add');
   const { getAll } = Request();
   const token = Cookies.get('token');
   const [erc20Contract, setErc20Contract] = useState<ethers.Contract>();
   const [isVerify, setIsVerify] = useState(false);
+  console.log(isVerify);
   const [isOpenTrade, setIsOpenTrade] = useState(false);
+  console.log(isOpenTrade);
   const [isRemoveLimit, setIsRemoveLimit] = useState(false);
+  console.log(isRemoveLimit);
   const [isOwn, setIsOwn] = useState(true);
+  console.log(isOwn);
   const [, setLoadingPage] = useState(false);
   const [openTradeModal, setOpenTradeModal] = useState(false);
   const [ethBalance, setEthBalance] = useState('0');
   const [ethAmount, setEthAmount] = useState(0);
   const [, setTokenBalance] = useState('0');
-
   // 按钮正在执行状态
   const [openTradeLoading, setOpenTradeLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
@@ -49,6 +57,7 @@ function ManageTokenDetail() {
       setIsVerify(true);
     }
     setTokenData(data);
+    setIsLoading(true);
   };
 
   useEffect(() => {
@@ -74,12 +83,10 @@ function ManageTokenDetail() {
 
     const IsTradeOpen = await tokenContract.tradingOpen();
     setIsOpenTrade(IsTradeOpen);
-
     const ethWei = (await signer.getBalance()).toString();
     setEthBalance(ethers.utils.formatEther(ethWei));
     setLoadingPage(true);
   };
-
   useEffect(() => {
     if (address && loginProvider) {
       initData();
@@ -94,12 +101,16 @@ function ManageTokenDetail() {
         value: tokenData.tokenAddress,
       },
       {
-        label: 'Symbol',
+        label: 'symbol',
         value: tokenData.tokenSymbol,
       },
       {
-        label: 'Name',
+        label: 'name',
         value: tokenData.tokenName,
+      },
+      {
+        label: 'totalSupply',
+        value: tokenData.TotalSupply,
       },
     ];
   }, [tokenData]);
@@ -116,11 +127,12 @@ function ManageTokenDetail() {
         token,
         chainId,
       });
-      if (data.data.tx) {
+      if (data?.data?.tx) {
         setVerifyLoading(false);
         setIsVerify(true);
       }
     } catch (e) {
+      setVerifyLoading(false);
       return null;
     }
     setVerifyLoading(false);
@@ -137,17 +149,16 @@ function ManageTokenDetail() {
       //   LaunchERC20Abi,
       //   signer
       // );
-      setRemoveLimitLoading(true);
       const tx = await erc20Contract.removeLimits();
       const recipent = await tx.wait();
-      setRemoveLimitLoading(false);
       if (recipent === 1) {
         setIsRemoveLimit(true);
       }
+      setRemoveLimitLoading(false);
     } catch (e) {
+      setRemoveLimitLoading(false);
       return null;
     }
-    setRemoveLimitLoading(false);
   };
 
   const approve = async (spender, amount) => {
@@ -169,8 +180,9 @@ function ManageTokenDetail() {
     const walletAddress = await signer.getAddress();
     // const decimals = await erc20Contract.decimals();
     const tokenBalance = await erc20Contract.balanceOf(walletAddress);
+    const tt = await approve(erc20Contract.address, tokenBalance);
     try {
-      if (await approve(erc20Contract.address, tokenBalance)) {
+      if (tt) {
         const tx = await erc20Contract.openTrading(tokenBalance, {
           value: ethers.utils.parseEther(ethAmount.toString()),
         });
@@ -191,11 +203,13 @@ function ManageTokenDetail() {
           setOpenTradeLoading(false);
           setIsOpenTrade(true);
         }
+        setOpenTradeLoading(false);
       }
     } catch (e) {
+      setOpenTradeLoading(false);
+      NotificationChange('warning', t('Dapps.Insufficient Fund'));
       return null;
     }
-    setOpenTradeLoading(false);
   };
 
   const renounceOwnerShip = async () => {
@@ -206,21 +220,27 @@ function ManageTokenDetail() {
       if (recipent === 1) {
         setRenounceLoading(false);
         setIsOwn(false);
+      } else {
+        setRenounceLoading(false);
       }
     } catch (e) {
+      setRenounceLoading(false);
       return null;
     }
-    setRenounceLoading(false);
   };
-
   return (
-    <>
+    <div className="manage-tokenBox">
       <ToLaunchHeader />
       <PageHeader
         className="launch-manage-token-header"
         title={tokenData?.tokenSymbol || '-'}
       />
-      <InfoList className="manage-token-detail-info" data={tokenInfoData} />
+      {isLoading ? (
+        <InfoList className="manage-token-detail-info" data={tokenInfoData} />
+      ) : (
+        <Loading status={'20'} browser={browser} />
+      )}
+      {!isLoading && <div style={{ width: '100%', height: '20px' }}></div>}
       <ConfigProvider
         theme={{
           components: {
@@ -233,55 +253,86 @@ function ManageTokenDetail() {
       >
         <div className={`manage-token-button_box ${isOwn ? '' : 'not-owner'}`}>
           <Button
-            type={isVerify ? 'primary' : 'default'}
+            iconPosition={'end'}
+            className={isVerify ? 'buttonBackActi' : 'buttonBack'}
             ghost
+            icon={
+              isVerify ? (
+                <CheckCircleOutlined style={{ marginLeft: '8px' }} />
+              ) : (
+                <RightOutlined style={{ marginLeft: '8px' }} />
+              )
+            }
             loading={verifyLoading}
             onClick={() => verifyingContract()}
           >
-            Verify Contract {isVerify ? <CheckOutlined /> : ''}
+             {t('token.Verify')}
           </Button>
           <Button
-            type={isOpenTrade ? 'primary' : 'default'}
+            iconPosition={'end'}
+            className={!isOwn ? 'buttonBackActi' : 'buttonBack'}
             ghost
-            loading={openTradeLoading}
+            icon={
+              !isOwn ? (
+                <CheckCircleOutlined style={{ marginLeft: '8px' }} />
+              ) : (
+                <RightOutlined style={{ marginLeft: '8px' }} />
+              )
+            }
+            loading={renounceLoading}
             onClick={() => {
-              if (!isOwn) return;
-              if (isOpenTrade) return;
-              setOpenTradeModal(true);
+              setRenounceLoading(true);
+              renounceOwnerShip();
             }}
           >
-            Open Trade {isOpenTrade ? <CheckOutlined /> : ''}
+          {t('token.Renounce')}
           </Button>
           <Button
-            type={isRemoveLimit ? 'primary' : 'default'}
+            iconPosition={'end'}
+            className={isRemoveLimit ? 'buttonBackActi' : 'buttonBack'}
             ghost
+            icon={
+              isRemoveLimit ? (
+                <CheckCircleOutlined style={{ marginLeft: '8px' }} />
+              ) : (
+                <RightOutlined style={{ marginLeft: '8px' }} />
+              )
+            }
             loading={removeLimitLoading}
-            onClick={() => removeLimit()}
+            onClick={() => {
+              setRemoveLimitLoading(true);
+
+              removeLimit();
+            }}
           >
-            Remove Limits {isRemoveLimit ? <CheckOutlined /> : ''}
+             {t('token.Remove')}
           </Button>
         </div>
       </ConfigProvider>
-      {isOwn ? (
-        <BottomButton
-          ghost
-          danger
-          bottom
-          loading={renounceLoading}
-          text="Renounce OwnerShip"
-          className=""
-          onClick={() => {
-            renounceOwnerShip();
-          }}
-        />
-      ) : (
-        <></>
-      )}
+      <BottomButton
+        ghost
+        bottom
+        classname={isOpenTrade ? 'openTradeSelect' : 'openTrade'}
+        loading={openTradeLoading}
+        icon={
+          isOpenTrade ? (
+            <CheckCircleOutlined style={{ marginLeft: '8px' }} />
+          ) : (
+            <RightOutlined style={{ marginLeft: '8px' }} />
+          )
+        }
+        text={<div>{t('token.Open')}</div>}
+        onClick={() => {
+          if (!isOwn) return;
+          if (isOpenTrade) return;
+          setOpenTradeModal(true);
+        }}
+      />
       <CommonModal
         className="mint-common-modal"
         open={openTradeModal}
         footer={null}
-        title="Open Trade"
+        title={t('token.Open')}
         onCancel={() => setOpenTradeModal(false)}
       >
         <div>
@@ -296,17 +347,20 @@ function ManageTokenDetail() {
           />
           <div
             style={{ color: '#fff', marginTop: '6px' }}
-          >{`ETH Balance: ${ethBalance}`}</div>
+          >{`ETH ${t('token.Banlance')}: ${ethBalance}`}</div>
         </div>
         <BottomButton
-          text="Open Trade"
+          text={t('token.Open')}
           loading={openTradeLoading}
           onClick={() => {
             openTrade();
           }}
         />
       </CommonModal>
-    </>
+      <p className="hint">
+    {t('token.note')}
+      </p>
+    </div>
   );
 }
 

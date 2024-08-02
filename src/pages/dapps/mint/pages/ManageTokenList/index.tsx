@@ -23,7 +23,6 @@ function ManageTokenList() {
   const { chainId, browser } = useContext(CountContext);
   const { getAll } = Request();
   const [data, setData] = useState([]);
-  console.log(data);
   const [loading, setLoading] = useState(false);
   const [isNext, setIsNext] = useState(false);
   const [nextLoad, setNextLoad] = useState(false);
@@ -70,7 +69,7 @@ function ManageTokenList() {
   useEffect(() => {
     getTokenList(1, '');
     setPage(1);
-    setLoading(false)
+    setLoading(false);
   }, [chainId]);
   const items = (item: any) => {
     return (
@@ -90,6 +89,9 @@ function ManageTokenList() {
       />
     );
   };
+  const handleChange = (value: string) => {
+    console.log(value);
+  };
 
   return (
     <div className="launch-manage-token">
@@ -101,8 +103,18 @@ function ManageTokenList() {
         title={t('token.me')}
       />
       <div className="launch-manage-token-search">
-        <Search />
-        <Select />
+        <Search  className='searchBox'/>
+        <Select
+          style={{ width: 120 }}
+          onChange={handleChange}
+          className='selectBox'
+          popupClassName={'manageTokenSelect'}
+          options={[
+            { value: 'jack', label: 'Jack' },
+            { value: 'lucy', label: 'Lucy' },
+            { value: 'Yiminghe', label: 'yiminghe' },
+          ]}
+        />
       </div>
       <div
         className="mint-scroll scroll"

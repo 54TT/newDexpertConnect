@@ -62,7 +62,7 @@ function Left() {
   };
 
   return (
-    <div className={'indexBox'} style={{ width: browser ? '74%' : 'auto' }}>
+    <div className={'indexBox'} style={{ width: browser ? '100%' : 'auto' }}>
       {/* top*/}
       <div
         ref={hei}

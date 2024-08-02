@@ -80,25 +80,27 @@ function ManagePairListAndContract() {
       <ToLaunchHeader />
       <PageHeader className="launch-manage-token-header" title={tokenSymbol} />
       <TokenItem
-        data={{ title: '合约', address }}
+        data={{ title: t('token.can'), address }}
         onClick={() => {
           history(
             `/dapps/tokencreation/tokenDetail?add=${address}&cId=${contractId}`
           );
         }}
       />
-      {loading ? (
-        <InfiniteScrollPage
-          data={data}
-          next={changePage}
-          items={items}
-          nextLoad={nextLoad}
-          no={t('token.noPair')}
-          scrollableTarget={'launchTokenList'}
-        />
-      ) : (
-        <Loading status={'20'} browser={browser} />
-      )}
+      <div style={{ height: '330px', overflow: 'overlay' }}>
+        {loading ? (
+          <InfiniteScrollPage
+            data={data}
+            next={changePage}
+            items={items}
+            nextLoad={nextLoad}
+            no={t('token.noPair')}
+            scrollableTarget={'launchTokenList'}
+          />
+        ) : (
+          <Loading status={'20'} browser={browser} />
+        )}
+      </div>
     </div>
   );
 }

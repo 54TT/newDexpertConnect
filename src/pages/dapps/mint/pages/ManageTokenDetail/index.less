@@ -4,6 +4,22 @@
     overflow: hidden;
   }
 }
+.manage-tokenBox{
+  width: 100%;
+  position: relative;
+  height: 100%;
+  .hint{
+    position: absolute;
+    width: 80%;
+    bottom: 60px;
+    text-align: center;
+    color: rgba(255,255,255,0.55);
+    left: 50%;
+    transform: translate(-50%,0);
+  }
+
+}
+
 
 .manage-token-button_box {
   width: 90%;
@@ -14,15 +30,36 @@
     width: 30%;
     white-space: normal;
   }
-  .ant-btn-primary {
-    border: 1px solid rgba(134, 240, 151, 1);
-    color: rgba(134, 240, 151, 1);
+  .buttonBack {
+    border: 1px solid rgb(134, 240, 151) !important;
+    color: rgb(134, 240, 151);
+    padding:  20px 5px;
+    border-radius: 13px;
   }
-  .ant-btn-primary.ant-btn-background-ghost:hover {
-    color: rgba(134, 240, 151, 1) !important;
-    border: 1px solid rgba(134, 240, 151, 1) !important;
-    cursor: not-allowed;
+  .buttonBack:hover {
+    border: 1px solid rgb(134, 240, 151) !important;
+    color: rgb(134, 240, 151);
   }
+  .buttonBackActi {
+    background-color: rgb(134, 240, 151);
+    color: black;
+    padding:  20px;
+    border-radius: 13px;
+  }
+  .buttonBackActi:hover {
+    background-color: rgb(134, 240, 151) !important;
+    color: black !important;
+  }
+
+  // .ant-btn-primary {
+  //   border: 1px solid rgba(134, 240, 151, 1);
+  //   color: rgba(134, 240, 151, 1);
+  // }
+  // .ant-btn-primary.ant-btn-background-ghost:hover {
+  //   color: rgba(134, 240, 151, 1) !important;
+  //   border: 1px solid rgba(134, 240, 151, 1) !important;
+  //   cursor: not-allowed;
+  // }
 }
 
 .not-owner {

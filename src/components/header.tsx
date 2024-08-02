@@ -75,7 +75,6 @@ function Header() {
     1500,
     { trailing: false }
   );
-
   const collapseItems: any = [
     {
       key: '0',
@@ -125,44 +124,44 @@ function Header() {
         </div>
       ),
     },
-    {
-      key: '2',
-      label: (
-        <div>
-          <img src="/community.png" alt="" />
-          <span>Community</span>
-        </div>
-      ),
-      children: (
-        <div className={'collapseChildeen'}>
-          {[
-            { name: 'lastest', img: '/community/latest.svg' },
-            {
-              name: 'profile',
-              img: '/community/profile.svg',
-            },
-            { name: 'following', img: '/community/follow.svg' },
-          ].map((i: any, ind: number) => {
-            return (
-              <p
-                key={ind}
-                onClick={throttle(
-                  function () {
-                    history(`/community/${i.name}`);
-                    onClose();
-                  },
-                  1500,
-                  { trailing: false }
-                )}
-              >
-                <img src={i.img} alt="" loading={'lazy'} />
-                <span>{i.name}</span>
-              </p>
-            );
-          })}
-        </div>
-      ),
-    },
+    // {
+    //   key: '2',
+    //   label: (
+    //     <div>
+    //       <img src="/community.png" alt="" />
+    //       <span>Community</span>
+    //     </div>
+    //   ),
+    //   children: (
+    //     <div className={'collapseChildeen'}>
+    //       {[
+    //         { name: 'lastest', img: '/community/latest.svg' },
+    //         {
+    //           name: 'profile',
+    //           img: '/community/profile.svg',
+    //         },
+    //         { name: 'following', img: '/community/follow.svg' },
+    //       ].map((i: any, ind: number) => {
+    //         return (
+    //           <p
+    //             key={ind}
+    //             onClick={throttle(
+    //               function () {
+    //                 history(`/community/${i.name}`);
+    //                 onClose();
+    //               },
+    //               1500,
+    //               { trailing: false }
+    //             )}
+    //           >
+    //             <img src={i.img} alt="" loading={'lazy'} />
+    //             <span>{i.name}</span>
+    //           </p>
+    //         );
+    //       })}
+    //     </div>
+    //   ),
+    // },
   ];
   const onChange = (key: string | string[]) => {
     if (key.length > 0 && key[0] === '0') {
@@ -215,11 +214,11 @@ function Header() {
       value: 'DApps',
       key: 'DApps',
     },
-    {
-      label: t('Common.Community'),
-      value: 'Community',
-      key: 'Community',
-    },
+    // {
+    //   label: t('Common.Community'),
+    //   value: 'Community',
+    //   key: 'Community',
+    // },
   ];
 
   const changeLanguage = throttle(

@@ -377,7 +377,21 @@
     "Banlance":"Banlance",
     "Lock":"Lock amount",
     "Pairaddress":"Pair address",
-    "noPair": "No pair address yet"
+    "noPair": "No pair address yet",
+    "noLp": "No lockLP yet",
+    "note":"Please note that once you 'abandon voice' you will no longer be able to modify or use the 'Open Transaction' or 'Unrestrict' features",
+    "Open":"Open Trade",
+    "Remove":"Remove Limits",
+    "Renounce":"Renounce OwnerShip",
+    "Verify":"Verify Contract",
+    "can":"Contract",
+    "BurnLP":"BurnLP",
+    "RemoveLP":"RemoveLP",
+    "LockLP":"Lock LP",
+    "Unon":"Lock / Unlock LP",
+    "unti":"Unlock time",
+    "am":"Lock LP amount",
+    "Unlock":"Unlock"
 
   }
 }

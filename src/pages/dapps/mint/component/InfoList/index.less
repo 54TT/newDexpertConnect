@@ -1,5 +1,5 @@
 .info-list {
-  background: rgb(69, 69, 69);
+  background: #242424;
   margin: 12px auto;
   width: 86%;
   position: relative;
@@ -8,7 +8,12 @@
   &-item {
     color: rgba(255, 255, 255, 0.85);
     font-size: 14px;
+    display: flex;
+    align-items: center;
     margin: 12px 12px 0 12px;
+    & > span:last-child {
+      word-break: break-word;
+    }
   }
   .img {
     width: 80%;

@@ -8,6 +8,21 @@ img {
   display: block;
 }
 
+.manageTokenSelect {
+  background-color: #242424;
+  // .ant-select-item ant-select-item-option  ant-select-item-option-selected
+  .ant-select-item-option-selected {
+    background-color: transparent !important;
+    .ant-select-item-option-content {
+      color: rgb(134, 240, 151);
+    }
+  }
+  .ant-select-item-option-content {
+    text-align: center;
+    color: white;
+  }
+}
+
 .activePersonChain {
   color: rgb(118, 128, 118);
   font-size: 17px;
@@ -29,7 +44,7 @@ img {
         display: none;
       }
       .ant-drawer-body {
-        padding:7% !important;
+        padding: 7% !important;
         width: 100% !important;
         box-sizing: border-box;
         .box {
@@ -105,10 +120,10 @@ img {
               display: flex;
               align-items: center;
               justify-content: space-between;
-              .leftBox{
+              .leftBox {
                 display: flex;
                 align-items: center;
-                p{
+                p {
                   color: white;
                   font-size: 16px;
                   margin-left: 8px;
@@ -145,17 +160,16 @@ img {
           }
         }
       }
-      
     }
   }
 }
 
-.orderFilterDropdown{
-  .ant-dropdown-menu{
+.orderFilterDropdown {
+  .ant-dropdown-menu {
     background-color: #454545;
     transform: translateY(-5px);
     padding: 4px 16px !important;
-    .ant-dropdown-menu-title-content{
+    .ant-dropdown-menu-title-content {
       display: flex;
       justify-content: center;
     }
@@ -357,7 +371,6 @@ body::-webkit-scrollbar-thumb {
 
   .ant-modal-content {
     background-color: rgb(30, 30, 30);
-
     .ant-modal-header {
       background-color: rgb(30, 30, 30);
       border-bottom: 1px solid rgb(93, 182, 110) !important;
@@ -1550,7 +1563,6 @@ span {
 .action-button {
   background-color: @button-color;
   border: none;
-
   &:hover {
     background-color: @button-color !important;
   }

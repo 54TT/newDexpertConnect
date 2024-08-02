@@ -40,7 +40,14 @@ function PageHeader({
           )}
         </div>
         <div className="launch-header-center">
-          {title && <div className="launch-header-title">{title}</div>}
+          {title && (
+            <div
+              className="launch-header-title"
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              {title}
+            </div>
+          )}
         </div>
         <div
           className={`launch-header-right ${!desc ? 'launch-header-right-line' : ''} `}

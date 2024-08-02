@@ -17,7 +17,9 @@ import { UncxAbi } from '@abis/UncxAbi';
 import Loading from '@/components/allLoad/loading';
 import getBalanceRpcEther from '@utils/getBalanceRpc';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
+import { useTranslation } from 'react-i18next';
 function ManagePairDetail() {
+  const { t } = useTranslation();
   const [search] = useSearchParams();
   const token0 = search.get('t0');
   const token1 = search.get('t1');
@@ -27,8 +29,8 @@ function ManagePairDetail() {
     useContext(CountContext);
   const [tokenBalance, setTokenBalance] = useState('0');
   const [infoData, setInfoData] = useState<any>();
-  const [burnLpModal, setBurnLpModal] = useState(false);
-  const [removeLpModal, setRemoveLpModal] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [isOpenStatus, setIsOpenStatus] = useState('');
   const [isButton, setIsButton] = useState(false);
   //  loading
   const [loading, setLoading] = useState(false);
@@ -53,7 +55,6 @@ function ManagePairDetail() {
     const decimals = await uniSwapV2Pair.decimals();
     setTokenBalance(lpTokenBalance.toString());
     const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
-
     const lockNum = await uncxContract.getUserNumLocksForToken(
       address,
       pairAddress
@@ -69,7 +70,6 @@ function ManagePairDetail() {
       }
       return lockAmount;
     };
-
     const lockAmount = await calcLockAmount();
     const infoData = {
       paidAddress: {
@@ -93,8 +93,6 @@ function ManagePairDetail() {
     setInfoData(infoData);
     setLoading(true);
   };
-  console.log(chainId);
-  console.log(contractConfig);
   useEffect(() => {
     if (Number(chainId) === contractConfig?.chainId) {
       getPairInfo();
@@ -108,6 +106,8 @@ function ManagePairDetail() {
       );
       await tx.wait();
       getPairInfo();
+      setIsOpenStatus('');
+      setOpen(false);
       setIsButton(false);
     } catch (e) {
       setIsButton(false);
@@ -144,6 +144,8 @@ function ManagePairDetail() {
         await removeLiquidityTx.wait();
         getPairInfo();
       }
+      setIsOpenStatus('');
+      setOpen(false);
       setIsButton(false);
     } catch (e) {
       setIsButton(false);
@@ -164,40 +166,47 @@ function ManagePairDetail() {
       <ToLaunchHeader />
       <PageHeader
         className="launch-manage-token-header"
-        title={`${token0}/${token1}`}
+        title={`${token0} / ${token1}`}
       />
       {loading ? (
         <>
           <InfoList className="manage-token-detail-info" data={data} />
           <div className="pair-manage-button">
-            <BottomButton text="LockLP" onClick={() => lockLpToken()} />
             <BottomButton
-              className=""
-              ghost
-              danger
-              text="RemoveLP"
-              onClick={() => setRemoveLpModal(true)}
+              text={t('token.LockLP')}
+              onClick={() => lockLpToken()}
             />
-            <BottomButton
-              className=""
-              ghost
-              danger
-              text="BurnLP"
-              onClick={() => setBurnLpModal(true)}
-            />
+            {['remove', 'burn'].map((item: string) => {
+              return (
+                <BottomButton
+                  key={item}
+                  className=""
+                  ghost
+                  danger
+                  text={
+                    item === 'burn' ? t('token.BurnLP') : t('token.RemoveLP')
+                  }
+                  onClick={() => {
+                    setIsOpenStatus(item);
+                    setOpen(true);
+                  }}
+                />
+              );
+            })}
           </div>
         </>
       ) : (
         <Loading status={'20'} browser={browser} />
       )}
       <CommonModal
-        open={removeLpModal}
-        title="Remove LP"
+        open={open}
+        title={isOpenStatus === 'remove' ? 'Remove LP' : 'Burn LP'}
         footer={null}
         className="mint-common-modal"
         onCancel={() => {
           if (!isButton) {
-            setRemoveLpModal(false);
+            setOpen(false);
+            setIsOpenStatus('');
           }
         }}
       >
@@ -205,26 +214,37 @@ function ManagePairDetail() {
           Your LP token will be send to Zero Address
         </div>
         <BottomButton
-          className=""
+          ghost
+          isBack={false}
+          loading={isButton}
+          text="Confirm"
+          onClick={() => {
+            setIsButton(true);
+            if (isOpenStatus === 'remove') {
+              removeLp();
+            } else {
+              burnLP();
+            }
+          }}
+        />
+        {/* <BottomButton
           ghost
           danger
           loading={isButton}
           text="Confirm"
           onClick={async () => {
             setIsButton(true);
-            removeLp();
-            setRemoveLpModal(true);
           }}
-        />
+        /> */}
       </CommonModal>
-      <CommonModal
+      {/* <CommonModal
         className="mint-common-modal"
-        open={burnLpModal}
+        open={open}
         footer={null}
         title="Burn LP"
         onCancel={() => {
           if (!isButton) {
-            setBurnLpModal(false);
+            setOpen(false);
           }
         }}
       >
@@ -242,7 +262,7 @@ function ManagePairDetail() {
             burnLP();
           }}
         />
-      </CommonModal>
+      </CommonModal> */}
     </>
   );
 }

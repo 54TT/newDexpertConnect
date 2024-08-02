@@ -15,14 +15,16 @@ interface TokenItemPropsType {
 }
 function TokenItem({ onClick, data }: TokenItemPropsType) {
   const { title, remark, desc, tips } = data;
+  console.log(data)
   return (
     <div
       className="launch-token-item"
       onClick={() => onClick?.(data)}
       style={{ cursor: 'pointer' }}
     >
+      {/* unlockDate */}
       <div className="dis">
-        {title && <div className="launch-token-item-title">{title}</div>}
+        {title && <div className="launch-token-item-title">{title.toString().replace('/',' / ')}</div>}
         {remark && <div className="launch-token-item-remark">{remark}</div>}
       </div>
       {(desc || tips) && (

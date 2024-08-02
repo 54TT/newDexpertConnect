@@ -1,5 +1,7 @@
 import './index.less';
 import { useTranslation } from 'react-i18next';
+import Copy from '@/components/copy';
+
 function InfoList({ data, className }: { data: any; className?: string }) {
   const { t } = useTranslation();
   const par: any = {
@@ -23,12 +25,13 @@ function InfoList({ data, className }: { data: any; className?: string }) {
     Address: t('sniping.Contract'),
     Symbol: t('token.symbol'),
     Name: t('token.token'),
-    Balance:t('token.Banlance'),  
-    Lockamount:t('token.Lock'), 
-    Pairaddress:t('token.Pairaddress'), 
+    Balance: t('token.Banlance'),
+    Lockamount: t('token.Lock'),
+    Pairaddress: t('token.Pairaddress'),
     //   payTokenType: '',
     //   buyCount: '',
   };
+  console.log(data);
   return (
     <div className={`info-list mint-scroll ${className}`}>
       {data.map(
@@ -36,8 +39,23 @@ function InfoList({ data, className }: { data: any; className?: string }) {
           item.label !== 'payTokenType' &&
           item.label !== 'buyCount' && (
             <div key={index} className="info-list-item">
-              <span>{par[item.label?.replace(/\s*/g,"")]}：</span>
-              <span>{item.show ?? item.value}</span>
+              <span style={{ whiteSpace: 'nowrap' }}>
+                {par[item.label?.replace(/\s*/g, '')]}：
+              </span>
+              {item.label?.replace(/\s*/g, '') === 'Address' ||
+              item.label?.replace(/\s*/g, '') === 'Pairaddress' ? (
+                <span>
+                  {item.value.slice(0, 4) + '...' + item.value.slice(-4)}
+                </span>
+              ) : (
+                <span>{item.show ?? item.value}</span>
+              )}
+              {(item.label?.replace(/\s*/g, '') === 'Address' ||
+                item.label?.replace(/\s*/g, '') === 'Pairaddress') && (
+                <div style={{ position: 'relative', zIndex: '10' }}>
+                  <Copy name={item.value} img="/copyColor.svg" />
+                </div>
+              )}
             </div>
           )
       )}

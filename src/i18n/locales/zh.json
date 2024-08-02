@@ -375,6 +375,21 @@
     "Banlance":"余额",
     "Lock":"锁仓的数量",
     "Pairaddress":"交易对地址",
-    "noPair":"暂无交易对"
+    "noPair":"暂无交易对",
+    "noLp":"暂无锁仓",
+    "note":"请注意，一旦您“放弃语音”，您将不再能够修改或使用“打开交易”或“解除限制”功能",
+    "Open":"打开交易",
+    "Remove":"解除限制",
+    "Renounce":"放弃所有权",
+    "Verify":"验证合约",
+    "can":"合约",
+    "BurnLP":"销毁LP",
+    "RemoveLP":"删除Lp",
+    "LockLP":"锁定LP",
+    "Unon":"锁定或解锁",
+    "unti":"解锁时间",
+    "am":"锁定LP数量",
+    "Unlock":"解锁"
+
   }
 }
