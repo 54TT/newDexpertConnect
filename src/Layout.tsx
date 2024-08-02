@@ -661,7 +661,7 @@ function Layout() {
               <Route path="/re-register" element={<Index />} />
               <Route path="/specialActive/:id" element={<SpecialActive />} />
               <Route path="/newpairDetails/:id" element={<NewpairDetails />} />
-              <Route path="/community/:tab" element={<Community />} />
+              {/* <Route path="/community/:tab" element={<Community />} /> */}
               <Route path="/app/:id" element={<Dapp />} />
               <Route path="/dapps/:id/*" element={<Dapps />} />
               <Route path="/activity" element={<Active />} />
