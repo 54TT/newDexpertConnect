@@ -9,7 +9,8 @@ import Limit from './limit';
 import Mint from './mint';
 export default function index() {
   const params: any = useParams();
-  const { browser, user }: any = useContext(CountContext);
+  // user
+  const { browser,  }: any = useContext(CountContext);
   const history = useNavigate();
   const top = [
     {
@@ -52,18 +53,18 @@ export default function index() {
     //   },
     //   key: 'limit',
     // },
-    {
-      imgAc: '/mainActive.svg',
-      img: '/mainMore.svg',
-      status: params?.id === 'tokencreation',
-      name: 'Token Creation',
-      onClick: () => {
-        if (user?.uie) {
-          history('/dapps/tokencreation');
-        }
-      },
-      key: 'mint',
-    },
+    // {
+    //   imgAc: '/mainActive.svg',
+    //   img: '/mainMore.svg',
+    //   status: params?.id === 'tokencreation',
+    //   name: 'Token Creation',
+    //   onClick: () => {
+    //     if (user?.uie) {
+    //       history('/dapps/tokencreation');
+    //     }
+    //   },
+    //   key: 'mint',
+    // },
   ];
   return (
     <div className="dappsBox">

@@ -278,7 +278,9 @@ function LockLpList() {
               );
             })}
           </div>
-          <div className="locklp-list-balance">{t('token.Balance')}: {lpTokenBalance}</div>
+          <div className="locklp-list-balance">
+            {t('token.Balance')}: {lpTokenBalance}
+          </div>
         </>
         <div className="date">{t('token.unti')}</div>
         <DatePicker
