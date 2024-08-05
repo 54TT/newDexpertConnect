@@ -45,7 +45,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     &-left{
       span:first-child{
         font-size: 20px;
@@ -96,6 +96,7 @@
         border-radius: 10px;
         padding: 10px 8px;
         transition: all .2s;
+        z-index: 5;
         .token-item-info{
           display: flex;
           align-items: center;
@@ -121,7 +122,7 @@
       }
       .transfer-icon{
         position: relative;
-        z-index: 1;
+        z-index: 10;
         width: 10px;
         height: 26px;
         img{
@@ -167,7 +168,7 @@
       &:hover{
         background-color: #86f097;
         color: #1a1a1a;
-        box-shadow: 0 0 4px 3px rgba(134, 240, 151,0.55);
+        box-shadow: 0 0 3px 2px rgba(134, 240, 151,0.55);
       }
     }
     .cancel-btn{
@@ -177,7 +178,8 @@
       cursor: pointer;
       transition: all 0.2s;
       &:hover{
-        background-color: #f00;
+        // background-color: #f00;
+        background-color: #ff7875;
         color: #1a1a1a;
       }
     }
@@ -273,10 +275,14 @@
   .ant-modal-footer{
     .ant-btn-default{
       border: none;
+      background-color: #535353;
       span{
-        color: #1a1a1a !important;
+        transition: all .2s ease;
+        color: rgba(255,255,255,0.55)
       }
       &:hover{
+        background-color: #535353;
+        // background-color: #ff7875 !important;
         span{
           color: #fff;
         }
@@ -293,6 +299,34 @@
   }
 }
 .order-progress{
+  position: relative;
+  border-radius: 50%;
+  padding: 10px;
+  border: 3px solid rgba(134, 240, 151,0.25);
+  &::after{
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid rgba(134, 240, 151,0.15);
+  }
+  &::before{
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 135px;
+    height: 135px;
+    border-radius: 50%;
+    border: 3px solid rgba(134, 240, 151,0.05);
+  }
   .ant-progress-text{
     color: rgba(255,255,255,0.85) !important;
   }
@@ -656,7 +690,7 @@
     justify-content: space-between;
     .execute-back{
       // padding-top: 5px;
-      padding-right: 60px;
+      padding-right: 20px;
       // padding-bottom: 5px;
       height: 40px;
       line-height: 40px;
@@ -682,10 +716,13 @@
       margin: 0 6px;
       box-sizing: border-box;
     }
+    .header-row-one{
+      display: flex;
+    }
     .header-row-two{
       margin-top: 6px;
       span{
-        font-size: 14px;
+        font-size: 12px;
       }
     }
   }
@@ -777,7 +814,7 @@
       div{
         display: flex;
         align-items: center;
-        cursor: pointer;
+        cursor: default;
       }
       .execute-pay-token{
         justify-content: flex-end;
@@ -809,19 +846,19 @@
       width: 100%;
       height: auto;
       padding: 12px 0;
-      background-color: #86f097;
+      background-color: #3e3e3e;
       border-radius: 18px;
       border: none;
       box-sizing: border-box;
-      &-disable{
-        background-color: #3e3e3e;
+      &-active{
+        background-color: #86f097 !important;
         &:hover{
-          background-color: #3e3e3e !important;
+          background-color: #86f097 !important;
         }
       }
       &:hover{
         // border: 1px solid #86f097;
-        background-color: #86f097 !important;
+        // background-color: #86f097 !important;
         span{
           // letter-spacing: 1px;
         }
@@ -887,6 +924,37 @@
   &-header{
     display: flex;
     justify-content: space-between;
+    &-right{
+      width: 30%;
+      display: flex;
+      align-items: center;
+      min-width: min-content;
+      justify-content: space-evenly;
+      .ant-switch{
+        
+      }
+      .ant-switch-checked{
+        background: #86f097;
+        &:hover{
+          background: #86f097 !important;
+        }
+      }
+      .my-posted-order{
+        position: relative;
+        margin-right: 16px;
+        &::after{
+          content: '';
+          position: absolute;
+          display: inline-block;
+          left: -36px;
+          width: 24px;
+          height: 14px;
+          background-color: #4a4a4a;
+          border-radius: 7px;
+          margin-left: 6px;
+        }
+      }
+    }
   }
   &-title{
     font-size: 28px;

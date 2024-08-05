@@ -6,6 +6,7 @@ import {BigNumber} from 'bignumber.js';
 import { ethers, BigNumber as BNtype } from 'ethers'
 import {chainConfig} from '@utils/limit/constants'
 import Permit2ABI from '@utils/limit/Permit2ABI.json'
+import { useTranslation } from 'react-i18next';
 export default function OrderCard({
   order,
   type,
@@ -13,9 +14,11 @@ export default function OrderCard({
   chainId,
   setShowExecuteWindow,
   setShowDetailsWindow,
-  loginPrivider
+  loginPrivider,
+  getOrderList
 }: any) {
   const [showCancelWindow,setShowCancelWindow]=useState(false)
+  const {t}=useTranslation()
   const bitmapPositions=(nonce:BNtype)=>{
     const wordPos = nonce.shr(8);
     const bitPos = nonce.and(BNtype.from(0xFF)); // Equivalent to extracting the last 8 bits
@@ -34,7 +37,7 @@ export default function OrderCard({
     const mask = 1 << bitPos;
     const res= await permit2Contract.connect(signer).invalidateUnorderedNonces(wordPos, mask);
     console.log(res);
-    
+    if(res) getOrderList(1)
   }
   // bignumber转换number
   const BNtoNumber=(bn,decimals)=>{
@@ -69,7 +72,8 @@ export default function OrderCard({
   }
 
   useEffect(()=>{
-    console.log(order.orderStatus);
+    console.log(order.offerer);
+    console.log(order.orderStatus)
   },[order])
   return (
     <div
@@ -92,14 +96,14 @@ export default function OrderCard({
             <span>{order.inputTokenName} </span>
             <span style={{display:'block',marginTop:'4px'}}>{order.inputToken.slice(0,6)}...{order.inputToken.slice(-8)}</span>
           </div>
-          <span className="partial" >PARTIAL FILL</span>
+          <span className="partial" >{t("limit.partial fill")}</span>
         </div>
         
         <Progress
           rootClassName='order-progress' 
           percent={50} 
           type="circle"
-          size={40}
+          size={45}
           strokeColor='#86f097'
           trailColor="#535353"
         />
@@ -107,7 +111,7 @@ export default function OrderCard({
       <div className="order-card-body">
         <div className='token-swap'>
           <span className='offer order-token-item'>
-            <span>OFFER</span>
+            <span>{t("limit.offer")}</span>
             <div className='token-item-info'>
               <DefaultTokenImg name={order.inputTokenSymbol} icon={''} />
               <span style={{color:'#fff',fontSize:'14px',fontWeight:'700'}}>{BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals)} </span>
@@ -118,7 +122,7 @@ export default function OrderCard({
             <img style={{zIndex:100}} src="/transfer-arrow.svg" alt="" />
           </span>
           <span className='for order-token-item'>
-            <span>FOR</span>
+            <span>{t("limit.for")}</span>
             <div className='token-item-info'>
               <span style={{color:'#fff',fontSize:'14px',fontWeight:'700'}}>{BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)} </span>
               <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
@@ -129,18 +133,22 @@ export default function OrderCard({
       </div>
       <div className="order-card-footer">
         <span className="order-time">{timeBefore(order.createdAt)}</span>
-        <span className="cancel-btn" onClick={(e)=>{
-          e.stopPropagation()
-          // setShowExecuteWindow(true);
-          setShowCancelWindow(true);
-          setSelectedOrder(order)
-        }}>取消订单</span>
+        {type === 'my' &&
+          <span
+            className="cancel-btn"
+            onClick={(e)=>{
+              e.stopPropagation()
+              // setShowExecuteWindow(true);
+              setShowCancelWindow(true);
+              setSelectedOrder(order)
+          }}>{t("limit.cancel order")}</span>
+        }
         <span className="order-status" onClick={(e)=>{
           e.stopPropagation()
           console.log(order)
           setSelectedOrder(order)
           setShowExecuteWindow(true);
-        }}>执行订单</span>
+        }}>{t("limit.execute order")}</span>
       </div>
       <Modal
         rootClassName='cancel-window'

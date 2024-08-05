@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react"
-import { Table,Spin } from "antd"
+import {  useEffect, useState } from "react"
+import { Table,Spin,Switch } from "antd"
+import { useTranslation } from "react-i18next"
 
 const OrderHistory = () => {
   const [orderList, setOrderList]=useState([])
+  const {t}=useTranslation()
   const [loading,setLoading]=useState(false)
   const mockOrderList=[
     {
@@ -121,10 +123,13 @@ const OrderHistory = () => {
   return (
     <div className="order-history">
       <div className="order-history-header">
-        <span className="order-history-title">ORDERS HISTORY</span>
-        <div>
-          <span>我下的订单</span>
-          <span>Only me</span>
+        <span className="order-history-title">{t("limit.orders history")}</span>
+        <div className="order-history-header-right">
+          <span className="my-posted-order">{t("limit.my post")}</span>
+          <>
+            <p>{t("limit.only me")}</p>
+            <Switch />
+          </>
         </div>
       </div>
       <div className="order-history-content">
@@ -145,7 +150,7 @@ const OrderHistory = () => {
           <Spin />
           :(
             <div className="more-history-container">
-            <span className="more-history" onClick={() => {moreHistory()}}>More History</span>
+            <span className="more-history" onClick={() => {moreHistory()}}>{t("limit.more history")}</span>
             <div className="more-icon"  onClick={() => {moreHistory()}}></div>
           </div>
         )

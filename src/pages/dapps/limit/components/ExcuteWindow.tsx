@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 import {BigNumber} from 'bignumber.js';
 import executeOrder from '@utils/limit/executeOrder'
 import { ethers,BigNumber as BNtype } from "ethers";
+import {useTranslation} from 'react-i18next';
 
 const ExecuteWindow = ({
   order,
@@ -17,6 +18,7 @@ const ExecuteWindow = ({
     chainId,
     loginPrivider
   } = useContext(CountContext)
+  const {t}=useTranslation()
   // 滑动条的值，百分比
   const [silderValue,setSliderValue]=useState(0)
   // 选择支付的token
@@ -140,7 +142,7 @@ const ExecuteWindow = ({
               }}
             >
               <img src="/back-icon.svg" alt="" />
-              <p>Grass</p>
+              <p>{order.inputTokenName}</p>
             </span>
             <span>X</span>
             <span>http url</span>
@@ -162,7 +164,7 @@ const ExecuteWindow = ({
       </div>
       <div className="execute-window-body">
         <div className="buying-window">
-          <span className="buying-window-title">BUYING</span>
+          <span className="buying-window-title">{t("limit.buying")}</span>
           <div className="buying-window-content">
             <span
               className="buying-window-amount"
@@ -178,7 +180,7 @@ const ExecuteWindow = ({
                 setButtonDisable(false)
               }}
             >
-              MAX
+              MAX 
             </span>
           </div>
           <div className="execute-silder">
@@ -221,7 +223,7 @@ const ExecuteWindow = ({
         </div>
       </div>
       <div className="execute-input">
-        <span>FOR</span>
+        <span>{t("limit.execute for")}</span>
         <div className="execute-token-select">
           <Input
             rootClassName="execute-amount-input"
@@ -253,7 +255,7 @@ const ExecuteWindow = ({
       <div className="execute-window-footer">
         <Button
           rootClassName="execute-btn"
-          className={`${buttonDisable?'execute-btn-disable':''}`}
+          className={`${!buttonDisable?'execute-btn-active':''}`}
           loading={buttonLoading}
           disabled={buttonDisable}
           onClick={() => {
@@ -263,9 +265,9 @@ const ExecuteWindow = ({
           EXECUTE
         </Button>
         <span className="execute-tips">
-          Buying 
+          {t("limit.desc buying")} 
           <span style={{color:"#86f097"}}> { payTokenAmount?payTokenAmount:0}
-          </span> {order.outputTokenSymbol} points for
+          </span> {order.outputTokenSymbol} {t("limit.desc for")}
           <span style={{color:"#86f097"}}> {exchangeAmount}
             </span> {order.inputTokenSymbol}
           <br />

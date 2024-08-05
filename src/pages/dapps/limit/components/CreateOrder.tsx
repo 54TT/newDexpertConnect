@@ -8,6 +8,7 @@ import checkConnection from "@utils/checkConnect";
 import {  ethers } from "ethers";
 import getBalanceRpc from "@utils/getBalanceRpc";
 import Decimal from "decimal.js";
+import BigNumber from 'bignumber.js';
 import { InputNumber,Skeleton,Select ,Button, Input } from "antd";
 import { debounce } from "lodash";
 import { getAmountOut } from "@utils/swap/v2/getAmountOut";
@@ -16,7 +17,7 @@ import { getSwapFee } from '@utils/getSwapFee';
 // import { ERC20Abi } from '@abis/ERC20Abi';
 import { createOrder } from "@utils/limit/createOrder";
 import Request from '@/components/axios';
-
+import { useTranslation } from "react-i18next";
 // interface CreateOrderType{
 //   initChainId?:string;
 //   initToken?:[tokenIn:TokenItemData,tokenOut:TokenItemData];
@@ -34,6 +35,7 @@ export default function CreateOrder({getOrderList}) {
     isLogin,
   } = useContext(CountContext)
   const { getAll } = Request();
+  const {t}=useTranslation()
   const [showSelectModal, setShowSelectModal] = useState(false)
   // const [buttonLoading,setButtonLoading]=useState(false)
   const currentSetToken=useRef<'in'|'out'>('in')
@@ -46,7 +48,9 @@ export default function CreateOrder({getOrderList}) {
   const [receiveToken,setReceiveToken]=useState<TokenItemData>()
   // const [ratename,setRatename]=useState('ETH')
   const [isExchangeRate,setIsExchangeRate]=useState(false)
+  // pay/receive token汇率
   const [tokenRate,setTokenRate]=useState(0)
+  const [tokenRateBN,setToeknRateBN]=useState<BigNumber>()
   const [payRate,setPayRate]=useState(0)
   const [rateLoading,setRateLoading]=useState(true)
   const [createLoading,setCreateLoading]=useState(false)
@@ -109,6 +113,9 @@ export default function CreateOrder({getOrderList}) {
   // 提交订单
   async function submitOrder(order) {
     console.log('---send order---');
+    console.log(order);
+    setPayTokenAmount('')
+    setReceiveTokenAmount('')
     try{
       const token = Cookies.get('token');
       const res=await getAll({
@@ -121,6 +128,7 @@ export default function CreateOrder({getOrderList}) {
             "decayEndTime": "1721136287",
             // "deadline": "1721136287",
             "fillerAt": "1721136287",
+            // price:tokenRateBN,
             uid:user.uid,
           }
         },
@@ -146,7 +154,7 @@ export default function CreateOrder({getOrderList}) {
   const approveOder=async ()=>{
     console.log('createOrder:');
     console.log('---now time---')
-    console.log(new Date(new Date().getTime()*1000))
+    console.log(new Date(new Date().getTime()))
     const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
     const signer = await web3Provider.getSigner();
     const receipt: string = await signer.getAddress();
@@ -166,19 +174,11 @@ export default function CreateOrder({getOrderList}) {
           signer,
           payToken.contractAddress,
           receiveToken.contractAddress,
-          // '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
-          // '0xb72bc8971d5e595776592e8290be6f31937097c6',
           receipt,
           payTokenAmountInWei,
           receiveTokenAmountInwei,
-          // BigNumber.from(1000000),
-          // BigNumber.from(1000000),
-          // expandToDecimalsBN(new Decimal(payTokenAmount),Number(payToken.decimals)),
-          // expandToDecimalsBN(new Decimal(receiveTokenAmount),Number(receiveToken.decimals)),
           expires
         )
-        // console.log(orderReponse);
-        // submitOrder(orderReponse)
         submitOrder(orderReponse)
       } catch (error) {
         console.log(error);
@@ -260,6 +260,10 @@ export default function CreateOrder({getOrderList}) {
     let amount:Decimal;
     amount=await getAmountOut.apply(null,params)
     // console.log('paytoken-receivetoken:'+Number(amount.toFixed(6)));
+    console.log(amount.toFixed(8))
+    const amountValue=new Decimal(amount)
+    console.log(new BigNumber(amountValue.toString()));
+    setToeknRateBN(new BigNumber(amountValue.toString()))
     setPayRate(Number(amount.toFixed(6)))
     setRateLoading(false)
     setTokenRate(Number(amount.toFixed(6)))
@@ -303,7 +307,10 @@ export default function CreateOrder({getOrderList}) {
   // paytoken与receivetoken发生改变，重新计算汇率，然后算一个paytoken值多少receivetoken
   useEffect(()=>{
     setPayRate(tokenRate)
-  },[tokenRate])
+    console.log('tokenRate:',tokenRate);
+    console.log(tokenRateBN);
+    
+  },[tokenRate,tokenRateBN])
   // 自动计算手续费
   useEffect(() => {
     getTransactionFee({ chainId, provider, payType:0 });
@@ -386,11 +393,11 @@ export default function CreateOrder({getOrderList}) {
       <div className="pay token-card">
         <div className="token-card-header dis-between">
           <span className="token-card-header-left">
-            Pay
+          {t("limit.pay")}
           </span>
           { isLogin?(
             <span className="token-card-header-right">
-              Balance:{payTokenBalance?.toString?.()||'0'}
+              {t("limit.balance")}:{payTokenBalance?.toString?.()||'0'}
             </span>
           ):(<></>)
           }
@@ -448,11 +455,11 @@ export default function CreateOrder({getOrderList}) {
       <div className="receive token-card">
       <div className="token-card-header dis-between">
           <span className="token-card-header-left">
-            Receive
+          {t("limit.receive")}
           </span>
           { isLogin?(
             <span className="token-card-header-right">
-              Balance:{receiveTokenBalance?.toFixed(4).toString?.()||'0'}
+              {t("limit.balance")}:{receiveTokenBalance?.toFixed(4).toString?.()||'0'}
             </span>
           ):(<></>)
           }
@@ -515,7 +522,7 @@ export default function CreateOrder({getOrderList}) {
     </div>
     <div className="wrapper choose-card">
       <div className="choose-card-left dis-col">
-        <span>Pay {isExchangeRate?receiveToken?.symbol:payToken?.symbol} at rate</span>
+        <span>{t("limit.pay")} {isExchangeRate?receiveToken?.symbol:payToken?.symbol} {t("limit.at rate")}</span>
         {
           rateLoading ? ( <Skeleton.Button active size="small" />
           ):(
@@ -534,7 +541,7 @@ export default function CreateOrder({getOrderList}) {
         
       </div>
       <div className="choose-card-middle dis-col">
-        <span className="market-price" onClick={()=>getTokenRateDebounce()}>Set to market</span>
+        <span className="market-price" onClick={()=>getTokenRateDebounce()}>{t("limit.market")}</span>
         <div className="exchange-rate" onClick={()=>{
           setIsExchangeRate(!isExchangeRate)
           setPayRate(1/payRate)
@@ -545,7 +552,7 @@ export default function CreateOrder({getOrderList}) {
       </div>
       <div className="col-hr"></div>
       <div className="choose-card-right dis-col">
-        <span>Expires in</span>
+        <span style={{textAlign:'center'}}>{t("limit.expires")}</span>
         <Select
           rootClassName="expires-select"
           popupClassName="expires-list"
@@ -577,7 +584,7 @@ export default function CreateOrder({getOrderList}) {
         setCreateLoading(true)
       }}
     >
-      {isLogin?'Place an order':'Connect Wallet'}
+      {isLogin?t("limit.place an order"):t("limit.connect")}
     </Button>
     <div className="unit-price">
       <div className="unit-price-row">
@@ -585,7 +592,7 @@ export default function CreateOrder({getOrderList}) {
           className="unit-price-row-left"
           onClick={()=>{setIsShowUnitPrice(!isShowUnitPrice)}}
         >
-          <span>{receiveToken?.symbol} price</span>
+          <span>{receiveToken?.symbol} {t("limit.price")}</span>
           <img style={{width:'14px',transform:`rotate(${isShowUnitPrice?'180deg':'0deg'})`}} src="/arrowDown.svg" />
         </div>
         <div className="unit-price-row-right">
@@ -597,7 +604,7 @@ export default function CreateOrder({getOrderList}) {
             )
           }
           <span>{payToken?.symbol} ~ </span>
-          <span style={{color:'#86f097'}}>$</span>
+          <span style={{color:'#86f097'}}> $</span>
           {
             rateLoading?(
               <Skeleton.Button active size="small" />
@@ -611,7 +618,7 @@ export default function CreateOrder({getOrderList}) {
       </div>
       <div className="unit-price-row" style={{opacity:isShowUnitPrice?'1':'0'}}>
         <div className="">
-          <span>{payToken?.symbol} price</span>
+          <span>{payToken?.symbol} {t("limit.price")}</span>
         </div>
         <div>
           {

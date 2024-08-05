@@ -73,13 +73,18 @@ async function buildOrder(
   const reactorAddress=config.reactorAddress
   const permist2Address=config.permit2Address
   const nonce=generateRandomNonce()
-
+  // 订单过期时间，GMT00
+  // const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds
+  // 订单过期时间，GMT+8,中国时间
   const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds+(8*60*60)
   console.log('---now time---')
   // 获取现在的时间
-  console.log(new Date().toUTCString())
+  // console.log(new Date().toUTCString())
+  console.log(new Date((deadline-deadlineSeconds)*1000).toUTCString())
+  console.log(new Date(new Date().getTime()))
   console.log('---deadline---')
   console.log(new Date(deadline*1000).toUTCString())
+  
   const decayStartTime = Math.round(new Date().getTime() / 1000)
   const creatAddress=await orderCreator.getAddress()
   // 生成荷兰式订单，传入相关参数

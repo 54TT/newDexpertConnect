@@ -1,8 +1,10 @@
 import { useEffect, useState,useContext  } from 'react';
 import { CountContext } from '@/Layout';
+// import { ethers } from 'ethers';
 import { Input,Dropdown,Modal, } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-// import { useTranslation } from 'react-i18next';
+import {Spin} from 'antd';
+import { useTranslation } from 'react-i18next';
 import OrderCard from './components/OrderCard';
 import CreateOrder from './components/CreateOrder';
 import Cookies from 'js-cookie';
@@ -30,10 +32,11 @@ export default function index() {
     user,
     // isLogin,
   } = useContext(CountContext)
-  // const {t}=useTranslation()
+  const {t}=useTranslation()
   const [currentIndex,setCurrentIndex]=useState(0)
   const { getAll } = Request();
   const [orderList,setOrderList]=useState([])
+  // 订单列表加载状态
   const [orderLoading,setOrderLoading]=useState(true)
   const [showExecuteWindow,setShowExecuteWindow]=useState(false)
   // 订单请求页码参数
@@ -43,20 +46,21 @@ export default function index() {
   const [selectedOrder,setSelectedOrder]=useState()
   // 展示订单详情
   const [showDetailsWindow,setShowDetailsWindow]=useState(false)
+  const [moreOrderLoading,setMoreOrderLoading]=useState(false)
   const items:any = [
     {
       key: '0',
       label:<p onClick={(e)=>{
         console.log(e.target);
-        setCurrentIndex(2)
-      }}>Excuteing</p>
+        setCurrentIndex(1)
+      }}>{t("limit.executing")}</p>
     },
     {
       key:'1',
       label:<p onClick={(e)=>{
         console.log(e.target);
-        setCurrentIndex(2)
-      }}>History</p>
+        setCurrentIndex(1)
+      }}>{t("limit.history")}</p>
     }
   ];
   // const [nonce, setNonce] = useState('');
@@ -95,25 +99,33 @@ export default function index() {
     // });
     // console.log(res)
   // };
-  // more order
+  // 加载更多订单
   const moreOrder=async()=>{
     console.log('get more order');
     setOrderPage(orderPage+1)
+    setMoreOrderLoading(true)
     await getOrderList(orderPage +1)
   }
   // 获取订单列表
-  const getOrderList=async(page:number,uid?:number)=>{
-    if(uid) console.log('ger user orders');
-    
+  const getOrderList=async(page:number)=>{
+    // if(currentIndex===1) console.log('ger user orders');
+    console.log('page',page);
+    if(page===1) setOrderLoading(true)
     try{
       const token = Cookies.get('token');
+      // console.log(token);
       const res=await getAll({
-        method:'post',
-        url:'/api/v1/limit/getOrderList',
+        method:'get',
+        // url:'/api/v1/limit/getOrderList',
+        url:'/api/v1/limit/order/list',
         data:{
-          search:"",
-          uid:0,
+          // search:"",
+          // uid:0,
           page:page,
+          // orderHash:"",
+          orderStatus:"open",
+          isPersonal:currentIndex,
+          offerer:"",
         },
         token,
         chainId
@@ -121,22 +133,28 @@ export default function index() {
       // console.log(res.data.orders);
       if(res?.status===200){
         console.log(res.data.orders);
-        
         if(res.data.orders.length===0||res.data.orders.length<10){
-          console.log(res.data.orders.length);
-          
-          setHasMore(false)
-        }else{
-          console.log(res.data.orders.length);
+          // console.log(res.data.orders.length);
           if(page===1)  setOrderList(res.data.orders)
-            else{
-              setOrderList(prevOrders=>[...prevOrders,...res.data.orders])
+          else{
+            setOrderList(prevOrders=>[...prevOrders,...res.data.orders])
+          }
+          setHasMore(false)
+          setOrderLoading(false)
+          setMoreOrderLoading(false)
+        }else{
+          // console.log(res.data.orders.length);
+          if(page===1)  setOrderList(res.data.orders)
+          else{
+            setOrderList(prevOrders=>[...prevOrders,...res.data.orders])
           }
           setOrderLoading(false)
+          setMoreOrderLoading(false)
         }
       }
   }catch(err){
     setOrderLoading(false)
+    setMoreOrderLoading(false)
     console.log(err)
   }
 }
@@ -145,12 +163,24 @@ export default function index() {
     
   }, [showDetailsWindow]);
   useEffect(() => {
+    console.log('currentIndex',currentIndex);
+    if(currentIndex===0){
+      console.log('get all orders')
+      getOrderList(1)
+    }
+    if(currentIndex===1) {
+      getOrderList(1)
+      console.log('get user orders')
+    };
+  }, [currentIndex,chainId]);
+  useEffect(() => {
     console.log(selectedOrder);
     
   }, [selectedOrder]);
   useEffect(() => {
     // getNoce();
     getOrderList(1)
+    console.log("get order list");
   }, []);
   return (
     <>
@@ -166,6 +196,7 @@ export default function index() {
     <div className="limit">
       <div className="limit-left">
         <div className="limit-left-header">
+          <div style={{display:'flex',width:'50%',justifyContent:'space-between'}}>
           <Input
               size="large"
               rootClassName="limit-input"
@@ -185,15 +216,17 @@ export default function index() {
                 />
               }
               />
-              <div style={{borderRight:"2px solid #565656"}}></div>
+              <div style={{borderRight:"2px solid #565656",marginLeft:'4px'}}></div>
+              </div>
               <span className={`orders-btn ${currentIndex===0?'active':''}`}
               onClick={()=>{
                 setCurrentIndex(0)
+                setOrderPage(1)
                 // getOrderList(1)
                 // setOrderLoading(true)
                 setHasMore(true)
               }}>
-                <p>Live Orders</p>
+                <p>{t("limit.live orders")}</p>
               </span>
               {/* <span className={`orders-btn ${currentIndex===1?'active':''}`}
                 onClick={()=>setCurrentIndex(1)}>
@@ -207,21 +240,21 @@ export default function index() {
                 trigger={['hover']}
               >
                 <span
-                  className={`orders-btn ${currentIndex===2?'active':''}`}
+                  className={`orders-btn ${currentIndex===1?'active':''}`}
                   onClick={()=>{
-                    setCurrentIndex(2)
-                    getOrderList(1,user.uid)
+                    setCurrentIndex(1)
+                    // getOrderList(1)
                   }
                   }
                 >
                   <p>
-                    My Order(s)
+                    {t("limit.my orders")}
                   </p>
                 </span>
               </Dropdown>
         </div>
         <div className="limit-left-body">
-          {orderLoading&&<Loading status={'20'} />}
+          
           {
             orderList?.length>0&&!orderLoading?(
               <div id='order-list'>
@@ -232,7 +265,28 @@ export default function index() {
                   loader={null}
                   dataLength={orderList.length}
                 >
-                {currentIndex===2?(
+                  {orderList.map((item:any)=>(
+                <OrderCard
+                  type={item.uid===user.uid?'my':''}
+                  key={item.orderHash}
+                  order={item}
+                  chainId={chainId}
+                  loginPrivider={loginPrivider}
+                  setShowExecuteWindow={setShowExecuteWindow}
+                  setSelectedOrder={setSelectedOrder}
+                  setShowDetailsWindow={setShowDetailsWindow}
+                  getOrderList={getOrderList}
+                />
+              ))}
+              </InfiniteScroll>
+              {moreOrderLoading && <Spin />}
+              </div>
+            ):(
+            <>
+              {orderLoading&&<Loading status={'20'} />}
+            </>
+            )}
+                {/* {currentIndex===2?(
                   orderList.filter((item:any)=>item?.uid===user?.uid).map((item)=>(
                     <OrderCard
                       type={item?.uid===user?.uid?'my':''}
@@ -259,24 +313,8 @@ export default function index() {
                     />
                   ))
                 )
-
-                }
-              {/* {orderList.map((item:any)=>(
-                <OrderCard
-                  type={item.uid===user.uid?'my':''}
-                  key={item.orderHash}
-                  order={item}
-                  chainId={chainId}
-                  loginPrivider={loginPrivider}
-                  setShowExecuteWindow={setShowExecuteWindow}
-                  setSelectedOrder={setSelectedOrder}
-                  setShowDetailsWindow={setShowDetailsWindow}
-                />
-              ))} */}
-              </InfiniteScroll>
-              </div>
-            ):(<></>)
-          }
+                } */}
+              
         </div>
       </div>
       <div className="limit-right">
@@ -289,6 +327,7 @@ export default function index() {
         onCancel={()=>setShowExecuteWindow(false)}
         footer={null}
         destroyOnClose
+        width={800}
       >
         <ExecuteWindow
           order={selectedOrder}
