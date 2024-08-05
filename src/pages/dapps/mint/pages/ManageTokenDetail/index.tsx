@@ -4,7 +4,7 @@ import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Request from '@/components/axios';
 import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
@@ -18,23 +18,18 @@ import CommonModal from '@/components/CommonModal';
 import { useTranslation } from 'react-i18next';
 function ManageTokenDetail() {
   const { t } = useTranslation();
+  const router = useParams();
   const { chainId, loginProvider, browser } = useContext(CountContext);
-  const [search] = useSearchParams();
-  const contractId = search.get('cId');
+
   const [tokenData, setTokenData] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
-  const address = search.get('add');
   const { getAll } = Request();
   const token = Cookies.get('token');
   const [erc20Contract, setErc20Contract] = useState<ethers.Contract>();
   const [isVerify, setIsVerify] = useState(false);
-  console.log(isVerify);
   const [isOpenTrade, setIsOpenTrade] = useState(false);
-  console.log(isOpenTrade);
   const [isRemoveLimit, setIsRemoveLimit] = useState(false);
-  console.log(isRemoveLimit);
   const [isOwn, setIsOwn] = useState(true);
-  console.log(isOwn);
   const [, setLoadingPage] = useState(false);
   const [openTradeModal, setOpenTradeModal] = useState(false);
   const [ethBalance, setEthBalance] = useState('0');
@@ -48,12 +43,12 @@ function ManageTokenDetail() {
   const getContractDetail = async () => {
     const { data } = await getAll({
       method: 'get',
-      url: `/api/v1/launch-bot/contract/${contractId}`,
+      url: `/api/v1/launch-bot/contract/${router?.id}`,
       data: {},
       token,
       chainId,
     });
-    if (data.isVerify === '1') {
+    if (data?.isVerify === '1') {
       setIsVerify(true);
     }
     setTokenData(data);
@@ -62,14 +57,25 @@ function ManageTokenDetail() {
 
   useEffect(() => {
     getContractDetail();
+    setIsLoading(false);
   }, [chainId]);
+
+  useEffect(() => {
+    if (router?.address && loginProvider) {
+      initData();
+    }
+  }, [router?.address, loginProvider]);
 
   const initData = async () => {
     setLoadingPage(true);
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = web3Provider.getSigner();
     const walletAddress = await signer.getAddress();
-    const tokenContract = new ethers.Contract(address, LaunchERC20Abi, signer);
+    const tokenContract = new ethers.Contract(
+      router?.address,
+      LaunchERC20Abi,
+      signer
+    );
 
     setErc20Contract(tokenContract);
     const isOwn = (await tokenContract.owner()) === walletAddress;
@@ -87,11 +93,6 @@ function ManageTokenDetail() {
     setEthBalance(ethers.utils.formatEther(ethWei));
     setLoadingPage(true);
   };
-  useEffect(() => {
-    if (address && loginProvider) {
-      initData();
-    }
-  }, [address, loginProvider]);
 
   const tokenInfoData = useMemo(() => {
     if (!tokenData) return [];
@@ -123,7 +124,7 @@ function ManageTokenDetail() {
       const data = await getAll({
         method: 'post',
         url: '/api/v1/launch-bot/contract/verify',
-        data: { contractId },
+        data: { contractId: router?.id },
         token,
         chainId,
       });
@@ -193,7 +194,7 @@ function ManageTokenDetail() {
           data: {
             tx: tx.hash,
             txType: '7',
-            txTableId: contractId,
+            txTableId: router?.id,
           },
           token,
           chainId,
@@ -266,7 +267,7 @@ function ManageTokenDetail() {
             loading={verifyLoading}
             onClick={() => verifyingContract()}
           >
-             {t('token.Verify')}
+            {t('token.Verify')}
           </Button>
           <Button
             iconPosition={'end'}
@@ -285,7 +286,7 @@ function ManageTokenDetail() {
               renounceOwnerShip();
             }}
           >
-          {t('token.Renounce')}
+            {t('token.Renounce')}
           </Button>
           <Button
             iconPosition={'end'}
@@ -305,7 +306,7 @@ function ManageTokenDetail() {
               removeLimit();
             }}
           >
-             {t('token.Remove')}
+            {t('token.Remove')}
           </Button>
         </div>
       </ConfigProvider>
@@ -357,9 +358,7 @@ function ManageTokenDetail() {
           }}
         />
       </CommonModal>
-      <p className="hint">
-    {t('token.note')}
-      </p>
+      <p className="hint">{t('token.note')}</p>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import TokenItem from '../../component/TokenItem';
@@ -12,18 +12,14 @@ import Loading from '@/components/allLoad/loading';
 import { useTranslation } from 'react-i18next';
 function ManagePairListAndContract() {
   const { t } = useTranslation();
+  const router = useParams();
   const { chainId, browser } = useContext(CountContext);
   const { getAll } = Request();
-  const [search] = useSearchParams();
   const history = useNavigate();
-  const tokenSymbol = search.get('t');
-  const address = search.get('add');
   const [loading, setLoading] = useState(false);
   const [isNext, setIsNext] = useState(false);
   const [nextLoad, setNextLoad] = useState(false);
   const [page, setPage] = useState(1);
-
-  const contractId = search.get('cId');
   const token = Cookies.get('token');
   const [data, setData] = useState([]);
   const getTokenPairList = async () => {
@@ -31,22 +27,21 @@ function ManagePairListAndContract() {
       method: 'get',
       url: '/api/v1/launch-bot/pairs',
       data: {
-        contractId,
+        contractId: router?.id,
       },
       token,
       chainId,
     });
     if (res?.status === 200) {
-      setLoading(true);
       setData(res?.data?.list);
       if (res?.data?.list?.length !== 10) {
         setIsNext(true);
       }
+      setLoading(true);
     } else {
       setLoading(true);
     }
   };
-
   const changePage = () => {
     if (!isNext) {
       getTokenPairList();
@@ -54,11 +49,12 @@ function ManagePairListAndContract() {
       setNextLoad(true);
     }
   };
-
   useEffect(() => {
-    getTokenPairList();
+    if (router?.id) {
+      getTokenPairList();
+      setLoading(false);
+    }
   }, [chainId]);
-
   const items = (item: any) => {
     return (
       <TokenItem
@@ -69,7 +65,8 @@ function ManagePairListAndContract() {
         }}
         onClick={(data) => {
           history(
-            `/dapps/tokencreation/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
+            // `/dapps/tokencreation/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
+            `/dapps/tokencreation/pairDetail/${data.pairAddress}/${data.token0}/${data.token1}`
           );
         }}
       />
@@ -77,30 +74,36 @@ function ManagePairListAndContract() {
   };
   return (
     <div className="launch-manage-pair">
-      <ToLaunchHeader />
-      <PageHeader className="launch-manage-token-header" title={tokenSymbol} />
-      <TokenItem
-        data={{ title: t('token.can'), address }}
-        onClick={() => {
-          history(
-            `/dapps/tokencreation/tokenDetail?add=${address}&cId=${contractId}`
-          );
-        }}
-      />
-      <div style={{ height: '330px', overflow: 'overlay' }}>
-        {loading ? (
-          <InfiniteScrollPage
-            data={data}
-            next={changePage}
-            items={items}
-            nextLoad={nextLoad}
-            no={t('token.noPair')}
-            scrollableTarget={'launchTokenList'}
+      {loading ? (
+        <>
+          <ToLaunchHeader />
+          <PageHeader
+            className="launch-manage-token-header"
+            title={router?.name}
           />
-        ) : (
-          <Loading status={'20'} browser={browser} />
-        )}
-      </div>
+          <TokenItem
+            data={{ title: t('token.can'), address: router?.address }}
+            onClick={() => {
+              history(
+                // `/dapps/tokencreation/tokenDetail?add=${router?.address}&cId=${router?.id}`
+                `/dapps/tokencreation/tokenDetail/${router?.address}/${router?.id}`
+              );
+            }}
+          />
+          <div style={{ height: '330px', overflow: 'overlay' }} className='mint-scroll'>
+            <InfiniteScrollPage
+              data={data}
+              next={changePage}
+              items={items}
+              nextLoad={nextLoad}
+              no={t('token.noPair')}
+              scrollableTarget={'launchTokenList'}
+            />
+          </div>
+        </>
+      ) : (
+        <Loading status={'20'} browser={browser} />
+      )}
     </div>
   );
 }

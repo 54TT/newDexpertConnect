@@ -26,18 +26,22 @@ function ManageTokenList() {
   const [loading, setLoading] = useState(false);
   const [isNext, setIsNext] = useState(false);
   const [nextLoad, setNextLoad] = useState(false);
-  // const [searchPar, setSearchPar] = useState('');
+
+  const [searchPar, setSearchPar] = useState('');
+  const [searName, setSearName] = useState('');
+  const [key, setKey] = useState('0');
   const [page, setPage] = useState(1);
   const history = useNavigate();
-  const getTokenList = async (nu: number, value?: string) => {
+  const getTokenList = async (nu: number, value?: string, key?: string) => {
     const token = Cookies.get('token');
     const res = await getAll({
       method: 'get',
       url: '/api/v1/launch-bot/contract/list',
       data: {
         page: nu,
-        pageSize: 5,
-        search: value,
+        pageSize: 10,
+        search: value || '',
+        key: key || '',
       },
       token,
       chainId,
@@ -61,15 +65,18 @@ function ManageTokenList() {
   };
   const changePage = () => {
     if (!isNext) {
-      getTokenList(page + 1);
+      getTokenList(page + 1, searchPar, key);
       setPage(page + 1);
       setNextLoad(true);
     }
   };
   useEffect(() => {
-    getTokenList(1, '');
+    getTokenList(1, '', '0');
     setPage(1);
     setLoading(false);
+    setKey('0');
+    setSearchPar('');
+    setSearName('');
   }, [chainId]);
   const items = (item: any) => {
     return (
@@ -83,16 +90,32 @@ function ManageTokenList() {
         }}
         onClick={({ id, address, title }) =>
           history(
-            `/dapps/tokencreation/managePair?cId=${id}&add=${address}&t=${title}`
+            // `/dapps/tokencreation/managePair?cId=${id}&add=${address}&t=${title}`
+            `/dapps/tokencreation/managePair/${id}/${address}/${title}`
           )
         }
       />
     );
   };
   const handleChange = (value: string) => {
-    console.log(value);
+    setKey(value);
+    getTokenList(1, searchPar, value);
+    setPage(1);
+    setLoading(false);
   };
 
+  const search = (e: string) => {
+    if (searchPar !== e) {
+      setSearchPar(e);
+      getTokenList(1, e, key);
+      setPage(1);
+      setLoading(false);
+    }
+  };
+
+  const changeName = (e: any) => {
+    setSearName(e.target.value);
+  };
   return (
     <div className="launch-manage-token">
       <ToLaunchHeader />
@@ -103,16 +126,24 @@ function ManageTokenList() {
         title={t('token.me')}
       />
       <div className="launch-manage-token-search">
-        <Search  className='searchBox'/>
+        <Search
+          className="searchBox"
+          value={searName}
+          onChange={changeName}
+          allowClear
+          onSearch={search}
+        />
         <Select
           style={{ width: 120 }}
           onChange={handleChange}
-          className='selectBox'
+          className="selectBox"
+          value={key}
           popupClassName={'manageTokenSelect'}
           options={[
-            { value: 'jack', label: 'Jack' },
-            { value: 'lucy', label: 'Lucy' },
-            { value: 'Yiminghe', label: 'yiminghe' },
+            { value: '0', label: 'All' },
+            { value: '2', label: 'Limits Removed' },
+            { value: '1', label: 'Trade Opened' },
+            { value: '3', label: 'Renounce Ownership' },
           ]}
         />
       </div>

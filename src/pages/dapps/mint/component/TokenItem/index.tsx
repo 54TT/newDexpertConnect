@@ -15,7 +15,6 @@ interface TokenItemPropsType {
 }
 function TokenItem({ onClick, data }: TokenItemPropsType) {
   const { title, remark, desc, tips } = data;
-  console.log(data)
   return (
     <div
       className="launch-token-item"

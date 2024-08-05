@@ -8,6 +8,7 @@ import ManagePairListAndContract from './pages/ManagePairListAndContract';
 import ManageTokenDetail from './pages/ManageTokenDetail/index.tsx';
 import ManagePairDetail from './pages/ManagePairDetail/index.tsx';
 import LockLpList from './pages/LockLpList/index.tsx';
+import Result from './pages/Result';
 export const MintContext = createContext(null);
 export const initFormData: Partial<FormDataType> = {
   decimals: '18',
@@ -51,13 +52,23 @@ function Mint() {
                 }
               />
               <Route path="/manageToken" element={<ManageTokenList />} />
+              <Route path="/result/:id/:status" element={<Result />} />
               <Route
-                path="/managePair"
+                path="/managePair/:id/:address/:name"
+                // path="/managePair"
                 element={<ManagePairListAndContract />}
               />
-              <Route path="/tokenDetail" element={<ManageTokenDetail />} />
-              <Route path="/pairDetail" element={<ManagePairDetail />} />
-              <Route path="/lockLpList" element={<LockLpList />} />
+              <Route
+                // path="/tokenDetail"
+                path="/tokenDetail/:address/:id"
+                element={<ManageTokenDetail />}
+              />
+              <Route
+                // path="/pairDetail"
+                path="/pairDetail/:pair/:t0/:t1"
+                element={<ManagePairDetail />}
+              />
+              <Route path="/lockLpList/:address" element={<LockLpList />} />
             </Routes>
           </div>
         </MintContext.Provider>

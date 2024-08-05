@@ -9,7 +9,8 @@ export default function InfiniteScrollPage({
   nextLoad,
   no,
   style,
-  show,setAddLink
+  show,
+  setAddLink,
 }: any) {
   return (
     <>
@@ -19,7 +20,7 @@ export default function InfiniteScrollPage({
         scrollableTarget={scrollableTarget}
         loader={null}
         dataLength={data.length}
-        style={style || {overflow:"hidden"}}
+        style={style || { overflow: 'hidden' }}
       >
         {data.length > 0 ? (
           show === 'show' ? (
@@ -30,7 +31,7 @@ export default function InfiniteScrollPage({
             })
           )
         ) : (
-          <Nodata name={no} setAddLink={setAddLink}/>
+          <Nodata name={no} setAddLink={setAddLink} />
         )}
       </InfiniteScroll>
       {nextLoad && <Load />}

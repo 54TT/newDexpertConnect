@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import { CountContext } from '@/Layout';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ethers } from 'ethers';
 import { UncxAbi } from '@abis/UncxAbi';
 import NotificationChange from '@/components/message';
@@ -18,27 +18,27 @@ import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
 import { zeroAddress } from '@utils/constants';
 import approve from '@utils/approve';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
 import Loading from '@/components/allLoad/loading';
 import Nodata from '@/components/Nodata';
 function LockLpList() {
   const { t } = useTranslation();
   const { contractConfig, loginProvider, chainId, browser } =
     useContext(CountContext);
-  const [search] = useSearchParams();
-  const pairAddress = search.get('add');
+  const history = useNavigate();
+  const router = useParams();
   // pair展示
   const [infoData, setInfoData] = useState([]);
-  console.log(infoData);
   const [isLoading, setIsLoading] = useState(false);
   // 锁定流动性弹窗相关参数
   const [openModal, setOpenModal] = useState(false);
   const [lpTokenBalance, setLpTokenBalance] = useState('0');
   const [lockDate, setLockDate] = useState<Dayjs>(null);
   // lock   loading
-  const [lockLoing, setLockLoing] = useState(false);
+  const [lockLoing, setLockLoing] = useState('');
   const [uncxContract, setUncxContract] = useState<ethers.Contract>();
   const [slider, setSlider] = useState(0);
-
   const getLockList = async () => {
     const { uncxAddress, wethAddress } = contractConfig;
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
@@ -48,11 +48,11 @@ function LockLpList() {
     setUncxContract(uncxContract);
     const lockNum = await uncxContract.getUserNumLocksForToken(
       address,
-      pairAddress
+      router?.address
     );
     const lpTokenBalance = await getBalanceRpcEther(
       web3Provider,
-      pairAddress,
+      router?.address,
       wethAddress
     );
     setLpTokenBalance(lpTokenBalance.toString());
@@ -60,7 +60,7 @@ function LockLpList() {
       const promiseList = [];
       for (let i = 0; i <= lockNum - 1; i++) {
         promiseList.push(
-          uncxContract.getUserLockForTokenAtIndex(address, pairAddress, i)
+          uncxContract.getUserLockForTokenAtIndex(address, router?.address, i)
         );
       }
       return Promise.all(promiseList);
@@ -102,7 +102,7 @@ function LockLpList() {
       const signer = await web3Provider.getSigner();
       const walletAddress = await signer.getAddress();
       const pairContract = new ethers.Contract(
-        pairAddress,
+        router?.address,
         UniswapV2PairAbi,
         signer
       );
@@ -115,11 +115,10 @@ function LockLpList() {
       );
       const unlockDate = lockDate.unix();
       const isShow = await approve(pairContract, uncxAddress, lockAmount);
-      console.log(isShow);
       if (isShow) {
         try {
           const tx = await uncxContract.lockLPToken(
-            pairAddress,
+            router?.address,
             lockAmount,
             unlockDate,
             zeroAddress,
@@ -129,29 +128,46 @@ function LockLpList() {
               value: fee,
             }
           );
-          console.log(tx);
+          if (tx?.hash) {
+            history('/dapps/tokencreation/result/' + tx?.hash + '/lock');
+          }
         } catch (e) {
           NotificationChange('warning', t('Dapps.Insufficient Fund'));
           return null;
         }
       }
-      console.log(1111111111111);
       getLockList();
       setLockDate(null);
       setSlider(0);
-      setLockLoing(false);
+      setLockLoing('');
     } catch (e) {
-      console.log(e);
-      setLockLoing(false);
+      setLockLoing('');
     }
   };
   useEffect(() => {
-    if (loginProvider && contractConfig?.chainId === Number(chainId)) {
+    if (
+      loginProvider &&
+      contractConfig?.chainId === Number(chainId) &&
+      router?.address
+    ) {
       getLockList();
     }
-  }, [chainId, loginProvider, contractConfig]);
+  }, [chainId, loginProvider, contractConfig, router?.address]);
   const withdraw = async (index, lockId, amount) => {
-    await uncxContract.withdraw(pairAddress, index, lockId, amount);
+    try {
+      const data = await uncxContract.withdraw(
+        router?.address,
+        index,
+        lockId,
+        amount
+      );
+      if (data?.hash) {
+        history('/dapps/tokencreation/result/' + data?.hash + '/unlock');
+        setLockLoing('');
+      }
+    } catch (e) {
+      setLockLoing('');
+    }
   };
 
   const marks: SliderSingleProps['marks'] = {
@@ -172,11 +188,10 @@ function LockLpList() {
     <div className="locklpBox">
       <ToLaunchHeader />
       <PageHeader
-        disabled={false}
         className="launch-manage-token-header"
         title={t('token.Unon')}
       />
-      <div style={{ maxHeight: '330px', overflow: 'overlay' }}>
+      <div style={{ maxHeight: '330px', overflow: 'overlay' }} className='mint-scroll'>
         {isLoading ? (
           infoData.length > 0 ? (
             infoData?.map?.((item, index) => (
@@ -195,7 +210,7 @@ function LockLpList() {
                 </div>
                 <BottomButton
                   text={t('token.Unlock')}
-                  loading={lockLoing}
+                  loading={item?.lockId?.toString() === lockLoing}
                   isBack={dayjs(
                     dayjs.unix(Number(item?.unlockDate?.toString()))
                   ).isAfter(dayjs())}
@@ -205,7 +220,7 @@ function LockLpList() {
                         dayjs.unix(Number(item?.unlockDate?.toString()))
                       ).isAfter(dayjs())
                     ) {
-                      setLockLoing(true);
+                      setLockLoing(item?.lockId?.toString());
                       withdraw(index, item.lockId, item.lockAmount);
                     }
                   }}
@@ -297,10 +312,10 @@ function LockLpList() {
         />
         <BottomButton
           text={t('Slider.Confirm')}
-          loading={lockLoing}
+          loading={lockLoing === 'confirm'}
           onClick={() => {
-            if (slider && lockDate) {
-              setLockLoing(true);
+            if (slider && lockDate && router?.address) {
+              setLockLoing('confirm');
               lockLp();
             }
           }}

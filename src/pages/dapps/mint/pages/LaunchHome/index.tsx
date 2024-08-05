@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+
 import './index.less';
 import { useContext, useEffect } from 'react';
 import { MintContext, initFormData } from '../../index';

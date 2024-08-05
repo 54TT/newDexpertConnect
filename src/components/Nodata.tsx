@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 function Nodata({ name, setAddLink }: any) {
   const { t } = useTranslation();
   return (
-    <p
+    <div
       style={{
         flexDirection: 'column',
         paddingTop: '30px',
@@ -33,7 +33,7 @@ function Nodata({ name, setAddLink }: any) {
           </span>
         )}
       </p>
-    </p>
+    </div>
   );
 }
 

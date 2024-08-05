@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import BottomButton from '../../component/BottomButton';
 import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
@@ -20,10 +20,7 @@ import { toWeiWithDecimal } from '@utils/convertEthUnit';
 import { useTranslation } from 'react-i18next';
 function ManagePairDetail() {
   const { t } = useTranslation();
-  const [search] = useSearchParams();
-  const token0 = search.get('t0');
-  const token1 = search.get('t1');
-  const pairAddress = search.get('add');
+  const router = useParams();
   const history = useNavigate();
   const { loginProvider, contractConfig, chainId, browser } =
     useContext(CountContext);
@@ -42,12 +39,12 @@ function ManagePairDetail() {
     const address = await signer.getAddress();
     const lpTokenBalance = await getBalanceRpcEther(
       web3Provider,
-      pairAddress,
+      router?.pair,
       wethAddress
     );
     //const v2FactoryAddress = contractConfig.uniswapV2FactoryAddress;
     const uniSwapV2Pair = new ethers.Contract(
-      pairAddress,
+      router?.pair,
       UniswapV2PairAbi,
       signer
     );
@@ -57,14 +54,18 @@ function ManagePairDetail() {
     const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
     const lockNum = await uncxContract.getUserNumLocksForToken(
       address,
-      pairAddress
+      router?.pair
     );
 
     const calcLockAmount = async () => {
       let lockAmount = BigNumber.from(0);
       for (let i = 0; i <= lockNum - 1; i++) {
         const amount = (
-          await uncxContract.getUserLockForTokenAtIndex(address, pairAddress, i)
+          await uncxContract.getUserLockForTokenAtIndex(
+            address,
+            router?.pair,
+            i
+          )
         )[1];
         lockAmount = lockAmount.add(amount);
       }
@@ -74,8 +75,8 @@ function ManagePairDetail() {
     const infoData = {
       paidAddress: {
         label: 'Pair address',
-        value: pairAddress,
-        show: `${pairAddress.slice(0, 4)}...${pairAddress.slice(pairAddress.length - 4)}`,
+        value: router?.pair,
+        show: `${router?.pair?.slice(0, 4)}...${router?.pair?.slice(router?.pair?.length - 4)}`,
       },
       balance: {
         label: 'Balance',
@@ -94,10 +95,10 @@ function ManagePairDetail() {
     setLoading(true);
   };
   useEffect(() => {
-    if (Number(chainId) === contractConfig?.chainId) {
+    if (Number(chainId) === contractConfig?.chainId && router?.pair) {
       getPairInfo();
     }
-  }, [loginProvider, chainId, contractConfig]);
+  }, [loginProvider, chainId, contractConfig, router?.pair]);
   const burnLP = async () => {
     try {
       const tx = await pairContract.transfer(
@@ -141,7 +142,8 @@ function ManagePairDetail() {
           walletAddress,
           deadline
         );
-        await removeLiquidityTx.wait();
+        const data = await removeLiquidityTx.wait();
+        console.log(data);
         getPairInfo();
       }
       setIsOpenStatus('');
@@ -153,20 +155,18 @@ function ManagePairDetail() {
   };
 
   const lockLpToken = async () => {
-    history(`/dapps/tokencreation/lockLpList?add=${pairAddress}`);
+    history(`/dapps/tokencreation/lockLpList/${router?.pair}`);
   };
-
   const data = useMemo(
     () => Object?.keys?.(infoData || {})?.map?.((key) => infoData[key]) ?? [],
     [infoData]
   );
-
   return (
     <>
       <ToLaunchHeader />
       <PageHeader
         className="launch-manage-token-header"
-        title={`${token0} / ${token1}`}
+        title={`${router?.t0} / ${router?.t1}`}
       />
       {loading ? (
         <>
@@ -200,7 +200,9 @@ function ManagePairDetail() {
       )}
       <CommonModal
         open={open}
-        title={isOpenStatus === 'remove' ? 'Remove LP' : 'Burn LP'}
+        title={
+          isOpenStatus === 'remove' ? t('token.RemoveLP') : t('token.BurnLP')
+        }
         footer={null}
         className="mint-common-modal"
         onCancel={() => {
@@ -210,14 +212,44 @@ function ManagePairDetail() {
           }
         }}
       >
-        <div style={{ color: '#fff' }}>
-          Your LP token will be send to Zero Address
-        </div>
+        {isOpenStatus === 'remove' && (
+          <div style={{ color: '#fff', marginBottom: '6px' }}>
+            <p style={{ marginBottom: '5px' }}> {t('token.remove')}</p>
+            <p>
+              {t('token.alls')}
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  color: 'rgba(255,255,255,0.55)',
+                  margin: '0 5px',
+                }}
+              >{`${router?.t0} / ${router?.t1}`}</span>
+              {t('token.pools')}
+            </p>
+          </div>
+        )}
+        {isOpenStatus === 'burn' && (
+          <div style={{ color: '#fff', marginBottom: '6px' }}>
+            <p style={{ marginBottom: '5px' }}> {t('token.al')}</p>
+            <p style={{ marginBottom: '5px' }}>
+              {t('token.allss')}
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  color: 'rgba(255,255,255,0.55)',
+                  margin: '0 5px',
+                }}
+              >{`${router?.t0} / ${router?.t1}`}</span>
+            </p>
+            <p>{t('token.Note')}</p>
+          </div>
+        )}
+        <p style={{ height: '20px' }}></p>
         <BottomButton
           ghost
           isBack={false}
           loading={isButton}
-          text="Confirm"
+          text={t('Slider.Confirm')}
           onClick={() => {
             setIsButton(true);
             if (isOpenStatus === 'remove') {
@@ -227,42 +259,7 @@ function ManagePairDetail() {
             }
           }}
         />
-        {/* <BottomButton
-          ghost
-          danger
-          loading={isButton}
-          text="Confirm"
-          onClick={async () => {
-            setIsButton(true);
-          }}
-        /> */}
       </CommonModal>
-      {/* <CommonModal
-        className="mint-common-modal"
-        open={open}
-        footer={null}
-        title="Burn LP"
-        onCancel={() => {
-          if (!isButton) {
-            setOpen(false);
-          }
-        }}
-      >
-        <div style={{ color: '#fff' }}>
-          Your LP token will be send to Zero Address
-        </div>
-        <BottomButton
-          className=""
-          ghost
-          danger
-          loading={isButton}
-          text="Confirm"
-          onClick={() => {
-            setIsButton(true);
-            burnLP();
-          }}
-        />
-      </CommonModal> */}
     </>
   );
 }

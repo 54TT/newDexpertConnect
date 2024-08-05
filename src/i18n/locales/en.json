@@ -374,7 +374,7 @@
     "Deploying": "Deploying",
     "Done": "Done",
     "me": "Token management",
-    "Banlance": "Banlance",
+    "Banlance": "Balance",
     "Lock": "Lock amount",
     "Pairaddress": "Pair address",
     "noPair": "No pair address yet",
@@ -385,12 +385,20 @@
     "Renounce": "Renounce OwnerShip",
     "Verify": "Verify Contract",
     "can": "Contract",
-    "BurnLP": "BurnLP",
-    "RemoveLP": "RemoveLP",
+    "BurnLP": "Burn LP",
+    "RemoveLP": "Remove LP",
     "LockLP": "Lock LP",
     "Unon": "Lock / Unlock LP",
     "unti": "Unlock time",
     "am": "Lock LP amount",
-    "Unlock": "Unlock"
+    "Unlock": "Unlock",
+    "view": "View On ",
+    "Balance":"Balance",
+    "remove":"You are about to remove liquidity",
+    "alls":"Remove all LP tokens from the",
+    "allss":"Burn all LP tokens from the",
+    "pools":"pool",
+    "al":"You are about to burn LP tokens",
+    "Note":"Note: Burning LP tokens will permanently remove your share from the liquidity pool. "
   }
 }

@@ -32,6 +32,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://etherscan.io/tx/',
+    scanName:"Etherscan",
     launchFee: '0.08',
     defaultTokenIn: {
       name: 'ETH',
@@ -76,6 +77,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x20893BBb093b0fdc669991236F6170ceCD101737',
     scan: 'https://sepolia.etherscan.io/tx/',
+    scanName:"Sepolia.etherscan",
     defaultTokenIn: {
       name: 'ETH',
       symbol: 'ETH',
@@ -118,6 +120,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x2121136F02acb8162e4E7C74Cc8A064e3C40A10c',
     scan: 'https://basescan.org/tx/',
+    scanName:"Basescan",
     defaultTokenIn: {
       name: 'ETH',
       symbol: 'ETH',
@@ -159,6 +162,8 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x2121136F02acb8162e4E7C74Cc8A064e3C40A10c',
     scan: 'https://basescan.org/tx/',
+    scanName:"Basescan",
+
     defaultTokenIn: {
       name: 'ETH',
       symbol: 'ETH',
@@ -201,6 +206,8 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x2121136F02acb8162e4E7C74Cc8A064e3C40A10c',
     scan: 'https://basescan.org/tx/',
+    scanName:"Basescan",
+
     defaultTokenIn: {
       name: 'ETH',
       symbol: 'ETH',
@@ -242,6 +249,8 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://etherscan.io/tx/',
+    scanName:"Etherscan",
+
     launchFee: '0.08',
     defaultTokenIn: {
       name: 'ETH',
@@ -283,6 +292,8 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://etherscan.io/tx/',
+    scanName:"Etherscan",
+
     launchFee: '0.08',
     defaultTokenIn: {
       name: 'ETH',
@@ -324,6 +335,8 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://etherscan.io/tx/',
+    scanName:"Etherscan",
+
     launchFee: '0.08',
     defaultTokenIn: {
       name: 'ETH',

@@ -31,7 +31,6 @@ function InfoList({ data, className }: { data: any; className?: string }) {
     //   payTokenType: '',
     //   buyCount: '',
   };
-  console.log(data);
   return (
     <div className={`info-list mint-scroll ${className}`}>
       {data.map(
