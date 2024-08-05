@@ -55,16 +55,13 @@ function Mint() {
               <Route path="/result/:id/:status" element={<Result />} />
               <Route
                 path="/managePair/:id/:address/:name"
-                // path="/managePair"
                 element={<ManagePairListAndContract />}
               />
               <Route
-                // path="/tokenDetail"
                 path="/tokenDetail/:address/:id"
                 element={<ManageTokenDetail />}
               />
               <Route
-                // path="/pairDetail"
                 path="/pairDetail/:pair/:t0/:t1"
                 element={<ManagePairDetail />}
               />

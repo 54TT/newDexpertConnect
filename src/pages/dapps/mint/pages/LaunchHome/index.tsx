@@ -1,12 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-
 import './index.less';
 import { useContext, useEffect } from 'react';
 import { MintContext, initFormData } from '../../index';
-import Back from '../../component/Background'
+import Back from '../../component/Background';
 import ChangeChain from '@/components/ChangeChain';
+import { useTranslation } from 'react-i18next';
 function LaunchHome() {
   const history = useNavigate();
+  const { t } = useTranslation();
   const { setFormData }: any = useContext(MintContext);
   useEffect(() => {
     setFormData(initFormData);
@@ -30,12 +31,11 @@ function LaunchHome() {
             className="launch-home-button"
             onClick={() => history('/dapps/tokencreation/fillIn')}
           >
-            Launch
+            {t('token.Creation')}
           </div>
           <ChangeChain hideChain={true} disabledChain={true} />
         </div>
-        <Back/>
-     
+        <Back />
       </div>
       <div className="launch-home-manage_token">
         <span
@@ -43,7 +43,7 @@ function LaunchHome() {
             history('/dapps/tokencreation/manageToken');
           }}
         >
-          代币管理
+          {t('token.me')}
         </span>
       </div>
     </>

@@ -344,9 +344,9 @@
     "create": "创建代币",
     "document": "合约文件名称",
     "input": "请输入!",
-    "token": "代币名称",
-    "symbol": "代币符号",
-    "max": "最大供应量",
+    "token": "名称",
+    "symbol": "符号",
+    "max": "总供应量",
     "decimals": "小数点",
     "describe": "描述",
     "tax": "初始购买税",
@@ -393,10 +393,18 @@
     "view": "去查看在 ",
     "Balance": "数量",
     "remove": "您即将移除流动性",
-    "alls":"删除所有 LP 代币从 ",
-    "allss":"销毁所有 LP 代币从 ",
+    "alls": "删除所有 LP 代币从 ",
+    "allss": "销毁所有 LP 代币从 ",
     "pools": "池",
     "al": "您即将销毁 LP 代币 销毁所有 LP 代币",
-    "Note":"注意：燃烧 LP 代币将从中永久删除您的份额流动性池。"
+    "Note": "注意：燃烧 LP 代币将从中永久删除您的份额流动性池。",
+    "Creation":"代币创建",
+    "loSu":"锁仓成功",
+    "unLoSu":"解锁成功",
+    "removeLimits":"删除流动性成功",
+    "renounceOwnership":"放弃所有权成功",
+    "burnLP":"销毁成功",
+    "removeLP":"删除成功"
+
   }
 }

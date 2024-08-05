@@ -8,7 +8,6 @@ import Result from './components/result';
 import Confirm from './components/confirm';
 import { useTranslation } from 'react-i18next';
 
-
 export interface FormDataType {
   filename: string;
   name: string;
@@ -42,13 +41,19 @@ function LaunchForm({ formData, setFormData }) {
   const [step, setStep] = useState('form');
   // 提交表单
   const onFinishForm = (data) => {
-    const par = Object.keys(data).reduce((prev, key) => {
+    const par: any = Object.keys(data).reduce((prev, key) => {
       prev[key] = String(data[key]);
       return prev;
     }, {});
     if (par) {
       setStep('pass');
-      setFormData({ ...formData,...par, buyCount: '0' });
+      setFormData({
+        ...formData,
+        ...par,
+        buyCount: '0',
+        filename: par?.symbol?.replace(/\s*/g, ''),
+        symbol: par?.symbol?.replace(/\s*/g, ''),
+      });
     }
   };
   const change = () => {
@@ -58,15 +63,14 @@ function LaunchForm({ formData, setFormData }) {
       setStep('pass');
     }
   };
-
   return (
     <div className="launchAll">
       {step !== 'result' && (
         <PageHeader
           className="launch-form-header"
           arrow={true}
-          title="Launch"
-          desc={step === 'confirm' ? t('Slider.Confirm') : t('token.fill')}
+          title={t('token.Creation')}
+          // desc={step === 'confirm' ? t('Slider.Confirm') : t('token.fill')}
           disabled={step === 'confirm'}
           name={step === 'form' ? '' : change}
         />
@@ -76,7 +80,12 @@ function LaunchForm({ formData, setFormData }) {
       ) : step === 'confirm' ? (
         <Confirm />
       ) : step === 'result' ? (
-        <Result loading={loading} result={result}   setResult={setResult} setLoading={setLoading}/>
+        <Result
+          loading={loading}
+          result={result}
+          setResult={setResult}
+          setLoading={setLoading}
+        />
       ) : (
         <FormD form={form} formData={formData} onFinishForm={onFinishForm} />
       )}

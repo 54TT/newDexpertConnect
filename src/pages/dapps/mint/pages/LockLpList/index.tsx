@@ -268,7 +268,7 @@ function LockLpList() {
               }}
               onChange={changeSlider}
             />
-            <span>{slider}%</span>
+            <p>{slider}%</p>
           </div>
           <div className="butt">
             {[20, 40, 60, 80, 100].map((item: number) => {

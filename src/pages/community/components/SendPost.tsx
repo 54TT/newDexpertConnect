@@ -102,7 +102,6 @@ function SendPost({
               data: img,
               token,
             };
-            //     imgUrl =  Request();
             imgUrl = await getAll(at);
           }
           if (imgUrl !== null) {
@@ -138,7 +137,6 @@ function SendPost({
             };
             url = '/api/v1/reply';
           }
-          // const result: any = await Request(, , , token)
           const result: any = await getAll({
             method: 'post',
             url,
@@ -210,7 +208,6 @@ function SendPost({
           <TextArea
             autoSize={{ minRows: 3 }}
             value={value}
-            // variant="borderless"
             placeholder={t('Community.Share your insights...')}
             onChange={(e) => {
               setValue(e.target.value);

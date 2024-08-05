@@ -11,12 +11,6 @@ import TokenItem from '../../component/TokenItem';
 import { useNavigate } from 'react-router-dom';
 import InfiniteScrollPage from '@/components/InfiniteScroll';
 const { Search } = Input;
-// interface TokenItemDataType {
-//   address: string;
-//   contractId: string;
-//   name: string;
-//   symbol: string;
-// }
 import { useTranslation } from 'react-i18next';
 function ManageTokenList() {
   const { t } = useTranslation();
@@ -82,15 +76,15 @@ function ManageTokenList() {
     return (
       <TokenItem
         key={item.contractId}
+        classname={'display'}
         data={{
           title: item.symbol,
-          desc: item.name,
+          desc:'（'+ item.name+'）',
           id: item.contractId,
           address: item.address,
         }}
         onClick={({ id, address, title }) =>
           history(
-            // `/dapps/tokencreation/managePair?cId=${id}&add=${address}&t=${title}`
             `/dapps/tokencreation/managePair/${id}/${address}/${title}`
           )
         }

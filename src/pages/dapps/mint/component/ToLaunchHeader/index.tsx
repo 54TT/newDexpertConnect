@@ -1,7 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import './index.less';
+import { useTranslation } from 'react-i18next';
 function ToLaunchHeader() {
+const { t } = useTranslation();
   const history = useNavigate();
+  
   return (
     <div className="top-launch-header">
       <div className="animate-wave">
@@ -16,7 +19,7 @@ function ToLaunchHeader() {
         <img src="/arrowDownBlack.svg" alt="" />
       </div>
       <div className="launch-home-button">
-        <div onClick={() => history('/dapps/tokencreation/fillIn')}>Launch</div>
+        <div onClick={() => history('/dapps/tokencreation/fillIn')}>{t('token.Creation')}</div>
       </div>
     </div>
   );

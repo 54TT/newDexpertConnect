@@ -32,7 +32,8 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://etherscan.io/tx/',
-    scanName:"Etherscan",
+    tokenScan: 'https://etherscan.io/token/',
+    scanName: 'Etherscan',
     launchFee: '0.08',
     defaultTokenIn: {
       name: 'ETH',
@@ -77,7 +78,8 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x20893BBb093b0fdc669991236F6170ceCD101737',
     scan: 'https://sepolia.etherscan.io/tx/',
-    scanName:"Sepolia.etherscan",
+    tokenScan: 'https://sepolia.etherscan.io/token/',
+    scanName: 'Sepolia.etherscan',
     defaultTokenIn: {
       name: 'ETH',
       symbol: 'ETH',
@@ -120,7 +122,8 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x2121136F02acb8162e4E7C74Cc8A064e3C40A10c',
     scan: 'https://basescan.org/tx/',
-    scanName:"Basescan",
+    tokenScan: 'https://basescan.org/token/',
+    scanName: 'Basescan',
     defaultTokenIn: {
       name: 'ETH',
       symbol: 'ETH',
@@ -161,9 +164,9 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x2121136F02acb8162e4E7C74Cc8A064e3C40A10c',
-    scan: 'https://basescan.org/tx/',
-    scanName:"Basescan",
-
+    scan: 'https://5irescan.io/contract/evm//tx/',
+    tokenScan: 'https://5irescan.io/contract/evm/',
+    scanName: '5irescan',
     defaultTokenIn: {
       name: 'ETH',
       symbol: 'ETH',
@@ -205,9 +208,9 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0x2121136F02acb8162e4E7C74Cc8A064e3C40A10c',
-    scan: 'https://basescan.org/tx/',
-    scanName:"Basescan",
-
+    scan: 'https://scan.qa.5ire.network/contract/evm/tx/',
+    tokenScan: 'https://scan.qa.5ire.network/contract/evm/',
+    scanName: '5ire-test',
     defaultTokenIn: {
       name: 'ETH',
       symbol: 'ETH',
@@ -248,9 +251,9 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
-    scan: 'https://etherscan.io/tx/',
-    scanName:"Etherscan",
-
+    scan: 'https://testnet.btrscan.com/tx/',
+    tokenScan: 'https://testnet.btrscan.com//token/',
+    scanName: 'Bitlayer-test',
     launchFee: '0.08',
     defaultTokenIn: {
       name: 'ETH',
@@ -291,9 +294,9 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
-    scan: 'https://etherscan.io/tx/',
-    scanName:"Etherscan",
-
+    scan: 'https://www.btrscan.com/tx/',
+    tokenScan: 'https://www.btrscan.com/token/',
+    scanName: 'Bitlayer',
     launchFee: '0.08',
     defaultTokenIn: {
       name: 'ETH',
@@ -334,9 +337,9 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
-    scan: 'https://etherscan.io/tx/',
-    scanName:"Etherscan",
-
+    scan: 'https://testnet.bscscan.com/tx/',
+    tokenScan: 'https://testnet.bscscan.com/token/',
+    scanName: 'Testnet.bscscan',
     launchFee: '0.08',
     defaultTokenIn: {
       name: 'ETH',
@@ -358,6 +361,7 @@ export const config: Record<ChainIdList, any> = {
   // '56': {
   //   rpcUrl: 'https://bsc-dataseed.bnbchain.org',
   //   chainId: 56,
+  // name: 'Bnb',
   //   verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
   //   verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
   //   uniswapV2RouterAddress: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',

@@ -17,12 +17,10 @@ function SwiperNow({data}:any) {
                 coverflowEffect={{
                     rotate: 50,
                     stretch: 0,
-                    // depth: 50,
                     modifier: 1,
                     slideShadows: true,
                 }}
                 pagination={true}
-                // navigation
                 modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
                 loop
                 autoplay={{delay: 3500, disableOnInteraction: false}}

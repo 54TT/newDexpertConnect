@@ -12,26 +12,23 @@ export type ItemDataType = {
 interface TokenItemPropsType {
   onClick?: (data: ItemDataType) => void;
   data: ItemDataType;
+  classname?: any;
 }
-function TokenItem({ onClick, data }: TokenItemPropsType) {
-  const { title, remark, desc, tips } = data;
+function TokenItem({ onClick, data, classname }: TokenItemPropsType) {
+  // const { title, remark, desc, tips } = data;
+  const { title, desc} = data;
   return (
     <div
-      className="launch-token-item"
+      className={` launch-token-item  ${classname}`}
       onClick={() => onClick?.(data)}
       style={{ cursor: 'pointer' }}
     >
-      {/* unlockDate */}
-      <div className="dis">
-        {title && <div className="launch-token-item-title">{title.toString().replace('/',' / ')}</div>}
-        {remark && <div className="launch-token-item-remark">{remark}</div>}
-      </div>
-      {(desc || tips) && (
-        <div className="dis">
-          {desc && <div className="launch-token-item-desc">{desc}</div>}
-          {tips && <div className="launch-token-item-tips">{tips}</div>}
-        </div>
-      )}
+        {title && (
+          <div className="launch-token-item-title">
+            {title.toString().replace('/', ' / ')}
+          </div>
+        )}
+      {desc && <div className="launch-token-item-desc">{desc}</div>}
     </div>
   );
 }

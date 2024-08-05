@@ -51,7 +51,7 @@ function ChooseChain({
         ) {
           if (onClick) {
             onClick(i);
-            setValue(i)
+            setValue(i);
           }
           if (onChange) {
             onChange(i.value);
@@ -73,7 +73,21 @@ function ChooseChain({
         return (
           <div
             key={ind}
-            style={hideChain ? { display: i?.hide ? 'none' : 'flex',cursor: disabledChain && i.disabled === true ? 'not-allowed' : 'pointer', } : {}}
+            style={
+              hideChain
+                ? {
+                    display: i?.hide ? 'none' : 'flex',
+                    cursor:
+                      disabledChain && i.disabled === true
+                        ? 'not-allowed'
+                        : 'pointer',
+                    border:
+                      value?.chainId === i?.chainId
+                        ? '2px solid rgb(134,240,151)'
+                        : '2px solid rgb(60, 69, 60)',
+                  }
+                : {}
+            }
             className={'chain disDis'}
             onClick={() => click(i)}
           >

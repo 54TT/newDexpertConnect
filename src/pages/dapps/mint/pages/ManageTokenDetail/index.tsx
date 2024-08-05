@@ -16,11 +16,12 @@ import NotificationChange from '@/components/message';
 import { CheckCircleOutlined, RightOutlined } from '@ant-design/icons';
 import CommonModal from '@/components/CommonModal';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 function ManageTokenDetail() {
+  const history = useNavigate();
   const { t } = useTranslation();
   const router = useParams();
   const { chainId, loginProvider, browser } = useContext(CountContext);
-
   const [tokenData, setTokenData] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const { getAll } = Request();
@@ -40,31 +41,13 @@ function ManageTokenDetail() {
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [removeLimitLoading, setRemoveLimitLoading] = useState(false);
   const [renounceLoading, setRenounceLoading] = useState(false);
-  const getContractDetail = async () => {
-    const { data } = await getAll({
-      method: 'get',
-      url: `/api/v1/launch-bot/contract/${router?.id}`,
-      data: {},
-      token,
-      chainId,
-    });
-    if (data?.isVerify === '1') {
-      setIsVerify(true);
-    }
-    setTokenData(data);
-    setIsLoading(true);
-  };
 
   useEffect(() => {
-    getContractDetail();
     setIsLoading(false);
-  }, [chainId]);
-
-  useEffect(() => {
     if (router?.address && loginProvider) {
       initData();
     }
-  }, [router?.address, loginProvider]);
+  }, [chainId,router?.address]);
 
   const initData = async () => {
     setLoadingPage(true);
@@ -76,24 +59,33 @@ function ManageTokenDetail() {
       LaunchERC20Abi,
       signer
     );
-
     setErc20Contract(tokenContract);
-    const isOwn = (await tokenContract.owner()) === walletAddress;
-    setIsOwn(isOwn);
-
-    const balance = await tokenContract.balanceOf(walletAddress);
-    setTokenBalance(balance);
-
-    const IsRemoveLimits = await tokenContract.IsRemoveLimits();
-    setIsRemoveLimit(IsRemoveLimits);
-
-    const IsTradeOpen = await tokenContract.tradingOpen();
-    setIsOpenTrade(IsTradeOpen);
-    const ethWei = (await signer.getBalance()).toString();
+    const data = await Promise.all([
+      tokenContract.owner(),
+      tokenContract.balanceOf(walletAddress),
+      tokenContract.IsRemoveLimits(),
+      tokenContract.tradingOpen(),
+      signer.getBalance(),getAll({
+        method: 'get',
+        url: `/api/v1/launch-bot/contract/${router?.id}`,
+        data: {},
+        token,
+        chainId,
+      })
+    ]);
+    setIsOwn(data[0] === walletAddress);
+    setTokenBalance(data[1]);
+    setIsRemoveLimit(data[2]);
+    setIsOpenTrade(data[3]);
+    const ethWei = (data[4]).toString();
+    if (data[5]?.data?.isVerify === '1') {
+      setIsVerify(true);
+    }
     setEthBalance(ethers.utils.formatEther(ethWei));
+    setTokenData(data[5]?.data);
+    setIsLoading(true);
     setLoadingPage(true);
   };
-
   const tokenInfoData = useMemo(() => {
     if (!tokenData) return [];
     return [
@@ -143,19 +135,11 @@ function ManageTokenDetail() {
     if (!isOwn) return;
     if (isRemoveLimit) return;
     try {
-      // const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-      // const signer = web3Provider.getSigner();
-      // const tokenContract = new ethers.Contract(
-      //   address,
-      //   LaunchERC20Abi,
-      //   signer
-      // );
       const tx = await erc20Contract.removeLimits();
       const recipent = await tx.wait();
-      if (recipent === 1) {
-        setIsRemoveLimit(true);
+      if (tx?.hash && recipent) {
+        history('/dapps/tokencreation/result/' + tx?.hash + '/removeLimits');
       }
-      setRemoveLimitLoading(false);
     } catch (e) {
       setRemoveLimitLoading(false);
       return null;
@@ -217,12 +201,11 @@ function ManageTokenDetail() {
     if (!isOwn) return;
     try {
       const tx = await erc20Contract.renounceOwnership();
-      const recipent = tx.wait();
-      if (recipent === 1) {
-        setRenounceLoading(false);
-        setIsOwn(false);
-      } else {
-        setRenounceLoading(false);
+      const recipent = await tx.wait();
+      if (tx?.hash && recipent) {
+        history(
+          '/dapps/tokencreation/result/' + tx?.hash + '/renounceOwnership'
+        );
       }
     } catch (e) {
       setRenounceLoading(false);
@@ -302,7 +285,6 @@ function ManageTokenDetail() {
             loading={removeLimitLoading}
             onClick={() => {
               setRemoveLimitLoading(true);
-
               removeLimit();
             }}
           >

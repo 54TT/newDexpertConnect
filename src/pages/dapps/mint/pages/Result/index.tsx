@@ -12,6 +12,14 @@ export default function index() {
   const history = useNavigate();
   const router = useParams();
   const { contractConfig, browser } = useContext(CountContext);
+  const params = {
+    lock: t('token.loSu'),
+    unlock: t('token.unLoSu'),
+    removeLimits: t('token.removeLimits'),
+    renounceOwnership: t('token.renounceOwnership'),
+    removeLP: t('token.removeLP'),
+    burnLP: t('token.burnLP'),
+  };
   return (
     <>
       {contractConfig?.scan && router?.id ? (
@@ -19,8 +27,7 @@ export default function index() {
           <ToLaunchHeader />
           <div className="center">
             <img src="/resultImg.svg" alt="" />
-            {/* lock  unlock */}
-            <p>{router?.status}</p>
+            <p>{params[router?.status] || ''}</p>
           </div>
           <p
             className="view"

@@ -1,8 +1,10 @@
 import './index.less';
 import { useTranslation } from 'react-i18next';
 import Copy from '@/components/copy';
-
+import { useContext } from 'react';
+import { CountContext } from '@/Layout';
 function InfoList({ data, className }: { data: any; className?: string }) {
+  const { contractConfig } = useContext(CountContext);
   const { t } = useTranslation();
   const par: any = {
     filename: t('token.document'),
@@ -43,7 +45,12 @@ function InfoList({ data, className }: { data: any; className?: string }) {
               </span>
               {item.label?.replace(/\s*/g, '') === 'Address' ||
               item.label?.replace(/\s*/g, '') === 'Pairaddress' ? (
-                <span>
+                <span
+                  className={'address'}
+                  onClick={() => {
+                    window.open(contractConfig?.tokenScan + item.value);
+                  }}
+                >
                   {item.value.slice(0, 4) + '...' + item.value.slice(-4)}
                 </span>
               ) : (

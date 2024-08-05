@@ -344,13 +344,13 @@
     "Go": "Go to telegram now",
     "fill": "Fill in the token details",
     "create": "Create token",
-    "document": "Contract document name",
+    "document": "Contract file name",
     "input": "Please input!",
-    "token": "Token name",
-    "symbol": "Token symbol",
-    "max": "Maximum supply",
+    "token": "Name",
+    "symbol": "Symbol",
+    "max": "Total supply",
     "decimals": "Decimals",
-    "describe": "Describe",
+    "describe": "Description",
     "tax": "Initial purchase tax",
     "sel": "Initial sales tax",
     "final": "Final purchase tax",
@@ -379,7 +379,7 @@
     "Pairaddress": "Pair address",
     "noPair": "No pair address yet",
     "noLp": "No lockLP yet",
-    "note": "Please note that once you 'abandon voice' you will no longer be able to modify or use the 'Open Transaction' or 'Unrestrict' features",
+    "note": "Please note that once you 'Renounce OwnerShip' you will no longer be able to modify or use the 'Open Trade' or 'Remove Limits' features",
     "Open": "Open Trade",
     "Remove": "Remove Limits",
     "Renounce": "Renounce OwnerShip",
@@ -399,6 +399,14 @@
     "allss":"Burn all LP tokens from the",
     "pools":"pool",
     "al":"You are about to burn LP tokens",
-    "Note":"Note: Burning LP tokens will permanently remove your share from the liquidity pool. "
+    "Note":"Note: Burning LP tokens will permanently remove your share from the liquidity pool. ",
+    "Creation":"Token Creation",
+    "loSu":"Successfully Lock LP",
+    "unLoSu":"Successfully Unlock LP",
+    "removeLimits":"Successfully remove Limits",
+    "renounceOwnership":"Successfully renounce Ownership",
+    "burnLP":"Successfully burnLP",
+    "removeLP":"Successfully removeLP"
+
   }
 }

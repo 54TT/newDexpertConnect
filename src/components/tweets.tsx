@@ -81,10 +81,6 @@ function Tweets({
   }, [name]);
   // 是否是comment 而非reply，用于调用不同的like接口, parentId为0则为comment
   const isComment = localData?.parentId === '0';
-  // const animationVariants = {
-  //     hidden: { y: '100%', opacity: 0 },
-  //     visible: { y: '-100%', opacity: 1 },
-  // };
   const clickLike = throttle(
     async function (e: any) {
       e.stopPropagation();
@@ -339,11 +335,6 @@ function Tweets({
             <></>
           )}
         </>
-        {/*   标识*/}
-        {/*             <div className={'tweetsMark'}>
-                <p>#btc</p>
-                <p>#eth</p>
-            </div> */}
         <div className={'tweetsOperate'}>
           <p className={'tweetsIn'}>
             <img
@@ -368,15 +359,6 @@ function Tweets({
               alt=""
             />
             <span>{localData?.likeNum ? localData.likeNum : 0}</span>
-            {/*<motion.div*/}
-            {/*    initial="hidden"*/}
-            {/*    className={`tweetsLick`}*/}
-            {/*    animate={!clickAnimate ? 'hidden' : 'visible'}*/}
-            {/*    variants={animationVariants}*/}
-            {/*    exit="hidden"*/}
-            {/*    transition={{ duration: 1, ease: 'easeInOut' }}>*/}
-            {/*    <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>*/}
-            {/*</motion.div>*/}
           </div>
           <p className={'tweetsIn share-icon'}>
             <img

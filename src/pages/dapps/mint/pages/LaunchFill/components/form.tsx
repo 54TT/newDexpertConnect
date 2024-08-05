@@ -7,7 +7,10 @@ export default function form({ form, formData, onFinishForm }) {
   const [showAdv, setShowAdv] = useState(false);
   return (
     <>
-      <div className="launch-form mint-scroll scroll">
+      <div
+        className="launch-form mint-scroll scroll"
+        style={{ height: showAdv ? '430px' : '310px' }}
+      >
         <Form
           form={form}
           initialValues={formData}
@@ -17,7 +20,7 @@ export default function form({ form, formData, onFinishForm }) {
           wrapperCol={{ span: 24 }}
           labelAlign="right"
         >
-          <Form.Item
+          {/* <Form.Item
             name="filename"
             rules={[{ required: true, message: t('token.input') }]}
           >
@@ -25,7 +28,7 @@ export default function form({ form, formData, onFinishForm }) {
               placeholder={t('token.document') + '   ( ' + t('token.first') + ' )'}
               autoComplete={'off'}
             />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             name="name"
             rules={[{ required: true, message: t('token.input') }]}
@@ -36,7 +39,12 @@ export default function form({ form, formData, onFinishForm }) {
             name="symbol"
             rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input placeholder={t('token.symbol')} autoComplete={'off'} />
+            <Input
+              placeholder={
+                t('token.symbol') + '   ( ' + t('token.first') + ' )'
+              }
+              autoComplete={'off'}
+            />
           </Form.Item>
           <Form.Item
             name="totalSupply"
@@ -52,7 +60,7 @@ export default function form({ form, formData, onFinishForm }) {
             name="decimals"
             rules={[{ required: true, message: t('token.input') }]}
           >
-            <InputNumber placeholder={t('token.decimals')} readOnly controls={false} />
+            <InputNumber placeholder={t('token.decimals')} controls={false} />
           </Form.Item>
           <Form.Item name="description">
             <TextArea

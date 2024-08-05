@@ -32,7 +32,7 @@ function ManagePairDetail() {
   //  loading
   const [loading, setLoading] = useState(false);
   const [pairContract, setPairContract] = useState<ethers.Contract>();
-  const getPairInfo = async () => {
+  const getPairInfo = async () => {  
     const { uncxAddress, wethAddress } = contractConfig;
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await web3Provider.getSigner();
@@ -42,7 +42,6 @@ function ManagePairDetail() {
       router?.pair,
       wethAddress
     );
-    //const v2FactoryAddress = contractConfig.uniswapV2FactoryAddress;
     const uniSwapV2Pair = new ethers.Contract(
       router?.pair,
       UniswapV2PairAbi,
@@ -105,8 +104,10 @@ function ManagePairDetail() {
         zeroAddress,
         BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
       );
-      await tx.wait();
-      getPairInfo();
+      const data = await tx.wait();
+      if (tx?.hash && data) {
+        history('/dapps/tokencreation/result/' + tx?.hash + '/burnLP');
+      }
       setIsOpenStatus('');
       setOpen(false);
       setIsButton(false);
@@ -131,8 +132,8 @@ function ManagePairDetail() {
         contractConfig.uniswapV2RouterAddress,
         balance
       );
-      const { status } = await approveTx.wait();
-      if (status === 1) {
+      const tx = await approveTx.wait();
+      if (tx?.status === 1) {
         const deadline = dayjs().add(10, 'm').unix();
         const removeLiquidityTx = await v2RouterContract.removeLiquidityETH(
           token0,
@@ -143,8 +144,13 @@ function ManagePairDetail() {
           deadline
         );
         const data = await removeLiquidityTx.wait();
-        console.log(data);
-        getPairInfo();
+        if (removeLiquidityTx?.hash && data) {
+          history(
+            '/dapps/tokencreation/result/' +
+              removeLiquidityTx?.hash +
+              '/removeLP'
+          );
+        }
       }
       setIsOpenStatus('');
       setOpen(false);

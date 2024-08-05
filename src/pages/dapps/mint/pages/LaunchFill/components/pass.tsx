@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 export default function pass() {
   const { t } = useTranslation();
   const { getAll } = Request();
-  const { browser,chainId }: any = useContext(CountContext);
+  const { browser, chainId }: any = useContext(CountContext);
   const { launchTokenPass, setLaunchTokenPass }: any = useContext(MintContext);
   const [params, setParams] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function pass() {
       url: '/api/v1/d_pass/info',
       data: {},
       token,
-      chainId
+      chainId,
     });
     if (res?.status === 200) {
       setParams(res?.data);
@@ -33,35 +33,32 @@ export default function pass() {
     return (
       <div
         className="item"
+        style={{
+          border:
+            key === launchTokenPass
+              ? '1px solid rgb(134,240,151)'
+              : '1px solid rgba(94, 94, 94, 0.3)',
+        }}
         onClick={() => {
           if (Number(show)) {
-            setLaunchTokenPass(key === launchTokenPass ? '' : key);
+            setLaunchTokenPass(key);
           }
         }}
       >
         <div>
-          <div
-            className="left"
-            style={{
-              backgroundColor: key === 'gloden' ? '#DBC926' : '#86F097',
-            }}
-          >
-            <img src="/passLogo.svg" alt="" />
-          </div>
-          <div className="right">
-            <p>{name}</p>
-            <p>{data}</p>
-          </div>
+          {data && (
+            <div
+              className="left"
+              style={{
+                backgroundColor: key === 'gloden' ? '#DBC926' : '#86F097',
+              }}
+            >
+              <img src="/passLogo.svg" alt="" />
+            </div>
+          )}
+          <p>{name}</p>
         </div>
-        <p
-          className="select"
-          style={{
-            border:
-              launchTokenPass === key
-                ? '3px solid #86F097'
-                : '1px solid #8C8C8C',
-          }}
-        ></p>
+        <p>{data}</p>
       </div>
     );
   };
@@ -96,23 +93,7 @@ export default function pass() {
               'gloden',
               params?.stopTs
             )}
-          <div
-            className="more"
-            onClick={() => {
-              setLaunchTokenPass('more' === launchTokenPass ? '' : 'more');
-            }}
-          >
-            <p>{t('token.Fee')}</p>
-            <p
-              className="select"
-              style={{
-                border:
-                  launchTokenPass === 'more'
-                    ? '3px solid #86F097'
-                    : '1px solid #8C8C8C',
-              }}
-            ></p>
-          </div>
+          {passItem(t('token.Fee'), '', 'more', '1')}
         </div>
       ) : (
         <Loading status={'20'} browser={browser} />

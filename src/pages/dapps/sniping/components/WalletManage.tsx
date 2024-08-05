@@ -28,7 +28,6 @@ export default function WalletManage({
   const [wallet, setWallet] = useState<any>();
   const [isLoad, setIsLoad] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  //
   const [copyItem, setCopyItem] = useState(null);
   const { getAll } = Request();
   const getWalletList = async (page: number) => {

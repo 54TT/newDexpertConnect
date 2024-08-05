@@ -45,16 +45,6 @@ export default function index() {
       <div className="limit-right">
         <CreateOrder />
       </div>
-      {/* <div
-        className="top border"
-        onClick={() => {
-          if (nonce) {
-            setOrder();
-          }
-        }}
-      >
-        ppppppp
-      </div> */}
       <div className="bot"></div>
     </div>
   );
