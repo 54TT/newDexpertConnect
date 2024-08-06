@@ -47,20 +47,30 @@ export default function index() {
   // 展示订单详情
   const [showDetailsWindow,setShowDetailsWindow]=useState(false)
   const [moreOrderLoading,setMoreOrderLoading]=useState(false)
+  // my orders type,0:all,1:executing,2:history
+  const [orderType,setOrderType]=useState(0)
   const items:any = [
     {
       key: '0',
-      label:<p onClick={(e)=>{
-        console.log(e.target);
-        setCurrentIndex(1)
-      }}>{t("limit.executing")}</p>
+      label:
+        <p
+          className={orderType===1?'drop-item-selected drop-item':'drop-item'}
+          onClick={(e)=>{
+          console.log(e.target);
+          setCurrentIndex(1)
+          setOrderType(1)
+        }}>{t("limit.executing")}</p>
     },
     {
       key:'1',
-      label:<p onClick={(e)=>{
-        console.log(e.target);
-        setCurrentIndex(1)
-      }}>{t("limit.history")}</p>
+      label:
+        <p
+          className={orderType===2?'drop-item-selected drop-item':'drop-item'}
+          onClick={(e)=>{
+          console.log(e.target);
+          setCurrentIndex(1)
+          setOrderType(2)
+        }}>{t("limit.history")}</p>
     }
   ];
   // const [nonce, setNonce] = useState('');
@@ -111,6 +121,10 @@ export default function index() {
     // if(currentIndex===1) console.log('ger user orders');
     console.log('page',page);
     if(page===1) setOrderLoading(true)
+    if(orderType===0&&currentIndex===1) console.log('get my all orders');
+    if(orderType===1&&currentIndex===1) console.log('get my executing orders');
+    if(orderType===2&&currentIndex===1) console.log('get my history orders');
+    
     try{
       const token = Cookies.get('token');
       // console.log(token);
@@ -159,9 +173,9 @@ export default function index() {
   }
 }
   useEffect(() => {
-    console.log(showDetailsWindow);
+    console.log(orderType);
     
-  }, [showDetailsWindow]);
+  }, [orderType]);
   useEffect(() => {
     console.log('currentIndex',currentIndex);
     if(currentIndex===0){
@@ -172,7 +186,7 @@ export default function index() {
       getOrderList(1)
       console.log('get user orders')
     };
-  }, [currentIndex,chainId]);
+  }, [currentIndex,chainId,orderType]);
   useEffect(() => {
     console.log(selectedOrder);
     
@@ -196,7 +210,7 @@ export default function index() {
     <div className="limit">
       <div className="limit-left">
         <div className="limit-left-header">
-          <div style={{display:'flex',width:'50%',justifyContent:'space-between'}}>
+          <div style={{display:'flex',width:'45%',justifyContent:'space-between'}}>
           <Input
               size="large"
               rootClassName="limit-input"
@@ -221,6 +235,7 @@ export default function index() {
               <span className={`orders-btn ${currentIndex===0?'active':''}`}
               onClick={()=>{
                 setCurrentIndex(0)
+                setOrderType(0)
                 setOrderPage(1)
                 // getOrderList(1)
                 // setOrderLoading(true)
@@ -236,13 +251,16 @@ export default function index() {
               </span> */}
               <Dropdown
                 rootClassName='orders-type'
-                menu={{items,selectable: true,}}
+                menu={{items,selectable: false}}
                 trigger={['hover']}
+                // open
+                // destroyPopupOnHide={true}
               >
                 <span
                   className={`orders-btn ${currentIndex===1?'active':''}`}
                   onClick={()=>{
                     setCurrentIndex(1)
+                    setOrderPage(0)
                     // getOrderList(1)
                   }
                   }
@@ -250,6 +268,10 @@ export default function index() {
                   <p>
                     {t("limit.my orders")}
                   </p>
+                  <svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M13.762 8.15192C14.1077 7.72385 14.0727 7.06837 13.6837 6.68786L7.62603 0.761945C7.26901 0.412685 6.73099 0.412685 6.37397 0.761945L0.316282 6.68786C-0.0726863 7.06837 -0.107722 7.72385 0.238028 8.15192C0.583776 8.57999 1.17938 8.61855 1.56835 8.23804L7 2.92454L12.4316 8.23804C12.8206 8.61855 13.4162 8.57999 13.762 8.15192Z" fill={currentIndex===1?'#1a1a1a':"rgba(255,255,255,0.85)"}/>
+                    </svg>
+                  {/* <DownOutlined style={{fontSize:'14px',marginLeft:'4px'}} /> */}
                 </span>
               </Dropdown>
         </div>
@@ -267,7 +289,7 @@ export default function index() {
                 >
                   {orderList.map((item:any)=>(
                 <OrderCard
-                  type={item.uid===user.uid?'my':''}
+                  type={item.uid===user?.uid?'my':''}
                   key={item.orderHash}
                   order={item}
                   chainId={chainId}
@@ -280,6 +302,7 @@ export default function index() {
               ))}
               </InfiniteScroll>
               {moreOrderLoading && <Spin />}
+              {/* <Spin /> */}
               </div>
             ):(
             <>

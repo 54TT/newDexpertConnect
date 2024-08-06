@@ -14,8 +14,7 @@ export default function OrderCard({
   chainId,
   setShowExecuteWindow,
   setShowDetailsWindow,
-  loginPrivider,
-  getOrderList
+  loginPrivider
 }: any) {
   const [showCancelWindow,setShowCancelWindow]=useState(false)
   const {t}=useTranslation()
@@ -37,7 +36,6 @@ export default function OrderCard({
     const mask = 1 << bitPos;
     const res= await permit2Contract.connect(signer).invalidateUnorderedNonces(wordPos, mask);
     console.log(res);
-    if(res) getOrderList(1)
   }
   // bignumber转换number
   const BNtoNumber=(bn,decimals)=>{
@@ -72,8 +70,8 @@ export default function OrderCard({
   }
 
   useEffect(()=>{
-    console.log(order.offerer);
-    console.log(order.orderStatus)
+    // console.log(order.offerer);
+    // console.log(order.orderStatus)
   },[order])
   return (
     <div

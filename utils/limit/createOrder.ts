@@ -2,7 +2,7 @@ import { ethers,BigNumber,Contract,Signer } from "ethers"
 import { DutchOrderBuilder } from "@uniswap/uniswapx-sdk";
 import {OffChainUniswapXOrderValidator} from "./OffChainUniswapXOrderValidator";
 import ERC20ABI from "./ERC20ABI.json";
-import {BigNumber as NewBigNumber} from 'bignumber.js';
+// import {BigNumber as NewBigNumber} from 'bignumber.js';
 
 type OrderValidationResponse = {
   valid: boolean
@@ -123,6 +123,8 @@ export const createOrder = async (
   inputAmount:BigNumber,
   outputAmount:BigNumber,
   deadlineSeconds:number,
+  // 汇率
+  orderPrice:string,
 )=>{
   console.log('---orderCreating---')
   const config = chainConfig[chainId]
@@ -160,7 +162,7 @@ if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
 
 
   // 构建荷兰式拍卖订单，并获得签名
-  console.log('buildOrder')
+  console.log('---buildOrder---')
   try {
     const { order ,payload,nonce }=await buildOrder(chainId,recipient,inputAmount,outputAmount,deadlineSeconds,inputToken,outputToken,orderCreator)
   
@@ -216,13 +218,12 @@ if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
     inputTokenName: inputTokenName,
     inputTokenSymbol: inputTokenSymbol,
     inputTokenDecimals: inputTokenDecimals.toNumber(),
-    orderPrice: new NewBigNumber(1).toString(),
+    orderPrice: orderPrice,
     outputToken:outputToken,
     outputTokenName: outputTokenName,
     outputTokenSymbol: outputTokenSymbol,
     outputTokenDecimals: outputTokenDecimals.toNumber(),
   }
-
   return orderParams
 } catch (error) {
     console.log(error)

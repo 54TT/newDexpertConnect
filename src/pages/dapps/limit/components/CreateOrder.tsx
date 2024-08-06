@@ -51,6 +51,7 @@ export default function CreateOrder({getOrderList}) {
   // pay/receive token汇率
   const [tokenRate,setTokenRate]=useState(0)
   const [tokenRateBN,setToeknRateBN]=useState<BigNumber>()
+  const [tokenRateDE,setToeknRateDE]=useState<Decimal>()
   const [payRate,setPayRate]=useState(0)
   const [rateLoading,setRateLoading]=useState(true)
   const [createLoading,setCreateLoading]=useState(false)
@@ -154,6 +155,8 @@ export default function CreateOrder({getOrderList}) {
   const approveOder=async ()=>{
     console.log('createOrder:');
     console.log('---now time---')
+    console.log(Number(payTokenAmount)/Number(receiveTokenAmount));
+    
     console.log(new Date(new Date().getTime()))
     const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
     const signer = await web3Provider.getSigner();
@@ -164,12 +167,14 @@ export default function CreateOrder({getOrderList}) {
       console.log('---createOrder---')
       const payTokenAmountInWei = ethers.utils.parseUnits(payTokenAmount, payToken.decimals);
       const receiveTokenAmountInwei =ethers.utils.parseUnits(Number(receiveTokenAmount).toFixed(Number(receiveToken.decimals)).toString(), receiveToken.decimals);
+      console.log(payTokenAmount);
       console.log(payTokenAmountInWei);
+      console.log(receiveTokenAmount)
       console.log(receiveTokenAmountInwei);
 
       // 发起创建订单请求
       try {
-        const orderReponse=await createOrder(
+        const orderParams=await createOrder(
           chainId,
           signer,
           payToken.contractAddress,
@@ -177,9 +182,10 @@ export default function CreateOrder({getOrderList}) {
           receipt,
           payTokenAmountInWei,
           receiveTokenAmountInwei,
-          expires
+          expires,
+          tokenRateBN.toString()
         )
-        submitOrder(orderReponse)
+        submitOrder(orderParams)
       } catch (error) {
         console.log(error);
         setCreateLoading(false)
@@ -251,19 +257,23 @@ export default function CreateOrder({getOrderList}) {
       await getUniswapV2RouterContract (provider,uniswapV2RouterAddress),
       [payToken.contractAddress,Number(payToken.decimals)],
       [receiveToken.contractAddress,Number(receiveToken.decimals)],
+      // amountIn
       new Decimal(1),
+      // slippage
       new Decimal(0),
-      // 暂定5%
+      // fee,暂定5%
       transactionFee.limit
+      // new Decimal(0),
       // 0
     ].filter((item)=>item!==null)
-    let amount:Decimal;
-    amount=await getAmountOut.apply(null,params)
-    // console.log('paytoken-receivetoken:'+Number(amount.toFixed(6)));
-    console.log(amount.toFixed(8))
+    let amount:Decimal=await getAmountOut.apply(null,params)
+    console.log(payToken.symbol,'----',receiveToken.symbol+amount.toString());
+    console.log(amount);
+    console.log(amount.toString());
     const amountValue=new Decimal(amount)
     console.log(new BigNumber(amountValue.toString()));
     setToeknRateBN(new BigNumber(amountValue.toString()))
+    setToeknRateDE(amount)
     setPayRate(Number(amount.toFixed(6)))
     setRateLoading(false)
     setTokenRate(Number(amount.toFixed(6)))
@@ -307,10 +317,13 @@ export default function CreateOrder({getOrderList}) {
   // paytoken与receivetoken发生改变，重新计算汇率，然后算一个paytoken值多少receivetoken
   useEffect(()=>{
     setPayRate(tokenRate)
-    console.log('tokenRate:',tokenRate);
+    console.log(payToken?.symbol,'---',receiveToken?.symbol,'tokenRate:',tokenRate);
     console.log(tokenRateBN);
     
   },[tokenRate,tokenRateBN])
+  useEffect(()=>{
+    console.log('transactionFee---',transactionFee.limit?.toString());
+  },[transactionFee])
   // 自动计算手续费
   useEffect(() => {
     getTransactionFee({ chainId, provider, payType:0 });
@@ -364,6 +377,7 @@ export default function CreateOrder({getOrderList}) {
   useEffect(()=>{
     if(payTokenAmount){
       setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
+      console.log(tokenRateDE.mul(payTokenAmount).toString())
     }
     getToeknUnitPrice(receiveToken,'receive')
   },[payTokenAmount])

@@ -26,12 +26,12 @@ const ExecuteWindow = ({
   // const [showSelect,setShowSelect]=useState(false)
   const [buttonLoading,setButtonLoading]=useState(false)
   const [buttonDisable,setButtonDisable]=useState(true)
-  const [tokenInputAmount,setTokenInputAmount]=useState(0)
+  const [tokenInputAmount,setTokenInputAmount]=useState('')
   const [tokenOutputAmount,setTokenOutputAmount]=useState('')
   const [inputToken,setInputToken]=useState()
-  // 想要兑换多少数量
+  // 想要兑换多少数量的token0
   const [exchangeAmount,setExchangeAmount]=useState(0)
-  // 选择支付token数量
+  // 选择支付token1的数量
   const [payTokenAmount,setPayTokenAmount]=useState('')
   const marks= {
     0: '0%',
@@ -78,21 +78,23 @@ const ExecuteWindow = ({
         setInputToken(tokenObj)
         const startAmount=BigNumber(tokenObj.startAmount.hex)
         const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
-        setTokenInputAmount(startAmountNum.toNumber())
+        console.log('inputtoken startAmountNum',startAmountNum.toString());
+        setTokenInputAmount(startAmountNum.toString())
       }catch(error){
         console.log(error);
-        
       }
     }
   }
   // 获取订单想要兑换的token信息
   const getOutputToken=(outputToken:string,decimals:number)=>{
     console.log('output token');
-    console.log(outputToken);
+    console.log(JSON.parse(outputToken)[0]);
     console.log(decimals);
     // setPayToken(JSON.parse(outputToken)[0])
     const startAmount=BigNumber(JSON.parse(outputToken)[0].startAmount.hex)
     const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
+    console.log('outputtoken startAmountNum',startAmountNum.toString());
+    
     setTokenOutputAmount(startAmountNum.toString())
     // const outputTokenAddress=order.outputToken
     // console.log(outputTokenAddress);
@@ -103,7 +105,7 @@ const ExecuteWindow = ({
     console.log(payTokenAmount);
     console.log(tokenOutputAmount);
     
-    console.log(Number(payTokenAmount)/Number(tokenInputAmount)*100);
+    console.log((Number(payTokenAmount)/Number(tokenInputAmount)*100).toFixed(2));
     // setPayTokenAmount(v)
     // if(v!==0){
     //   setPayTokenAmount(v)
@@ -113,14 +115,23 @@ const ExecuteWindow = ({
   const inputChangeDebounce=useCallback(debounce(inputChange,500),[payTokenAmount])
 
   useEffect(()=>{
+    console.log(payTokenAmount);
+    
     // setSliderValue(Number(payTokenAmount)/Number(tokenInputAmount)*100)
     if(payTokenAmount){
-      const percent=Number(payTokenAmount)/Number(tokenInputAmount)*100>100?100:Number(payTokenAmount)/Number(tokenInputAmount)*100
-      setSliderValue(Number(percent.toFixed(2)))
+      // const percent=Number(payTokenAmount)/Number(tokenInputAmount)*100>100?100:Number(payTokenAmount)/Number(tokenInputAmount)*100
+      // console.log(percent)
+      // setSliderValue(Number(percent.toFixed(2)))
     }
   },[payTokenAmount])
   useEffect(()=>{
+    console.log(silderValue);
+    setExchangeAmount(Number(tokenInputAmount)*silderValue/100)
+    setPayTokenAmount((Number(tokenOutputAmount)*(silderValue/100)).toString())
+  },[silderValue])
+  useEffect(()=>{
     console.log(inputToken);
+    
   },[inputToken])
   useEffect(()=>{
     console.log(order);
@@ -154,7 +165,7 @@ const ExecuteWindow = ({
         <div className="execute-header-right">
         <Progress
           rootClassName='execute-progress' 
-          percent={50} 
+          percent={100} 
           type="circle"
           size={70}
           strokeColor='#86f097'
@@ -174,9 +185,10 @@ const ExecuteWindow = ({
             <span
               className="max-btn"
               onClick={()=>{
-                setExchangeAmount(tokenInputAmount)
+                setExchangeAmount(Number(tokenInputAmount))
                 setSliderValue(100) 
-                setPayTokenAmount((tokenInputAmount*Number(order.orderPrice)).toString())
+                // setPayTokenAmount((Number(tokenInputAmount)*Number(order.orderPrice)).toString())
+                setPayTokenAmount(tokenOutputAmount)
                 setButtonDisable(false)
               }}
             >
@@ -209,10 +221,12 @@ const ExecuteWindow = ({
                 min={0}
                 max={100}
                 value={silderValue} 
+                // disabled
                 onChange={(value) => {
                   setSliderValue(value)
-                  setExchangeAmount(tokenInputAmount*value/100)
-                  setPayTokenAmount((tokenInputAmount*value/100*Number(order.orderPrice)).toString())
+                  // setExchangeAmount(Number(tokenInputAmount)*value/100)
+                  // setPayTokenAmount((Number(tokenInputAmount)*value/100*Number(order.orderPrice)).toString())
+                  // setPayTokenAmount(((silderValue/100)*Number(tokenOutputAmount)).toString())
                   setButtonDisable(value===0?true:false)
                 }}
               />
@@ -243,12 +257,6 @@ const ExecuteWindow = ({
               icon={order?.logoUrl}
             />
           </div>
-          {/* <div onClick={()=>{setShowSelect(true)}}>
-            <DefaultTokenImg
-              name={selectedToken?.symbol}
-              icon={selectedToken?.logoUrl}
-            />
-          </div> */}
         </div>
         <span>$999</span>
       </div>
