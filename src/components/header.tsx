@@ -102,6 +102,11 @@ function Header() {
               key: 'sniping',
             },
             { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
+            {
+              name: 'Token Creation',
+              img: '/mainMore.svg',
+              key: 'tokencreation',
+            },
           ].map((i: any) => {
             return (
               <p
