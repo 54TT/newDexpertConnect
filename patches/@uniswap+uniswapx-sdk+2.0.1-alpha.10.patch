@@ -1,0 +1,13 @@
+diff --git a/node_modules/@uniswap/uniswapx-sdk/package.json b/node_modules/@uniswap/uniswapx-sdk/package.json
+index e2326a6..45c9011 100644
+--- a/node_modules/@uniswap/uniswapx-sdk/package.json
++++ b/node_modules/@uniswap/uniswapx-sdk/package.json
+@@ -30,7 +30,7 @@
+       "pre-commit": "yarn fix"
+     }
+   },
+-  "module": "dist/uniswapx-sdk.esm.js",
++  "module": "dist/src/index.js",
+   "devDependencies": {
+     "@typechain/ethers-v5": "^10.1.0",
+     "@types/jest": "^29.0.3",
