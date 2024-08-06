@@ -13,25 +13,13 @@ function GetNewPair() {
   const [tableDta, setDta] = useState([]);
   const [wait, setWait] = useState<boolean>(true);
   const [searchStr, setSearchStr] = useState('');
-
   useEffect(() => {
     setEthprice('0');
     setDta([]);
     setWait(true);
     setCurrent(1);
     setMoreLoad(true);
-  }, [switchChain]);
-
-  useEffect(() => {
-    if (searchStr) {
-      setEthprice('0');
-      setDta([]);
-      setWait(true);
-      setCurrent(1);
-      setMoreLoad(true);
-    }
-  }, [searchStr]);
-
+  }, [switchChain,searchStr]);
   const GET_DATA = gql`query LiveNewPair {
   _meta {
     block {
@@ -186,7 +174,6 @@ function GetNewPair() {
     setCurrent(current + 1);
     setMoreLoad(true);
   };
-
   return {
     ethPrice,
     moreLoad,
@@ -194,6 +181,7 @@ function GetNewPair() {
     tableDta,
     setDta,
     changePage,
+    searchStr,
     setSearchStr,
   };
 }

@@ -1,27 +1,35 @@
-import { Select, Tooltip, Input, Modal } from 'antd';
-import Loading from '@/components/allLoad/loading.tsx';
+import { Select, Tooltip, Input, Modal, Table, ConfigProvider } from 'antd';
 import Load from '@/components/allLoad/load.tsx';
-import NewPair from './newPairDate.tsx';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import newPair from '@/components/getNewPair.tsx';
 import { useTranslation } from 'react-i18next';
+import { setMany, simplify } from '@/../utils/change.ts';
+import { throttle } from 'lodash';
 import { getGas } from '@/../utils/getGas.ts';
 import ChooseChain from '@/components/chooseChain.tsx';
+import Nodata from '@/components/Nodata';
+import Loading from '@/components/allLoad/loading';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime); // 使用相对时间插件
+dayjs.extend(duration); // 使用相对时间插件
 import { chainParams } from '@utils/judgeStablecoin.ts';
 import { SearchOutlined } from '@ant-design/icons';
-import InfiniteScrollPage from '@/components/InfiniteScroll';
+import { useNavigate } from 'react-router-dom';
 const { Search } = Input;
 function Left() {
+  const history = useNavigate();
   const hei = useRef<any>();
   const {
     ethPrice,
     moreLoad,
     tableDta,
-    setDta,
     wait,
     changePage,
     setSearchStr,
+    searchStr,
   } = newPair() as any;
   const { browser, switchChain, setSwitchChain }: any =
     useContext(CountContext);
@@ -48,6 +56,14 @@ function Left() {
     }
   }, []);
 
+  const push = throttle(
+    function (i: any) {
+      history('/newpairDetails/' + i?.id);
+    },
+    1500,
+    { trailing: false }
+  );
+
   useEffect(() => {
     gasOb();
     setGasLoad(true);
@@ -58,9 +74,282 @@ function Left() {
   const { t } = useTranslation();
 
   const onSearchPair = (v: string) => {
-    setSearchStr(v);
+    if (searchStr !== v) {
+      setSearchStr(v);
+    }
   };
+  const [countdown, setCountdown] = useState<any>(null);
+  useEffect(() => {
+    let show = setInterval(() => {
+      const time = dayjs().format('YYYY-MM-DD HH:mm:ss');
+      setCountdown(time);
+    }, 1000);
+    return () => clearInterval(show);
+  }, []);
+  const chang = (name: any) => {
+    if (countdown) {
+      const diff = dayjs(countdown).diff(
+        dayjs.unix(name).format('YYYY-MM-DD HH:mm:ss')
+      );
+      const duration = dayjs.duration(diff);
+      const year = duration.years();
+      const month = duration.months();
+      const day = duration.days();
+      const hour = duration.hours();
+      const minute = duration.minutes();
+      const second = duration.seconds();
+      if (year) {
+        return year + ' y ' + month + ' m';
+      } else if (month) {
+        return month + ' m ' + day + ' d';
+      } else if (day) {
+        return day + ' d ' + hour + ' h';
+      } else if (hour) {
+        return hour + ' h ' + minute + ' m';
+      } else if (minute) {
+        return minute + ' m ' + second + ' ss';
+      } else {
+        return second + ' ss';
+      }
+    } else {
+      return <Load />;
+    }
+  };
+  const fixedColumns: any = [
+    {
+      title: t('Market.Name'),
+      dataIndex: 'name',
+      fixed: 'left',
+      render: (_, record) => {
+        return (
+          <div className="one">
+            <p>{simplify(record?.token0?.symbol?.replace(/^\s*|\s*$/g, ''))}</p>
+            <p>{simplify(record?.token1?.symbol?.replace(/^\s*|\s*$/g, ''))}</p>
+          </div>
+        );
+      },
+    },
+    {
+      title: `${t('Market.Price')}($)`,
+      dataIndex: 'price',
+      render: (_, record) => {
+        return (
+          <p>{Number(record?.priceUSD) ? setMany(record?.priceUSD) : 0}</p>
+        );
+      },
+    },
+    {
+      title: time + ' Change',
+      dataIndex: 'change',
+      render: (_, record) => {
+        const data =
+          time === '24h'
+            ? record?.pairDayData
+            : time === '6h'
+              ? record?.PairSixHourData
+              : time === '1h'
+                ? record?.pairHourData
+                : record?.PairFiveMinutesData;
+        const value: any =
+          data && data.length > 0
+            ? Number(data[0]?.priceChange)
+              ? data[0]?.priceChange.includes('.000')
+                ? 0
+                : Number(data[0]?.priceChange).toFixed(3)
+              : 0
+            : 0;
+        const par = Number(value) !== 0 ? setMany(value) : 0;
+        return (
+          <p
+            style={{
+              color:
+                Number(value) > 0
+                  ? 'rgb(0,255,71)'
+                  : Number(value) === 0
+                    ? 'white'
+                    : 'rgb(213,60,58)',
+            }}
+          >
+            {Number(par) !== 0 ? par + '%' : '0'}
+          </p>
+        );
+      },
+    },
+    {
+      title: t('Market.Create Time'),
+      dataIndex: 'time',
+      render: (_, record) => {
+        const create =
+          record?.createdAtTimestamp.toString().length > 10
+            ? Number(record.createdAtTimestamp.toString().slice(0, 10))
+            : Number(record.createdAtTimestamp);
 
+        return <p> {chang(create)}</p>;
+      },
+    },
+    {
+      title: (
+        <div className="titleHint">
+          <span>{t('Market.Pooled Amt')}</span>
+          <Tooltip title={t('Market.pooled')} rootClassName="allTooltipClass">
+            <img
+              src="/wenhao.svg"
+              alt=""
+              width={'15px'}
+              style={{ marginLeft: '3px' }}
+            />
+          </Tooltip>
+        </div>
+      ),
+      dataIndex: 'pooled',
+      render: (_, record) => {
+        return (
+          <p>
+            {setMany(record?.initialReserve)}
+            {switchChain === 'Polygon'
+              ? 'matic'
+              : switchChain === 'BSC'
+                ? 'BNB'
+                : 'ETH'}
+          </p>
+        );
+      },
+    },
+    {
+      title: (
+        <div className="titleHint">
+          <span>{t('Market.Swap Count')}</span>
+          <Tooltip title={t('Market.swap')} rootClassName="allTooltipClass">
+            <img
+              src="/wenhao.svg"
+              alt=""
+              width={'15px'}
+              style={{ marginLeft: '3px' }}
+            />
+          </Tooltip>
+        </div>
+      ),
+
+      dataIndex: 'swap',
+      render: (_, record) => {
+        const dateTime =
+          time === '24h'
+            ? record?.pairDayData
+            : time === '6h'
+              ? record?.PairSixHourData
+              : time === '1h'
+                ? record?.pairHourData
+                : record?.PairFiveMinutesData;
+        return (
+          <p>
+            {dateTime && dateTime.length > 0
+              ? Number(dateTime[0]?.swapTxns)
+              : 0}
+          </p>
+        );
+      },
+    },
+    {
+      title: (
+        <div className="titleHint">
+          <span>{t('Market.Liquidity')}</span>
+          <Tooltip
+            title={t('Market.liquidity')}
+            rootClassName="allTooltipClass"
+          >
+            <img
+              src="/wenhao.svg"
+              alt=""
+              width={'15px'}
+              style={{ marginLeft: '3px' }}
+            />
+          </Tooltip>
+        </div>
+      ),
+      dataIndex: 'Liquidity',
+      render: (_, record) => {
+        const data: any =
+          record?.liquidity && Number(record.liquidity)
+            ? setMany(record.liquidity)
+            : 0;
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: t('Market.Links'),
+      dataIndex: 'link',
+      render: (_, record) => {
+        return (
+          <div className="showLogo">
+            {[
+              { img: '/ethLogo.svg', name: 'eth' },
+              { img: '/feima.svg', name: 'univ2' },
+              { img: '/uncx.svg', name: 'uncx' },
+            ].map((i: any, index: number) => {
+              return (
+                <Tooltip
+                  key={index}
+                  title={
+                    i.name === 'eth' ? (
+                      <p className="eth">
+                        <span>{t('Market.eth')}</span>{' '}
+                        <span>{record?.token0?.id}</span>{' '}
+                      </p>
+                    ) : i.name === 'uncx' ? (
+                      t('Market.bluur')
+                    ) : (
+                      t('Market.uni2')
+                    )
+                  }
+                  rootClassName="allTooltipClass"
+                >
+                  <div className={'imgBox'}>
+                    <img
+                      loading={'lazy'}
+                      src={i.img}
+                      alt=""
+                      onClick={throttle(
+                        function (e: any) {
+                          e.stopPropagation();
+                          if (i.name === 'eth') {
+                            window.open(
+                              'https://etherscan.io/token/' + record?.token0?.id
+                            );
+                          } else if (i.name === 'univ2') {
+                            window.open(
+                              'https://app.uniswap.org/#/swap?inputCurrency=' +
+                                record?.token1?.id +
+                                '&outputCurrency=' +
+                                record?.token1?.id
+                            );
+                          } else if (i.name === 'uncx') {
+                            window.open(
+                              'https://app.uncx.network/amm/uni-v2/pair/' +
+                                record?.id
+                            );
+                          }
+                        },
+                        1500,
+                        { trailing: false }
+                      )}
+                    />
+                  </div>
+                </Tooltip>
+              );
+            })}
+          </div>
+        );
+      },
+    },
+  ];
+  const scorllBot = (e: any) => {
+    if (
+      e?.target?.scrollHeight - e?.target?.scrollTop <=
+      e?.target?.offsetHeight + 10
+    ) {
+      changePage();
+    }
+  };
   return (
     <div className={'indexBox'} style={{ width: browser ? '100%' : 'auto' }}>
       {/* top*/}
@@ -149,85 +438,42 @@ function Left() {
           </div>
         </div>
       </div>
-      <div
-        className="scrollStyle"
-        style={{ width: '100%', overflow: browser ? 'hidden' : 'auto hidden' }}
+      <ConfigProvider
+        renderEmpty={() => {
+          if (tableDta.length > 0) {
+            return <Nodata name={t('token.data')} />;
+          } else {
+            if (moreLoad) {
+              return <Loading status={'20'} browser={browser} />;
+            }
+          }
+        }}
       >
-        <div
-          className={`indexNewPair`}
-          style={{ width: browser ? '100%' : '170%' }}
-        >
-          <div className={'indexNewPairTitle'}>
-            {[
-              { name: t('Market.Name'), key: 'name' },
-              { name: `${t('Market.Price')}($)`, key: 'price' },
-              { name: time + ' Change', key: 'change' },
-              { name: t('Market.Create Time'), key: 'time' },
-              { name: t('Market.Pooled Amt'), key: 'pooled' },
-              { name: t('Market.Swap Count'), key: 'swap' },
-              { name: t('Market.Liquidity'), key: 'Liquidity' },
-              { name: t('Market.Links'), key: 'link' },
-            ].map((i: any, ind: number) => {
-              return (
-                <p className={` homeTableTittle`} key={ind}>
-                  {i.key === 'name' && (
-                    <img
-                      loading={'lazy'}
-                      src="/collect.svg"
-                      alt=""
-                      style={{ marginRight: '5px', display: 'none' }}
-                      width={'15px'}
-                    />
-                  )}
-                  <span>{i.name}</span>
-                  {(i.key === 'pooled' ||
-                    i.key === 'swap' ||
-                    i.key === 'Liquidity') && (
-                    <Tooltip
-                      title={
-                        i.key === 'pooled'
-                          ? t('Market.pooled')
-                          : i.key === 'swap'
-                            ? t('Market.swap')
-                            : t('Market.liquidity')
-                      }
-                      rootClassName="allTooltipClass"
-                    >
-                      <img
-                        src="/wenhao.svg"
-                        alt=""
-                        width={'15px'}
-                        style={{ marginLeft: '3px' }}
-                      />
-                    </Tooltip>
-                  )}
-                </p>
-              );
-            })}
-          </div>
-          <div
-            className={`indexNewPairBody scrollStyle`}
-            id={'scrollableNew'}
-            style={{
-              height: browser ? tableHei + 'px' : '60vh',
-              overflowY: 'auto',
-            }}
-          >
-            {wait ? (
-              <Loading status={'20'} browser={browser} />
-            ) : (
-              <InfiniteScrollPage
-              data={tableDta}
-              next={changePage}
-              items={<NewPair tableDta={tableDta} time={time} setDta={setDta} />}
-              nextLoad={moreLoad}
-              no={''}
-               show='show'
-              scrollableTarget={'scrollableNew'}
-            />
-            )}
-          </div>
-        </div>
+        <Table
+          bordered={false}
+          virtual
+          columns={fixedColumns}
+          scroll={{ x: browser ? 'auto' : 1200, y: Number(tableHei) - 10 }}
+          rowKey="id"
+          className="newoairTable"
+          onScroll={scorllBot}
+          dataSource={tableDta}
+          pagination={false}
+          onRow={(record) => {
+            return {
+              onClick: () => {
+                push(record);
+              },
+            };
+          }}
+        />
+      </ConfigProvider>
+      <div
+        style={{
+          visibility: moreLoad && tableDta.length > 0 ? 'initial' : 'hidden',
+        }}
+      >
+        <Load />
       </div>
       <Modal
         open={searchModal}

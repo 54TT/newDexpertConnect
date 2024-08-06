@@ -5,10 +5,12 @@ import { MintContext, initFormData } from '../../index';
 import Back from '../../component/Background';
 import ChangeChain from '@/components/ChangeChain';
 import { useTranslation } from 'react-i18next';
+import { CountContext } from '@/Layout';
 function LaunchHome() {
   const history = useNavigate();
   const { t } = useTranslation();
   const { setFormData }: any = useContext(MintContext);
+  const { user, setIsModalOpen }: any = useContext(CountContext);
   useEffect(() => {
     setFormData(initFormData);
   }, []);
@@ -29,20 +31,27 @@ function LaunchHome() {
           </div>
           <div
             className="launch-home-button"
-            onClick={() => history('/dapps/tokencreation/fillIn')}
+            onClick={() => {
+              if (user?.uid) {
+                history('/dapps/tokencreation/fillIn');
+              } else {
+                setIsModalOpen(true);
+              }
+            }}
           >
-            {t('token.Creation')}
+            {user?.uid ? t('token.Creation') : t('Common.Connect Wallet')}
           </div>
           <ChangeChain hideChain={true} disabledChain={true} />
         </div>
         <Back />
       </div>
-      <div className="launch-home-manage_token">
-        <span
-          onClick={() => {
-            history('/dapps/tokencreation/manageToken');
-          }}
-        >
+      <div className="launch-home-manage_token"  onClick={() => {
+            if (user?.uid) {
+              history('/dapps/tokencreation/manageToken');
+            }
+          }}>
+        <img src="/clickHi.svg" alt="" />
+        <span>
           {t('token.me')}
         </span>
       </div>

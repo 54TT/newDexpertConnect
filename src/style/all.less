@@ -395,6 +395,13 @@ body::-webkit-scrollbar-thumb {
   height: 8px !important;
 }
 
+
+
+.scrollStyle::-webkit-scrollbar-thumb {
+  background: rgb(24, 30, 29) !important;
+  border: 1px solid rgb(104, 124, 105) !important;
+  border-radius: 25px !important;
+}
 .personChainName {
   .ant-popover-arrow {
     display: none;
@@ -456,12 +463,6 @@ body::-webkit-scrollbar-thumb {
       }
     }
   }
-}
-
-.scrollStyle::-webkit-scrollbar-thumb {
-  background: rgb(24, 30, 29) !important;
-  border: 1px solid rgb(104, 124, 105) !important;
-  border-radius: 25px !important;
 }
 
 .indexBox {
@@ -585,68 +586,6 @@ body::-webkit-scrollbar-thumb {
           top: 50% !important;
           left: 50% !important;
           transform: translate(-50%, -50%) !important;
-        }
-      }
-
-      .indexNewPairBodyDataSmall {
-        div {
-          padding: 0 !important;
-        }
-      }
-
-      .indexNewPairBodyData {
-        background-color: rgb(25, 27, 25);
-        cursor: pointer;
-        border-bottom: 1.5px solid rgb(59, 59, 59);
-        padding: 4px 0 4px 20px;
-
-        & > div:not(:first-child) {
-          font-weight: 300;
-        }
-
-        & > div {
-          line-height: 1;
-          display: flex;
-          font-size: 14px;
-          flex: 1;
-          overflow: hidden;
-          box-sizing: border-box;
-          white-space: nowrap;
-        }
-
-        .indexTableLogo {
-          .imgBox:nth-child(2) {
-            margin: 0 5px;
-          }
-
-          .imgBox {
-            width: 20px;
-            cursor: pointer;
-            background-color: white;
-            border-radius: 50%;
-            height: 20px;
-
-            img {
-              width: 100%;
-              height: 100%;
-              cursor: pointer;
-            }
-          }
-
-          div {
-            color: white;
-          }
-        }
-      }
-
-      .indexNewPairBodyData:hover {
-        background-color: rgb(34, 36, 34) !important;
-        .indexTableLogo {
-          div {
-            p {
-              color: rgb(134, 240, 151) !important;
-            }
-          }
         }
       }
     }
@@ -1032,6 +971,9 @@ body::-webkit-scrollbar-thumb {
 
   .ant-select-item {
     color: rgb(135, 145, 136);
+  }
+  .ant-select-item-option-content{
+    line-height: 1.4;
   }
 
   .ant-select-item-option-selected {

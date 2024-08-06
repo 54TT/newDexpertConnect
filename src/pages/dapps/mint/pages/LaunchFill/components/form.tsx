@@ -5,6 +5,21 @@ import { useTranslation } from 'react-i18next';
 export default function form({ form, formData, onFinishForm }) {
   const { t } = useTranslation();
   const [showAdv, setShowAdv] = useState(false);
+
+  const item = (name: string, staus?: string) => {
+    return (
+      <p
+        style={{
+          marginTop: '-10px',
+          marginBottom: staus === 'last' ? '' : '15px',
+          color: 'rgba(255,255,255,0.65)',
+          fontSize: '12px',
+        }}
+      >
+        {name}
+      </p>
+    );
+  };
   return (
     <>
       <div
@@ -20,15 +35,6 @@ export default function form({ form, formData, onFinishForm }) {
           wrapperCol={{ span: 24 }}
           labelAlign="right"
         >
-          {/* <Form.Item
-            name="filename"
-            rules={[{ required: true, message: t('token.input') }]}
-          >
-            <Input
-              placeholder={t('token.document') + '   ( ' + t('token.first') + ' )'}
-              autoComplete={'off'}
-            />
-          </Form.Item> */}
           <Form.Item
             name="name"
             rules={[{ required: true, message: t('token.input') }]}
@@ -78,6 +84,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.tax'))}
               <Form.Item name="initialSellTax">
                 <InputNumber
                   placeholder={t('token.sel')}
@@ -85,6 +92,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.sel'))}
               <Form.Item name="finalBuyTax">
                 <InputNumber
                   placeholder={t('token.final')}
@@ -92,6 +100,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.final'))}
               <Form.Item name="finalSellTax">
                 <InputNumber
                   placeholder={t('token.sela')}
@@ -99,6 +108,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.sela'))}
               <Form.Item name="reduceBuyTaxAt">
                 <InputNumber
                   placeholder={t('token.redu')}
@@ -106,6 +116,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.redu'))}
               <Form.Item name="reduceSellTaxAt">
                 <InputNumber
                   placeholder={t('token.reduce')}
@@ -113,6 +124,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.reduce'))}
               <Form.Item name="preventSwapBefore">
                 <InputNumber
                   placeholder={t('token.Before')}
@@ -120,6 +132,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.Before'))}
               <Form.Item name="maxTxAmount">
                 <InputNumber
                   placeholder={t('token.of')}
@@ -127,6 +140,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.of'))}
               <Form.Item name="maxWalletSize">
                 <InputNumber
                   placeholder={t('token.size')}
@@ -134,6 +148,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.size'))}
               <Form.Item name="maxTaxSwap">
                 <InputNumber
                   placeholder={t('token.taxs')}
@@ -141,6 +156,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.taxs'))}
               <Form.Item name="taxSwapThreshold">
                 <InputNumber
                   placeholder={t('token.swap')}
@@ -148,6 +164,7 @@ export default function form({ form, formData, onFinishForm }) {
                   stringMode={true}
                 />
               </Form.Item>
+              {item(t('token.swap'), 'last')}
             </>
           )}
         </Form>

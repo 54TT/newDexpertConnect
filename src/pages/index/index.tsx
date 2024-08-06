@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import Right from './components/right.tsx';
+// import Right from './components/right.tsx';
 import { CountContext } from '@/Layout.tsx';
 import Left from './components/left.tsx';
 import './index.less';
@@ -16,9 +16,7 @@ function Index() {
       }}
     >
       <Left />
-      <div style={{ display: 'none' }}>
-        <Right />
-      </div>
+        {/* <Right /> */}
     </div>
   );
 }

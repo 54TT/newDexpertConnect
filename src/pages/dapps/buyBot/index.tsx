@@ -6,8 +6,8 @@ export default function index() {
   const { t } = useTranslation();
   const { browser }: any = useContext(CountContext);
   return (
-    <div style={{ width: browser ? '22%' : '85%' }} className="buybotBox">
-      <div className="logo" style={{ width: browser ? '80%' : '50%' }}>
+    <div style={{ width: browser ? '24%' : '75%' }} className="buybotBox">
+      <div className="logoNow" >
         <img src="/buyBotLogo.png" alt="" />
       </div>
       <div

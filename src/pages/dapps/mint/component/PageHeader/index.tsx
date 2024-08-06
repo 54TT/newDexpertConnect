@@ -1,4 +1,3 @@
-import { LeftOutlined } from '@ant-design/icons';
 import './index.less';
 import { useNavigate } from 'react-router-dom';
 import ChangeChain from '@/components/ChangeChain';
@@ -25,8 +24,10 @@ function PageHeader({
       <div className="launch-header-row">
         <div className="launch-header-arrow-left">
           {arrow && (
-            <LeftOutlined
-              className="launch-header-arrow-left-icon"
+            <img
+              src="/backImg.svg"
+              alt=""
+              style={{cursor:'pointer' }}
               onClick={() => {
                 if (name === 'tokenList') {
                   history('/dapps/tokencreation');

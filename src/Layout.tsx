@@ -170,21 +170,6 @@ function Layout() {
     }
   }, [newAccount]);
 
-  // useEffect(() => {
-  //   if (checkConnection() && isLogin) {
-  //     // setChainId('1');
-  //     // @ts-ignore
-  //     window.ethereum.request({
-  //       method: 'wallet_switchEthereumChain',
-  //       params: [
-  //         {
-  //           chainId: '0x1',
-  //         },
-  //       ],
-  //     });
-  //   }
-  // }, [isLogin]);
-
   const createClient = async () => {
     try {
       const _client: any = await Client.init({
@@ -223,14 +208,7 @@ function Layout() {
           ],
         });
       } catch (e) {
-        // loginProvider?.addEthereumChain({
-        //   method: 'wallet_switchEthereumChain',
-        //   params: [
-        //     {
-        //       chainId: `0x${Number(changeChainId).toString(16)}`,
-        //     },
-        //   ],
-        // });
+        return null
       }
     }
     return () => {

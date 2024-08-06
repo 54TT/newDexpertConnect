@@ -79,14 +79,12 @@ function ManageTokenList() {
         classname={'display'}
         data={{
           title: item.symbol,
-          desc:'（'+ item.name+'）',
+          desc: '（' + item.name + '）',
           id: item.contractId,
           address: item.address,
         }}
         onClick={({ id, address, title }) =>
-          history(
-            `/dapps/tokencreation/managePair/${id}/${address}/${title}`
-          )
+          history(`/dapps/tokencreation/managePair/${id}/${address}/${title}`)
         }
       />
     );
@@ -144,7 +142,7 @@ function ManageTokenList() {
       <div
         className="mint-scroll scroll"
         id="launchTokenList"
-        style={{ height: '340px' }}
+        style={{ height: '340px', overflowX: 'hidden' }}
       >
         {loading ? (
           <InfiniteScrollPage

@@ -6,7 +6,6 @@ import { simplify } from '@/../utils/change.ts';
 import Load from './allLoad/load.tsx';
 import HeaderModal from './headerModal.tsx';
 import { throttle } from 'lodash';
-// import { CaretDownOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 export type I18N_Key = 'zh_CN' | 'en_US';
 function Header() {

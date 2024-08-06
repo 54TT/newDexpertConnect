@@ -142,11 +142,41 @@
 }
 
 .launch-home-manage_token {
-  margin-top: 30px;
   text-align: center;
+  cursor: pointer;
+  margin-top: 16px;
   font-size: 28px;
   color: rgba(255, 255, 255, 0.8);
+  img {
+    margin: 0 auto 8px;
+    visibility: hidden;
+  }
+}
+
+.launch-home-manage_token:hover {
   span {
-    cursor: pointer;
+    animation: colorIn 1s;
+  }
+  img {
+    visibility: initial;
+    animation: fadeIn 1.5s;
+  }
+}
+/* 移入动画 */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: initial;
+  }
+  100% {
+    opacity: 1;
+    visibility: initial;
+  }
+}
+
+/* 移入动画 */
+@keyframes colorIn {
+  100% {
+    color: rgb(134, 240, 151);
   }
 }
