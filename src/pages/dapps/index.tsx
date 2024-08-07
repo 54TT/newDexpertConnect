@@ -9,9 +9,19 @@ import Limit from './limit';
 import Mint from './mint';
 export default function index() {
   const params: any = useParams();
-  const { browser  }: any = useContext(CountContext);
+  const { browser }: any = useContext(CountContext);
   const history = useNavigate();
   const top = [
+    {
+      imgAc: '/mainActive.svg',
+      img: '/mainMore.svg',
+      status: params?.id === 'tokencreation',
+      name: 'Token Creation',
+      onClick: () => {
+        history('/dapps/tokencreation');
+      },
+      key: 'mint',
+    },
     {
       status: params?.id === 'swap',
       imgAc: '/swapActive.png',
@@ -52,16 +62,6 @@ export default function index() {
     //   },
     //   key: 'limit',
     // },
-    {
-      imgAc: '/mainActive.svg',
-      img: '/mainMore.svg',
-      status: params?.id === 'tokencreation',
-      name: 'Token Creation',
-      onClick: () => {
-          history('/dapps/tokencreation');
-      },
-      key: 'mint',
-    },
   ];
   return (
     <div className="dappsBox">
