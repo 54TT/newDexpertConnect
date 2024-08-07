@@ -14,6 +14,16 @@ export default function index() {
   const history = useNavigate();
   const top = [
     {
+      imgAc: '/mainActive.svg',
+      img: '/mainMore.svg',
+      status: params?.id === 'tokencreation',
+      name: 'Token Creation',
+      onClick: () => {
+        history('/dapps/tokencreation');
+      },
+      key: 'mint',
+    },
+    {
       status: params?.id === 'swap',
       imgAc: '/swapActive.png',
       img: '/swapMore.png',
