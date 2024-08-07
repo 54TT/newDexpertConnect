@@ -1,4 +1,6 @@
 import { ethers } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber'
+
 const WEBHOOK_CONFIG_BUCKET: string = 'order-webhook-notification-config';
 const PRODUCTION_WEBHOOK_CONFIG_KEY: string = 'production.json';
 const BETA_WEBHOOK_CONFIG_KEY: string = 'beta.json';
@@ -42,12 +44,40 @@ const chainConfig: { [key: number]: any } = {
     11155111: {
         rpc: "https://ethereum-sepolia-rpc.publicnode.com",
         provider: new ethers.providers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com"),
-        reactorAddress: "0xc75034befaea8c2286616eda3e4e699da6b9daa9",
+        // reactorAddress: "0x082936Aa56ED2314B9fe76a658c6119A5D27d9c6",
+        // reactorAddress: "0xc75034befaea8c2286616eda3e4e699da6b9daa9",
+        reactorAddress: "0xB602027473497f9E26176a1cD0270036c9323C93",
         permit2Address: "0x000000000022d473030f116ddee9f6b43ac78ba3"
     }
 }
 
+export enum OrderType {
+  Dutch = "Dutch",
+  Relay = "Relay",
+  Dutch_V2 = "Dutch_V2",
+  Limit = "Limit",
+}
 
+export const BPS = 10000;
+
+export const PERMIT2_ADDRESS = '0x000000000022D473030F116dDEE9F6B43aC78BA3'
+
+export const MaxUint48 = BigNumber.from('0xffffffffffff')
+export const MaxUint160 = BigNumber.from('0xffffffffffffffffffffffffffffffffffffffff')
+export const MaxUint256 = BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+
+// alias max types for their usages
+// allowance transfer types
+export const MaxAllowanceTransferAmount = MaxUint160
+export const MaxAllowanceExpiration = MaxUint48
+export const MaxOrderedNonce = MaxUint48
+
+// signature transfer types
+export const MaxSignatureTransferAmount = MaxUint256
+export const MaxUnorderedNonce = MaxUint256
+export const MaxSigDeadline = MaxUint256
+
+export const InstantExpiration: BigNumber = BigNumber.from(0)
 
 export {
     WEBHOOK_CONFIG_BUCKET,

@@ -41,8 +41,8 @@ export type UniswapXOrderEntity = {
   chainId: number
   offerer: string
   reactor: string
-  decayStartTime: number
-  decayEndTime: number
+  // decayStartTime: number
+  // decayEndTime: number
   deadline: number
   input: OrderInput
   outputs: OrderOutput[]
@@ -56,14 +56,14 @@ export type UniswapXOrderEntity = {
   txHash?: string
   // SettledAmount field is defined when the order has been filled and the fill amounts have been recorded.
   settledAmounts?: SettledAmount[]
-  cosignerData?: {
-    decayStartTime: number
-    decayEndTime: number
-    exclusiveFiller: string
-    inputOverride: string
-    outputOverrides: string[]
-  }
-  cosignature?: string
+  // cosignerData?: {
+  //   decayStartTime: number
+  //   decayEndTime: number
+  //   exclusiveFiller: string
+  //   inputOverride: string
+  //   outputOverrides: string[]
+  // }
+  // cosignature?: string
 }
 
 export enum SORT_FIELDS {
@@ -71,13 +71,13 @@ export enum SORT_FIELDS {
 }
 
 
-export type OrderValidationResponse = {
-  valid: boolean
-  errorString?: string
-}
+// export type OrderValidationResponse = {
+//   valid: boolean
+//   errorString?: string
+// }
 
-export type CreateOrderResponse = {  
-  success: boolean,
-  error?: string
-}
+// export type CreateOrderResponse = {  
+//   success: boolean,
+//   error?: string
+// }
 

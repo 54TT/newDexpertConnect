@@ -43,16 +43,6 @@ export default function index() {
       },
       key: 'buyBot',
     },
-    // {
-    //   imgAc: '/snipingActive.png',
-    //   img: '/snipingMore.png',
-    //   status: params?.id === 'limit',
-    //   name: 'Limit',
-    //   onClick: () => {
-    //     history('/dapps/limit');
-    //   },
-    //   key: 'limit',
-    // },
     {
       imgAc: '/mainActive.svg',
       img: '/mainMore.svg',
@@ -62,6 +52,16 @@ export default function index() {
         history('/dapps/tokencreation');
       },
       key: 'mint',
+    },
+    {
+      imgAc: '/snipingActive.png',
+      img: '/snipingMore.png',
+      status: params?.id === 'limit',
+      name: 'Limit',
+      onClick: () => {
+        history('/dapps/limit');
+      },
+      key: 'limit',
     },
   ];
   const mouseOver = (key: string) => {

@@ -1,24 +1,20 @@
+// import { OrderType } from '@uniswap/uniswapx-sdk'
 import { OrderType } from '@uniswap/uniswapx-sdk'
-import dotenv from 'dotenv'
+// import dotenv from 'dotenv'
 import { BigNumber, ethers } from 'ethers'
 import Joi, { CustomHelpers, NumberSchema, StringSchema } from 'joi'
 import { ORDER_STATUS, SORT_FIELDS } from './entities'
-export function checkDefined<T>(value: T | null | undefined, message = 'Should be defined'): T {
-  if (value === null || value === undefined) {
-    throw new Error(message)
-  }
-  return value
-}
-
-import { DUTCH_LIMIT } from './order'
+import { checkDefined } from './preconditions'
+// import { DUTCH_LIMIT } from './order'
 import { SUPPORTED_CHAINS } from './constants'
 
-dotenv.config()
+// dotenv.config()
 
 export const SORT_REGEX = /(\w+)\(([0-9]+)(?:,([0-9]+))?\)/
 const UINT256_MAX = BigNumber.from(1).shl(256).sub(1)
-
-const COSIGNER = checkDefined(process.env.LABS_COSIGNER)
+// @ts-ignore
+const COSIGNER = checkDefined(import.meta.env.VITE_LABS_COSIGNER)
+// const COSIGNER = checkDefined(process.env.LABS_COSIGNER)
 
 export default class FieldValidator {
   private static readonly ENCODED_ORDER_JOI = Joi.string().regex(this.getHexiDecimalRegex(3000, true))
@@ -59,12 +55,12 @@ export default class FieldValidator {
 
   // TODO: DutchLimit type is deprecated but we allow it in the response to remain backwards compatible.
   // Remove this field from Joi once we have purge job to delete all DutchLimit orders from the database.
-  private static readonly ORDER_TYPE_JOI = Joi.string().valid(
-    OrderType.Dutch,
-    OrderType.Dutch_V2,
-    OrderType.Limit,
-    OrderType.Relay
-  )
+  // private static readonly ORDER_TYPE_JOI = Joi.string().valid(
+  //   OrderType.Dutch,
+  //   OrderType.Dutch_V2,
+  //   OrderType.Limit,
+  //   OrderType.Relay
+  // )
 
   private static readonly GET_ORDER_TYPE_JOI = Joi.string().valid(
     OrderType.Dutch,

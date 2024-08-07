@@ -1,12 +1,18 @@
-import {
-  CosignedV2DutchOrder,
+// import {
+//   DutchOutput,
+// } from './builder/types'
+// import { LimitOrder } from './builder/order'
+import { 
+  // CosignedV2DutchOrder,
   DutchOrder,
-  OrderType,
-} from '@uniswap/uniswapx-sdk'
+  DutchOutput,
+  OrderType, 
+} from '@uniswap/uniswapx-sdk';
 import { BigNumber } from 'ethers'
 import { ONE_DAY_IN_SECONDS, chainConfig } from './constants'
 import FieldValidator from './field-validator'
-import { OrderValidationResponse } from './entities'
+import { OrderValidationResponse } from './response'
+
 export type SkipValidationMap = {
   SkipDecayStartTimeValidation: boolean
 }
@@ -15,26 +21,17 @@ export class OffChainUniswapXOrderValidator {
   constructor(
     private readonly getCurrentTime = Math.round(new Date().getTime() / 1000),
     private readonly deadlineValidityPeriodSeconds = ONE_DAY_IN_SECONDS,
-    private readonly skipValidationMap?: SkipValidationMap
+    // private readonly skipValidationMap?: SkipValidationMap
   ) {}
 
-  validate(order: DutchOrder | CosignedV2DutchOrder): OrderValidationResponse {
+  validate(order: any): OrderValidationResponse {
     let orderType
     if (order instanceof DutchOrder) {
-      orderType = OrderType.Dutch
-    } else if (order instanceof CosignedV2DutchOrder) {
-      orderType = OrderType.Dutch_V2
+      orderType = OrderType.Limit
     } else {
       return {
         valid: false,
         errorString: 'Invalid orderType',
-      }
-    }
-
-    if (orderType == OrderType.Dutch_V2) {
-      const cosignerValidation = this.validateCosigner((order as CosignedV2DutchOrder).info.cosigner)
-      if (!cosignerValidation.valid) {
-        return cosignerValidation
       }
     }
 
@@ -51,25 +48,6 @@ export class OffChainUniswapXOrderValidator {
     const deadlineValidation = this.validateDeadline(order.info.deadline)
     if (!deadlineValidation.valid) {
       return deadlineValidation
-    }
-
-    //TODO: split validator to multiple classes
-    if (!this.skipValidationMap || !this.skipValidationMap.SkipDecayStartTimeValidation) {
-      let decayStartTime = 0
-      if ((order as DutchOrder).info.decayStartTime) {
-        decayStartTime = (order as DutchOrder).info.decayStartTime
-      } else if ((order as CosignedV2DutchOrder).info.cosignerData) {
-        decayStartTime = (order as CosignedV2DutchOrder).info.cosignerData.decayStartTime
-      }
-      const decayStartTimeValidation = this.validateDecayStartTime(decayStartTime, order.info.deadline)
-      if (!decayStartTimeValidation.valid) {
-        return decayStartTimeValidation
-      }
-    }
-
-    const decayTimeValidation = this.validateDecayTime((order as DutchOrder).info.decayStartTime, (order as DutchOrder).info.decayEndTime)
-    if (!decayTimeValidation.valid) {
-      return decayTimeValidation;
     }
 
     const nonceValidation = this.validateNonce(order.info.nonce)
@@ -92,14 +70,9 @@ export class OffChainUniswapXOrderValidator {
       return inputTokenValidation
     }
 
-    const inputStartAmountValidation = this.validateInputAmount(order.info.input.startAmount)
-    if (!inputStartAmountValidation.valid) {
-      return inputStartAmountValidation
-    }
-
-    const inputEndAmountValidation = this.validateInputAmount(order.info.input.endAmount)
-    if (!inputEndAmountValidation.valid) {
-      return inputStartAmountValidation
+    const inputAmountValidation = this.validateInputAmount(order.info.input.startAmount)
+    if (!inputAmountValidation.valid) {
+      return inputAmountValidation
     }
 
     const outputsValidation = this.validateOutputs(order.info.outputs)
@@ -165,17 +138,17 @@ export class OffChainUniswapXOrderValidator {
     }
   }
 
-  private validateDecayStartTime(decayStartTime: number, deadline: number): OrderValidationResponse {
-    if (decayStartTime > deadline) {
-      return {
-        valid: false,
-        errorString: 'Invalid decayStartTime: decayStartTime > deadline',
-      }
-    }
-    return {
-      valid: true,
-    }
-  }
+  // private validateDecayStartTime(decayStartTime: number, deadline: number): OrderValidationResponse {
+  //   if (decayStartTime > deadline) {
+  //     return {
+  //       valid: false,
+  //       errorString: 'Invalid decayStartTime: decayStartTime > deadline',
+  //     }
+  //   }
+  //   return {
+  //     valid: true,
+  //   }
+  // }
 
   validateDecayTime(decayStartTime: number, decayEndTime: number) {
     if (decayStartTime > decayEndTime) {
@@ -215,18 +188,18 @@ export class OffChainUniswapXOrderValidator {
     }
   }
 
-  private validateCosigner(cosigner: string): OrderValidationResponse {
-    const error = FieldValidator.isValidCosigner().validate(cosigner).error
-    if (error) {
-      return {
-        valid: false,
-        errorString: `Invalid cosigner: ${error}`,
-      }
-    }
-    return {
-      valid: true,
-    }
-  }
+  // private validateCosigner(cosigner: string): OrderValidationResponse {
+  //   const error = FieldValidator.isValidCosigner().validate(cosigner).error
+  //   if (error) {
+  //     return {
+  //       valid: false,
+  //       errorString: `Invalid cosigner: ${error}`,
+  //     }
+  //   }
+  //   return {
+  //     valid: true,
+  //   }
+  // }
 
   // TODO: Once deployed contracts are finalized, we can restrict this
   // to check against a known set of addresses.
@@ -268,7 +241,7 @@ export class OffChainUniswapXOrderValidator {
     }
   }
 
-  private validateOutputs(dutchOutputs: any[]): OrderValidationResponse {
+  private validateOutputs(dutchOutputs: DutchOutput[]): OrderValidationResponse {
     if (dutchOutputs.length == 0) {
       return {
         valid: false,
@@ -276,7 +249,7 @@ export class OffChainUniswapXOrderValidator {
       }
     }
     for (const output of dutchOutputs) {
-      const { token, recipient, startAmount, endAmount } = output
+      const { token, recipient, startAmount } = output
       if (FieldValidator.isValidEthAddress().validate(token).error) {
         return {
           valid: false,
@@ -295,20 +268,6 @@ export class OffChainUniswapXOrderValidator {
         return {
           valid: false,
           errorString: `Invalid startAmount ${startAmount.toString()}`,
-        }
-      }
-
-      if (!this.isValidUint256(endAmount)) {
-        return {
-          valid: false,
-          errorString: `Invalid endAmount ${endAmount.toString()}`,
-        }
-      }
-
-      if (endAmount.gt(startAmount)) {
-        return {
-          valid: false,
-          errorString: `Invalid endAmount > startAmount`,
         }
       }
     }

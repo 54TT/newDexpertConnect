@@ -82,9 +82,16 @@ function Layout() {
     //@ts-ignore
     setProvider(rpcProvider);
   };
+  const walletRdns = cookie.get('walletRdns');
   useEffect(() => {
+    if (walletRdns && environment.length > 0) {
+      changeInfoRdns(walletRdns);
+    }
+  }, [environment]);
+  useEffect(() => {
+    //   默认执行   --------------
     changeConfig(chainId);
-  }, [chainId]);
+  }, [chainId, walletRdns]);
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -156,7 +163,6 @@ function Layout() {
   const [browser, setBrowser] = useState<any>(false);
   const [big, setBig] = useState<any>(false);
   const [activityOptions, setActivityOptions] = useState('');
-
   const [transactionFee, setTransactionFee] = useState({
     swap: new Decimal(0),
   });
@@ -181,7 +187,6 @@ function Layout() {
   const onChainChange = (targetChainId) => {
     setChainId(Number(targetChainId).toString());
   };
-
   useEffect(() => {
     if (isLogin && loginProvider) {
       let changeChainId = '1';
@@ -211,12 +216,14 @@ function Layout() {
   const clear = async () => {
     history('/re-register');
     setloginProvider(null);
+    setChainId('1');
     cookie.remove('token');
     cookie.remove('walletRdns');
     cookie.remove('currentAddress');
     changeBindind.current = '';
     cookie.remove('jwt');
     localStorage.clear();
+    setContractConfig(null);
     if (tonConnectUI?.connected) {
       tonConnectUI.disconnect();
     }
@@ -230,7 +237,13 @@ function Layout() {
     setIsLogin(false);
     setBindingAddress(null);
   };
-  const getUser = async (id: string, token: string, name: string, jwt: any) => {
+  const getUser = async (
+    id: string,
+    token: string,
+    name: string,
+    jwt: any,
+    i?: any
+  ) => {
     const data: any = await getAll({
       method: 'get',
       url: '/api/v1/userinfo/' + id,
@@ -245,6 +258,10 @@ function Layout() {
       setUserPar(user);
       setIsLogin(true);
       cookie.set('token', token);
+      if (i?.info?.rdns) {
+        cookie.set('walletRdns', i?.info?.rdns);
+        changeInfoRdns(i?.info?.rdns);
+      }
       if (jwt) {
         cookie.set('jwt', JSON.stringify(jwt));
       }
@@ -258,7 +275,7 @@ function Layout() {
       setLoad(false);
     }
   };
-  const login = async (par: any, chain: string, name: string) => {
+  const login = async (par: any, chain: string, name: string, i?: any) => {
     try {
       const inviteCode = search.get('inviteCode')
         ? search.get('inviteCode')
@@ -286,7 +303,6 @@ function Layout() {
             token: token,
             chainId: chain === 'ton' ? '-2' : '1',
           });
-
           if (bind?.status === 200) {
             getUserNow();
             NotificationChange('success', t('person.bind'));
@@ -313,7 +329,7 @@ function Layout() {
           cookie.set('currentAddress', par?.address ? par?.address : par?.addr);
           if (decodedToken && decodedToken?.uid) {
             const uid = decodedToken.sub.split('-')[1];
-            getUser(uid, res.data?.accessToken, name, decodedToken);
+            getUser(uid, res.data?.accessToken, name, decodedToken, i);
             localStorage.setItem('login-chain', chain === 'ton' ? '-2' : '1');
           }
         } else {
@@ -325,15 +341,14 @@ function Layout() {
       return null;
     }
   };
-  useEffect(() => {
-    if (cookie.get('walletRdns') && environment.length > 0) {
-      const at = cookie.get('walletRdns');
-      const provider = environment.filter((i: any) => i?.info?.rdns === at);
-      if (provider.length > 0) {
-        setCurrentSwapChain(provider);
-      }
+
+  const changeInfoRdns = (name: string) => {
+    const provider = environment.filter((i: any) => i?.info?.rdns === name);
+    if (provider.length > 0) {
+      setCurrentSwapChain(provider);
     }
-  }, [cookie.get('walletRdns'), environment]);
+  };
+
   const setCurrentSwapChain = async (provider) => {
     const walletChainIdHex = await provider[0]?.provider.request({
       method: 'eth_chainId',
@@ -347,7 +362,6 @@ function Layout() {
     setloginProvider(provider[0]?.provider);
   };
   const handleLogin = async (i: any) => {
-    cookie.set('walletRdns', i?.info?.rdns);
     try {
       const account = await i?.provider?.request({
         method: 'eth_requestAccounts',
@@ -364,7 +378,7 @@ function Layout() {
               params: [message, account[0]],
             });
             const data = { signature: sign, addr: account[0], message };
-            login(data, 'eth', 'more');
+            login(data, 'eth', 'more', i);
           } else {
             setLoad(false);
           }
