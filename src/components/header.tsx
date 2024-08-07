@@ -95,6 +95,11 @@ function Header() {
       children: (
         <div className={'collapseChildeen'}>
           {[
+            {
+              name: 'Token Creation',
+              img: '/mainMore.svg',
+              key: 'tokencreation',
+            },
             { name: 'Swap', img: '/swapMore.png', key: 'swap' },
             {
               name: 'Sniping',
@@ -102,11 +107,6 @@ function Header() {
               key: 'sniping',
             },
             { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
-            {
-              name: 'Token Creation',
-              img: '/mainMore.svg',
-              key: 'tokencreation',
-            },
           ].map((i: any) => {
             return (
               <p

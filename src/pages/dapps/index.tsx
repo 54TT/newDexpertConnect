@@ -63,16 +63,16 @@ export default function index() {
     //   },
     //   key: 'limit',
     // },
-    {
-      imgAc: '/mainActive.svg',
-      img: '/mainMore.svg',
-      status: params?.id === 'tokencreation',
-      name: 'Token Creation',
-      onClick: () => {
-        history('/dapps/tokencreation');
-      },
-      key: 'mint',
-    },
+    // {
+    //   imgAc: '/mainActive.svg',
+    //   img: '/mainMore.svg',
+    //   status: params?.id === 'tokencreation',
+    //   name: 'Token Creation',
+    //   onClick: () => {
+    //     history('/dapps/tokencreation');
+    //   },
+    //   key: 'mint',
+    // },
   ];
   const mouseOver = (key: string) => {
     setHoverKey(key);
