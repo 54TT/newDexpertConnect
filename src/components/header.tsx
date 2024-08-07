@@ -196,7 +196,7 @@ function Header() {
         return 'rgb(172,172,172)';
       }
       // 判断 dapps
-    } else if (router.pathname.includes('/app/')) {
+    } else if (router.pathname.includes('/dapps/')) {
       if (ind === 'DApps') {
         return 'rgb(134,240,151)';
       } else {
@@ -224,6 +224,14 @@ function Header() {
     //   key: 'Community',
     // },
   ];
+
+  const [hoverColor, sethoverColor] = useState(false);
+  const mouseOver = () => {
+    sethoverColor(true);
+  };
+  const mouseOut = () => {
+    sethoverColor(false);
+  };
 
   const changeLanguage = throttle(
     function () {
@@ -298,10 +306,14 @@ function Header() {
             1500,
             { trailing: false }
           )}
+          onMouseOver={mouseOver}
+          onMouseOut={mouseOut}
         >
           <img
             src={
-              router.pathname === '/activity' ? '/gift1.svg' : '/giftWhite1.svg'
+              router.pathname === '/activity' || hoverColor
+                ? '/gift1.svg'
+                : '/giftWhite1.svg'
             }
             alt=""
             style={{ width: '23px', cursor: 'pointer' }}
@@ -310,7 +322,7 @@ function Header() {
             <p
               style={{
                 color:
-                  router.pathname === '/activity'
+                  router.pathname === '/activity' || hoverColor
                     ? 'rgb(134,240,151)'
                     : 'rgb(214, 223, 215)',
                 marginLeft: '6px',

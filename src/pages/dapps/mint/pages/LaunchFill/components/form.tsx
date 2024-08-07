@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 export default function form({ form, formData, onFinishForm }) {
   const { t } = useTranslation();
   const [showAdv, setShowAdv] = useState(false);
-
   const item = (name: string, staus?: string) => {
     return (
       <p
@@ -33,8 +32,7 @@ export default function form({ form, formData, onFinishForm }) {
           labelCol={{ span: 8 }}
           labelWrap
           wrapperCol={{ span: 24 }}
-          labelAlign="right"
-        >
+          labelAlign="right">
           <Form.Item
             name="name"
             rules={[{ required: true, message: t('token.input') }]}
@@ -47,7 +45,7 @@ export default function form({ form, formData, onFinishForm }) {
           >
             <Input
               placeholder={
-                t('token.symbol') + '   ( ' + t('token.first') + ' )'
+                t('token.symbol') + '  ( ' + t('token.first') + ' )'
               }
               autoComplete={'off'}
             />

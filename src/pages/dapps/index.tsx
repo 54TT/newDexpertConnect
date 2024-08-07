@@ -1,6 +1,6 @@
 import './in.less';
 import BuyBot from './buyBot';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { CountContext } from '@/Layout';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swap from './swap';
@@ -9,7 +9,8 @@ import Limit from './limit';
 import Mint from './mint';
 export default function index() {
   const params: any = useParams();
-  const { browser  }: any = useContext(CountContext);
+  const { browser }: any = useContext(CountContext);
+  const [hoverKey, setHoverKey] = useState('');
   const history = useNavigate();
   const top = [
     {
@@ -58,11 +59,14 @@ export default function index() {
       status: params?.id === 'tokencreation',
       name: 'Token Creation',
       onClick: () => {
-          history('/dapps/tokencreation');
+        history('/dapps/tokencreation');
       },
       key: 'mint',
     },
   ];
+  const mouseOver = (key: string) => {
+    setHoverKey(key);
+  };
   return (
     <div className="dappsBox">
       {browser && (
@@ -74,23 +78,35 @@ export default function index() {
           <div className="box">
             {top.map((i: any) => {
               return (
-                <div key={i.key} className="item" onClick={i.onClick}>
+                <div
+                  key={i.key}
+                  className="item"
+                  onClick={i.onClick}
+                  onMouseOver={() => mouseOver(i.key)}
+                  onMouseOut={() => {
+                    setHoverKey('');
+                  }}
+                >
                   <div
                     style={{
-                      backgroundColor: i.status
-                        ? 'rgb(79,79,79)'
-                        : 'rgb(54,54,54)',
+                      backgroundColor:
+                        i.status || hoverKey == i.key
+                          ? 'rgb(79,79,79)'
+                          : 'rgb(54,54,54)',
                     }}
                   >
                     <img
-                      src={i.status ? i.imgAc : i.img}
+                      src={i.status || hoverKey == i.key ? i.imgAc : i.img}
                       alt=""
                       style={{ width: i.key === 'mint' ? '10px' : '' }}
                     />
                   </div>
                   <span
                     style={{
-                      color: i.status ? 'rgb(134,240,151)' : 'rgb(162,162,162)',
+                      color:
+                        i.status || hoverKey == i.key
+                          ? 'rgb(134,240,151)'
+                          : 'rgb(162,162,162)',
                       width: i.key === 'buyBot' ? '120px' : 'auto',
                     }}
                   >

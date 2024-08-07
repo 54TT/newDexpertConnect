@@ -406,7 +406,10 @@
     "removeLimits":"Successfully remove Limits",
     "renounceOwnership":"Successfully renounce Ownership",
     "burnLP":"Successfully burnLP",
-    "removeLP":"Successfully removeLP"
+    "removeLP":"Successfully removeLP",
+    "Limits":"Limits Removed",
+    "Trade":"Trade Opened",
+    "Renounces":"Renounce Ownership"
 
   }
 }

@@ -145,7 +145,7 @@
   text-align: center;
   cursor: pointer;
   margin-top: 16px;
-  font-size: 28px;
+  font-size: 24px;
   color: rgba(255, 255, 255, 0.8);
   img {
     margin: 0 auto 8px;
@@ -155,6 +155,7 @@
 
 .launch-home-manage_token:hover {
   span {
+    color: rgb(134, 240, 151);
     animation: colorIn 1s;
   }
   img {
@@ -176,6 +177,9 @@
 
 /* 移入动画 */
 @keyframes colorIn {
+  0% {
+    color: rgba(255, 255, 255, 0.8);
+  }
   100% {
     color: rgb(134, 240, 151);
   }

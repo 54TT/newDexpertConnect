@@ -132,10 +132,10 @@ function ManageTokenList() {
           value={key}
           popupClassName={'manageTokenSelect'}
           options={[
-            { value: '0', label: 'All' },
-            { value: '2', label: 'Limits Removed' },
-            { value: '1', label: 'Trade Opened' },
-            { value: '3', label: 'Renounce Ownership' },
+            { value: '0', label: t('token.all') },
+            { value: '2', label: t('token.Limits') },
+            { value: '1', label: t('token.Trade') },
+            { value: '3', label: t('token.Renounce') },
           ]}
         />
       </div>
