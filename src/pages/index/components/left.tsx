@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { setMany, simplify } from '@/../utils/change.ts';
 import { throttle } from 'lodash';
 import { getGas } from '@/../utils/getGas.ts';
-import ChooseChain from '@/components/chooseChain.tsx';
+import ChooseChain from '@/components/ChangeChain/components/chooseChain.tsx';
 import Nodata from '@/components/Nodata';
 import Loading from '@/components/allLoad/loading';
 import dayjs from 'dayjs';
@@ -183,8 +183,7 @@ function Left() {
           record?.createdAtTimestamp.toString().length > 10
             ? Number(record.createdAtTimestamp.toString().slice(0, 10))
             : Number(record.createdAtTimestamp);
-
-        return <p> {chang(create)}</p>;
+        return <div style={{ color: 'white',lineHeight:'2.2' }}> {chang(create)}</div>;
       },
     },
     {

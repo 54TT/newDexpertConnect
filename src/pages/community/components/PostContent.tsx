@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import SendPost from '../components/SendPost.tsx'
-import TWeetHome from '@/components/tweetHome.js'
+import TWeetHome from '@/components/Tweets/index.tsx'
 
 /* import classNames from "classnames"; */
 export interface TabType {

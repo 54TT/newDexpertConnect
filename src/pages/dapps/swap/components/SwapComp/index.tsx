@@ -891,7 +891,11 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
             }}
           >
             <DefaultTokenImg name={tokenOut?.name} icon={tokenOut?.logoUrl} />
-            <span>{tokenOut?.symbol}</span>
+            <span>
+              {tokenOut?.symbol?.length > 6
+                ? tokenOut?.symbol.slice(0, 5) + '..'
+                : tokenOut?.symbol}
+            </span>
             {changeAble && (
               <img className="arrow-down-img" src="/arrowDown.svg" alt="" />
             )}

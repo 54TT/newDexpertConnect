@@ -1,7 +1,7 @@
 import { Modal, ModalProps } from 'antd';
 import classNames from 'classnames';
 import React from 'react';
-import './index.less';
+import '../index.less';
 export interface CommonModalPropsType
   extends React.PropsWithChildren,
     ModalProps {

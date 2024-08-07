@@ -135,7 +135,7 @@ function ManageTokenList() {
             { value: '0', label: t('token.all') },
             { value: '2', label: t('token.Limits') },
             { value: '1', label: t('token.Trade') },
-            { value: '3', label: t('token.Renounce') },
+            { value: '3', label: t('token.Renounces') },
           ]}
         />
       </div>

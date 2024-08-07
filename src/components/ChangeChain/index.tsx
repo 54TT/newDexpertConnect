@@ -1,8 +1,8 @@
 import { swapChain } from '@utils/judgeStablecoin';
-import ChooseChain, { ChooseChainValueType } from '../chooseChain';
-import { useContext } from 'react';
+import React,{ useContext } from 'react';
+import  { ChooseChainValueType } from './components/chooseChain';
+const ChooseChain = React.lazy(() => import('./components/chooseChain'));
 import { CountContext } from '@/Layout';
-
 export interface ChangeChainPropsType {
   wrapClassName?: string; // 弹窗的classname
   hideChain?: boolean; // 隐藏有hide属性的链

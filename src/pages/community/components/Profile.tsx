@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import TWeetHome from '@/components/tweetHome.tsx';
+import TWeetHome from '@/components/Tweets/index.tsx'
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import Request from '@/components/axios.tsx';

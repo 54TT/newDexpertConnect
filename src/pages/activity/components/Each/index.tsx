@@ -1,18 +1,15 @@
-import { Modal, Table } from 'antd';
 import { useLocation, useParams } from 'react-router-dom';
 import { CountContext } from '@/Layout.tsx';
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { throttle } from 'lodash';
-import TwitterRelease from './twitterRelease.tsx';
-import Revalidate from './revalidate.tsx';
+import Modal from './components/modal.tsx';
 import cookie from 'js-cookie';
-import Load from '@/components/allLoad/load.tsx';
+import AcyivityList from './components/acyivityList.tsx';
 import Nodata from '@/components/Nodata.tsx';
 import NotificationChange from '@/components/message';
 import Request from '@/components/axios.tsx';
-import SpecialOrPass from '../components/specialOrPass.tsx';
-import { simplify } from '@/../utils/change.ts';
+import SpecialOrPass from '../specialOrPass.tsx';
+import Tables from './components/table.tsx';
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   const par = data.length > 0 ? data : data?.campaign ? [data] : [];
   const { browser, languageChange, isLogin, setUserPar, user }: any =
@@ -23,38 +20,14 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   const [loading, setLoading] = useState(false);
   const [isVerify, setIsVerify] = useState(false);
   const { t } = useTranslation();
-  const [value, setValue] = useState('');
   const [link, setLink] = useState('');
   useEffect(() => {
     setLoading(false);
     setIsVerify(false);
   }, [data]);
-  const columns = [
-    {
-      title: t('Active.ra'),
-      render: (_: null, record: any) => {
-        return <span>{record?.rank}</span>;
-      },
-    },
-    {
-      title: t('Active.us'),
-      render: (_: any, record: any) => {
-        return (
-          <span>{browser ? record?.userName : simplify(record?.userName)}</span>
-        );
-      },
-    },
-    {
-      title: t('Active.po'),
-      render: (_: any, record: any) => {
-        return <span>{record?.views || '0'}</span>;
-      },
-    },
-  ];
   const [selectActive, setSelectActive] = useState('');
   const [select, setSelect] = useState('');
   const [isModalOpen, setIsModalOpe] = useState(false);
-  const [isConfirm, setIsConfirm] = useState(false);
   const signIn = async (token: string, url: string, taskId?: string) => {
     const res = await getAll({
       method: taskId ? 'post' : 'get',
@@ -101,19 +74,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       }
     } else {
       setLoading(false);
-    }
-  };
-  const changeImg = (id: string, title: string) => {
-    if (title.includes('Twitter')) {
-      return selectActive === id ? '/tuiActive.svg' : '/tui.svg';
-    } else if (title.includes('Telegram')) {
-      return selectActive === id ? '/telegramsActive.svg' : '/telegrams.svg';
-    } else if (title.includes('Discord')) {
-      return selectActive === id ? '/disActive.svg' : '/dis.svg';
-    } else if (title.includes('Instagram')) {
-      return selectActive === id ? '/instagramActive.svg' : '/instagram.svg';
-    } else {
-      return selectActive === id ? '/abc.png' : '/abcd.png';
     }
   };
   const verify = async (id: string) => {
@@ -334,7 +294,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
               verifyJointActivities(token, it?.taskId);
             }
           }
-
           if (it?.taskId === '15' || it?.taskId === '16') {
             claimJointActivities(token, it?.taskId);
           }
@@ -410,90 +369,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       }
     }
   };
-  const openLink = () => {
-    if (link) {
-      window.open(link);
-    }
-  };
-  const Confirm = async () => {
-    const token = cookie.get('token');
-    if (value && token && select) {
-      setIsConfirm(true);
-      const res: any = await getAll({
-        method: 'post',
-        url: '/api/v1/airdrop/task/twitter/daily/confirm',
-        data: { taskId: select, url: value },
-        token,
-      });
-      if (res?.status === 200 && res?.data?.message === 'success') {
-        setIsModalOpe(false);
-        setIsConfirm(false);
-      } else {
-        setIsConfirm(false);
-      }
-    }
-  };
-  const showScore = (campaignId: string, it: any) => {
-    if (params?.id === '1') {
-      if (Number(it?.score)) {
-        return '+' + it?.score;
-      } else {
-        return it?.score;
-      }
-    } else {
-      if (it?.extra) {
-        const par: any = it?.extra?.split('|');
-        if (par.length > 0) {
-          return '+' + par[1];
-        } else {
-          return '+0';
-        }
-      } else {
-        if (option === 'first') {
-          if (Number(campaignId) >= 4) {
-            if (Number(it?.isCompleted)) {
-              if (it?.operationSymbol?.includes('golden')) {
-                return t('Dpass.deadline');
-              } else {
-                return '+' + it?.score;
-              }
-            } else {
-              return '';
-            }
-          } else {
-            if (Number(it?.score) || Number(it?.score) === 0) {
-              return '+' + it?.score;
-            } else {
-              return it?.score;
-            }
-          }
-        } else {
-          if (Number(it?.score) || Number(it?.score) === 0) {
-            return '+' + it?.score;
-          } else {
-            return it?.score;
-          }
-        }
-      }
-    }
-  };
-
-  const changeTitle = (title: string, extra: any) => {
-    if (params?.id === '1') {
-      return title;
-    } else {
-      if (extra) {
-        const aaa: any = extra?.split('|');
-        if (aaa.length > 0) {
-          return aaa[0];
-        } else {
-          return title;
-        }
-      } else {
-        return title;
-      }
-    }
-  };
   return (
     <>
       {isLogin && (
@@ -502,166 +377,43 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
           style={{ padding: browser ? '0 17%' : '0 5%' }}
         >
           {option === 'ranking' ? (
-            <Table
-              columns={columns}
-              rowKey={(record: any) => record?.userName}
-              className={'activeTable'}
-              pagination={false}
-              dataSource={rankList}
-              loading={isRankList}
-              bordered
-            />
+            <Tables isRankList={isRankList} rankList={rankList} />
           ) : option === 'daily' || option === 'first' ? (
             <div className={'first'}>
               {par.length > 0 ? (
                 par.map((i: any) => {
-                  let at: any = [];
+                  let arr: any = [];
                   if (option === 'first') {
-                    at = i?.tasks;
+                    arr = i?.tasks;
                   } else {
-                    at = i?.dailTasks;
+                    arr = i?.dailTasks;
                   }
-                  if (at.length > 0) {
-                    return at.map((it: any, index: number) => {
-                      return (
-                        <div
-                          key={it?.taskId}
-                          className={'firstLine'}
-                          style={{
-                            background:
-                              selectActive === it?.taskId
-                                ? 'rgb(52,62,53)'
-                                : 'linear-gradient(to right, #020c02, rgb(38, 45, 38))',
-                            marginBottom: index === at.length - 1 ? '' : '35px',
-                            display: browser ? 'flex' : 'block',
-                          }}
-                          onClick={throttle(
-                            function () {
-                              if (selectActive !== it?.taskId) {
-                                setSelectActive(it?.taskId);
-                              } else {
-                                setSelectActive('');
-                              }
-                            },
-                            1500,
-                            { trailing: false }
-                          )}
-                        >
-                          <div className="left">
-                            <img
-                              src={changeImg(it?.taskId, it?.title)}
-                              alt=""
-                            />
-                            <span
-                              style={{
-                                color:
-                                  selectActive === it?.taskId
-                                    ? 'rgb(134,240,151)'
-                                    : 'white',
-                              }}
-                            >
-                              {changeTitle(it?.title, it?.extra)}
-                            </span>
-                          </div>
-                          <div
-                            className="right"
-                            style={{ marginTop: browser ? '0' : '10px' }}
-                          >
-                            <p
-                              className="point"
-                              style={{
-                                color:
-                                  selectActive === it?.taskId
-                                    ? 'rgb(134,240,151)'
-                                    : 'white',
-                                marginRight: '20px',
-                              }}
-                            >
-                              {showScore(i?.campaign?.campaignId, it)}
-                            </p>
-                            {Number(it?.isCompleted) !== 3 ? (
-                              <div
-                                onClick={throttle(
-                                  function () {
-                                    if (!isVerify && !loading) {
-                                      param(it, i?.campaign);
-                                      cookie.set('taskId', it?.taskId);
-                                      setSelect(it?.taskId);
-                                      setLoading(true);
-                                    }
-                                  },
-                                  1500,
-                                  { trailing: false }
-                                )}
-                                className={'start'}
-                              >
-                                {loading && select === it?.taskId ? (
-                                  <Load />
-                                ) : (
-                                  operate(it?.isCompleted, it?.title)
-                                )}
-                              </div>
-                            ) : (
-                              <div className={'success'}>
-                                <img
-                                  src={
-                                    selectActive === it?.taskId
-                                      ? '/succActive.svg'
-                                      : '/succ.svg'
-                                  }
-                                  alt=""
-                                />
-                              </div>
-                            )}
-                            {/* 验证 */}
-                            {option === 'daily' &&
-                              Number(it?.isCompleted) !== 3 &&
-                              Number(params?.id) < 4 && (
-                                <div
-                                  className={'verify'}
-                                  onClick={throttle(
-                                    function () {
-                                      if (!isVerify && !loading) {
-                                        setIsVerify(true);
-                                        if (
-                                          !it?.title?.includes('Twitter') &&
-                                          params?.id === '1'
-                                        ) {
-                                          getParams();
-                                        } else {
-                                          verification(it?.taskId);
-                                        }
-                                      }
-                                    },
-                                    1500,
-                                    { trailing: false }
-                                  )}
-                                >
-                                  {t('Dpass.verify')}
-                                  {isVerify && selectActive === it?.taskId ? (
-                                    <Load />
-                                  ) : (
-                                    ''
-                                  )}
-                                </div>
-                              )}
-                          </div>
-                        </div>
-                      );
+                  if (arr.length > 0) {
+                    return arr.map((it: any, index: number) => {
+                      const data = {
+                        selectActive,
+                        it,
+                        arr,
+                        index,
+                        setSelectActive,
+                        params,
+                        option,
+                        loading,
+                        i,
+                        verification,
+                        getParams,
+                        select,
+                        operate,
+                        setSelect,
+                        setLoading,
+                        param,
+                        isVerify,
+                        setIsVerify,
+                      };
+                      return <AcyivityList key={it?.taskId} {...data} />;
                     });
                   } else {
-                    return (
-                      <p
-                        key={i}
-                        style={{
-                          textAlign: 'center',
-                          marginTop: '20px',
-                          color: 'white',
-                        }}
-                      >
-                        {t('Market.no')}
-                      </p>
-                    );
+                    return <Nodata key={i} name={t('Market.no')} />;
                   }
                 })
               ) : (
@@ -673,33 +425,14 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
           )}
         </div>
       )}
-
       <Modal
-        centered
-        style={{ width: browser ? '30%' : '90%' }}
-        title={
-          (select === '8' || select === '10') && option === 'daily'
-            ? t('Dpass.how')
-            : t('Dpass.plea')
-        }
-        className={'activeModal'}
-        open={isModalOpen}
-        maskClosable={false}
-        footer={null}
-        onCancel={handleCancel}
-      >
-        {(select === '8' || select === '10') && option === 'daily' ? (
-          <TwitterRelease
-            handleCancel={handleCancel}
-            openLink={openLink}
-            setValue={setValue}
-            Confirm={Confirm}
-            isConfirm={isConfirm}
-          />
-        ) : (
-          <Revalidate openLink={openLink} select={select} />
-        )}
-      </Modal>
+        isModalOpen={isModalOpen}
+        handleCancel={handleCancel}
+        select={select}
+        option={option}
+        link={link}
+        setIsModalOpe={setIsModalOpe}
+      />
     </>
   );
 }

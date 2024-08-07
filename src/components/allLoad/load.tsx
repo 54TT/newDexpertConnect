@@ -53,36 +53,6 @@ export default function load({ show }: any) {
               );
             }
           })}
-          {/* <img
-            src={
-              status[0] === 'deep'
-                ? '/loadOne.svg'
-                : status[0] === 'Shallow'
-                  ? '/loadTwo.svg'
-                  : '/loadThree.svg'
-            }
-            alt=""
-          />
-          <img
-            src={
-              status[1] === 'deep'
-                ? '/loadOne.svg'
-                : status[1] === 'Shallow'
-                  ? '/loadTwo.svg'
-                  : '/loadThree.svg'
-            }
-            alt=""
-          />
-          <img
-            src={
-              status[2] === 'deep'
-                ? '/loadOne.svg'
-                : status[2] === 'Shallow'
-                  ? '/loadTwo.svg'
-                  : '/loadThree.svg'
-            }
-            alt=""
-          /> */}
         </div>
       ) : (
         <div className="Ellipsis">

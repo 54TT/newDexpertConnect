@@ -23,7 +23,6 @@ function Copy({ name, setSelect, select, img }: any) {
       overlayClassName={'newPairLeftPopover'}
       content={isCopy ? t('token.Copied') : t('token.copy')}
     >
-      {/*  */}
       {(isCopy && !select) || (isCopy && select === 'select') ? (
         <img
           src="/copySucc.svg"

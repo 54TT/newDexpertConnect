@@ -5,7 +5,7 @@ import { CountContext } from "@/Layout.tsx";
 import { useContext, useEffect, useState } from "react";
 import Request from "@/components/axios.tsx";
 import NotificationChange from '@/components/message'
-import EachActivity from './eachActivity.tsx'
+import EachActivity from './Each/index.tsx'
 import { throttle, } from "lodash";
 
 function task({ getParams, data, select, setSelect, params, }: any) {

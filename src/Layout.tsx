@@ -1,4 +1,4 @@
-import Header, { I18N_Key } from './components/header.tsx';
+import Header, { I18N_Key } from './components/header/index.tsx';
 import {
   Route,
   Routes,
@@ -45,7 +45,7 @@ import { ethers } from 'ethers';
 import Decimal from 'decimal.js';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
-  () => import('./pages/activity/components/person.tsx')
+  () => import('./pages/activity/components/Person/index.tsx')
 );
 const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
@@ -70,7 +70,7 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
-  //  检测  evm环境  钱包
+  //  检测  evm环境  钱包  
   const [environment, setEnvironment] = useState<any>([]);
   const [loginProvider, setloginProvider] = useState<any>(null);
   const [sniperChainId, setSniperChainId] = useState('1');
@@ -83,7 +83,7 @@ function Layout() {
     setProvider(rpcProvider);
   };
   useEffect(() => {
-    changeConfig(chainId);
+      changeConfig(chainId);
   }, [chainId]);
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
@@ -93,7 +93,6 @@ function Layout() {
       tonConnect('login');
     }
   }, [userFriendlyAddress]);
-
   //ton钱包连接
   const tonConnect = async (log?: any) => {
     if (log) {
@@ -133,6 +132,7 @@ function Layout() {
         setTonWallet(null);
       }
     });
+    getUserNow();
   }, []);
   const router: any = useLocation();
   const [search] = useSearchParams();
@@ -152,24 +152,16 @@ function Layout() {
   const [isModalSet, setIsModalSet] = useState(false);
   const language = (localStorage.getItem('language') || 'en_US') as I18N_Key;
   const [languageChange, setLanguageChange] = useState(language);
-  const [newAccount, setNewAccount] = useState('');
   const [switchChain, setSwitchChain] = useState('Ethereum');
   const [browser, setBrowser] = useState<any>(false);
   const [big, setBig] = useState<any>(false);
   const [activityOptions, setActivityOptions] = useState('');
+
   const [transactionFee, setTransactionFee] = useState({
     swap: new Decimal(0),
   });
   // copy
   const [isCopy, setIsCopy] = useState(false);
-  useEffect(() => {
-    if (newAccount && user?.address) {
-      if (newAccount !== user?.address) {
-        // handleLogin()
-      }
-    }
-  }, [newAccount]);
-
   const createClient = async () => {
     try {
       const _client: any = await Client.init({
@@ -319,7 +311,6 @@ function Layout() {
           const base64Url = res.data?.accessToken.split('.')[1];
           const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
           const decodedToken = JSON.parse(atob(base64));
-          setNewAccount('');
           setTonWallet(null);
           cookie.set('currentAddress', par?.address ? par?.address : par?.addr);
           if (decodedToken && decodedToken?.uid) {
@@ -512,15 +503,12 @@ function Layout() {
     const token = cookie.get('token');
     if (jwt && token) {
       const jwtPar = JSON.parse(jwt);
-      setNewAccount('');
       if (jwtPar?.uid) {
         const uid = jwtPar.sub.split('-')[1];
         getUser(uid, token, '', jwtPar);
       }
     }
   };
-  useEffect(() => {
-    getUserNow();
     // 监测钱包切换
     // if ((window as any).ethereum) {
     //     (window as any).ethereum.on('accountsChanged', function (accounts: any) {
@@ -530,8 +518,6 @@ function Layout() {
     // // 监测链切换
     // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
     // })
-  }, []);
-
   useEffect(() => {
     if (!client) {
       createClient();
@@ -650,7 +636,7 @@ function Layout() {
           <Header />
           <div
             className={big ? 'bigCen' : ''}
-            style={{ marginTop: '45px', overflow: 'hidden' }}
+            style={{  overflow: 'hidden' }}
           >
             <Routes>
               <Route path="/" element={<Index />} />

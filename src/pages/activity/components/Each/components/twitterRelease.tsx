@@ -1,7 +1,6 @@
-import './index.less'
+import '../../index.less'
 import { useTranslation } from "react-i18next";
 import Load from '@/components/allLoad/load'
-
 function TwitterRelease({ openLink, setValue, Confirm, handleCancel, isConfirm }: any) {
     const { t } = useTranslation();
     const change = (e: any) => {

@@ -1,7 +1,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import { useContext, useState, useRef, useEffect } from 'react';
-import TweetHome from '@/components/tweetHome.tsx';
+import TweetHome from '@/components/Tweets/index.tsx'
 import { CountContext } from '@/Layout.tsx';
 import { throttle } from 'lodash';
 import { Segmented } from 'antd';

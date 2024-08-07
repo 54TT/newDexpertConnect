@@ -10,7 +10,9 @@ function LaunchHome() {
   const history = useNavigate();
   const { t } = useTranslation();
   const { setFormData }: any = useContext(MintContext);
-  const { user, setIsModalOpen }: any = useContext(CountContext);
+  const { user, setIsModalOpen, chainId, contractConfig }: any = useContext(CountContext);
+  console.log( chainId )
+  console.log( contractConfig )
   useEffect(() => {
     setFormData(initFormData);
   }, []);

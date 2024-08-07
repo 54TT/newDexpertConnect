@@ -10,7 +10,7 @@ import Order from './components/order';
 import OrderDetail from './components/oriderDetail';
 // import WalletDetail from './components/WalletDetail';
 import { ethers } from 'ethers';
-import ChooseChain from '@/components/chooseChain';
+import ChooseChain from '@/components/ChangeChain/components/chooseChain';
 import { swapChain } from '@utils/judgeStablecoin';
 import { config } from '@/config/config.ts';
 import AddWallet from './components/addWallet';

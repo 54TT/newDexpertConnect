@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useContext } from 'react';
-import Tweets from '@/components/tweets';
+import Tweets from '@/components/Tweets/components/tweets';
 import SendPost from './SendPost';
 import Request from '@/components/axios.tsx';
 import Cookies from 'js-cookie';
@@ -35,7 +35,6 @@ const RenderCommentTweet = ({ data = {}, type }: any) => {
         const { data } = result;
       }
     } */
-
   /*  useEffect(() => {
        getCommentReply();
      }, []) */
