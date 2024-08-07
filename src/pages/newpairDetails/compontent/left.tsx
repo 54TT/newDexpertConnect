@@ -1,8 +1,8 @@
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
-import { useContext, useState } from 'react';
+import React,{ useContext, useState } from 'react';
 import { setMany, simplify } from '@/../utils/change.ts';
-import Copy from '@/components/copy.tsx';
+const Copy = React.lazy(() => import('@/components/copy.tsx'));
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { throttle } from 'lodash';

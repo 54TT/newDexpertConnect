@@ -97,7 +97,6 @@ export default function CreateOrder({getOrderList}) {
   ]
   useEffect(()=>{
     console.log(tokenRateDE);
-    
   },[tokenRateDE])
   
   // number去零
@@ -371,7 +370,6 @@ export default function CreateOrder({getOrderList}) {
       setRateLoading(false)
       setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
     }
-    
     if(tokenRate===0||tokenRate===undefined){
       setTokenRate(0)
       setRateLoading(true)
@@ -397,9 +395,11 @@ export default function CreateOrder({getOrderList}) {
     getToeknUnitPrice(receiveToken,'receive')
   },[receiveTokenAmount])
   useEffect(()=>{
+    if(contractConfig?.defaultTokenIn){
     const { defaultTokenIn, defaultTokenOut } = contractConfig;
     setPayToken(defaultTokenIn);
     setReceiveToken(defaultTokenOut);
+  }
   },[contractConfig])
   // toekn发生改变
   useEffect(()=>{

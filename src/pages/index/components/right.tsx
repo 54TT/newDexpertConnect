@@ -1,13 +1,12 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, Autoplay, EffectFade, Pagination } from 'swiper/modules';
-import { useContext, useState, useRef, useEffect } from 'react';
-import TweetHome from '@/components/Tweets/index.tsx'
+import React,{ useContext, useState, useRef, useEffect } from 'react';
+const TweetHome = React.lazy(() => import('@/components/Tweets/index.tsx'));
 import { CountContext } from '@/Layout.tsx';
 import { throttle } from 'lodash';
 import { Segmented } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
 function Right() {
   const history = useNavigate();
   const { t } = useTranslation();

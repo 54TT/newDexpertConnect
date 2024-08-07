@@ -1,9 +1,9 @@
-import { useContext,} from 'react';
+import React,{ useContext,} from 'react';
 import { CountContext } from '@/Layout';
-import Nodata from '@/components/Nodata.tsx';
-import Loading from '@/components/allLoad/loading.tsx';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
+const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
 import { CaretDownOutlined } from '@ant-design/icons';
-import Load from '@/components/allLoad/load.tsx';
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import { useTranslation } from 'react-i18next';
 
 export default function pass({

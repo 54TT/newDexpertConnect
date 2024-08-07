@@ -151,9 +151,7 @@ export default function index() {
     // if (currentIndex === 1) console.log('get user orders');
   }, [currentIndex, orderType]);
   useEffect(() => {
-    console.log(chainId);
-    console.log(contractConfig.chainId);
-    if (chainId === contractConfig.chainId.toString()) {
+    if (chainId === contractConfig?.chainId.toString()) {
       getOrderList(1, chainId);
       setOrderLoading(true);
     }

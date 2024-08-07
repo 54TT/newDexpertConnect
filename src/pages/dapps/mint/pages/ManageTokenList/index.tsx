@@ -1,15 +1,18 @@
 import { Input, Select } from 'antd';
-import PageHeader from '../../component/PageHeader';
-import ToLaunchHeader from '../../component/ToLaunchHeader';
+import React,{ useContext, useEffect, useState } from 'react';
+const PageHeader = React.lazy(() => import('../../component/PageHeader'));
+
+const ToLaunchHeader = React.lazy(() => import('../../component/ToLaunchHeader'));
+
 import './index.less';
-import Loading from '@/components/allLoad/loading';
+const Loading = React.lazy(() => import('@/components/allLoad/loading'));
+
 import Request from '@/components/axios';
 import Cookies from 'js-cookie';
-import { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout';
-import TokenItem from '../../component/TokenItem';
+const TokenItem = React.lazy(() => import('../../component/TokenItem'));
 import { useNavigate } from 'react-router-dom';
-import InfiniteScrollPage from '@/components/InfiniteScroll';
+const InfiniteScrollPage = React.lazy(() => import('@/components/InfiniteScroll'));
 const { Search } = Input;
 import { useTranslation } from 'react-i18next';
 function ManageTokenList() {

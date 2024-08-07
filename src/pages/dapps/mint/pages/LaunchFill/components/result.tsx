@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import React,{ useEffect, useContext } from 'react';
 import Back from '../../../component/Background';
 import './index.less';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
@@ -8,7 +8,7 @@ import { MintContext } from '../../../index';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import { useNavigate } from 'react-router-dom';
-import Load from '@/components/allLoad/load';
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import { useTranslation } from 'react-i18next';
 export default function resultBox({
   loading,

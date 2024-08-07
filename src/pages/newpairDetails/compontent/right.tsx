@@ -1,9 +1,8 @@
-import { useContext } from 'react';
+import React,{ useContext } from 'react';
 import { CountContext } from '@/Layout.tsx';
-import SwapComp from '@/pages/dapps/swap/components/SwapComp';
+const SwapComp = React.lazy(() => import('@/pages/dapps/swap/components/SwapComp'));
 function Right({ par }: any) {
   const { browser }: any = useContext(CountContext);
-  console.log(par)
   return (
     <div
       className={'right'}

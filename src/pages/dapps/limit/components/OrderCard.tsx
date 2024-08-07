@@ -27,7 +27,6 @@ export default function OrderCard({
   const cancelOrder = async (order) => {
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await web3Provider.getSigner();
-    console.log('cancel order')
     const config = chainConfig[chainId]
     const provider = config.provider
     const permit2Address = config.permit2Address
@@ -156,7 +155,6 @@ export default function OrderCard({
         }
         <span className="order-status" onClick={(e)=>{
           e.stopPropagation()
-          console.log(order)
           setSelectedOrder(order)
           setShowExecuteWindow(true);
         }}>{t("limit.execute order")}</span>

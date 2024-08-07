@@ -1,12 +1,14 @@
 import './in.less';
-import BuyBot from './buyBot';
-import { useContext, useState } from 'react';
+import React,{ useContext, useState } from 'react';
+const BuyBot = React.lazy(() => import('./buyBot'));
+
 import { CountContext } from '@/Layout';
 import { useParams, useNavigate } from 'react-router-dom';
-import Swap from './swap';
-import Sniping from './sniping';
-import Limit from './limit';
-import Mint from './mint';
+const Swap = React.lazy(() => import('./swap'));
+const Sniping = React.lazy(() => import('./sniping'));
+const Limit = React.lazy(() => import('./limit'));
+const Mint = React.lazy(() => import('./mint'));
+
 export default function index() {
   const params: any = useParams();
   const { browser }: any = useContext(CountContext);

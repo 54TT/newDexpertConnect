@@ -1,8 +1,8 @@
 import { Select, Input } from 'antd';
+import React,{ useState } from 'react';
 import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
-import Load from '@/components/allLoad/load.tsx';
-import { useState } from 'react';
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import { useTranslation } from 'react-i18next';
 export default function importWallet({  status ,setAddWallet,chainId}: any) {
 const { t } = useTranslation();

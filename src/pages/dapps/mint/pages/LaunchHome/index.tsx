@@ -1,18 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import './index.less';
-import { useContext, useEffect } from 'react';
+import React,{ useContext, useEffect } from 'react';
 import { MintContext, initFormData } from '../../index';
-import Back from '../../component/Background';
-import ChangeChain from '@/components/ChangeChain';
+const Back = React.lazy(() => import('../../component/Background'));
+const ChangeChain = React.lazy(() => import('@/components/ChangeChain'));
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout';
 function LaunchHome() {
   const history = useNavigate();
   const { t } = useTranslation();
   const { setFormData }: any = useContext(MintContext);
-  const { user, setIsModalOpen, chainId, contractConfig }: any = useContext(CountContext);
-  console.log( chainId )
-  console.log( contractConfig )
+  const { user, setIsModalOpen,  }: any = useContext(CountContext);
   useEffect(() => {
     setFormData(initFormData);
   }, []);

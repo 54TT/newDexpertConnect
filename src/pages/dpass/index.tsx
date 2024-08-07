@@ -1,19 +1,19 @@
 import Cookies from 'js-cookie';
 import './index.less';
 import Request from '@/components/axios';
-import { useContext, useEffect, useState } from 'react';
+import React,{ useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { CaretDownOutlined } from '@ant-design/icons';
-import Load from '@/components/allLoad/load.tsx';
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
+
 import { CountContext } from '@/Layout';
 import NotificationChange from '@/components/message';
 import { useParams } from 'react-router-dom';
-import Loading from '@/components/allLoad/loading.tsx';
-import Nodata from '@/components/Nodata.tsx';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
+const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
 import dayjs from 'dayjs';
 import { throttle, find } from 'lodash';
-import Pass from './components/pass';
+const Pass = React.lazy(() => import('./components/pass'));
 
 function Dpass() {
   const token = Cookies.get('token');

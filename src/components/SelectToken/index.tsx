@@ -1,11 +1,11 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import React,{ useContext, useEffect, useRef, useState } from 'react';
 import { Input, notification } from 'antd';
 import './index.less';
 import { formatAddress } from '@utils/utils';
 import {} from '../SelectTokenModal';
 import Request from '../axios';
 import Cookies from 'js-cookie';
-import DefaultTokenImg from '../DefaultTokenImg';
+const DefaultTokenImg = React.lazy(() => import('../DefaultTokenImg'));
 import { CountContext } from '@/Layout';
 import { getERC20Contract } from '@utils/contracts';
 import { getHistoryToken, addHistoryToken } from '@utils/indexDBfn';

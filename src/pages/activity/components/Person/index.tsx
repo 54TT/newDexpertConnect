@@ -1,19 +1,19 @@
 import '../index.less';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import dayjs from 'dayjs';
 import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
-import Loading from '@/components/allLoad/loading.tsx';
-import Load from '@/components/allLoad/load.tsx';
-import Nodata from '@/components/Nodata.tsx';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
+const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import Left from './components/left';
+const Left = React.lazy(() => import('./components/left'));
 import { throttle } from 'lodash';
 import NotificationChange from '@/components/message';
 import copy from 'copy-to-clipboard';
-import Right from './components/right';
+const Right = React.lazy(() => import('./components/right'));
 export default function person() {
   const { getAll } = Request();
   const { t } = useTranslation();

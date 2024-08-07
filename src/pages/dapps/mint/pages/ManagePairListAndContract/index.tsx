@@ -1,14 +1,17 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import PageHeader from '../../component/PageHeader';
-import ToLaunchHeader from '../../component/ToLaunchHeader';
-import TokenItem from '../../component/TokenItem';
+import React,{ useContext, useEffect, useState } from 'react';
+const PageHeader = React.lazy(() => import('../../component/PageHeader'));
+
+const ToLaunchHeader = React.lazy(() => import('../../component/ToLaunchHeader'));
+
+const TokenItem = React.lazy(() => import('../../component/TokenItem'));
+
 import Request from '@/components/axios';
-import { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout';
 import Cookies from 'js-cookie';
 import './index.less';
-import InfiniteScrollPage from '@/components/InfiniteScroll';
-import Loading from '@/components/allLoad/loading';
+const InfiniteScrollPage = React.lazy(() => import('@/components/InfiniteScroll'));
+const Loading = React.lazy(() => import('@/components/allLoad/loading'));
 import { useTranslation } from 'react-i18next';
 function ManagePairListAndContract() {
   const { t } = useTranslation();

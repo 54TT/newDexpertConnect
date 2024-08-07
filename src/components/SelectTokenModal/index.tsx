@@ -1,8 +1,9 @@
 import { Modal, ModalProps } from 'antd';
-import SelectToken from '../SelectToken';
+import React,{ useMemo } from 'react';
+const SelectToken = React.lazy(() => import('../SelectToken'));
+
 import './index.less';
 import { ID_TO_CHAIN_NAME_LOW } from '@utils/constants';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 interface SelectTokenModalType extends ModalProps {
   onChange: (data: any) => void;

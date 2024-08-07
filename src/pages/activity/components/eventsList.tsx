@@ -2,12 +2,11 @@ import './eventsList.less'
 import cookie from "js-cookie";
 import { useTranslation } from "react-i18next";
 import { CountContext } from "@/Layout.tsx";
-import { useContext, useEffect, useState } from "react";
+import React,{ useContext, useEffect, useState } from "react";
 import Request from "@/components/axios.tsx";
 import NotificationChange from '@/components/message'
-import EachActivity from './Each/index.tsx'
+const EachActivity = React.lazy(() => import('./Each/index.tsx'));
 import { throttle, } from "lodash";
-
 function task({ getParams, data, select, setSelect, params, }: any) {
     const { getAll, } = Request()
     const [rankList, setRankList] = useState<any>([])

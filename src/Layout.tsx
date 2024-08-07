@@ -50,7 +50,7 @@ const ActivePerson = React.lazy(
 const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
 );
-const Index = React.lazy(() => import('./pages/index/index.tsx'));
+import Index from './pages/index/index.tsx';
 const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Dapps = React.lazy(() => import('./pages/dapps/index.tsx'));
 // const Community = React.lazy(() => import('./pages/community/index.tsx'));
@@ -89,8 +89,10 @@ function Layout() {
     }
   }, [environment]);
   useEffect(() => {
-    //   默认执行   --------------
-    changeConfig(chainId);
+    //   默认执行
+    if (!walletRdns) {
+      changeConfig(chainId);
+    }
   }, [chainId, walletRdns]);
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
@@ -359,6 +361,7 @@ function Layout() {
       supprotChainId = walletChainId;
     }
     setChainId(supprotChainId);
+    changeConfig(supprotChainId);
     setloginProvider(provider[0]?.provider);
   };
   const handleLogin = async (i: any) => {

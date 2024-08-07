@@ -1,20 +1,24 @@
 import { Button, ConfigProvider, InputNumber } from 'antd';
-import BottomButton from '../../component/BottomButton';
-import InfoList from '../../component/InfoList';
-import PageHeader from '../../component/PageHeader';
-import ToLaunchHeader from '../../component/ToLaunchHeader';
+import React,{ useContext, useEffect, useMemo, useState } from 'react';
+const BottomButton = React.lazy(() => import('../../component/BottomButton'));
+
+const InfoList = React.lazy(() => import('../../component/InfoList'));
+
+const PageHeader = React.lazy(() => import('../../component/PageHeader'));
+
+const ToLaunchHeader = React.lazy(() => import('../../component/ToLaunchHeader'));
+
 import './index.less';
 import { useParams } from 'react-router-dom';
 import Request from '@/components/axios';
-import Loading from '@/components/allLoad/loading';
+const Loading = React.lazy(() => import('@/components/allLoad/loading'));
 import Cookies from 'js-cookie';
-import { useContext, useEffect, useMemo, useState } from 'react';
 import { CountContext } from '@/Layout';
 import { LaunchERC20Abi } from '@abis/LaunchERC20Abi';
 import { ethers } from 'ethers';
 import NotificationChange from '@/components/message';
 import { CheckCircleOutlined, RightOutlined } from '@ant-design/icons';
-import CommonModal from '@/components/CommonModal';
+const CommonModal = React.lazy(() => import('@/components/CommonModal'));
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 function ManageTokenDetail() {

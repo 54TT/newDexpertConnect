@@ -1,15 +1,16 @@
 import { Select, Tooltip, Input, Modal, Table, ConfigProvider } from 'antd';
-import Load from '@/components/allLoad/load.tsx';
-import { useContext, useEffect, useRef, useState } from 'react';
+import React,{ useContext, useEffect, useRef, useState } from 'react';
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
+
 import { CountContext } from '@/Layout.tsx';
 import newPair from '@/components/getNewPair.tsx';
 import { useTranslation } from 'react-i18next';
 import { setMany, simplify } from '@/../utils/change.ts';
 import { throttle } from 'lodash';
 import { getGas } from '@/../utils/getGas.ts';
-import ChooseChain from '@/components/ChangeChain/components/chooseChain.tsx';
-import Nodata from '@/components/Nodata';
-import Loading from '@/components/allLoad/loading';
+const ChooseChain = React.lazy(() => import('@/components/ChangeChain/components/chooseChain.tsx'));
+const Nodata = React.lazy(() => import('@/components/Nodata'));
+const Loading = React.lazy(() => import('@/components/allLoad/loading'));
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';

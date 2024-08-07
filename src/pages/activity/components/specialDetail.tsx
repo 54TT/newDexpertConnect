@@ -2,11 +2,11 @@ import './index.less';
 import Task from './eventsList';
 import { useTranslation } from 'react-i18next';
 import cookie from 'js-cookie';
-import { useEffect, useState, useContext, useMemo } from 'react';
+import React,{ useEffect, useState, useContext, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Statistic } from 'antd';
 import { CountContext } from "@/Layout.tsx";
-import Loading from '@/components/allLoad/loading.tsx';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 import Request from "@/components/axios.tsx";
 import { setMany } from '@/../utils/change.ts'
 const { Countdown } = Statistic;

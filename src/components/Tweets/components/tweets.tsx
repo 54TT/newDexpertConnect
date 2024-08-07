@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import React,{ useContext, useEffect, useState } from 'react';
 import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
-import PostSendModal from '@/pages/community/components/PostModal.tsx';
+const PostSendModal = React.lazy(() => import('@/pages/community/components/PostModal.tsx'));
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import dayjs from 'dayjs';

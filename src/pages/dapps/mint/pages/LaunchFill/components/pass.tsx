@@ -1,9 +1,9 @@
-import { useEffect, useState, useContext } from 'react';
+import React,{ useEffect, useState, useContext } from 'react';
 import cookie from 'js-cookie';
 import dayjs from 'dayjs';
 import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
-import Loading from '@/components/allLoad/loading';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 import { MintContext } from '../../../index';
 import { useTranslation } from 'react-i18next';
 export default function pass() {

@@ -1,8 +1,8 @@
 import { CountContext } from '@/Layout.tsx';
-import { useContext,  } from 'react';
+import React,{ useContext,  } from 'react';
 import { throttle } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import Load from '@/components/allLoad/load.tsx';
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import cookie from 'js-cookie';
 
 export default function acyivityList({
