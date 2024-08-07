@@ -108,7 +108,7 @@
   "Alert": {
     "Not": "未拥有",
     "please connect your wallet": "请连接你的钱包",
-    "Please enter the purchase quantity": "请输入购买数量",
+    "Please enter the buy quantity": "请输入购买数量",
     "success": "成功",
     "not": "积分不够",
     "no": "没有历史记录",
@@ -398,16 +398,15 @@
     "pools": "池",
     "al": "您即将销毁 LP 代币 销毁所有 LP 代币",
     "Note": "注意：燃烧 LP 代币将从中永久删除您的份额流动性池。",
-    "Creation":"代币创建",
-    "loSu":"锁仓成功",
-    "unLoSu":"解锁成功",
-    "removeLimits":"删除流动性成功",
-    "renounceOwnership":"放弃所有权成功",
-    "burnLP":"销毁成功",
-    "removeLP":"删除成功",
-    "Limits":"已删除流动性",
-    "Trade":"已打开交易",
-    "Renounces":"已放弃所有权"
-
+    "Creation": "代币创建",
+    "loSu": "锁仓成功",
+    "unLoSu": "解锁成功",
+    "removeLimits": "删除流动性成功",
+    "renounceOwnership": "放弃所有权成功",
+    "burnLP": "销毁成功",
+    "removeLP": "删除成功",
+    "Limits": "已删除流动性",
+    "Trade": "已打开交易",
+    "Renounces": "已放弃所有权"
   }
 }
