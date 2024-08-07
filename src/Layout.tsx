@@ -70,7 +70,7 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
-  //  检测  evm环境  钱包  
+  //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
   const [loginProvider, setloginProvider] = useState<any>(null);
   const [sniperChainId, setSniperChainId] = useState('1');
@@ -83,7 +83,7 @@ function Layout() {
     setProvider(rpcProvider);
   };
   useEffect(() => {
-      changeConfig(chainId);
+    changeConfig(chainId);
   }, [chainId]);
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
@@ -200,7 +200,7 @@ function Layout() {
           ],
         });
       } catch (e) {
-        return null
+        return null;
       }
     }
     return () => {
@@ -208,7 +208,6 @@ function Layout() {
       (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
     };
   }, [isLogin, loginProvider, chainId]);
-
   const clear = async () => {
     history('/re-register');
     setloginProvider(null);
@@ -237,7 +236,7 @@ function Layout() {
       url: '/api/v1/userinfo/' + id,
       data: {},
       token,
-      chainId
+      chainId,
     });
     if (data?.status === 200) {
       const user = data?.data?.data;
@@ -259,7 +258,6 @@ function Layout() {
       setLoad(false);
     }
   };
-
   const login = async (par: any, chain: string, name: string) => {
     try {
       const inviteCode = search.get('inviteCode')
@@ -327,7 +325,6 @@ function Layout() {
       return null;
     }
   };
-
   useEffect(() => {
     if (cookie.get('walletRdns') && environment.length > 0) {
       const at = cookie.get('walletRdns');
@@ -337,7 +334,6 @@ function Layout() {
       }
     }
   }, [cookie.get('walletRdns'), environment]);
-
   const setCurrentSwapChain = async (provider) => {
     const walletChainIdHex = await provider[0]?.provider.request({
       method: 'eth_chainId',
@@ -350,7 +346,6 @@ function Layout() {
     setChainId(supprotChainId);
     setloginProvider(provider[0]?.provider);
   };
-
   const handleLogin = async (i: any) => {
     cookie.set('walletRdns', i?.info?.rdns);
     try {
@@ -509,15 +504,15 @@ function Layout() {
       }
     }
   };
-    // 监测钱包切换
-    // if ((window as any).ethereum) {
-    //     (window as any).ethereum.on('accountsChanged', function (accounts: any) {
-    //         // setNewAccount(accounts[0])
-    //     })
-    // }
-    // // 监测链切换
-    // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
-    // })
+  // 监测钱包切换
+  // if ((window as any).ethereum) {
+  //     (window as any).ethereum.on('accountsChanged', function (accounts: any) {
+  //         // setNewAccount(accounts[0])
+  //     })
+  // }
+  // // 监测链切换
+  // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
+  // })
   useEffect(() => {
     if (!client) {
       createClient();
@@ -634,10 +629,7 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <div
-            className={big ? 'bigCen' : ''}
-            style={{  overflow: 'hidden' }}
-          >
+          <div className={big ? 'bigCen' : ''} style={{ overflow: 'hidden' }}>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/re-register" element={<Index />} />
