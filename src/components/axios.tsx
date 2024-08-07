@@ -9,7 +9,7 @@ const requestA = axios.create({
   baseURL:
     import.meta.env.MODE === 'development'
       ? 'http://165.22.51.161:8081'
-      : 'https://dexpert.io',
+      : 'https://app.dexpert.io',
   timeout: 20000,
 });
 requestA.interceptors.request.use(
@@ -58,7 +58,7 @@ const Request = () => {
   ) => {
     const abc = await requestA({
       method,
-      params: method === 'get' ? data : method === 'delete' ? undefined : '',
+      params: method === 'get' ? data : method === 'delete' ? data : '',
       data: method === 'get' ? '' : method === 'delete' ? undefined : data,
       url,
       headers: {

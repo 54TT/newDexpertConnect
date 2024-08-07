@@ -1,0 +1,82 @@
+.launch-manage-token-header {
+  .launch-header-title {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+}
+.launch-manage-token {
+  .mint-scroll {
+    height: calc(100% - 100px);
+    overflow: overlay;
+  }
+  .searchBox {
+    background-color: #242424;
+    .ant-btn:hover {
+      background-color: #242424 !important;
+    }
+    .ant-input-affix-wrapper {
+      background-color: #242424 !important;
+      border: none;
+      padding: 4px 4px 4px 8px;
+      .ant-input-suffix{
+        .ant-input-clear-icon{
+          color: white;
+        }
+      }
+    }
+  }
+  .selectBox {
+    background-color: #242424;
+    .ant-select-selector {
+      .ant-select-selection-item {
+        color: white;
+      }
+    }
+  }
+
+  &-search {
+    display: flex;
+    margin: 12px 16px;
+    .ant-input-search {
+      width: 50%;
+      margin-right: 12px;
+      border: 1px solid rgba(134, 240, 151, 1);
+      border-radius: 8px;
+      input {
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        box-shadow: none;
+        margin-top: 1px;
+      }
+      button {
+        background-color: transparent;
+        border: none;
+      }
+      .ant-input-group-addon {
+        .ant-btn-icon {
+          > span {
+            color: rgba(134, 240, 151, 1);
+          }
+        }
+      }
+    }
+    .ant-select {
+      flex: 1;
+      border: 1px solid rgba(134, 240, 151, 1);
+      border-radius: 8px;
+      .ant-select-arrow {
+        > span {
+          color: rgba(134, 240, 151, 1);
+        }
+      }
+      .ant-select-selector {
+        background-color: transparent;
+        border: none;
+        input {
+          color: #fff;
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { ConfigProvider, Progress,Slider,Input,Button } from "antd";
+import { ConfigProvider,Slider,Input,Button } from "antd";
 import {  useState,useContext, useCallback, useEffect } from "react";
 import { CountContext } from '@/Layout';
 // import SelectTokenModal from "@/components/SelectTokenModal";
@@ -16,7 +16,7 @@ const ExecuteWindow = ({
 }) => {
   const {
     chainId,
-    loginPrivider
+    loginProvider
   } = useContext(CountContext)
   const {t}=useTranslation()
   // 滑动条的值，百分比
@@ -46,7 +46,7 @@ const ExecuteWindow = ({
     console.log('---execute order---');
     setButtonLoading(true)
     const output=JSON.parse(order.outputs)[0]
-    const web3Provider=new ethers.providers.Web3Provider(loginPrivider)
+    const web3Provider=new ethers.providers.Web3Provider(loginProvider)
     const value: BNtype = output.token === ethers.constants.AddressZero ? output.amount : BNtype.from(0);
     const signer=await web3Provider.getSigner()
 
@@ -159,18 +159,26 @@ const ExecuteWindow = ({
             <span>http url</span>
           </div>
           <div className="header-row-two">
-            <span>{order?.orderHash||'token address'}</span>
+            {/* <span>{order?.orderHash||'token address'}</span> */}
+            <p className="header-row-two-left">
+              1 {order.inputTokenSymbol} = {order.orderPrice} {order.outputTokenSymbol}
+            </p>
+            <div className='header-row-two-right'>
+                <img src="/incre-icon.svg" alt="" />
+                {/* <img src="/decre-icon.svg" alt="" /> */}
+                <p>10%</p>
+              </div>
           </div>
         </div>
         <div className="execute-header-right">
-        <Progress
+        {/* <Progress
           rootClassName='execute-progress' 
           percent={100} 
           type="circle"
           size={70}
           strokeColor='#86f097'
           trailColor="#535353"
-        />
+        /> */}
         </div>
       </div>
       <div className="execute-window-body">

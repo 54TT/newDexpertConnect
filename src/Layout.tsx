@@ -41,7 +41,6 @@ import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
 import { config } from './config/config.ts';
-import checkConnection from '@utils/checkConnect.ts';
 import { ethers } from 'ethers';
 import Decimal from 'decimal.js';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
@@ -54,26 +53,27 @@ const NewpairDetails = React.lazy(
 const Index = React.lazy(() => import('./pages/index/index.tsx'));
 const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Dapps = React.lazy(() => import('./pages/dapps/index.tsx'));
-const Community = React.lazy(() => import('./pages/community/index.tsx'));
+// const Community = React.lazy(() => import('./pages/community/index.tsx'));
 const Active = React.lazy(() => import('./pages/activity/index.tsx'));
 const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
   () => import('./pages/activity/components/specialDetail.tsx')
 );
-
 const web3Modal = new Web3Modal({
   projectId: DEFAULT_PROJECT_ID,
   themeMode: 'dark',
   walletConnectVersion: 1,
 });
 export const CountContext = createContext(null);
+Decimal.set({ toExpPos: 24, precision: 24 });
 function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
-  const [loginPrivider, setLoginPrivider] = useState<any>(null);
+  const [loginProvider, setloginProvider] = useState<any>(null);
+  const [sniperChainId, setSniperChainId] = useState('1');
   const [chainId, setChainId] = useState('1'); // swap 链切换
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
@@ -82,9 +82,13 @@ function Layout() {
     //@ts-ignore
     setProvider(rpcProvider);
   };
+
   useEffect(() => {
-    changeConfig(chainId);
+
+      changeConfig(chainId);
+
   }, [chainId]);
+
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -170,21 +174,6 @@ function Layout() {
     }
   }, [newAccount]);
 
-  useEffect(() => {
-    if (checkConnection() && isLogin) {
-      // setChainId('1');
-      // @ts-ignore
-      window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [
-          {
-            chainId: '0x1',
-          },
-        ],
-      });
-    }
-  }, [isLogin]);
-
   const createClient = async () => {
     try {
       const _client: any = await Client.init({
@@ -200,9 +189,41 @@ function Layout() {
       return null;
     }
   };
+
+  const onChainChange = (targetChainId) => {
+    setChainId(Number(targetChainId).toString());
+  };
+
+  useEffect(() => {
+    if (isLogin && loginProvider) {
+      let changeChainId = '1';
+      if (Object.keys(config).includes(chainId)) {
+        changeChainId = chainId;
+      }
+      try {
+        // @ts-ignore
+        loginProvider?.on('chainChanged', onChainChange);
+        loginProvider?.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: `0x${Number(changeChainId).toString(16)}`,
+            },
+          ],
+        });
+      } catch (e) {
+        return null
+      }
+    }
+    return () => {
+      // @ts-ignore
+      (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
+    };
+  }, [isLogin, loginProvider, chainId]);
+
   const clear = async () => {
     history('/re-register');
-    setLoginPrivider(null);
+    setloginProvider(null);
     cookie.remove('token');
     cookie.remove('walletRdns');
     cookie.remove('currentAddress');
@@ -228,6 +249,7 @@ function Layout() {
       url: '/api/v1/userinfo/' + id,
       data: {},
       token,
+      chainId
     });
     if (data?.status === 200) {
       const user = data?.data?.data;
@@ -323,8 +345,10 @@ function Layout() {
     if (cookie.get('walletRdns') && environment.length > 0) {
       const at = cookie.get('walletRdns');
       const provider = environment.filter((i: any) => i?.info?.rdns === at);
-      setLoginPrivider(provider[0]?.provider);
-      setCurrentSwapChain(provider);
+      if (provider.length > 0) {
+        setCurrentSwapChain(provider);
+      }else{
+      }
     }
   }, [cookie.get('walletRdns'), environment]);
   const setCurrentSwapChain = async (provider) => {
@@ -332,8 +356,12 @@ function Layout() {
       method: 'eth_chainId',
     });
     const walletChainId = Number(walletChainIdHex).toString(10);
-    console.log(walletChainId);
-    setChainId(walletChainId);
+    let supprotChainId = '1';
+    if (Object.keys(config).includes(walletChainId)) {
+      supprotChainId = walletChainId;
+    }
+    setChainId(supprotChainId);
+    setloginProvider(provider[0]?.provider);
   };
 
   const handleLogin = async (i: any) => {
@@ -603,9 +631,11 @@ function Layout() {
     setChainId,
     transactionFee,
     setTransactionFee,
-    loginPrivider,
+    loginProvider,
     environment,
     setEnvironment,
+    sniperChainId,
+    setSniperChainId,
   };
   const clients = new ApolloClient({
     uri: chain[switchChain],
@@ -631,14 +661,13 @@ function Layout() {
               <Route path="/re-register" element={<Index />} />
               <Route path="/specialActive/:id" element={<SpecialActive />} />
               <Route path="/newpairDetails/:id" element={<NewpairDetails />} />
-              <Route path="/community/:tab" element={<Community />} />
+              {/* <Route path="/community/:tab" element={<Community />} /> */}
               <Route path="/app/:id" element={<Dapp />} />
-              <Route path="/dapps/:id" element={<Dapps />} />
+              <Route path="/dapps/:id/*" element={<Dapps />} />
               <Route path="/activity" element={<Active />} />
               <Route path="/oauth/:id/callback" element={<Oauth />} />
               <Route path="/dpass/:id" element={<Dpass />} />
               <Route path="/activityPerson" element={<ActivePerson />} />
-              <Route path="/dapps/*" element={<Dapps />} />
             </Routes>
           </div>
           <img src="/bodyLeft.png" alt="" className="bodyLeftImg" />

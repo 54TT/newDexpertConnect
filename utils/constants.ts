@@ -16,13 +16,37 @@ export const DEFAULT_MAIN_CHAINS = [
   'kadena:mainnet01',
 ];
 
-export type ChainId = '-1' | '-2' | '1';
-export type ChainName = 'solana' | 'ton' | 'eth';
+export type ChainId =
+  | '-1'
+  | '-2'
+  | '1'
+  | '11155111'
+  | '8453'
+  | '995'
+  | '997'
+  | '200810'
+  | '200901';
+export type ChainName =
+  | 'solana'
+  | 'ton'
+  | 'eth'
+  | 'base'
+  | 'eth-sepolia'
+  | '5ire'
+  | '5ire test'
+  | 'bitLayer test'
+  | 'bitLayer';
 
 export const ChainID_TO_ChainName: Record<ChainId, ChainName> = {
   '-1': 'solana',
   '-2': 'ton',
   '1': 'eth',
+  '11155111': 'eth-sepolia',
+  '8453': 'base',
+  '995': '5ire',
+  '997': '5ire test',
+  '200810': 'bitLayer test',
+  '200901': 'bitLayer',
 };
 
 //  链的  id
@@ -149,8 +173,11 @@ export const CHAIN_NAME_TO_CHAIN_ID = {
   Base: '8453',
   BSC: '56',
   Sepolia: '11155111',
+  '5ire': '995',
+  '5ire-test': '997',
+  Biylayer: '200810',
+  'Bitlayer-test': '200901',
 };
-
 
 export const CHAIN_VERSION_TO_CHAIN_ID = {
   '0x1': '1',
@@ -162,16 +189,6 @@ export const CHAIN_VERSION_TO_CHAIN_ID = {
   '0xaa36a7': '11155111',
 };
 
-export const CHAIN_NAME_TO_CHAIN_ID_HEX = {
-  Ethereum: '0x1',
-  Arbitrum: '0xa4b1',
-  Polygon: '0x89',
-  Optimism: '0xa',
-  Base: '0x2105',
-  BSC: '0x38',
-  Sepolia: '0xaa36a7',
-};
-
 // 传给后端需要用这个map
 export const ID_TO_CHAIN_NAME_LOW = {
   '1': 'eth',
@@ -181,6 +198,10 @@ export const ID_TO_CHAIN_NAME_LOW = {
   '8453': 'base',
   '56': 'bsc',
   '11155111': 'eth-sepolia',
+  '995': '5ire',
+  '997': '5ire-test',
+  '200810': 'bitlayer-test',
+  '200901': 'bitlater',
 };
 
 export const CHAIN_ID_TO_CHAIN_NAME = () =>

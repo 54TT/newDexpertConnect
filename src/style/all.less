@@ -8,6 +8,21 @@ img {
   display: block;
 }
 
+.manageTokenSelect {
+  background-color: #242424;
+  // .ant-select-item ant-select-item-option  ant-select-item-option-selected
+  .ant-select-item-option-selected {
+    background-color: transparent !important;
+    .ant-select-item-option-content {
+      color: rgb(134, 240, 151);
+    }
+  }
+  .ant-select-item-option-content {
+    text-align: center;
+    color: white;
+  }
+}
+
 .activePersonChain {
   color: rgb(118, 128, 118);
   font-size: 17px;
@@ -18,6 +33,147 @@ img {
 .disDis {
   display: flex;
   align-items: center;
+}
+.dappsAllDrawer {
+  .ant-drawer-content-wrapper {
+    width: 30% !important;
+    min-width: 300px;
+    .ant-drawer-content {
+      background: linear-gradient(0deg, #3e4240, #3e4240);
+      .ant-drawer-header {
+        display: none;
+      }
+      .ant-drawer-body {
+        padding: 7% !important;
+        width: 100% !important;
+        box-sizing: border-box;
+        .box {
+          background: linear-gradient(0deg, #3e4240, #3e4240);
+          .user {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            & > p {
+              cursor: pointer;
+              font-size: 30px;
+              font-weight: bold;
+              color: white;
+            }
+            & > div {
+              display: flex;
+              p {
+                font-size: 14px;
+                color: white;
+                margin-left: 8px;
+              }
+              align-items: center;
+              img:first-child {
+                width: 40px;
+              }
+              img:last-child {
+                width: 15px;
+                cursor: pointer;
+              }
+            }
+          }
+          .price {
+            font-size: 34px;
+            color: white;
+            text-align: center;
+            margin: 40px 0;
+          }
+          .select {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgb(81, 85, 81);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            div {
+              display: flex;
+              align-items: center;
+              flex-direction: column;
+              cursor: pointer;
+              border-radius: 15px;
+              padding: 10px;
+              p {
+                color: rgb(115, 124, 116);
+                font-size: 15px;
+                margin-top: 7px;
+              }
+            }
+            .back {
+              p {
+                color: black;
+              }
+              background-color: rgb(134, 240, 151);
+            }
+          }
+          .dpass {
+            .pass {
+              border-radius: 15px;
+              cursor: pointer;
+              background-color: rgb(76, 86, 76);
+              margin-bottom: 10px;
+              padding: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              .leftBox {
+                display: flex;
+                align-items: center;
+                p {
+                  color: white;
+                  font-size: 16px;
+                  margin-left: 8px;
+                }
+              }
+              .left {
+                width: 30px;
+                height: 30px;
+                box-sizing: border-box;
+                border-radius: 50%;
+                position: relative;
+
+                img {
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  width: 16px;
+                  height: 16px;
+                }
+              }
+              .right {
+                margin-left: 10px;
+                p:first-child {
+                  color: white;
+                  font-size: 18px;
+                }
+                p:last-child {
+                  color: rgb(142, 178, 175);
+                  font-size: 15px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.orderFilterDropdown {
+  .ant-dropdown-menu {
+    background-color: #454545;
+    transform: translateY(-5px);
+    padding: 4px 16px !important;
+    .ant-dropdown-menu-title-content {
+      display: flex;
+      justify-content: center;
+    }
+  }
 }
 
 .disCen {
@@ -122,7 +278,9 @@ img {
   margin: 0;
 }
 
-p {
+p,
+span,
+div {
   line-height: 1;
 }
 
@@ -135,16 +293,77 @@ body::-webkit-scrollbar {
   width: 6px;
   background-color: rgb(249, 188, 54);
 }
-
 /*定义滚动条轨道：内阴影+圆角*/
 body::-webkit-scrollbar-track {
   background-color: rgb(10, 21, 17);
 }
-
 /*定义滑块：内阴影+圆角*/
 body::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: rgb(66, 64, 61);
+}
+
+.orderModalCancel {
+  .ant-modal {
+    max-width: 400px;
+    .box {
+      width: 80%;
+      font-size: 16px;
+      margin: 0 auto;
+      p {
+        text-align: center;
+      }
+      .ord {
+        color: rgba(255, 255, 255, 0.55);
+        margin: 30px 0 10px;
+      }
+      .title {
+        font-size: 24px;
+        color: rgba(255, 255, 255, 0.85);
+      }
+      .num {
+        color: rgba(255, 255, 255, 0.85);
+      }
+      .bot {
+        display: flex;
+        margin-top: 30px;
+        p {
+          width: 40%;
+          padding: 10px 0;
+          border-radius: 8px;
+          text-align: center;
+          cursor: pointer;
+        }
+        p:first-child {
+          color: #ea6e6e;
+          border: 1px solid #ea6e6e;
+        }
+        p:last-child {
+          background-color: #ea6e6e;
+          color: rgb(17, 17, 17);
+        }
+        justify-content: space-between;
+      }
+    }
+    .ant-modal-close {
+      display: none;
+    }
+  }
+}
+.sniperOrder::-webkit-scrollbar {
+  width: 10px;
+  background-color: white;
+}
+
+/*定义滚动条轨道：内阴影+圆角*/
+.sniperOrder::-webkit-scrollbar-track {
+  background-color: #2d2d2d;
+}
+
+/*定义滑块：内阴影+圆角*/
+.sniperOrder::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #515151;
 }
 
 .activeModal {
@@ -152,7 +371,6 @@ body::-webkit-scrollbar-thumb {
 
   .ant-modal-content {
     background-color: rgb(30, 30, 30);
-
     .ant-modal-header {
       background-color: rgb(30, 30, 30);
       border-bottom: 1px solid rgb(93, 182, 110) !important;
@@ -177,6 +395,13 @@ body::-webkit-scrollbar-thumb {
   height: 8px !important;
 }
 
+
+
+.scrollStyle::-webkit-scrollbar-thumb {
+  background: rgb(24, 30, 29) !important;
+  border: 1px solid rgb(104, 124, 105) !important;
+  border-radius: 25px !important;
+}
 .personChainName {
   .ant-popover-arrow {
     display: none;
@@ -238,12 +463,6 @@ body::-webkit-scrollbar-thumb {
       }
     }
   }
-}
-
-.scrollStyle::-webkit-scrollbar-thumb {
-  background: rgb(24, 30, 29) !important;
-  border: 1px solid rgb(104, 124, 105) !important;
-  border-radius: 25px !important;
 }
 
 .indexBox {
@@ -369,68 +588,6 @@ body::-webkit-scrollbar-thumb {
           transform: translate(-50%, -50%) !important;
         }
       }
-
-      .indexNewPairBodyDataSmall {
-        div {
-          padding: 0 !important;
-        }
-      }
-
-      .indexNewPairBodyData {
-        background-color: rgb(25, 27, 25);
-        cursor: pointer;
-        border-bottom: 1.5px solid rgb(59, 59, 59);
-        padding: 4px 0 4px 20px;
-
-        & > div:not(:first-child) {
-          font-weight: 300;
-        }
-
-        & > div {
-          line-height: 1;
-          display: flex;
-          font-size: 14px;
-          flex: 1;
-          overflow: hidden;
-          box-sizing: border-box;
-          white-space: nowrap;
-        }
-
-        .indexTableLogo {
-          .imgBox:nth-child(2) {
-            margin: 0 5px;
-          }
-
-          .imgBox {
-            width: 20px;
-            cursor: pointer;
-            background-color: white;
-            border-radius: 50%;
-            height: 20px;
-
-            img {
-              width: 100%;
-              height: 100%;
-              cursor: pointer;
-            }
-          }
-
-          div {
-            color: white;
-          }
-        }
-      }
-
-      .indexNewPairBodyData:hover {
-        background-color: rgb(34, 36, 34) !important;
-        .indexTableLogo {
-          div {
-            p {
-              color: rgb(134, 240, 151) !important;
-            }
-          }
-        }
-      }
     }
   }
 }
@@ -552,10 +709,10 @@ body::-webkit-scrollbar-thumb {
   margin-right: -5px !important;
   .allNotificationStyle {
     position: relative;
-    max-width: 300px !important;
+    max-width: 360px !important;
     border-radius: 10px 0 0 10px !important;
     background-color: rgb(38, 38, 38);
-    padding: 10px 20px !important;
+    padding: 16px 20px !important;
     .ant-notification-notice-content {
       .ant-notification-notice-message {
         margin-bottom: 0 !important;
@@ -569,7 +726,8 @@ body::-webkit-scrollbar-thumb {
         }
         span {
           color: white;
-          width: 80%;
+          width: 95%;
+          font-size: 17px;
           display: block;
           word-wrap: break-word;
           word-break: normal;
@@ -680,6 +838,9 @@ body::-webkit-scrollbar-thumb {
     font-size: 15px;
     margin: 12px 0;
     line-height: 1;
+    a {
+      color: #5a8af1;
+    }
   }
 
   .tweetsMark {
@@ -810,6 +971,9 @@ body::-webkit-scrollbar-thumb {
 
   .ant-select-item {
     color: rgb(135, 145, 136);
+  }
+  .ant-select-item-option-content{
+    line-height: 1.4;
   }
 
   .ant-select-item-option-selected {
@@ -1341,7 +1505,6 @@ span {
 .action-button {
   background-color: @button-color;
   border: none;
-
   &:hover {
     background-color: @button-color !important;
   }

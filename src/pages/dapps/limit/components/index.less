@@ -42,17 +42,56 @@
     }
   }
   &-header{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    // display: flex;
+    // align-items: center;
+    // justify-content: space-between;
+    width: 100%;
     margin-bottom: 16px;
     &-left{
+      display: flex;
+      width: 100%;
+      flex-direction: column;
       span:first-child{
         font-size: 20px;
         font-weight: 700;
       }
-      span{
-        font-size: 14px;
+      .order-price{
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 8px;
+        font-size: 16px;
+        span:first-child{
+          color: #86f097;
+          font-size: 16px; 
+          font-weight: 400;
+        }
+        &-change{
+          display: flex;
+          align-items: center;
+          padding: 2px 8px;
+          border-radius: 6px;
+          img{
+            width: 10px;
+            margin-right: 4px;
+          }
+          span{
+            font-size: 12px;
+          }
+        }
+        .incre{
+          background-color: rgba(134, 240, 151,0.1);
+          span{
+            color: #86f097;
+          }
+        }
+        .decre{
+          background: rgba(199, 106, 106, 0.2);
+          span{
+            color: #EA6E6E;
+          }
+        }
       }
     }
     span,p{
@@ -120,6 +159,20 @@
           }
         }
       }
+      .limit-transfer{
+        position: relative;
+        width: 10px;
+        height: 10px;
+        z-index: 10;
+        img{
+          position: absolute;
+          top: 40%;
+          left: 50%;
+          transform: translate(-50%,-50%);
+          border-radius: 50%;
+          box-shadow: 0 0 1px 1px #303030;
+        }
+      }
       .transfer-icon{
         position: relative;
         z-index: 10;
@@ -157,30 +210,35 @@
     box-sizing: border-box;
     .order-time{
       line-height: 25px;
+      flex: 1 1;
     }
     .order-status{
-      background-color: #86f097;
-      color: #1a1a1a;
+      background-color: #272727;
+      color: #86f097;
       border-radius: 10px;
-      padding: 6px 20px;
+      border: 1px solid #86f097;
+      padding: 6px 16px;
       cursor: pointer;
       transition: all 0.2s;
       &:hover{
         background-color: #86f097;
         color: #1a1a1a;
-        box-shadow: 0 0 3px 2px rgba(134, 240, 151,0.55);
+        // box-shadow: 0 0 3px 2px rgba(134, 240, 151,0.55);
       }
     }
     .cancel-btn{
-      background-color: #535353;
+      // background-color: #272727;
       border-radius: 10px;
-      padding: 6px 20px;
+      padding: 6px 16px;
       cursor: pointer;
       transition: all 0.2s;
+      border: 1px solid rgba(255,255,255,0.55);
+      margin-right: 6px;
       &:hover{
         // background-color: #f00;
         background-color: #ff7875;
         color: #1a1a1a;
+        border-color: #ff7875;
       }
     }
     span{
@@ -362,10 +420,10 @@
       &-body{
         align-items: center;
         &-left{
-          width: 50%;
+          width: 35%;
         }
         .amount-input{
-          width: 50%;
+          width: 65%;
           height: 100%;
           color: #fff;
           text-align: right;
@@ -523,8 +581,8 @@
   padding: 0 4px;
   background-color: #303030;
   height: 40px;
-  min-width: 100px;
-  width: 50%;
+  min-width: 110px;
+  width: 100%;
   max-width: 180px;
   border-radius: 20px;
   cursor: pointer;
@@ -686,8 +744,9 @@
   padding: 24px;
   box-sizing: border-box;
   &-header{
-    display: flex;
-    justify-content: space-between;
+    // display: flex;
+    width: 100%;
+    // justify-content: space-between;
     .execute-back{
       // padding-top: 5px;
       padding-right: 20px;
@@ -720,14 +779,31 @@
       display: flex;
     }
     .header-row-two{
-      margin-top: 6px;
-      span{
-        font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding-left: 8px;
+      &-left{
+        font-size: 28px;
+        font-weight: 700;
+        color: #86f097;
+      }
+      &-right{
+        display:flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background-color: rgba(134, 240, 151,0.15);
+        p{
+          font-size: 12px;
+          color: #86f097;
+        }
       }
     }
   }
   &-body{
-    margin-top: 40px;
+    margin-top: 20px;
     background-color: #3e3e3e;
     border-radius: 18px;
     .buying-window{

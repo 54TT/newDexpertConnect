@@ -6,7 +6,6 @@ import { simplify } from '@/../utils/change.ts';
 import Load from './allLoad/load.tsx';
 import HeaderModal from './headerModal.tsx';
 import { throttle } from 'lodash';
-// import { CaretDownOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 export type I18N_Key = 'zh_CN' | 'en_US';
 function Header() {
@@ -25,7 +24,6 @@ function Header() {
   const [open, setOpen] = useState(false);
   const showDrawer = throttle(
     function () {
-      
       setOpen(true);
     },
     1500,
@@ -76,7 +74,6 @@ function Header() {
     1500,
     { trailing: false }
   );
-
   const collapseItems: any = [
     {
       key: '0',
@@ -105,6 +102,11 @@ function Header() {
               key: 'sniping',
             },
             { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
+            {
+              name: 'Token Creation',
+              img: '/mainMore.svg',
+              key: 'tokencreation',
+            },
           ].map((i: any) => {
             return (
               <p
@@ -126,44 +128,44 @@ function Header() {
         </div>
       ),
     },
-    {
-      key: '2',
-      label: (
-        <div>
-          <img src="/community.png" alt="" />
-          <span>Community</span>
-        </div>
-      ),
-      children: (
-        <div className={'collapseChildeen'}>
-          {[
-            { name: 'lastest', img: '/community/latest.svg' },
-            {
-              name: 'profile',
-              img: '/community/profile.svg',
-            },
-            { name: 'following', img: '/community/follow.svg' },
-          ].map((i: any, ind: number) => {
-            return (
-              <p
-                key={ind}
-                onClick={throttle(
-                  function () {
-                    history(`/community/${i.name}`);
-                    onClose();
-                  },
-                  1500,
-                  { trailing: false }
-                )}
-              >
-                <img src={i.img} alt="" loading={'lazy'} />
-                <span>{i.name}</span>
-              </p>
-            );
-          })}
-        </div>
-      ),
-    },
+    // {
+    //   key: '2',
+    //   label: (
+    //     <div>
+    //       <img src="/community.png" alt="" />
+    //       <span>Community</span>
+    //     </div>
+    //   ),
+    //   children: (
+    //     <div className={'collapseChildeen'}>
+    //       {[
+    //         { name: 'lastest', img: '/community/latest.svg' },
+    //         {
+    //           name: 'profile',
+    //           img: '/community/profile.svg',
+    //         },
+    //         { name: 'following', img: '/community/follow.svg' },
+    //       ].map((i: any, ind: number) => {
+    //         return (
+    //           <p
+    //             key={ind}
+    //             onClick={throttle(
+    //               function () {
+    //                 history(`/community/${i.name}`);
+    //                 onClose();
+    //               },
+    //               1500,
+    //               { trailing: false }
+    //             )}
+    //           >
+    //             <img src={i.img} alt="" loading={'lazy'} />
+    //             <span>{i.name}</span>
+    //           </p>
+    //         );
+    //       })}
+    //     </div>
+    //   ),
+    // },
   ];
   const onChange = (key: string | string[]) => {
     if (key.length > 0 && key[0] === '0') {
@@ -216,11 +218,11 @@ function Header() {
       value: 'DApps',
       key: 'DApps',
     },
-    {
-      label: t('Common.Community'),
-      value: 'Community',
-      key: 'Community',
-    },
+    // {
+    //   label: t('Common.Community'),
+    //   value: 'Community',
+    //   key: 'Community',
+    // },
   ];
 
   const changeLanguage = throttle(

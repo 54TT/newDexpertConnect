@@ -23,8 +23,8 @@ import Loading from '@/components/allLoad/loading';
 export default function index() {
   const {
     // provider,
-    // contractConfig,
-    loginPrivider,
+    contractConfig,
+    loginProvider,
     chainId,
     // setChainId,
     // transactionFee,
@@ -33,7 +33,9 @@ export default function index() {
     // isLogin,
   } = useContext(CountContext)
   const {t}=useTranslation()
+  // 0:live orders,1:my orders
   const [currentIndex,setCurrentIndex]=useState(0)
+  const [reqNum,setReqNum]=useState(0)
   const { getAll } = Request();
   const [orderList,setOrderList]=useState([])
   // 订单列表加载状态
@@ -73,42 +75,7 @@ export default function index() {
         }}>{t("limit.history")}</p>
     }
   ];
-  // const [nonce, setNonce] = useState('');
-  // // 获取签名
-  // const getNoce = async () => {
-  //   const token = cookie.get('token');
-  //   const res = await getAll({
-  //     method: 'get',
-  //     url: '/api/v1/limit/getNonce',
-  //     data: {},
-  //     token,
-  //   });
-  //   if (res?.status === 200) {
-  //     setNonce(res?.data?.nonce);
-  //   }
-  // };
-  //  创建订单
-  // const setOrder = async () => {
-    // const deadlineSeconds = 24 * 60 * 60;
-    // const chainId = 11155111;
-    // const receipt: string = '0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89';
-    // const inputToken: string = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14';
-    // const outputToken: string = '0xb72bc8971d5e595776592e8290be6f31937097c6';
-    // const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
-    // const orderCreator:any = await web3Provider.getSigner();
-    // const orderAmout: BigNumber = BigNumber.from(1000000);
-    // chainId, orderCreator, inputToken, outputToken, receipt, orderAmout, orderAmout, deadlineSeconds
-    // const createResponse = await createOrder(chainId, orderCreator, inputToken, outputToken, receipt, orderAmout, orderAmout, deadlineSeconds)
-    // console.log("createResponse:",createResponse)
-    // const token = cookie.get('token');
-    // const res = await getAll({
-    //   method: 'get',
-    //   url: '/api/v1/limit/createOrder',
-    //   data: {},
-    //   token,
-    // });
-    // console.log(res)
-  // };
+
   // 加载更多订单
   const moreOrder=async()=>{
     console.log('get more order');
@@ -118,28 +85,26 @@ export default function index() {
   }
   // 获取订单列表
   const getOrderList=async(page:number)=>{
-    // if(currentIndex===1) console.log('ger user orders');
+    // if(currentIndex===1) console.log('ger user orders')
+    console.log('req num',reqNum)
     console.log('page',page);
     if(page===1) setOrderLoading(true)
     if(orderType===0&&currentIndex===1) console.log('get my all orders');
     if(orderType===1&&currentIndex===1) console.log('get my executing orders');
     if(orderType===2&&currentIndex===1) console.log('get my history orders');
-    
     try{
+      setReqNum(reqNum+1)
       const token = Cookies.get('token');
-      // console.log(token);
       const res=await getAll({
         method:'get',
-        // url:'/api/v1/limit/getOrderList',
         url:'/api/v1/limit/order/list',
         data:{
           // search:"",
           // uid:0,
           page:page,
           // orderHash:"",
-          orderStatus:"open",
-          isPersonal:currentIndex,
-          offerer:"",
+          orderStatus:currentIndex===0?"open":"",
+          offerer:currentIndex===0?"":user.username,
         },
         token,
         chainId
@@ -173,29 +138,25 @@ export default function index() {
   }
 }
   useEffect(() => {
-    console.log(orderType);
-    
-  }, [orderType]);
-  useEffect(() => {
     console.log('currentIndex',currentIndex);
-    if(currentIndex===0){
-      console.log('get all orders')
-      getOrderList(1)
-    }
-    if(currentIndex===1) {
-      getOrderList(1)
-      console.log('get user orders')
-    };
-  }, [currentIndex,chainId,orderType]);
-  useEffect(() => {
-    console.log(selectedOrder);
+    if(currentIndex===0) console.log('get all orders')
+    if(currentIndex===1) console.log('get user orders')
+  }, [currentIndex,orderType]);
+  useEffect(()=>{
+    console.log(chainId);
+    console.log(contractConfig.chainId);
+    // if(loginProvider){
+    //   getOrderList(1)
+    // }
+    if(chainId===contractConfig.chainId.toString()) {
+      console.log('----')
+      getOrderList(1)}
     
-  }, [selectedOrder]);
-  useEffect(() => {
-    // getNoce();
-    getOrderList(1)
-    console.log("get order list");
-  }, []);
+    console.log(loginProvider);
+    // console.log(provider);
+    
+  },[chainId,loginProvider])
+
   return (
     <>
     { (showDetailsWindow && selectedOrder) &&
@@ -289,15 +250,14 @@ export default function index() {
                 >
                   {orderList.map((item:any)=>(
                 <OrderCard
-                  type={item.uid===user?.uid?'my':''}
+                  type={item.uid===user?.uid? currentIndex===0?'my':'open':''}
                   key={item.orderHash}
                   order={item}
                   chainId={chainId}
-                  loginPrivider={loginPrivider}
+                  loginProvider={loginProvider}
                   setShowExecuteWindow={setShowExecuteWindow}
                   setSelectedOrder={setSelectedOrder}
                   setShowDetailsWindow={setShowDetailsWindow}
-                  getOrderList={getOrderList}
                 />
               ))}
               </InfiniteScroll>
@@ -316,7 +276,7 @@ export default function index() {
                       key={item.orderHash}
                       order={item}
                       chainId={chainId}
-                      loginPrivider={loginPrivider}
+                      loginProvider={loginProvider}
                       setShowExecuteWindow={setShowExecuteWindow}
                       setSelectedOrder={setSelectedOrder}
                       setShowDetailsWindow={setShowDetailsWindow}
@@ -329,7 +289,7 @@ export default function index() {
                       key={item.orderHash}
                       order={item}
                       chainId={chainId}
-                      loginPrivider={loginPrivider}
+                      loginProvider={loginProvider}
                       setShowExecuteWindow={setShowExecuteWindow}
                       setSelectedOrder={setSelectedOrder}
                       setShowDetailsWindow={setShowDetailsWindow}

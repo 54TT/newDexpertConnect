@@ -1,6 +1,10 @@
 .dappsBox {
-  .top {
+  & > .top {
     position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+    z-index: 100;
     .back {
       position: absolute;
       z-index: -2;
@@ -13,12 +17,13 @@
     .box {
       display: flex;
       align-items: center;
-      font-size: 16px;
+      font-size: 17px;
       justify-content: space-between;
       .item {
         display: flex;
         cursor: pointer;
         position: relative;
+        margin: 0 19px;
         z-index: 10;
         align-items: center;
         & > div {
@@ -47,12 +52,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  & > div {
-    width: 80%;
-    box-sizing: border-box;
-    margin: 0 auto;
-  }
-  .logo {
+  .logoNow {
+    padding: 22% 18%;
     border-radius: 50%;
     background: linear-gradient(
       180.07deg,
@@ -60,16 +61,16 @@
       rgba(15, 45, 20, 0.05) 83.51%,
       rgba(134, 240, 151, 0.05) 101.85%
     );
-    padding: 13% 12%;
     img {
       width: 100%;
-      display: block;
+      height: 100%;
     }
   }
   .link {
     background-color: rgb(1, 136, 204);
     border-radius: 14px;
     font-size: 17px;
+    margin: 0 auto;
     text-align: center;
     padding: 10px 0;
     margin-top: 15px;

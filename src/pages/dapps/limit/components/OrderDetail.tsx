@@ -1,6 +1,6 @@
 import ExcuteWindow from "./ExcuteWindow";
 import DetailsWindow from "./DetailsWindow";
-import OrderHistory from "./OrderHistory";
+// import OrderHistory from "./OrderHistory";
 import InfiniteScroll from "react-infinite-scroll-component";
 const OrderDetail = ({order,setShowDetailsWindow,setShowExecuteWindow}) => {
 
@@ -27,7 +27,7 @@ const OrderDetail = ({order,setShowDetailsWindow,setShowExecuteWindow}) => {
               <DetailsWindow order={order?order:null} />
             </div>
           </div>
-        <OrderHistory />
+        {/* <OrderHistory /> */}
         </InfiniteScroll>
       </div>
     </>

@@ -32,11 +32,7 @@ import { PermitSingle, getPermitSignature } from '@utils/permit2';
 import { BigNumber, ethers } from 'ethers';
 import { Permit2Abi } from '@abis/Permit2Abi';
 import { ERC20Abi } from '@abis/ERC20Abi';
-import ChooseChain from '@/components/chooseChain';
-import {
-  CHAIN_NAME_TO_CHAIN_ID,
-  CHAIN_NAME_TO_CHAIN_ID_HEX,
-} from '@utils/constants';
+import { CHAIN_NAME_TO_CHAIN_ID } from '@utils/constants';
 import useButtonDesc from '@/hook/useButtonDesc';
 import { useTranslation } from 'react-i18next';
 import UsePass from '@/components/UsePass';
@@ -49,10 +45,10 @@ import Cookies from 'js-cookie';
 import useInterval from '@/hook/useInterval';
 import getBalanceRpc from '@utils/getBalanceRpc';
 import QuotoPathSelect from '@/components/QuotoPathSelect';
-import { swapChain } from '@utils/judgeStablecoin';
 import { getSwapFee } from '@utils/getSwapFee';
 import DefaultTokenImg from '@/components/DefaultTokenImg';
 import { expandToDecimalsBN } from '@utils/utils';
+import ChangeChain from '@/components/ChangeChain';
 interface SwapCompType {
   changeAble?: boolean; // 是否可修改Token || 网络
   initChainId?: string; // 初始化的chainId;
@@ -67,7 +63,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setChainId,
     transactionFee,
     setTransactionFee,
-    loginPrivider,
+    loginProvider,
   } = useContext(CountContext);
   const { t } = useTranslation();
   const [amountIn, setAmountIn] = useState<number | null>(0);
@@ -77,7 +73,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   const [openSelect, setOpenSelect] = useState(false);
   const currentSetToken = useRef<'in' | 'out'>('in');
   const currentInputToken = useRef<'in' | 'out'>('in');
-
   const [buttonDisable, setButtonDisable] = useState(false);
   const [buttonDescId, setButtonDescId] = useState('1');
   const [buttonDesc] = useButtonDesc(buttonDescId);
@@ -252,33 +247,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonDescAndDisable();
   }, [isLogin, tokenIn, tokenOut, amountIn, amountOut, balanceIn]);
 
-  const onChainChange = (targetChainId) => {
-    setChainId(Number(targetChainId).toString());
-  };
-
-  useEffect(() => {
-    if (isLogin) {
-      try {
-        // @ts-ignore
-        loginPrivider?.on('chainChanged', onChainChange);
-        loginPrivider?.request({
-          method: 'wallet_switchEthereumChain',
-          params: [
-            {
-              chainId: `0x${Number(chainId).toString(16)}`,
-            },
-          ],
-        });
-      } catch (e) {
-        return null;
-      }
-    }
-    return () => {
-      // @ts-ignore
-      (loginPrivider as any)?.removeListener?.('chainChanged', onChainChange);
-    };
-  }, [isLogin, loginPrivider, chainId]);
-
   const exchange = () => {
     const [newTokenIn, newTokenOut] = [tokenOut, tokenIn];
     setTokenIn(newTokenIn);
@@ -432,7 +400,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           permit2Contract,
           signerAddress
         );
-
       const signature = await signer._signTypedData(
         eip712Domain,
         PERMIT2_PERMIT_TYPE,
@@ -473,7 +440,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       permit,
       signature,
     ].filter((item) => item !== null);
-
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
         (tokenIn.contractAddress === ethAddress ||
@@ -577,7 +543,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       NotificationChange('error', t('Slider.err'));
       setButtonLoading(false);
       setButtonDescId('1');
-      return null;
+      return;
     }
     setButtonLoading(false);
     setButtonDescId('1');
@@ -606,7 +572,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonLoading(true);
     setButtonDescId('9');
     //@ts-ignore
-    const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
+    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await web3Provider.getSigner();
     const signerAddress = await signer.getAddress();
     const permit2Contract = new ethers.Contract(
@@ -707,15 +673,15 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   }, [contractConfig]);
 
   const changeWalletChain = async (v: string) => {
-    const evmChainIdHex = CHAIN_NAME_TO_CHAIN_ID_HEX[v];
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
+    const evmChainIdHex = `0x${Number(evmChainId).toString(16)}`;
     if (!isLogin) {
       setChainId(evmChainId);
     } else {
       // 有evm钱包环境
       try {
         //@ts-ignore
-        await loginPrivider.request({
+        await loginProvider.request({
           method: 'wallet_switchEthereumChain',
           params: [
             {
@@ -760,24 +726,24 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       const { wethAddress } = contractConfig;
       if (checkConnection() && token) {
         // @ts-ignore
-        const injectProvider = new ethers.providers.Web3Provider(loginPrivider);
+        const injectProvider = new ethers.providers.Web3Provider(loginProvider);
         const balance = await getBalanceRpc(injectProvider, token, wethAddress);
         dispatch(balance);
       }
     },
-    [contractConfig, loginPrivider]
+    [contractConfig, loginProvider]
   );
   useEffect(() => {
     if (isLogin) {
       getTokenBalance(tokenIn?.contractAddress, setBalanceIn);
     }
-  }, [tokenIn, isLogin, chainId, loginPrivider]);
+  }, [tokenIn, isLogin, chainId, loginProvider]);
 
   useEffect(() => {
     if (isLogin) {
       getTokenBalance(tokenOut?.contractAddress, setBalanceOut);
     }
-  }, [tokenOut, isLogin, chainId, loginPrivider]);
+  }, [tokenOut, isLogin, chainId, loginProvider]);
 
   useEffect(() => {
     if (
@@ -838,7 +804,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   return (
     <div className="swap-comp">
       <div className="swap-comp-config">
-        <ChooseChain
+        {/* <ChooseChain
           disabledChain={true}
           chainList={swapChain}
           onChange={(v) => changeWalletChain(v)}
@@ -846,6 +812,12 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           disabled={!changeAble}
           data={swapChain.find((i: any) => i.chainId === chainId)}
           wrapClassName="swap-chooose-chain"
+        /> */}
+        <ChangeChain
+          wrapClassName="swap-chooose-chain"
+          hideChain={true}
+          disabled={!changeAble}
+          disabledChain={true}
         />
         <AdvConfig
           initData={initAdvConfig}

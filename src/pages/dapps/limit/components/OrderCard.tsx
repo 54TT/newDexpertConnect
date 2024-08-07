@@ -1,5 +1,5 @@
 import './index.less'
-import {Progress,Modal } from 'antd'
+import {Modal } from 'antd'
 import DefaultTokenImg from '@/components/DefaultTokenImg'
 import { useEffect, useState } from 'react'
 import {BigNumber} from 'bignumber.js';
@@ -14,7 +14,7 @@ export default function OrderCard({
   chainId,
   setShowExecuteWindow,
   setShowDetailsWindow,
-  loginPrivider
+  loginProvider
 }: any) {
   const [showCancelWindow,setShowCancelWindow]=useState(false)
   const {t}=useTranslation()
@@ -25,7 +25,7 @@ export default function OrderCard({
   }
   // 取消订单
   const cancelOrder = async (order) => {
-    const web3Provider = new ethers.providers.Web3Provider(loginPrivider);
+    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await web3Provider.getSigner();
     console.log('cancel order')
     const config = chainConfig[chainId]
@@ -77,10 +77,10 @@ export default function OrderCard({
     <div
       className={"order-card " + 
         (type === 'my' ? 'my-order' : '') +
-        (type === 'open' ? 'open-order' : '')+
-        (type === 'error' ? 'error-order' : '')+
-        (type === 'cancelled' ? 'cancelled-order' : '')+
-        (type === 'filled' ? 'filled-order' : '')
+        (type === 'open'? 'open-order ' : '')+
+        (order.orderStatus === 'error' ? 'error-order' : '')+
+        (order.orderStatus === 'cancelled' ? 'cancelled-order' : '')+
+        (order.orderStatus === 'filled' ? 'filled-order' : '')
       }
       onClick={() => {
         console.log('show order details');
@@ -92,19 +92,30 @@ export default function OrderCard({
         <div>
           <div className='order-card-header-left'>
             <span>{order.inputTokenName} </span>
-            <span style={{display:'block',marginTop:'4px'}}>{order.inputToken.slice(0,6)}...{order.inputToken.slice(-8)}</span>
+            {/* <span style={{display:'block',marginTop:'4px'}}>{order.inputToken.slice(0,6)}...{order.inputToken.slice(-8)}</span> */}
+            {/* <span style={{display:'block',marginTop:'4px'}}>{order.orderHash}</span> */}
+            <div className='order-price'>
+              <span>
+                1 {order.inputTokenSymbol} = {order.orderPrice} {order.outputTokenSymbol}
+              </span>
+              <div className='order-price-change decre'>
+                {/* <img src="/incre-icon.svg" alt="" /> */}
+                <img src="/decre-icon.svg" alt="" />
+                <span>10%</span>
+              </div>
+            </div>
           </div>
-          <span className="partial" >{t("limit.partial fill")}</span>
+          {/* <span className="partial" >{t("limit.partial fill")}</span> */}
         </div>
         
-        <Progress
+        {/* <Progress
           rootClassName='order-progress' 
           percent={50} 
           type="circle"
           size={45}
           strokeColor='#86f097'
           trailColor="#535353"
-        />
+        /> */}
       </div>
       <div className="order-card-body">
         <div className='token-swap'>
@@ -112,20 +123,22 @@ export default function OrderCard({
             <span>{t("limit.offer")}</span>
             <div className='token-item-info'>
               <DefaultTokenImg name={order.inputTokenSymbol} icon={''} />
-              <span style={{color:'#fff',fontSize:'14px',fontWeight:'700'}}>{BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals)} </span>
+              <span style={{color:'#fff',fontSize:'14px'}}>{BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals)} </span>
             </div>
-            <span style={{fontSize:'12px'}}>$0.0000066 /point</span>
+            {/* <span style={{fontSize:'12px'}}>$0.0000066 /point</span> */}
           </span>
-          <span className='transfer-icon'>
-            <img style={{zIndex:100}} src="/transfer-arrow.svg" alt="" />
+          {/* <span className='transfer-icon'>
+          <img style={{zIndex:100}} src="/transfer-arrow.svg" alt="" />
+          </span> */}
+          <span className='limit-transfer'>
+            <img src="/limit-transfer.svg" />
           </span>
           <span className='for order-token-item'>
             <span>{t("limit.for")}</span>
             <div className='token-item-info'>
-              <span style={{color:'#fff',fontSize:'14px',fontWeight:'700'}}>{BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)} </span>
+              <span style={{color:'#fff',fontSize:'14px'}}>{BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)} </span>
               <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
             </div>
-            <span style={{fontSize:'12px'}}>$999</span>
           </span>
         </div>
       </div>

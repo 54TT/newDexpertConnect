@@ -1,0 +1,62 @@
+.manage-token-detail-info {
+  &.mint-scroll {
+    max-height: 200px;
+    overflow: hidden;
+  }
+}
+.manage-tokenBox{
+  width: 100%;
+  position: relative;
+  height: 100%;
+  .hint{
+    position: absolute;
+    width: 80%;
+    bottom: 60px;
+    text-align: center;
+    color: rgba(255,255,255,0.55);
+    left: 50%;
+    transform: translate(-50%,0);
+  }
+
+}
+
+
+.manage-token-button_box {
+  width: 90%;
+  display: flex;
+  justify-content: space-around;
+  margin: 12px auto;
+  button {
+    width: 30%;
+    span{
+      text-align: left;
+    }
+    white-space: normal;
+  }
+  .buttonBack {
+    border: 1px solid rgb(134, 240, 151) !important;
+    color: rgb(134, 240, 151);
+    padding:  20px;
+    border-radius: 13px;
+  }
+  .buttonBack:hover {
+    border: 1px solid rgb(134, 240, 151) !important;
+    color: rgb(134, 240, 151);
+  }
+  .buttonBackActi {
+    background-color: rgb(134, 240, 151);
+    color: black;
+    padding:  20px;
+    border-radius: 13px;
+  }
+  .buttonBackActi:hover {
+    background-color: rgb(134, 240, 151) !important;
+    color: black !important;
+  }
+}
+
+.not-owner {
+  button {
+    cursor: not-allowed;
+  }
+}

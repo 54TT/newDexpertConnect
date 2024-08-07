@@ -26,6 +26,13 @@ export default ({ mode }: { mode: 'development' | 'production' }) => {
         // '@uniswap/uniswapx-sdk': '@uniswap/uniswapx-sdk/dist/src/index.js'
       },
     },
+    // server: {
+    //   proxy: {
+    //     '/api': {
+    //       target: 'http://165.22.51.161:8081',
+    //     },
+    //   },
+    // },
     css: {
       preprocessorOptions: {
         less: {

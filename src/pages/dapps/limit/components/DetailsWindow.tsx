@@ -16,75 +16,63 @@ const DetailsWindow=(order)=>{
         </div>
         <div className="details-window-content-body">
           <div className="details-window-content-body-item">
-            <span>Offer</span>
+            <span>Order Hash</span>
             <span>
-              622000 pts
+              {order?.orderHash?.slice(0,5)+'...'+order?.orderHash?.slice(-4)}
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>Equivalent Tokens</span>
+            <span>Order Start</span>
             <span>
-              TBA
+              {order.createdAt}
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>For</span>
+            <span>Nonce</span>
             <span>
-              466.5
+              {order.nonce}
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>Piece/Point</span>
+            <span>Offer Amount</span>
             <span>
               $0.00075
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>Fill Type</span>
+            <span>Offer Creator</span>
             <span>
               PARTIAL FILL
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>Filled Amount</span>
+            <span>Deadline</span>
             <span>
-              284987.3 pts
+              {order.deadline}
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>Remaining Amount</span>
+            <span>Filler</span>
             <span>
               337912.7 pts
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>Offer Creator</span>
+            <span>Fill Amount</span>
             <span>
               address
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>Offer Tx</span>
+            <span>Fill Tx</span>
             <span>
               Solscan
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>Starting at</span>
+            <span>Fill Time</span>
             <span>
               TBA
-            </span>
-          </div>
-          <div className="details-window-content-body-item">
-            <span>Closing at</span>
-            <span>
-              TBA
-            </span>
-          </div>
-          <div className="details-window-content-body-item">
-            <span>Closing in</span>
-            <span>
-              Not Started
             </span>
           </div>
         </div>

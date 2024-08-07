@@ -1,0 +1,35 @@
+.resultBox {
+  .view {
+    position: absolute;
+    bottom: 80px;
+    color: #6eb4ea;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 10;
+    border-bottom: 1px solid #6eb4ea;
+  }
+  & > .resultBack1 {
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    position: absolute;
+  }
+  .center {
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    img {
+      width: 75%;
+      margin: 0 auto;
+    }
+    p {
+      text-align: center;
+      margin-top: 20px;
+      color: rgb(134, 240, 151);
+      font-size: 19px;
+    }
+  }
+}

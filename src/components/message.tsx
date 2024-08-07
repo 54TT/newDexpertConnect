@@ -14,14 +14,14 @@ function NotificationChange(status: string, data: string, description?: any) {
           }
           alt=""
         />
-        <span>{data}</span>
+        <span>{data ? data : 'Service error'}</span>
         <div className="backLeft"></div>
         <div className="backRight"></div>
       </div>
     ),
     key: data + status,
     placement: 'topRight',
-    duration: 3.5,
+    duration: 8,
     btn: null,
     description,
     onClick: () => {

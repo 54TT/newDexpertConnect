@@ -70,16 +70,11 @@ function Profie() {
     }
   };
 
-  // 'comment', 'more', 'edit'
   const IMAGE_MAP = [
     {
       key: 'comment',
       show: () => true,
     },
-    // {
-    //   key: 'more',
-    //   show: () => true,
-    // },
     {
       key: 'edit',
       onClick: () => setIsModalOpen(true),
@@ -130,7 +125,6 @@ function Profie() {
     let coverUrl = previewBG;
 
     if (newAvatar) {
-      // const result: any = await Request('post', '/api/v1/upload/image', newAvatar, token);
       const result: any = await getAll({
         method: 'post',
         url: '/api/v1/upload/image',
@@ -142,7 +136,6 @@ function Profie() {
       }
     }
     if (newBG) {
-      // const result: any = await Request('post', '/api/v1/upload/image', newBG, token);
       const result: any = await getAll({
         method: 'post',
         url: '/api/v1/upload/image',
@@ -162,7 +155,6 @@ function Profie() {
         ...(coverUrl ? { coverUrl } : {}),
       },
     };
-    // const result: any = await Request('post', '/api/v1/userinfo', params, token);
     const result: any = await getAll({
       method: 'post',
       url: '/api/v1/userinfo',

@@ -13,7 +13,6 @@ function InputNumberWithString({ value, onChange }: InputWithBigNumberProps) {
     const { value } = event.target;
     if (value === '0') onChange(value);
     if (validNumberRegex.test(event.target.value)) {
-      console.log(value);
       onChange(value);
     }
     setShowValue(value);
@@ -21,6 +20,8 @@ function InputNumberWithString({ value, onChange }: InputWithBigNumberProps) {
   return (
     <Input
       value={showValue}
+      autoComplete={'off'}
+      allowClear
       onChange={(v) => handleOnChange(v)}
       onBlur={() => setShowValue(value)}
     />

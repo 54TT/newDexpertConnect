@@ -15,7 +15,6 @@ interface AdvConfigProps {
   onClose: (data: AdvConfigType) => void;
   initData: AdvConfigType;
 }
-
 // 高级设置
 function AdvConfig({ onClose, initData }: AdvConfigProps) {
   const [open, setOpen] = useState(false);
@@ -144,6 +143,7 @@ export const SettingContent: ForwardRefExoticComponent<
       )}
       <div className="setting-item">
         <span>{t('Slider.Order')}</span>
+
         <div className="setting-item-back">
           <ProInputNumber
             inputNumberProps={{ min: 5 }}

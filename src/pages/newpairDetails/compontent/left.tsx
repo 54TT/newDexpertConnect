@@ -76,6 +76,7 @@ function Left({ par }: any) {
         <div>
           <span>CA:</span>
           <a
+          target='_blank'
             href={`https://etherscan.io/address/${
               value === 0
                 ? simplify(par?.token0?.id)
@@ -83,6 +84,7 @@ function Left({ par }: any) {
                   ? simplify(par?.token1?.id)
                   : simplify(par?.token1?.id)
             }`}
+          
             style={{
               color: browser ? '#c2bebe' : 'rgb(89,175,255)',
               borderBottom: browser ? 'none' : '1px solid rgb(89,175,255)',

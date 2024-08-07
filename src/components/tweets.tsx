@@ -7,16 +7,13 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { DeleteOutlined } from '@ant-design/icons';
-import { simplify } from '@/../utils/change.ts';
+import { setMany, simplify } from '@/../utils/change.ts';
 import { throttle } from 'lodash';
 import { Popconfirm } from 'antd';
 import NotificationChange from './message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '../Layout.tsx';
-import copy from '../../utils/copy.ts';
-
 dayjs.extend(relativeTime);
-
 interface TweetsPropsType {
   user?: any;
   name: any;
@@ -25,7 +22,6 @@ interface TweetsPropsType {
   setDel?: any;
   status?: any;
 }
-
 function Tweets({
   name,
   type = 'post',
@@ -41,11 +37,6 @@ function Tweets({
   const [openComment, setOpenComment] = useState(false);
   const history = useNavigate();
   const { user } = useContext(CountContext) as any;
-
-  useEffect(() => {
-    setLocalData(name);
-  }, [name]);
-
   useEffect(() => {
     if (clickAnimate) {
       setTimeout(() => {
@@ -54,25 +45,42 @@ function Tweets({
     }
   }, [clickAnimate]);
 
+  function replaceAll(str, searchValue, replaceValue) {
+    // 使用正则表达式，全局匹配并替换所有 searchValue
+    const data = searchValue.replace('?', '\\?');
+    let regex = new RegExp(data, 'g');
+    const tt = str.replace(regex, replaceValue);
+    return tt;
+  }
   useEffect(() => {
-    let data = name?.content?.replace(/\n/g, '<br>');
-    let urlRegex = /(https?:\/\/[^\s]+)/g;
-    let urls = data?.match?.(urlRegex);
-    if (urls?.length) {
-      urls.map((i: string) => {
-        data?.replace(i, '<a href=' + i + '></a>');
-      });
-      setText(data);
-    } else {
-      setText(data);
+      let urlRegex = /(https?:\/\/[^\s]+)/g;
+      let urls = name?.content?.match(urlRegex);
+      let tt: any = null;
+      if (urls?.length > 0) {
+        urls.map((i: string) => {
+          const replace = i.includes('https://www.')
+            ? 'https://www.'
+            : i.includes('http://www.')
+              ? 'http://www.'
+              : i.includes('https://')
+                ? 'https://'
+                : 'http://';
+          const data = i.replace(replace, '');
+          tt = replaceAll(
+            name?.content,
+            i,
+            '<a href=' + i + ' target="_blank">' + data + '</a>'
+          );
+        });
+        let data = tt?.replace(/\n/g, '<br>');
+        setText(data);
+      } else {
+        let data = name?.content?.replace(/\n/g, '<br>');
+        setText(data);
     }
   }, [name]);
   // 是否是comment 而非reply，用于调用不同的like接口, parentId为0则为comment
   const isComment = localData?.parentId === '0';
-  // const animationVariants = {
-  //     hidden: { y: '100%', opacity: 0 },
-  //     visible: { y: '-100%', opacity: 1 },
-  // };
   const clickLike = throttle(
     async function (e: any) {
       e.stopPropagation();
@@ -167,14 +175,11 @@ function Tweets({
       if (type === 'reply' || type === 'comment') {
         if (type === 'reply' && user?.uid === localData?.user?.uid) return;
         localStorage.setItem('reply-detail', JSON.stringify(localData));
-        history(
-          `/community/comment?p=${localData.postId}&reply=${localData?.id}`
-        );
+        history(`/community/comment?reply=${localData?.id}`);
         return;
       }
       localStorage.setItem('post-detail', JSON.stringify(localData));
-
-      history(`/community/detail?p=${localData.postId}`);
+      history('/community/detail');
     },
     1500,
     { trailing: false }
@@ -212,29 +217,6 @@ function Tweets({
     1500,
     { trailing: false }
   );
-
-  const handleShare = async () => {
-    const token = cookie.get('token');
-    const jwt = cookie.get('jwt');
-    if (!token && !jwt) {
-      return NotificationChange('warning', t('Market.line'));
-    }
-    const { data } = await getAll({
-      method: 'post',
-      url: '/api/v1/post/share/add',
-      data: {
-        postId: localData.postId,
-      },
-      token,
-    });
-    const { origin, pathname } = window.location;
-    const url = `${origin}${pathname}?p=${localData.postId}`;
-    copy(url);
-    setLocalData({
-      ...localData,
-      SharesCnt: data.shareCnt,
-    });
-  };
 
   return (
     <>
@@ -324,15 +306,16 @@ function Tweets({
             </div>
           )}
         </div>
-        {localData?.content ? (
+        {localData?.content && (
           <div
             className={'tweetsText'}
+            onClick={(e: any) => {
+              e.stopPropagation();
+            }}
             dangerouslySetInnerHTML={{
               __html: text,
             }}
           ></div>
-        ) : (
-          ''
         )}
         <>
           {localData?.imageList?.length > 0 && localData?.imageList[0] ? (
@@ -352,11 +335,6 @@ function Tweets({
             <></>
           )}
         </>
-        {/*   标识*/}
-        {/*             <div className={'tweetsMark'}>
-                <p>#btc</p>
-                <p>#eth</p>
-            </div> */}
         <div className={'tweetsOperate'}>
           <p className={'tweetsIn'}>
             <img
@@ -381,15 +359,6 @@ function Tweets({
               alt=""
             />
             <span>{localData?.likeNum ? localData.likeNum : 0}</span>
-            {/*<motion.div*/}
-            {/*    initial="hidden"*/}
-            {/*    className={`tweetsLick`}*/}
-            {/*    animate={!clickAnimate ? 'hidden' : 'visible'}*/}
-            {/*    variants={animationVariants}*/}
-            {/*    exit="hidden"*/}
-            {/*    transition={{ duration: 1, ease: 'easeInOut' }}>*/}
-            {/*    <span style={{ color: 'rgb(0,170,255)' }}>+1500</span>*/}
-            {/*</motion.div>*/}
           </div>
           <p className={'tweetsIn share-icon'}>
             <img
@@ -397,14 +366,15 @@ function Tweets({
               src="/share.svg"
               style={{ width: '19px' }}
               alt=""
-              onClick={handleShare}
             />
-            <span>{localData?.SharesCnt || '0'}</span>
+            <span>
+              {setMany(Math.ceil(Math.random() * 10 + Math.random() * 100))}
+            </span>
           </p>
           <p className={'tweetsIn look-icon'}>
             <img loading={'lazy'} src="/look.svg" alt="" />
             <span style={{ whiteSpace: 'nowrap' }}>
-              {localData?.ViewsCnt || 0}
+              {setMany(Math.ceil(Math.random() * 1000 + Math.random() * 1000))}
             </span>
           </p>
         </div>

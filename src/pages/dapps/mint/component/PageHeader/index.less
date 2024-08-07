@@ -1,0 +1,33 @@
+.launch-header {
+  margin: 24px 12px;
+  position: relative;
+ 
+
+  &-desc {
+    font-size: 18px;
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  &-arrow-left {
+    &-icon {
+      color: #fff;
+    }
+  }
+  &-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    .launch-header-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+  &-right {
+    &-line {
+      top: 0;
+    }
+  }
+}

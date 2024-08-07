@@ -6,11 +6,22 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Swap from './swap';
 import Sniping from './sniping';
 import Limit from './limit';
+import Mint from './mint';
 export default function index() {
   const params: any = useParams();
   const { browser }: any = useContext(CountContext);
   const history = useNavigate();
   const top = [
+    {
+      imgAc: '/mainActive.svg',
+      img: '/mainMore.svg',
+      status: params?.id === 'tokencreation',
+      name: 'Token Creation',
+      onClick: () => {
+        history('/dapps/tokencreation');
+      },
+      key: 'mint',
+    },
     {
       status: params?.id === 'swap',
       imgAc: '/swapActive.png',
@@ -25,7 +36,7 @@ export default function index() {
       status: params?.id === 'sniping',
       imgAc: '/snipingActive.png',
       img: '/snipingMore.png',
-      name: 'Sniping',
+      name: 'Sniper',
       onClick: () => {
         history('/dapps/sniping');
       },
@@ -35,7 +46,7 @@ export default function index() {
       imgAc: '/buybotActive.png',
       img: '/buybotMore.png',
       status: params?.id === 'buyBot',
-      name: 'Buy Bot',
+      name: 'TG Group Notification Bot',
       onClick: () => {
         history('/dapps/buyBot');
       },
@@ -52,43 +63,50 @@ export default function index() {
       key: 'limit',
     },
   ];
-
   return (
     <div className="dappsBox">
-      <div
-        style={{ padding: browser ? ' 12px 35%' : '10px 6%' }}
-        className="top"
-      >
-        <div className="back"></div>
-        <div className="box">
-          {top.map((i: any) => {
-            return (
-              <div key={i.key} className="item" onClick={i.onClick}>
-                <div
-                  style={{
-                    backgroundColor: i.status
-                      ? 'rgb(79,79,79)'
-                      : 'rgb(54,54,54)',
-                  }}
-                >
-                  <img src={i.status ? i.imgAc : i.img} alt="" />
+      {browser && (
+        <div
+          // style={{ padding: browser ? ' 12px 35%' : '10px 6%' }}
+          className="top"
+        >
+          <div className="back"></div>
+          <div className="box">
+            {top.map((i: any) => {
+              return (
+                <div key={i.key} className="item" onClick={i.onClick}>
+                  <div
+                    style={{
+                      backgroundColor: i.status
+                        ? 'rgb(79,79,79)'
+                        : 'rgb(54,54,54)',
+                    }}
+                  >
+                    <img
+                      src={i.status ? i.imgAc : i.img}
+                      alt=""
+                      style={{ width: i.key === 'mint' ? '10px' : '' }}
+                    />
+                  </div>
+                  <span
+                    style={{
+                      color: i.status ? 'rgb(134,240,151)' : 'rgb(162,162,162)',
+                      width: i.key === 'buyBot' ? '120px' : 'auto',
+                    }}
+                  >
+                    {i.name}
+                  </span>
                 </div>
-                <span
-                  style={{
-                    color: i.status ? 'rgb(134,240,151)' : 'rgb(162,162,162)',
-                  }}
-                >
-                  {i.name}
-                </span>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
       {params?.id === 'swap' && <Swap />}
-      {params?.id === 'sniping' && <Sniping/>}
+      {params?.id === 'sniping' && <Sniping />}
       {params?.id === 'buyBot' && <BuyBot />}
       {params?.id === 'limit' && <Limit />}
+      {params?.id === 'tokencreation' && <Mint />}
     </div>
   );
 }
