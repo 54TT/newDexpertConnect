@@ -20,7 +20,7 @@ const ExecuteWindow = ({
   } = useContext(CountContext)
   const {t}=useTranslation()
   // 滑动条的值，百分比
-  const [silderValue,setSliderValue]=useState(0)
+  const [silderValue,setSliderValue]=useState(100)
   // 选择支付的token
   // const [payToken,setPayToken]=useState()
   // const [showSelect,setShowSelect]=useState(false)
@@ -33,14 +33,14 @@ const ExecuteWindow = ({
   const [exchangeAmount,setExchangeAmount]=useState(0)
   // 选择支付token1的数量
   const [payTokenAmount,setPayTokenAmount]=useState('')
-  const marks= {
-    0: '0%',
-    20: '20%',
-    40: '40%',
-    60: '60%',
-    80: '80%',
-    100: '100%',
-  };
+  // const marks= {
+  //   0: '0%',
+  //   20: '20%',
+  //   40: '40%',
+  //   60: '60%',
+  //   80: '80%',
+  //   100: '100%',
+  // };
   // 执行限价兑换订单
   const selcetExecuteOrder=async ()=>{
     console.log('---execute order---');
@@ -88,12 +88,12 @@ const ExecuteWindow = ({
   // 获取订单想要兑换的token信息
   const getOutputToken=(outputToken:string,decimals:number)=>{
     console.log('output token');
-    console.log(JSON.parse(outputToken)[0]);
-    console.log(decimals);
+    // console.log(JSON.parse(outputToken)[0]);
+    // console.log(decimals);
     // setPayToken(JSON.parse(outputToken)[0])
     const startAmount=BigNumber(JSON.parse(outputToken)[0].startAmount.hex)
     const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
-    console.log('outputtoken startAmountNum',startAmountNum.toString());
+    // console.log('outputtoken startAmountNum',startAmountNum.toString());
     
     setTokenOutputAmount(startAmountNum.toString())
     // const outputTokenAddress=order.outputToken
@@ -101,11 +101,11 @@ const ExecuteWindow = ({
     
   }
   const inputChange=(v)=>{
-    console.log('input change',v)
-    console.log(payTokenAmount);
-    console.log(tokenOutputAmount);
+    // console.log('input change',v)
+    // console.log(payTokenAmount);
+    // console.log(tokenOutputAmount);
     
-    console.log((Number(payTokenAmount)/Number(tokenInputAmount)*100).toFixed(2));
+    // console.log((Number(payTokenAmount)/Number(tokenInputAmount)*100).toFixed(2));
     // setPayTokenAmount(v)
     // if(v!==0){
     //   setPayTokenAmount(v)
@@ -115,7 +115,7 @@ const ExecuteWindow = ({
   const inputChangeDebounce=useCallback(debounce(inputChange,500),[payTokenAmount])
 
   useEffect(()=>{
-    console.log(payTokenAmount);
+    // console.log(payTokenAmount);
     
     // setSliderValue(Number(payTokenAmount)/Number(tokenInputAmount)*100)
     if(payTokenAmount){
@@ -125,12 +125,12 @@ const ExecuteWindow = ({
     }
   },[payTokenAmount])
   useEffect(()=>{
-    console.log(silderValue);
+    // console.log(silderValue);
     setExchangeAmount(Number(tokenInputAmount)*silderValue/100)
     setPayTokenAmount((Number(tokenOutputAmount)*(silderValue/100)).toString())
   },[silderValue])
   useEffect(()=>{
-    console.log(inputToken);
+    // console.log(inputToken);
     
   },[inputToken])
   useEffect(()=>{
@@ -155,13 +155,11 @@ const ExecuteWindow = ({
               <img src="/back-icon.svg" alt="" />
               <p>{order.inputTokenName}</p>
             </span>
-            <span>X</span>
-            <span>http url</span>
           </div>
           <div className="header-row-two">
             {/* <span>{order?.orderHash||'token address'}</span> */}
             <p className="header-row-two-left">
-              1 {order.inputTokenSymbol} = {order.orderPrice} {order.outputTokenSymbol}
+              1 {order.inputTokenSymbol} = {Number(order.orderPrice)>1?Number(order.orderPrice).toFixed(4):Number(order.orderPrice).toFixed(6)} {order.outputTokenSymbol}
             </p>
             <div className='header-row-two-right'>
                 <img src="/incre-icon.svg" alt="" />
@@ -187,7 +185,7 @@ const ExecuteWindow = ({
           <div className="buying-window-content">
             <span
               className="buying-window-amount"
-              style={{color:exchangeAmount===0?'#555':'#fff'}}
+              style={{color:exchangeAmount!==0?'#555':'#fff'}}
             >
               {exchangeAmount===0?tokenInputAmount:exchangeAmount}</span>
             <span
@@ -217,19 +215,20 @@ const ExecuteWindow = ({
                       handleActiveColor:'#86f097',
                       dotBorderColor:'#5d5d5d',
                       handleColor:'#86f097',
-                      dotSize: 8
+                      dotSize: 8,
+                      trackBgDisabled:'#86f097'
                     }
                   }
                 }}
               >
               <Slider 
                 rootClassName="amount-slider" 
-                marks={marks} 
+                // marks={marks} 
                 defaultValue={0} 
                 min={0}
                 max={100}
                 value={silderValue} 
-                // disabled
+                disabled
                 onChange={(value) => {
                   setSliderValue(value)
                   // setExchangeAmount(Number(tokenInputAmount)*value/100)
@@ -251,7 +250,8 @@ const ExecuteWindow = ({
             rootClassName="execute-amount-input"
             variant="borderless"
             placeholder="0"
-            value={payTokenAmount}
+            value={tokenOutputAmount}
+            // value={payTokenAmount}
             onChange={(e) => {
               if (/^\d*\.?\d*$/.test(e.target.value)) {
                 setPayTokenAmount(e.target.value);
@@ -266,21 +266,22 @@ const ExecuteWindow = ({
             />
           </div>
         </div>
-        <span>$999</span>
+        {/* <span>$999</span> */}
       </div>
       <div className="execute-window-footer">
         <Button
           rootClassName="execute-btn"
-          className={`${!buttonDisable?'execute-btn-active':''}`}
+          // className={`${!buttonDisable?'execute-btn-active':''}`}
+          className={'execute-btn-active'}
           loading={buttonLoading}
-          disabled={buttonDisable}
+          // disabled={buttonDisable}
           onClick={() => {
             selcetExecuteOrder()
           }}
         >
           EXECUTE
         </Button>
-        <span className="execute-tips">
+        {/* <span className="execute-tips">
           {t("limit.desc buying")} 
           <span style={{color:"#86f097"}}> { payTokenAmount?payTokenAmount:0}
           </span> {order.outputTokenSymbol} {t("limit.desc for")}
@@ -288,7 +289,7 @@ const ExecuteWindow = ({
             </span> {order.inputTokenSymbol}
           <br />
           You will automatically receive the equivalent amount of the protocol's tokens based on the total points purchased after settlement.
-        </span>
+        </span> */}
       </div>
       {/* <SelectTokenModal
         open={showSelect}

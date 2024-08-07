@@ -143,7 +143,7 @@ export default function CreateOrder({getOrderList}) {
       
       if(res?.status===200){
         console.log('oreder submit success');
-        getOrderList(1)
+        getOrderList(1,chainId)
         setCreateLoading(false)
       }
     }catch(err){
@@ -203,6 +203,7 @@ export default function CreateOrder({getOrderList}) {
       const {wethAddress}=contractConfig
       if(checkConnection()&&token){
         try{
+          console.log(loginProvider)
         const injectProvider=new ethers.providers.Web3Provider(loginProvider)
         const balance=await getBalanceRpc(injectProvider,token,wethAddress)
         dispatch(balance)
@@ -398,8 +399,8 @@ export default function CreateOrder({getOrderList}) {
   },[receiveTokenAmount])
   useEffect(()=>{
     const { defaultTokenIn, defaultTokenOut } = contractConfig;
-    setPayToken(defaultTokenIn);
-    setReceiveToken(defaultTokenOut);
+    if(defaultTokenIn) setPayToken(defaultTokenIn);
+    if(defaultTokenOut) setReceiveToken(defaultTokenOut);
   },[contractConfig])
   // toekn发生改变
   useEffect(()=>{

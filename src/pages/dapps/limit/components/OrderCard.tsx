@@ -39,8 +39,6 @@ export default function OrderCard({
   }
   // bignumber转换number
   const BNtoNumber=(bn,decimals)=>{
-    // console.log(bn,decimals);
-    // console.log(BigNumber(bn).dividedBy(new BigNumber(10).pow(decimals)).toNumber())
     let num = BigNumber(bn).dividedBy(new BigNumber(10).pow(decimals))
     if(num.modulo(1).isZero()){
       return num.toNumber().toString()
@@ -72,15 +70,17 @@ export default function OrderCard({
   useEffect(()=>{
     // console.log(order.offerer);
     // console.log(order.orderStatus)
+    console.log(order.filler)
   },[order])
   return (
     <div
       className={"order-card " + 
         (type === 'my' ? 'my-order' : '') +
-        (type === 'open'? 'open-order ' : '')+
+        (type === 'open'&&order.orderStatus==='open'? 'open-order ' : '')+
         (order.orderStatus === 'error' ? 'error-order' : '')+
         (order.orderStatus === 'cancelled' ? 'cancelled-order' : '')+
-        (order.orderStatus === 'filled' ? 'filled-order' : '')
+        (order.orderStatus === 'filled' ? 'filled-order' : '')+
+        (order.orderStatus === 'expired' ? 'expired-order' : '')
       }
       onClick={() => {
         console.log('show order details');
@@ -96,7 +96,7 @@ export default function OrderCard({
             {/* <span style={{display:'block',marginTop:'4px'}}>{order.orderHash}</span> */}
             <div className='order-price'>
               <span>
-                1 {order.inputTokenSymbol} = {order.orderPrice} {order.outputTokenSymbol}
+                1 {order.inputTokenSymbol} = {Number(order.orderPrice)>1?Number(order.orderPrice).toFixed(4):Number(order.orderPrice).toFixed(6)}  {order.outputTokenSymbol}
               </span>
               <div className='order-price-change decre'>
                 {/* <img src="/incre-icon.svg" alt="" /> */}

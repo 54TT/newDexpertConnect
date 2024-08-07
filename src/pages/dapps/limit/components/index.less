@@ -295,6 +295,19 @@
     border-bottom-right-radius: 21px;
   }
 }
+.expired-order{
+  &::after{
+    content: 'EXPIRED';
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: rgba(26,26,26,0.85);
+    background-color: #fff;
+    font-size: 12px;
+    padding: 1px 24px;
+    border-bottom-right-radius: 21px;
+  }
+}
 .cancelled-order{
   &::after{
     content: 'CANCELLED';

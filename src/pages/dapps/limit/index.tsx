@@ -98,7 +98,7 @@ export default function index() {
     if (page === 1) setOrderLoading(true);
     if (orderType === 0 && currentIndex === 1) {
     }
-    console.log('get my all orders');
+    // console.log('get my all orders');
     if (orderType === 1 && currentIndex === 1) {
     }
     // console.log('get my executing orders');
@@ -139,6 +139,7 @@ export default function index() {
           setOrderLoading(false);
           setMoreOrderLoading(false);
         }
+        console.log(res.data.orders)
       }
     } catch (err) {
       setOrderLoading(false);
@@ -149,6 +150,8 @@ export default function index() {
   useEffect(() => {
     // if (currentIndex === 0) console.log('get all orders');
     // if (currentIndex === 1) console.log('get user orders');
+    console.log('currentIndex or orderType changed')
+    getOrderList(1,chainId)
   }, [currentIndex, orderType]);
   useEffect(() => {
     console.log(chainId);
@@ -247,8 +250,6 @@ export default function index() {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
                       d="M13.762 8.15192C14.1077 7.72385 14.0727 7.06837 13.6837 6.68786L7.62603 0.761945C7.26901 0.412685 6.73099 0.412685 6.37397 0.761945L0.316282 6.68786C-0.0726863 7.06837 -0.107722 7.72385 0.238028 8.15192C0.583776 8.57999 1.17938 8.61855 1.56835 8.23804L7 2.92454L12.4316 8.23804C12.8206 8.61855 13.4162 8.57999 13.762 8.15192Z"
                       fill={
                         currentIndex === 1
