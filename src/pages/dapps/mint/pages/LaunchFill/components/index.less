@@ -22,23 +22,57 @@
     border-radius: 48px 48px 0 0;
     left: 0;
     .with {
-      margin: 8% 0;
+      margin: 24px 0;
       font-size: 24px;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       width: 100%;
       color: white;
       justify-content: center;
+      div {
+        margin-top: 8px;
+        margin-left: 8px;
+      }
     }
     .backTo {
-      font-size: 22px;
+      font-size: 20px;
       text-align: center;
       width: 80%;
       cursor: pointer;
-      margin: 0 auto 8%;
+      margin: 0 auto;
       border-radius: 16px;
       color: #1a1a1a;
       padding: 16px 0;
+    }
+    .goEth {
+      font-size: 18px;
+      width: 80%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgb(134, 240, 151);
+      cursor: pointer;
+      margin: 8px auto 16px;
+      border-radius: 16px;
+      color: rgb(134, 240, 151);
+      padding: 16px 0;
+      p {
+        width: 20px;
+        cursor: pointer;
+        background-color: #fff;
+        position: relative;
+        border-radius: 50%;
+        margin-right: 8px;
+        height: 20px;
+        img {
+          width: 22px;
+          height: 22px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
     }
   }
 }

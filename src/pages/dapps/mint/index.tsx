@@ -52,7 +52,7 @@ function Mint() {
   return (
     <div
       className="dis mint"
-      style={{ height: 'calc(100vh - 90px)', justifyContent: 'center' }}
+      style={{justifyContent: 'center' }}
     >
       <div className="mint-box">
         <MintContext.Provider value={minContextValue}>

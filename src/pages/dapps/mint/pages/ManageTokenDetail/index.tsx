@@ -1,12 +1,14 @@
 import { Button, ConfigProvider, InputNumber } from 'antd';
-import React,{ useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 const BottomButton = React.lazy(() => import('../../component/BottomButton'));
 
 const InfoList = React.lazy(() => import('../../component/InfoList'));
 
 const PageHeader = React.lazy(() => import('../../component/PageHeader'));
 
-const ToLaunchHeader = React.lazy(() => import('../../component/ToLaunchHeader'));
+const ToLaunchHeader = React.lazy(
+  () => import('../../component/ToLaunchHeader')
+);
 
 import './index.less';
 import { useParams } from 'react-router-dom';
@@ -25,7 +27,8 @@ function ManageTokenDetail() {
   const history = useNavigate();
   const { t } = useTranslation();
   const router = useParams();
-  const { chainId, loginProvider, browser } = useContext(CountContext);
+  const { chainId, loginProvider, browser, contractConfig } =
+    useContext(CountContext);
   const [tokenData, setTokenData] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const { getAll } = Request();
@@ -48,10 +51,14 @@ function ManageTokenDetail() {
 
   useEffect(() => {
     setIsLoading(false);
-    if (router?.address && loginProvider) {
+    if (
+      router?.address &&
+      loginProvider &&
+      contractConfig?.chainId === Number(chainId)
+    ) {
       initData();
     }
-  }, [chainId,router?.address]);
+  }, [chainId, router?.address,contractConfig]);
 
   const initData = async () => {
     setLoadingPage(true);
@@ -69,19 +76,20 @@ function ManageTokenDetail() {
       tokenContract.balanceOf(walletAddress),
       tokenContract.IsRemoveLimits(),
       tokenContract.tradingOpen(),
-      signer.getBalance(),getAll({
+      signer.getBalance(),
+      await getAll({
         method: 'get',
         url: `/api/v1/launch-bot/contract/${router?.id}`,
         data: {},
         token,
         chainId,
-      })
+      }),
     ]);
     setIsOwn(data[0] === walletAddress);
     setTokenBalance(data[1]);
     setIsRemoveLimit(data[2]);
     setIsOpenTrade(data[3]);
-    const ethWei = (data[4]).toString();
+    const ethWei = data[4].toString();
     if (data[5]?.data?.isVerify === '1') {
       setIsVerify(true);
     }

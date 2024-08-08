@@ -8,11 +8,9 @@ export default function form({ form, formData, onFinishForm }) {
   const item = (name: string, staus?: string) => {
     return (
       <p
+       className='itemHint'
         style={{
-          marginTop: '-10px',
           marginBottom: staus === 'last' ? '' : '15px',
-          color: 'rgba(255,255,255,0.65)',
-          fontSize: '12px',
         }}
       >
         {name}
@@ -23,7 +21,7 @@ export default function form({ form, formData, onFinishForm }) {
     <>
       <div
         className="launch-form mint-scroll scroll"
-        style={{ height: showAdv ? '430px' : '310px' }}
+        style={{ height: showAdv ? '380px' : '305px',overflowX:'hidden' }}
       >
         <Form
           form={form}

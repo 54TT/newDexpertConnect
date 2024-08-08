@@ -51,7 +51,6 @@ function ChooseChain({
         ) {
           if (onClick) {
             onClick(i);
-            setValue(i);
           }
           if (onChange) {
             onChange(i.value);

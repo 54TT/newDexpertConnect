@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 export default function pass() {
   const { t } = useTranslation();
   const { getAll } = Request();
-  const { browser, chainId }: any = useContext(CountContext);
+  const { browser, chainId ,contractConfig}: any = useContext(CountContext);
   const { launchTokenPass, setLaunchTokenPass }: any = useContext(MintContext);
   const [params, setParams] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -63,8 +63,10 @@ export default function pass() {
     );
   };
   useEffect(() => {
-    getPass();
-  }, []);
+    if(Number(chainId)===contractConfig?.chainId){
+      getPass();
+    }
+  }, [chainId ,contractConfig]);
   return (
     <div className="passBox">
       <p className="title">{t('token.Fee')}</p>

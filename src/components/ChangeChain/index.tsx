@@ -1,6 +1,6 @@
 import { swapChain } from '@utils/judgeStablecoin';
-import React,{ useContext } from 'react';
-import  { ChooseChainValueType } from './components/chooseChain';
+import React, { useContext } from 'react';
+import { ChooseChainValueType } from './components/chooseChain';
 const ChooseChain = React.lazy(() => import('./components/chooseChain'));
 import { CountContext } from '@/Layout';
 export interface ChangeChainPropsType {
@@ -21,7 +21,6 @@ function ChangeChain({
     const evmChainIdHex = v.key;
     const evmChainId = v.chainId;
     if (!isLogin) {
-      setChainId(evmChainId);
     } else {
       // 有evm钱包环境
       try {
@@ -34,6 +33,7 @@ function ChangeChain({
             },
           ],
         });
+        setChainId(evmChainId);
       } catch (e) {
         return null;
       }

@@ -445,7 +445,8 @@
     "removeLP":"Successfully removeLP",
     "Limits":"Limits Removed",
     "Trade":"Trade Opened",
-    "Renounces":"Renounce Ownership"
+    "Renounces":"Renounce Ownership",
+    "go":"Go and check"
 
   }
 }

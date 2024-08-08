@@ -82,7 +82,6 @@ export default function OrderCard({
         (order.orderStatus === 'filled' ? 'filled-order' : '')
       }
       onClick={() => {
-        console.log('show order details');
         setSelectedOrder(order);
         setShowDetailsWindow(true)
       }}

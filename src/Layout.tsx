@@ -69,7 +69,7 @@ Decimal.set({ toExpPos: 24, precision: 24 });
 function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
-  const [contractConfig, setContractConfig] = useState();
+  const [contractConfig, setContractConfig] = useState(); 
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
   const [loginProvider, setloginProvider] = useState<any>(null);
@@ -87,13 +87,13 @@ function Layout() {
     if (walletRdns && environment.length > 0) {
       changeInfoRdns(walletRdns);
     }
-  }, [environment]);
+  }, [environment,walletRdns]);
   useEffect(() => {
     //   默认执行
     if (!walletRdns) {
       changeConfig(chainId);
     }
-  }, [chainId, walletRdns]);
+  }, [chainId]);
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -188,6 +188,7 @@ function Layout() {
 
   const onChainChange = (targetChainId) => {
     setChainId(Number(targetChainId).toString());
+    changeConfig(Number(targetChainId).toString());
   };
   useEffect(() => {
     if (isLogin && loginProvider) {

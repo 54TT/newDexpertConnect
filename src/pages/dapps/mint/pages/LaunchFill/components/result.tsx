@@ -1,4 +1,4 @@
-import React,{ useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import Back from '../../../component/Background';
 import './index.less';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
@@ -17,10 +17,11 @@ export default function resultBox({
   setLoading,
 }: any) {
   const history = useNavigate();
-const { t } = useTranslation();
+  const { t } = useTranslation();
   const { launchTokenPass, formData }: any = useContext(MintContext);
   const { loginProvider, chainId, contractConfig } = useContext(CountContext);
   const { getAll } = Request();
+  const [tx, setTx] = useState('');
   const token = Cookies.get('token');
   const getByteCode = async () =>
     await getAll({
@@ -65,29 +66,39 @@ const { t } = useTranslation();
         contractId,
         deployTx: deployTransaction.hash,
       });
-      await deployTransaction.wait();
-      // history('/dapps/tokencreation/manageToken');
-      setLoading(false);
-      setResult('result');
+      if (deployTransaction?.hash) {
+        const tx = await deployTransaction.wait();
+        if (tx?.transactionHash === deployTransaction?.hash) {
+          setLoading(false);
+          setResult('success');
+        }
+        setTx(deployTransaction?.hash);
+      }
     } catch (e) {
-      setResult('result');
+      setResult('error');
       setLoading(false);
       return null;
     }
   };
   useEffect(() => {
-    if (loading) {
+    if (loading && contractConfig?.chainId === Number(chainId)) {
       deployContract();
     }
-  }, [loading]);
+  }, [loading, contractConfig, chainId]);
 
   return (
     <div className="resultBox">
       <div className="back">
-        <p className="with">
-          {result === 'loading' ? t('token.Deploying') : t('token.Done')}
+        <div className="with">
+          {result === 'loading'
+            ? t('token.Deploying')
+            : result === 'success'
+              ? t('token.Done')
+              : result === 'error'
+                ? t('Alert.fail')
+                : ''}
           {result === 'loading' && <Load />}
-        </p>
+        </div>
         <p
           onClick={() => {
             if (result !== 'loading') {
@@ -100,13 +111,26 @@ const { t } = useTranslation();
               result === 'loading' ? '#434343' : 'rgb(134,240,151)',
           }}
         >
-         {t('token.Back')}
+          {t('token.Back')}
         </p>
+        <div
+          className="goEth"
+          onClick={() => {
+            if (tx) {
+              window.open(contractConfig?.scan + tx);
+            }
+          }}
+        >
+          <p>
+            <img src="/ethLogo.svg" alt="" />
+          </p>
+          <span>{t('token.go')}</span>
+        </div>
       </div>
       <img src="/resultBack.svg" alt="" style={{ width: '80%' }} />
       <Back
         style={{
-          top: '40%',
+          top: '25%',
           left: '0%',
           transform: 'translateX(-30%)',
           bottom: 'initial',

@@ -5,6 +5,7 @@ import { MintContext, initFormData } from '../../index';
 const Back = React.lazy(() => import('../../component/Background'));
 const ChangeChain = React.lazy(() => import('@/components/ChangeChain'));
 import { useTranslation } from 'react-i18next';
+import Effects from '../../component/Effects'
 import { CountContext } from '@/Layout';
 function LaunchHome() {
   const history = useNavigate();
@@ -18,14 +19,7 @@ function LaunchHome() {
     <>
       <div className="launch-home">
         <div className="launch-home-top">
-          <div className="animate-wave">
-            <div className="w1"></div>
-            <div className="w2"></div>
-            <div className="w3"></div>
-            <div className="w4"></div>
-            <div className="w5"></div>
-            <div className="w6"></div>
-          </div>
+         <Effects />
           <div className="launch-home-top-icon">
             <img src="/launchTop.svg" alt="" />
           </div>

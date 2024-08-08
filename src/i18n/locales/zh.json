@@ -105,7 +105,7 @@
     "Profile": "我的",
     "Following": "关注列表"
   },
-  "Alert": {
+  "Alert": { 
     "Not": "未拥有",
     "please connect your wallet": "请连接你的钱包",
     "Please enter the purchase quantity": "请输入购买数量",
@@ -443,6 +443,7 @@
     "removeLP":"删除成功",
     "Limits":"已删除流动性",
     "Trade":"已打开交易",
-    "Renounces":"已放弃所有权"
+    "Renounces":"已放弃所有权",
+    "go":"去查看"
   }
 }

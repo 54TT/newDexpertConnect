@@ -121,7 +121,7 @@ function ManagePairDetail() {
       const web3Provider = new ethers.providers.Web3Provider(loginProvider);
       const signer = await web3Provider.getSigner();
       const v2RouterContract = new ethers.Contract(
-        contractConfig.uniswapV2RouterAddress,
+        contractConfig?.uniswapV2RouterAddress,
         UniswapV2RouterAbi,
         signer
       );
@@ -129,7 +129,7 @@ function ManagePairDetail() {
       const token0 = await pairContract.token0();
       const balance = await pairContract.balanceOf(walletAddress);
       const approveTx = await pairContract.approve(
-        contractConfig.uniswapV2RouterAddress,
+        contractConfig?.uniswapV2RouterAddress,
         balance
       );
       const tx = await approveTx.wait();

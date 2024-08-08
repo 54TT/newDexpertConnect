@@ -97,7 +97,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     outPrice: '-',
   }); */
   const [payType, setPayType] = useState('0');
-
   const initData = () => {
     if (initToken?.length) {
       const [initTokenIn, initTokenOut] = initToken;
@@ -114,7 +113,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   useEffect(() => {
     const amount = currentInputToken.current === 'in' ? amountIn : amountOut;
     getAmount(currentInputToken.current, amount, quotePath);
-  }, [transactionFee.swap]);
+  }, [transactionFee?.swap]);
 
   useEffect(() => {
     initData();
@@ -126,7 +125,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       swap: fee,
     });
   };
-
   const getGasPrice = async () => {
     const gas: BigNumber = await provider.getGasPrice();
     const gasGwei = gas.toNumber() / 10 ** 9;
@@ -159,7 +157,6 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     if (!tokenIn?.contractAddress || !tokenOut?.contractAddress)
       return Promise.resolve(['', '']);
     const { uniswapV2RouterAddress } = contractConfig;
-
     const data = [
       chainId,
       provider,
@@ -547,7 +544,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
     setButtonLoading(false);
     setButtonDescId('1');
-    await reportPayType(tx.hash);
+    await reportPayType(tx?.hash);
     setPayType('0');
     setAmountIn(0);
     setAmountOut(0);
@@ -665,13 +662,14 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   };
 
   useEffect(() => {
-    const { defaultTokenIn, defaultTokenOut } = contractConfig;
-    setTokenIn(defaultTokenIn);
-    setTokenOut(defaultTokenOut);
+    if (contractConfig?.defaultTokenIn) {
+      const { defaultTokenIn, defaultTokenOut } = contractConfig;
+      setTokenIn(defaultTokenIn);
+      setTokenOut(defaultTokenOut);
+    }
     setAmountIn(0);
     setAmountOut(0);
   }, [contractConfig]);
-
   const changeWalletChain = async (v: string) => {
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
     const evmChainIdHex = `0x${Number(evmChainId).toString(16)}`;
@@ -734,13 +732,13 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     [contractConfig, loginProvider]
   );
   useEffect(() => {
-    if (isLogin) {
+    if (isLogin && contractConfig?.defaultTokenIn) {
       getTokenBalance(tokenIn?.contractAddress, setBalanceIn);
     }
-  }, [tokenIn, isLogin, chainId, loginProvider]);
+  }, [tokenIn, isLogin, chainId, contractConfig, loginProvider]);
 
-  useEffect(() => {
-    if (isLogin) {
+  useEffect(() => { 
+    if (isLogin && contractConfig?.defaultTokenOut) {
       getTokenBalance(tokenOut?.contractAddress, setBalanceOut);
     }
   }, [tokenOut, isLogin, chainId, loginProvider]);
@@ -765,7 +763,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         getAmount('out', amountOut, quotePath);
       }
     }
-  }, [advConfig.slip, advConfig.slipType]);
+  }, [advConfig?.slip, advConfig?.slipType]);
 
   /*  useEffect(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress) {

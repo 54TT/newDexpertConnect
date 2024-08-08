@@ -1,7 +1,8 @@
-import React,{ useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 const PageHeader = React.lazy(() => import('../../component/PageHeader'));
-
-const ToLaunchHeader = React.lazy(() => import('../../component/ToLaunchHeader'));
+const ToLaunchHeader = React.lazy(
+  () => import('../../component/ToLaunchHeader')
+);
 import { CountContext } from '@/Layout';
 import { useParams } from 'react-router-dom';
 import { ethers } from 'ethers';
@@ -70,20 +71,7 @@ function LockLpList() {
       const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
         item;
       return {
-        title: (
-          <div>
-            <div>解锁时间</div>
-            <div>
-              {dayjs.unix(unlockDate.toString()).format('YYYY/MM/DD HH:mm:ss')}
-            </div>
-          </div>
-        ),
-        remark: (
-          <div>
-            <div>锁定LP数量</div>
-            <div>{toEthWithDecimal(lockAmount, 18)}</div>
-          </div>
-        ),
+        remark: toEthWithDecimal(lockAmount, 18),
         unlockDate,
         lockAmount,
         lockDate,
@@ -191,7 +179,10 @@ function LockLpList() {
         className="launch-manage-token-header"
         title={t('token.Unon')}
       />
-      <div style={{ maxHeight: '330px', overflow: 'overlay' }} className='mint-scroll'>
+      <div
+        style={{ maxHeight: '330px', overflow: 'overlay', overflowX: 'hidden' }}
+        className="mint-scroll"
+      >
         {isLoading ? (
           infoData.length > 0 ? (
             infoData?.map?.((item, index) => (
@@ -206,7 +197,7 @@ function LockLpList() {
                       .unix(Number(item?.unlockDate?.toString()))
                       .format('YYYY-MM-DD HH:mm:ss')}
                   </p>
-                  <p>{item?.remark?.props?.children[1]?.props?.children}</p>
+                  <p>{item?.remark}</p>
                 </div>
                 <BottomButton
                   text={t('token.Unlock')}
@@ -301,6 +292,7 @@ function LockLpList() {
         <DatePicker
           value={lockDate}
           showHour
+          rootClassName="unlockDateDropdown"
           className="unlockDate"
           showMinute
           showTime
