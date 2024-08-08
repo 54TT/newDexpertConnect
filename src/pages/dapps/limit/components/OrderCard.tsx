@@ -1,12 +1,16 @@
 import './index.less'
 import {Modal } from 'antd'
 import DefaultTokenImg from '@/components/DefaultTokenImg'
-import { useEffect, useState } from 'react'
+import { useEffect, useState,useContext } from 'react'
 import {BigNumber} from 'bignumber.js';
 import { ethers, BigNumber as BNtype } from 'ethers'
 import {chainConfig} from '@utils/limit/constants'
 import Permit2ABI from '@utils/limit/Permit2ABI.json'
 import { useTranslation } from 'react-i18next';
+import { CountContext } from '@/Layout';
+import { getUniswapV2RouterContract } from "@utils/contracts";
+import Decimal from "decimal.js";
+import { getAmountOut } from "@utils/swap/v2/getAmountOut";
 export default function OrderCard({
   order,
   type,
@@ -16,8 +20,20 @@ export default function OrderCard({
   setShowDetailsWindow,
   loginProvider
 }: any) {
+  const {contractConfig,provider}=useContext(CountContext)
   const [showCancelWindow,setShowCancelWindow]=useState(false)
   const {t}=useTranslation()
+  const [tokenRate,setTokenRate]=useState('')
+  const [rateRelation,setRateRelation]=useState('equality')
+  const [diffRate,setDiffRate]=useState('0')
+  const [deadline,setDeadline]=useState<Number>(0)
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
+
+
   const bitmapPositions=(nonce:BNtype)=>{
     const wordPos = nonce.shr(8);
     const bitPos = nonce.and(BNtype.from(0xFF)); // Equivalent to extracting the last 8 bits
@@ -32,45 +48,154 @@ export default function OrderCard({
     const provider = config.provider
     const permit2Address = config.permit2Address
     const permit2Contract = new ethers.Contract(permit2Address, Permit2ABI, provider);
+
+
+
     const { wordPos, bitPos }: any = bitmapPositions(BNtype.from(order.nonce));
     const mask = 1 << bitPos;
     const res= await permit2Contract.connect(signer).invalidateUnorderedNonces(wordPos, mask);
     console.log(res);
   }
   // bignumber转换number
-  const BNtoNumber=(bn,decimals)=>{
-    let num = BigNumber(bn).dividedBy(new BigNumber(10).pow(decimals))
-    if(num.modulo(1).isZero()){
-      return num.toNumber().toString()
+  const BNtoNumber=(bn,decimals?)=>{
+    let num;
+
+    if(!decimals){
+      num = new BigNumber(bn);
     }else{
-      return num.toNumber().toFixed(6).replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.$/, '')
+      num = BigNumber(bn).dividedBy(new BigNumber(10).pow(decimals))
+    }
+    let absNumber = num.abs();
+    let formattedNumber;
+    let unit;
+
+  if (absNumber.lte(0.1)) { // Less than or equal to 0.1
+    return '<0.1';
+  } else if (absNumber.gte(1e9)) { // Billions
+    formattedNumber = absNumber.dividedBy(1e9).toFixed(2);
+    unit = 'B';
+  } else if (absNumber.gte(1e6)) { // Millions
+    formattedNumber = absNumber.dividedBy(1e6).toFixed(2);
+    unit = 'M';
+  } else if (absNumber.gte(1e3)) { // Thousands
+    formattedNumber = absNumber.dividedBy(1e3).toFixed(2);
+    unit = 'K';
+  } else {
+    formattedNumber = absNumber.toFixed(2);
+    unit = '';
+  }
+  if (formattedNumber.includes('.')) {
+    formattedNumber = formattedNumber.replace(/\.?0+$/, '');
+  }
+
+  return `${formattedNumber}${unit}`;
+    // if(num.modulo(1).isZero()){
+    //   return num.toNumber().toString()
+    // }else{
+    //   return num.toNumber().toFixed(6).replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.$/, '')
+    // }
+  }
+  // const timeBefore=(timeStamp:number)=>{
+  //   const now=new Date()
+  //   const then=new Date(timeStamp*1000)
+  //   const diff=now.getTime()-then.getTime()
+
+  //   const seconds = Math.floor(diff / 1000);
+  //   const minutes = Math.floor(seconds / 60);
+  //   const hours = Math.floor(minutes / 60);
+  //   const days = Math.floor(hours / 24);
+
+  //   if (days > 0) {
+  //     return `${days} day${days !== 1 ? 's' : ''} ago`;
+  //   } else if (hours > 0) {
+  //     return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+  //   } else if (minutes > 0) {
+  //     return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+  //   } else {
+  //     return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
+  //   }
+  // }
+  // 倒计时
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = Date.now() / 1000; // 当前时间戳
+      const timeRemaining = Number(deadline) - now;
+
+      if (timeRemaining <= 0) {
+        clearInterval(timer);
+        setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+      } else {
+        const hours = Math.floor(timeRemaining / (60 * 60));
+        const minutes = Math.floor((timeRemaining % (60 * 60)) / 60);
+        const seconds = Math.floor(timeRemaining % 60);
+
+        setTimeLeft({ hours, minutes, seconds });
+      }
+    }, 1000);
+
+    // 清理定时器
+    return () => clearInterval(timer);
+  }, [deadline]);
+  // 获取当前汇率与订单汇率的比值
+  const getRateRelation=()=>{
+    // const orderRate=Number(Number(order.orderPrice).toFixed(2))
+    if(tokenRate&&order.orderPrice){
+      // const orderRate=Number(Number(order.orderPrice).toFixed(6))
+      // const rateNum = Number(rate.toFixed(6));
+      console.log('---getRateRelation---');
+      // console.log(Number(tokenRate));
+      // console.log(Number(order.orderPrice))
+      const result = new Decimal(tokenRate).dividedBy(new Decimal(order.orderPrice));
+      console.log(result.toNumber());
+      if(result.toNumber()>1){
+        setRateRelation('incre')
+        console.log('incre',result.toNumber()-1);
+        setDiffRate(((result.toNumber()-1)*100).toFixed(2))
+        // return result.toFixed(3)
+      }else if(result.toNumber()<1){
+        setRateRelation('decre')
+        console.log('decre',1-result.toNumber());
+        setDiffRate(((1-result.toNumber())*100).toFixed(2))
+      }
+      // console.log(rateNum-orderRate);
+      // console.log(Number(tokenRate)-Number(order.orderPrice));
     }
   }
-  const timeBefore=(timeStamp:number)=>{
-    const now=new Date()
-    const then=new Date(timeStamp*1000)
-    const diff=now.getTime()-then.getTime()
-
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) {
-      return `${days} day${days !== 1 ? 's' : ''} ago`;
-    } else if (hours > 0) {
-      return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
-    } else if (minutes > 0) {
-      return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
-    } else {
-      return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
+  // 获取两个token当前的汇率
+  const getTokenRate=async(inputTokenAddress:string,inputTokenDecimals:number,outputTokenAddress:string,outputTokenDecimals:number)=>{
+    const { uniswapV2RouterAddress } = contractConfig;
+    const params=[
+      chainId,
+      provider,
+      await getUniswapV2RouterContract (provider,uniswapV2RouterAddress),
+      [inputTokenAddress,inputTokenDecimals],
+      [outputTokenAddress,outputTokenDecimals],
+      new Decimal(1),
+      new Decimal(0),
+      // 暂定5%
+      // transactionFee.limit
+      new Decimal(0),
+    ].filter((item)=>item!==null)
+    let amount:Decimal
+    try {
+      amount=await getAmountOut.apply(null,params)
+    } catch (error) {
+      console.log(error);
     }
+    const amountValue=new Decimal(amount)
+    // console.log(amountValue.toString());
+    setTokenRate(amountValue.toString())
   }
-
+  useEffect(()=>{
+    console.log(tokenRate);
+    if(tokenRate) getRateRelation()
+  },[tokenRate])
   useEffect(()=>{
     // console.log(order.offerer);
     // console.log(order.orderStatus)
-    console.log(order.filler)
+    // console.log(order.filler)
+    getTokenRate(order.inputToken,order.inputTokenDecimals,order.outputToken,order.outputTokenDecimals)
+    setDeadline(Number(order.deadline))
   },[order])
   return (
     <div
@@ -91,21 +216,24 @@ export default function OrderCard({
       <div className="order-card-header">
         <div>
           <div className='order-card-header-left'>
-            <span>{order.inputTokenName} </span>
+            <div style={{display:'flex',alignItems:'center'}}>
+              <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
+              <span className="order-output-amount">{BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals) +' '+order.inputTokenSymbol} </span>
+              </div>
             {/* <span style={{display:'block',marginTop:'4px'}}>{order.inputToken.slice(0,6)}...{order.inputToken.slice(-8)}</span> */}
             {/* <span style={{display:'block',marginTop:'4px'}}>{order.orderHash}</span> */}
             <div className='order-price'>
-              <span>
+              {/* <span>
                 1 {order.inputTokenSymbol} = {Number(order.orderPrice)>1?Number(order.orderPrice).toFixed(4):Number(order.orderPrice).toFixed(6)}  {order.outputTokenSymbol}
-              </span>
-              <div className='order-price-change decre'>
+              </span> */}
+              <div className={`order-price-change ${rateRelation}`}>
                 {/* <img src="/incre-icon.svg" alt="" /> */}
-                <img src="/decre-icon.svg" alt="" />
-                <span>10%</span>
+                {rateRelation=='incre'&&<img src="/incre-icon.svg" alt="" />}
+                {rateRelation=='decre'&&<img src="/decre-icon.svg" alt="" />}
+                {diffRate!=='0'&&<span>{diffRate}%</span>}
               </div>
             </div>
           </div>
-          {/* <span className="partial" >{t("limit.partial fill")}</span> */}
         </div>
         
         {/* <Progress
@@ -117,33 +245,58 @@ export default function OrderCard({
           trailColor="#535353"
         /> */}
       </div>
-      <div className="order-card-body">
+      <div className='new-order-body'>
+        <div className='order-body-item'>
+          <span className='order-body-item-header'>单价</span>
+          <span className='order-rate'>{BNtoNumber(order.orderPrice)} {order.outputTokenSymbol}/{order.inputTokenSymbol}</span>
+          <span style={{display:"flex"}}>
+            <DefaultTokenImg name={order?.outputTokenSymbol} icon={''} />
+            <p>/</p>
+            <DefaultTokenImg name={order?.inputTokenSymbol} icon={''} />
+        </span>
+        </div>
+        <div className='order-body-item'>
+        <span className='order-body-item-header'>总价</span>
+        <span className='order-output-amount'>
+        {BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)} {order.outputTokenSymbol}
+        </span>
+        <span>
+          <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
+        </span>
+        </div>
+      </div>
+      {/* <div className="order-card-body">
         <div className='token-swap'>
           <span className='offer order-token-item'>
             <span>{t("limit.offer")}</span>
             <div className='token-item-info'>
               <DefaultTokenImg name={order.inputTokenSymbol} icon={''} />
               <span style={{color:'#fff',fontSize:'14px'}}>{BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals)} </span>
+              <span>{order.inputTokenSymbol}</span>
             </div>
-            {/* <span style={{fontSize:'12px'}}>$0.0000066 /point</span> */}
           </span>
-          {/* <span className='transfer-icon'>
-          <img style={{zIndex:100}} src="/transfer-arrow.svg" alt="" />
-          </span> */}
           <span className='limit-transfer'>
             <img src="/limit-transfer.svg" />
           </span>
           <span className='for order-token-item'>
             <span>{t("limit.for")}</span>
             <div className='token-item-info'>
-              <span style={{color:'#fff',fontSize:'14px'}}>{BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)} </span>
               <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
+              <span style={{color:'#fff',fontSize:'14px'}}>{BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)} </span>
+              <span>{order.outputTokenSymbol}</span>
             </div>
           </span>
         </div>
-      </div>
+      </div> */}
       <div className="order-card-footer">
-        <span className="order-time">{timeBefore(order.createdAt)}</span>
+        <span className="order-time">
+          剩余时间：
+          {/* {timeBefore(order.createdAt)} */}
+          {timeLeft.hours !== 0 || timeLeft.minutes !== 0 || timeLeft.seconds !== 0 ?
+            `${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`
+          : ''}
+          
+        </span>
         {type === 'my' &&
           <span
             className="cancel-btn"

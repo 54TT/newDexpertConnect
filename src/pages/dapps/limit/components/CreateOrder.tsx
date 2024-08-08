@@ -95,10 +95,6 @@ export default function CreateOrder({getOrderList}) {
       value:2592000
     }
   ]
-  useEffect(()=>{
-    console.log(tokenRateDE);
-    
-  },[tokenRateDE])
   
   // number去零
   const numberToFixed=(num:number)=>{
@@ -131,7 +127,7 @@ export default function CreateOrder({getOrderList}) {
             "decayStartTime": "1721049887",
             "decayEndTime": "1721136287",
             // "deadline": "1721136287",
-            "fillerAt": "1721136287",
+            // "fillerAt": "1721136287",
             // price:tokenRateBN,
             uid:user.uid,
           }
@@ -201,15 +197,14 @@ export default function CreateOrder({getOrderList}) {
   const getTokenBalance=useCallback(
     async (token,dispatch)=>{
       const {wethAddress}=contractConfig
-      if(checkConnection()&&token){
-        try{
-          console.log(loginProvider)
+      if(checkConnection()&&token&&loginProvider){
+        // console.log(loginProvider)
         const injectProvider=new ethers.providers.Web3Provider(loginProvider)
-        const balance=await getBalanceRpc(injectProvider,token,wethAddress)
+        try {
+          const balance=await getBalanceRpc(injectProvider,token,wethAddress)
         dispatch(balance)
-        }catch(err){
-          console.log(err);
-          // setCreateLoading(false)
+        } catch (error) {
+          // console.log(error);
         }
       }
     },
@@ -218,11 +213,16 @@ export default function CreateOrder({getOrderList}) {
   // 计算手续费
   const getTransactionFee = async (data) => {
     // 未解决：传swaptype：2不返回值
-    const fee = await getSwapFee({ ...data, swapType: 2 });
-    setTransactionFee({
-      ...transactionFee,
-      limit: fee,
-    });
+    try{
+      const fee = await getSwapFee({ ...data, swapType: 2 });
+      setTransactionFee({
+        ...transactionFee,
+        limit: fee,
+      });
+    }catch(e){
+      // console.log('getSwapFee error');
+      // console.log(e);
+    }
     // console.log('fee:'+Number(fee))
   };
   // 计算输入Token的单位价格，U单位
@@ -232,6 +232,7 @@ export default function CreateOrder({getOrderList}) {
     }
     // USDT
     const { defaultTokenOut,uniswapV2RouterAddress } = contractConfig
+
     const params=[
       chainId,
       provider,
@@ -245,11 +246,17 @@ export default function CreateOrder({getOrderList}) {
       new Decimal(0),
     ].filter((item)=>item!==null)
     let amount:Decimal;
-    amount=await getAmountOut.apply(null,params)
+    try {
+      amount=await getAmountOut.apply(null,params)
+      if(type==='pay') setPayTokenUnitPrice(Number(amount.toFixed(6)))
+        if(type==='receive') setReceiveTokenUnitPrice(Number(amount.toFixed(6)))
+    } catch (error) {
+      // console.log(error);
+      
+    }
     // console.log(token.symbol,' Unit price:'+Number(amount.toFixed(6)));
     // 展示只截取6位
-    if(type==='pay') setPayTokenUnitPrice(Number(amount.toFixed(6)))
-    if(type==='receive') setReceiveTokenUnitPrice(Number(amount.toFixed(6)))
+    
   }
   // 计算paytoken与recevicetoken的汇率
   const getExchangeRate=async()=>{
@@ -274,7 +281,12 @@ export default function CreateOrder({getOrderList}) {
       // new Decimal(0),
       // 0
     ].filter((item)=>item!==null)
-    let amount:Decimal=await getAmountOut.apply(null,params)
+    let amount:Decimal
+    try {
+      amount=await getAmountOut.apply(null,params)
+    } catch (error) {
+      console.log(error);
+    }
     // console.log(payToken.symbol,'----',receiveToken.symbol+amount.toString());
     // console.log(amount);
     // console.log(amount.toString());
@@ -327,8 +339,13 @@ export default function CreateOrder({getOrderList}) {
     setPayRate(tokenRate)
     // console.log(payToken?.symbol,'---',receiveToken?.symbol,'tokenRate:',tokenRate);
     // console.log(tokenRateBN);
-    
-  },[tokenRate,tokenRateBN])
+    setToeknRateBN(new BigNumber(tokenRate))
+    console.log('tokenRate',tokenRate)
+  },[tokenRate])
+  // 订单token汇率
+  useEffect(()=>{
+    console.log('payRate',payRate)
+  },[payRate])
   useEffect(()=>{
     // console.log('transactionFee---',transactionFee?.limit?.toString());
   },[transactionFee])
@@ -336,30 +353,34 @@ export default function CreateOrder({getOrderList}) {
   useEffect(() => {
     getTransactionFee({ chainId, provider, payType:0 });
   }, [chainId, provider]);
+
   // 监听变化，自动计算pay余额，paytoken的市价
   useEffect(()=>{
-    if(isLogin){
-      getTokenBalance(payToken?.contractAddress,setPayTokenBalance)
+    if(isLogin&&loginProvider){
+      // console.log(loginProvider);
+      // console.log(contractConfig);
+      // console.log(chainId);
+      // getTokenBalance(payToken?.contractAddress,setPayTokenBalance)
       // console.log(payToken?.symbol);
+      // getToeknUnitPrice(payToken,'pay')
     }
     getToeknUnitPrice(payToken,'pay')
   },[payToken,isLogin,loginProvider,chainId])
   // receiveToken改变，自动获取receivetoken的单位价格
-  useEffect(()=>{
-    getTokenBalance(receiveToken?.contractAddress,setReceiveTokenBalance)
-    getToeknUnitPrice(receiveToken,'receive')
-  },[receiveToken])
+  // useEffect(()=>{
+  //   getTokenBalance(receiveToken?.contractAddress,setReceiveTokenBalance)
+    
+  // },[receiveToken])
 
   useEffect(()=>{
-    if(isLogin){
+    if(isLogin&&loginProvider){
       getTokenBalance(receiveToken?.contractAddress,setReceiveTokenBalance)
+      getTokenBalance(payToken?.contractAddress,setPayTokenBalance)
       // console.log(receiveToken?.symbol);
     }
-  },[receiveToken,isLogin,loginProvider,chainId])
-  useEffect(()=>{
-    // console.log('payTokenBalance:'+payTokenBalance)
-    // console.log('receiveTokenBalance:'+receiveTokenBalance)
-  },[payTokenBalance,receiveTokenBalance])
+    getToeknUnitPrice(receiveToken,'receive')
+  },[payToken,receiveToken,isLogin,loginProvider,chainId])
+
   useEffect(()=>{
     // console.log(tokenRate);
     if(Number(payTokenAmount)<=Number(payTokenBalance)){
@@ -372,17 +393,13 @@ export default function CreateOrder({getOrderList}) {
       setRateLoading(false)
       setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
     }
-    
     if(tokenRate===0||tokenRate===undefined){
       setTokenRate(0)
       setRateLoading(true)
       getTokenRateDebounce()
     }
   },[tokenRate])
-  // 过期时间
-  useEffect(() => {
-    // console.log('exprie in:'+expires);
-  },[expires])
+
   useEffect(()=>{
     if(payTokenAmount){
       setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
@@ -390,13 +407,12 @@ export default function CreateOrder({getOrderList}) {
     }
     getToeknUnitPrice(receiveToken,'receive')
   },[payTokenAmount])
+
   // receivetoken的数量改变，获取单位价格，计算receivetoken的市价
   useEffect(()=>{
-    // if(receiveTokenAmount){
-    //   setReceiveTokenUnitPrice(Number(receiveTokenAmount/payTokenAmount))
-    // }
     getToeknUnitPrice(receiveToken,'receive')
   },[receiveTokenAmount])
+
   useEffect(()=>{
     const { defaultTokenIn, defaultTokenOut } = contractConfig;
     if(defaultTokenIn) setPayToken(defaultTokenIn);
@@ -404,14 +420,16 @@ export default function CreateOrder({getOrderList}) {
   },[contractConfig])
   // toekn发生改变
   useEffect(()=>{
-    // console.log(payToken);
-    // console.log(receiveToken);
     getExchangeRate()
     setRateLoading(true)
     setTokenRate(0)
-    setPayTokenAmount('')
-    setReceiveTokenAmount('')
   },[payToken,receiveToken])
+  useEffect(()=>{
+    setReceiveTokenAmount('')
+  },[receiveToken])
+  useEffect(()=>{
+    setPayTokenAmount('')
+  },[payToken])
   return (
   <div className="createOrder">
     <div className="wrapper">

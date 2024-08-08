@@ -263,8 +263,8 @@
     "Order expire in": "订单过期时间"
   },
   "limit":{
-    "cancel order":"取消订单",
-    "execute order":"执行订单",
+    "cancel order":"取消",
+    "execute order":"执行",
     "my order":"我的订单",
     "open order":"正在进行",
     "cancelled":"已取消",

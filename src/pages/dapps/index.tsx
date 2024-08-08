@@ -54,8 +54,8 @@ export default function index() {
       key: 'mint',
     },
     {
-      imgAc: '/snipingActive.png',
-      img: '/snipingMore.png',
+      imgAc: '/limitActive.svg',
+      img: '/limit.svg',
       status: params?.id === 'limit',
       name: 'Limit',
       onClick: () => {

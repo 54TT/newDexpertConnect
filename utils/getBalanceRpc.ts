@@ -11,6 +11,7 @@ const getBalanceRpcEther = async (
   const signer = await injectProvider.getSigner();
   let decimals = 18;
   if (!token) return;
+  
   if (token === zeroAddress) {
     const balance: BigNumber = await signer.getBalance();
     return new Decimal(balance.toString()).div(new Decimal(10).pow(18));
@@ -31,5 +32,6 @@ const getBalanceRpcEther = async (
   const balance: BigNumber = await erc20Contract?.balanceOf(address);
   if (balance.isZero()) return new Decimal(balance.toString());
   return new Decimal(balance.toString()).div(new Decimal(10).pow(decimals));
+  
 };
 export default getBalanceRpcEther;

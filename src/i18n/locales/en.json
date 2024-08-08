@@ -265,8 +265,8 @@
     "logout": "Logout"
   },
   "limit":{
-    "cancel order":"cancel order",
-    "execute order":"execute order",
+    "cancel order":"cancel",
+    "execute order":"execute",
     "my order":"my order",
     "open order":"OPEN",
     "cancelled":"CANCELLED",

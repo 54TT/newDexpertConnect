@@ -12,6 +12,7 @@ import Request from '@/components/axios';
 import OrderDetail from './components/OrderDetail';
 import ExecuteWindow from './components/ExcuteWindow';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Nodata from '@/components/Nodata'
 // import ExcuteWindow from './components/ExcuteWindow';
 // useContext
 import './index.less';
@@ -156,9 +157,11 @@ export default function index() {
   useEffect(() => {
     console.log(chainId);
     console.log(contractConfig.chainId);
-    if (chainId === contractConfig.chainId.toString()) {
-      getOrderList(1, chainId);
-      setOrderLoading(true);
+    if(chainId && contractConfig){
+      if (chainId === contractConfig.chainId.toString()) {
+        getOrderList(1, chainId);
+        setOrderLoading(true);
+      }
     }
   }, [chainId, contractConfig]);
   return (
@@ -177,7 +180,10 @@ export default function index() {
               <div
                 style={{
                   display: 'flex',
-                  width: '45%',
+                  flex:'1 1',
+                  // width: '65%',
+                  maxWidth:'60%',
+                  
                   justifyContent: 'space-between',
                 }}
               >
@@ -295,7 +301,10 @@ export default function index() {
                   {/* <Spin /> */}
                 </div>
               ) : (
-                <>{orderLoading && <Loading status={'20'} />}</>
+                <>
+                  {orderLoading && <Loading status={'20'} />}
+                  {orderList.length===0&&!orderLoading&&(<Nodata />)}
+                </>
               )}
               {/* {currentIndex===2?(
                   orderList.filter((item:any)=>item?.uid===user?.uid).map((item)=>(

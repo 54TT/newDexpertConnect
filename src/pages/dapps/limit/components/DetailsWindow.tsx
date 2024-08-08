@@ -1,8 +1,11 @@
-import { useEffect } from "react"
+import { useEffect,useContext } from "react"
 import {BigNumber} from 'bignumber.js';
+import Copy from "@/components/copy";
+import { CountContext } from '@/Layout';
 
 const DetailsWindow=({order})=>{
-  
+  const {contractConfig} =useContext(CountContext)
+  const {zeroAddress} = contractConfig
   // bignumber转换number
   const BNtoNumber=(bn,decimals)=>{
     let num = BigNumber(bn).dividedBy(new BigNumber(10).pow(decimals))
@@ -38,6 +41,8 @@ const DetailsWindow=({order})=>{
   };
 
   useEffect(()=>{
+    console.log(zeroAddress);
+    
     console.log(order)
   },[])
   return (
@@ -46,7 +51,7 @@ const DetailsWindow=({order})=>{
       <div className="details-window-content">
         <div className="details-window-content-header">
           <span className="details-window-content-header-title">
-            OFFER DETAILS
+            ORDER DETAILS
           </span>
         </div>
         <div className="details-window-content-body">
@@ -77,8 +82,14 @@ const DetailsWindow=({order})=>{
           </div>
           <div className="details-window-content-body-item">
             <span>Offer Creator</span>
-            <span>
+            <span style={{display:"flex"}}>
             {order.offerer.slice(0, 5)+'...'+order?.offerer.slice(-4)}
+            <div>
+              <Copy
+                img={'/copy-icon.svg'}
+                name={order.offerer}
+              />
+            </div>
             </span>
           </div>
           <div className="details-window-content-body-item">
@@ -95,8 +106,16 @@ const DetailsWindow=({order})=>{
           </div>
           <div className="details-window-content-body-item">
             <span>Filler</span>
-            <span>
-              -
+            <span  style={{display:"flex"}}>
+              {order.filler===zeroAddress?'-':order.filler.slice(0, 5)+'...'+order?.filler.slice(-4)}
+              {order.filler!==zeroAddress &&
+                <div>
+                  <Copy
+                    img={'/copy-icon.svg'}
+                    name={order.filler}
+                  />
+                </div>
+              }
             </span>
           </div>
           <div className="details-window-content-body-item">
@@ -107,8 +126,16 @@ const DetailsWindow=({order})=>{
           </div>
           <div className="details-window-content-body-item">
             <span>Fill Tx</span>
-            <span>
-              -
+            <span style={{display:"flex"}}>
+            {!order.fillTx?'-':order.fillTx.slice(0, 5)+'...'+order?.fillTx.slice(-4)}
+              {order.fillTx &&
+                <div>
+                  <Copy
+                    img={'/copy-icon.svg'}
+                    name={order.fillTx}
+                  />
+                </div>
+              }
             </span>
           </div>
           <div className="details-window-content-body-item">

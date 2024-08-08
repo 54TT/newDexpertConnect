@@ -16,7 +16,7 @@ const ExecuteWindow = ({
 }) => {
   const {
     chainId,
-    loginProvider
+    loginProvider,
   } = useContext(CountContext)
   const {t}=useTranslation()
   // 滑动条的值，百分比
@@ -25,7 +25,7 @@ const ExecuteWindow = ({
   // const [payToken,setPayToken]=useState()
   // const [showSelect,setShowSelect]=useState(false)
   const [buttonLoading,setButtonLoading]=useState(false)
-  const [buttonDisable,setButtonDisable]=useState(true)
+  // const [buttonDisable,setButtonDisable]=useState(true)
   const [tokenInputAmount,setTokenInputAmount]=useState('')
   const [tokenOutputAmount,setTokenOutputAmount]=useState('')
   const [inputToken,setInputToken]=useState()
@@ -60,7 +60,10 @@ const ExecuteWindow = ({
         value
       )
       console.log(res);
-      if(res) setButtonLoading(false)
+      if(res){
+        setButtonLoading(false)
+        setShowExecuteWindow(false)
+      }
     } catch (error) {
       console.log(error);
       setButtonLoading(false)
@@ -74,7 +77,7 @@ const ExecuteWindow = ({
       const jsonString=token
       try{
         const tokenObj=JSON.parse(jsonString)
-        // console.log(tokenObj.startAmount);
+        console.log(tokenObj.token);
         setInputToken(tokenObj)
         const startAmount=BigNumber(tokenObj.startAmount.hex)
         const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
@@ -93,14 +96,15 @@ const ExecuteWindow = ({
     // setPayToken(JSON.parse(outputToken)[0])
     const startAmount=BigNumber(JSON.parse(outputToken)[0].startAmount.hex)
     const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
-    // console.log('outputtoken startAmountNum',startAmountNum.toString());
+    console.log('outputtoken startAmountNum',startAmountNum.toString());
+    console.log(JSON.parse(outputToken)[0].token);
     
     setTokenOutputAmount(startAmountNum.toString())
     // const outputTokenAddress=order.outputToken
     // console.log(outputTokenAddress);
     
   }
-  const inputChange=(v)=>{
+  const inputChange=()=>{
     // console.log('input change',v)
     // console.log(payTokenAmount);
     // console.log(tokenOutputAmount);
@@ -195,7 +199,7 @@ const ExecuteWindow = ({
                 setSliderValue(100) 
                 // setPayTokenAmount((Number(tokenInputAmount)*Number(order.orderPrice)).toString())
                 setPayTokenAmount(tokenOutputAmount)
-                setButtonDisable(false)
+                // setButtonDisable(false)
               }}
             >
               MAX 
@@ -234,7 +238,7 @@ const ExecuteWindow = ({
                   // setExchangeAmount(Number(tokenInputAmount)*value/100)
                   // setPayTokenAmount((Number(tokenInputAmount)*value/100*Number(order.orderPrice)).toString())
                   // setPayTokenAmount(((silderValue/100)*Number(tokenOutputAmount)).toString())
-                  setButtonDisable(value===0?true:false)
+                  // setButtonDisable(value===0?true:false)
                 }}
               />
               </ConfigProvider>
