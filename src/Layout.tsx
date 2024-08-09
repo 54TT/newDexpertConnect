@@ -385,7 +385,6 @@ function Layout() {
           if (token?.data && token?.status === 200) {
             // 签名消息
             const message = token?.data?.nonce;
-            console.log(message)
             const sign = await i?.provider?.request({
               method: 'personal_sign',
               params: [message, account[0]],

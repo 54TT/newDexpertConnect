@@ -131,7 +131,7 @@ export const chainParams = [
   },
   { value: 'Celo', icon: '/Celo.svg', hide: true },
 ];
-const chainList = [
+export const chainList = [
   { value: 'Ethereum', icon: '/EthereumCoin.svg', chainId: '1', key: '0x1' },
   {
     value: 'Arbitrum',
