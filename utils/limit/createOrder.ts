@@ -1,7 +1,9 @@
+
 import { ethers,BigNumber,Contract,Signer } from "ethers"
 import { DutchOrderBuilder } from "@uniswap/uniswapx-sdk";
 import {OffChainUniswapXOrderValidator} from "./OffChainUniswapXOrderValidator";
 import ERC20ABI from "./ERC20ABI.json";
+import { config as allConfig } from "@/config/config";
 // import {BigNumber as NewBigNumber} from 'bignumber.js';
 
 type OrderValidationResponse = {
@@ -76,15 +78,18 @@ async function buildOrder(
   // 订单过期时间，GMT00
   // const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds
   // 订单过期时间，GMT+8,中国时间
-  const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds+(8*60*60)
-  console.log('---now time---')
+  const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds
+  // console.log('---now time---')
   // 获取现在的时间
   // console.log(new Date().toUTCString())
-  console.log(new Date((deadline-deadlineSeconds)*1000).toUTCString())
-  console.log(new Date(new Date().getTime()))
-  console.log('---deadline---')
+  // console.log(new Date((deadline-deadlineSeconds)*1000).toUTCString())
+  // console.log(new Date(new Date().getTime()))
+  // console.log('---deadline---')
+  console.log(new Date().toUTCString())
   console.log(new Date(deadline*1000).toUTCString())
-  
+  console.log('---deadline---',deadline)
+  const deadlineNew = Math.round(new Date(deadline*1000).getTime() / 1000)
+  console.log('=====deadlineNew=====',deadlineNew)
   const decayStartTime = Math.round(new Date().getTime() / 1000)
   const creatAddress=await orderCreator.getAddress()
   // 生成荷兰式订单，传入相关参数
@@ -100,9 +105,9 @@ async function buildOrder(
     console.log("---order---")
     console.log(order)
     const{ domain,types,values }=order.permitData()
-    console.log("domain:",domain)
-    console.log("types:",types)
-    console.log("values:",values)
+    // console.log("domain:",domain)
+    // console.log("types:",types)
+    // console.log("values:",values)
     // @ts-ignore
     const signature=await orderCreator._signTypedData(domain,types,values)
     console.log("signature:"+signature);
@@ -128,37 +133,106 @@ export const createOrder = async (
 )=>{
   console.log('---orderCreating---')
   const config = chainConfig[chainId]
+  const zeroConfig=allConfig[chainId]
   const provider = config.provider
   const permit2Address = config.permit2Address
   const reactorAddress = config.reactorAddress
-  const inputTokenContract: Contract = new ethers.Contract(inputToken, ERC20ABI, provider).connect(orderCreator);
-  const outputTokenContract: Contract = new ethers.Contract(outputToken, ERC20ABI, provider).connect(orderCreator);
+  // let inputTokenContract: Contract = new ethers.Contract(inputToken, ERC20ABI, provider).connect(orderCreator);
+  let inputTokenContract: Contract
+  // let outputTokenContract: Contract = new ethers.Contract(outputToken, ERC20ABI, provider).connect(orderCreator);
+  let outputTokenContract: Contract
+  let inputPermit2Allowance: BigNumber
+  let outputPermit2Allowance: BigNumber
+  let inputReactorAllowance: BigNumber
+  let outputReactorAllowance: BigNumber
 
-  const inputTokenName = await inputTokenContract.name();
-  const inputTokenSymbol = await inputTokenContract.symbol();
-  const inputTokenDecimals = await inputTokenContract.decimals();
 
-  const outputTokenName = await outputTokenContract.name();
-  const outputTokenSymbol = await outputTokenContract.symbol();
-  const outputTokenDecimals = await outputTokenContract.decimals();
+
+
+
+  const inputTokenToLowerCase = inputToken.toLowerCase();
+  const outputTokenToLowerCase = outputToken.toLowerCase();
+  const zeroAddress=zeroConfig.zeroAddress.toLowerCase()
+
+  let inputTokenName;
+  let inputTokenSymbol
+  let inputTokenDecimals;
+
+  let outputTokenName;
+  let outputTokenSymbol;
+  let outputTokenDecimals;
+
+
+
+
+  // 需要增加零地址判断
+  if(inputTokenToLowerCase===zeroAddress){
+    inputTokenName=zeroConfig.defaultTokenIn.name
+    inputTokenSymbol=zeroConfig.defaultTokenIn.symbol
+    console.log(zeroConfig.defaultTokenIn.decimals);
+    
+    inputTokenDecimals=zeroConfig.defaultTokenIn.decimals
+  }else{
+    inputTokenContract = new ethers.Contract(inputToken, ERC20ABI, provider).connect(orderCreator);
+    inputTokenName = await inputTokenContract.name();
+    inputTokenSymbol = await inputTokenContract.symbol();
+    inputTokenDecimals = await inputTokenContract.decimals();
+    inputPermit2Allowance = await inputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
+    inputReactorAllowance = await inputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
+  }
+  if(outputTokenToLowerCase===zeroAddress){
+    outputTokenName=zeroConfig.defaultTokenIn.name
+    outputTokenSymbol=zeroConfig.defaultTokenIn.symbol
+    outputTokenDecimals=zeroConfig.defaultTokenIn.decimals
+  }else{
+    outputTokenContract = new ethers.Contract(outputToken, ERC20ABI, provider).connect(orderCreator);
+    outputTokenName = await outputTokenContract.name();
+    outputTokenSymbol = await outputTokenContract.symbol();
+    outputTokenDecimals = await outputTokenContract.decimals();
+    outputPermit2Allowance = await outputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
+    outputReactorAllowance = await outputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
+  }
+
+
+
+  console.log(inputTokenDecimals);
+  // console.log(inputTokenDecimals.toNumber());
+  console.log(inputTokenToLowerCase==zeroAddress);
+  console.log(Number(inputTokenDecimals));
+  
+  // const inputTokenName = await inputTokenContract.name();
+  // const inputTokenSymbol = await inputTokenContract.symbol();
+  // const inputTokenDecimals = await inputTokenContract.decimals();
+
+  // const outputTokenName = await outputTokenContract.name();
+  // const outputTokenSymbol = await outputTokenContract.symbol();
+  // const outputTokenDecimals = await outputTokenContract.decimals();
   // 授权额度
-  const inputPermit2Allowance: BigNumber = await inputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
-  const outputPermit2Allowance: BigNumber = await outputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
-  const inputReactorAllowance: BigNumber = await inputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
-  const outputReactorAllowance: BigNumber = await outputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
+  // inputPermit2Allowance = await inputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
+  // outputPermit2Allowance = await outputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
+  // inputReactorAllowance = await inputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
+  // outputReactorAllowance = await outputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
 
-  if (inputPermit2Allowance.lt(ethers.constants.MaxUint256.div(2))) {
-    await inputTokenContract.approve(permit2Address, ethers.constants.MaxUint256);
-}
-if (outputPermit2Allowance.lt(ethers.constants.MaxUint256.div(2))) {
-    await outputTokenContract.approve(permit2Address, ethers.constants.MaxUint256);
-}
-if (inputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
-    await inputTokenContract.approve(reactorAddress, ethers.constants.MaxUint256);
-}
-if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
+  if(inputTokenToLowerCase!==zeroAddress){
+    if (inputPermit2Allowance.lt(ethers.constants.MaxUint256.div(2))) {
+      await inputTokenContract.approve(permit2Address, ethers.constants.MaxUint256);
+    }
+    if (inputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
+      await inputTokenContract.approve(reactorAddress, ethers.constants.MaxUint256);
+    }
+  }
+  
+
+
+if(outputTokenToLowerCase!==zeroAddress){
+  if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
     await outputTokenContract.approve(reactorAddress, ethers.constants.MaxUint256);
+  }
+  if (outputPermit2Allowance.lt(ethers.constants.MaxUint256.div(2))) {
+    await outputTokenContract.approve(permit2Address, ethers.constants.MaxUint256);
+  }
 }
+
 
 
   // 构建荷兰式拍卖订单，并获得签名
@@ -196,6 +270,8 @@ if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
     ]
   )
 
+  
+  
   const orderParams:Order={
     orderHash:orderHash,
     chainId:chainId,
@@ -217,12 +293,12 @@ if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
     inputToken:inputToken,
     inputTokenName: inputTokenName,
     inputTokenSymbol: inputTokenSymbol,
-    inputTokenDecimals: inputTokenDecimals.toNumber(),
+    inputTokenDecimals:inputTokenToLowerCase==zeroAddress?Number(inputTokenDecimals): inputTokenDecimals.toNumber(),
     orderPrice: orderPrice,
     outputToken:outputToken,
     outputTokenName: outputTokenName,
     outputTokenSymbol: outputTokenSymbol,
-    outputTokenDecimals: outputTokenDecimals.toNumber(),
+    outputTokenDecimals: outputTokenToLowerCase===zeroAddress?Number(outputTokenDecimals): outputTokenDecimals.toNumber(),
   }
   return orderParams
 } catch (error) {

@@ -22,7 +22,7 @@ import { useTranslation } from "react-i18next";
 //   initChainId?:string;
 //   initToken?:[tokenIn:TokenItemData,tokenOut:TokenItemData];
 // }
-export default function CreateOrder({getOrderList}) {
+export default function CreateOrder() {
   const {
     provider,
     contractConfig,
@@ -51,7 +51,7 @@ export default function CreateOrder({getOrderList}) {
   // pay/receive token汇率
   const [tokenRate,setTokenRate]=useState(0)
   const [tokenRateBN,setToeknRateBN]=useState<BigNumber>()
-  const [tokenRateDE,setToeknRateDE]=useState<Decimal>()
+  // const [tokenRateDE,setToeknRateDE]=useState<Decimal>()
   const [payRate,setPayRate]=useState(0)
   const [rateLoading,setRateLoading]=useState(true)
   const [createLoading,setCreateLoading]=useState(false)
@@ -124,8 +124,8 @@ export default function CreateOrder({getOrderList}) {
         data:{
           "order": {
             ...order,
-            "decayStartTime": "1721049887",
-            "decayEndTime": "1721136287",
+            // "decayStartTime": "1721049887",
+            // "decayEndTime": "1721136287",
             // "deadline": "1721136287",
             // "fillerAt": "1721136287",
             // price:tokenRateBN,
@@ -139,7 +139,7 @@ export default function CreateOrder({getOrderList}) {
       
       if(res?.status===200){
         console.log('oreder submit success');
-        getOrderList(1,chainId)
+        // getOrderList(1,chainId)
         setCreateLoading(false)
       }
     }catch(err){
@@ -155,7 +155,8 @@ export default function CreateOrder({getOrderList}) {
     console.log('createOrder:');
     console.log('---now time---')
     console.log(Number(payTokenAmount)/Number(receiveTokenAmount));
-    
+    console.log(payToken.contractAddress)
+    console.log(receiveToken.contractAddress)
     console.log(new Date(new Date().getTime()))
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await web3Provider.getSigner();
@@ -184,6 +185,8 @@ export default function CreateOrder({getOrderList}) {
           expires,
           tokenRateBN.toString()
         )
+        console.log('return orderParams')
+        console.log(orderParams);
         submitOrder(orderParams)
       } catch (error) {
         console.log(error);
@@ -293,7 +296,7 @@ export default function CreateOrder({getOrderList}) {
     const amountValue=new Decimal(amount)
     // console.log(new BigNumber(amountValue.toString()));
     setToeknRateBN(new BigNumber(amountValue.toString()))
-    setToeknRateDE(amount)
+    // setToeknRateDE(amount)
     setPayRate(Number(amount.toFixed(6)))
     setRateLoading(false)
     setTokenRate(Number(amount.toFixed(6)))
@@ -379,6 +382,9 @@ export default function CreateOrder({getOrderList}) {
       // console.log(receiveToken?.symbol);
     }
     getToeknUnitPrice(receiveToken,'receive')
+    console.log(payToken);
+    console.log(receiveToken);
+    
   },[payToken,receiveToken,isLogin,loginProvider,chainId])
 
   useEffect(()=>{
@@ -426,10 +432,9 @@ export default function CreateOrder({getOrderList}) {
   },[payToken,receiveToken])
   useEffect(()=>{
     setReceiveTokenAmount('')
-  },[receiveToken])
-  useEffect(()=>{
     setPayTokenAmount('')
-  },[payToken])
+  },[receiveToken,payToken])
+
   return (
   <div className="createOrder">
     <div className="wrapper">

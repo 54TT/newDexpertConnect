@@ -50,6 +50,8 @@ export default function index() {
   // 展示订单详情
   const [showDetailsWindow, setShowDetailsWindow] = useState(false);
   const [moreOrderLoading, setMoreOrderLoading] = useState(false);
+  // 首次加载
+  // const [initialized, setInitialized] = useState(false)
   // my orders type,0:all,1:executing,2:history
   const [orderType, setOrderType] = useState(0);
   const items: any = [
@@ -159,8 +161,8 @@ export default function index() {
     console.log(contractConfig.chainId);
     if(chainId && contractConfig){
       if (chainId === contractConfig.chainId.toString()) {
-        getOrderList(1, chainId);
-        setOrderLoading(true);
+          getOrderList(1, chainId);
+          setOrderLoading(true);
       }
     }
   }, [chainId, contractConfig]);
@@ -226,6 +228,15 @@ export default function index() {
               >
                 <p>{t('limit.live orders')}</p>
               </span>
+              {/* <span> */}
+              <img
+                style={{width:'40px',cursor:'pointer'}}
+                src='/refresh.svg'
+                onClick={()=>{
+                  getOrderList(1, chainId);
+                }}
+              />
+              {/* </span> */}
               {/* <span className={`orders-btn ${currentIndex===1?'active':''}`}
                 onClick={()=>setCurrentIndex(1)}>
                 <p>
@@ -337,7 +348,7 @@ export default function index() {
             </div>
           </div>
           <div className="limit-right">
-            <CreateOrder getOrderList={getOrderList} />
+            <CreateOrder />
           </div>
           <Modal
             maskClosable={false}

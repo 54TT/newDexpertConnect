@@ -59,6 +59,7 @@ export const config: Record<ChainIdList, any> = {
     verificationURL: 'https://api-sepolia.etherscan.io/api',
     chainId: 11155111,
     name: 'Sepolia',
+    // zeroName: 'SepoliaETH',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
     uniswapV2RouterAddress: '0xb22ce52905d25987321d6bf73d1705886f1cc4f4',
     uniswapV2FactoryAddress: '0xce71f5957f481a77161f368ad6dfc61d694cf171',

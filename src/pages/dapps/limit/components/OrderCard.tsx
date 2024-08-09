@@ -1,5 +1,5 @@
 import './index.less'
-import {Modal } from 'antd'
+import {Modal, Skeleton } from 'antd'
 import DefaultTokenImg from '@/components/DefaultTokenImg'
 import { useEffect, useState,useContext } from 'react'
 import {BigNumber} from 'bignumber.js';
@@ -9,6 +9,7 @@ import Permit2ABI from '@utils/limit/Permit2ABI.json'
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout';
 import { getUniswapV2RouterContract } from "@utils/contracts";
+import {setMany} from "@utils/change";
 import Decimal from "decimal.js";
 import { getAmountOut } from "@utils/swap/v2/getAmountOut";
 export default function OrderCard({
@@ -18,15 +19,18 @@ export default function OrderCard({
   chainId,
   setShowExecuteWindow,
   setShowDetailsWindow,
-  loginProvider
+  loginProvider,
 }: any) {
   const {contractConfig,provider}=useContext(CountContext)
   const [showCancelWindow,setShowCancelWindow]=useState(false)
   const {t}=useTranslation()
   const [tokenRate,setTokenRate]=useState('')
+  // 涨幅跌幅
   const [rateRelation,setRateRelation]=useState('equality')
   const [diffRate,setDiffRate]=useState('0')
   const [deadline,setDeadline]=useState<Number>(0)
+  const [rateLoading,setRateLoading]=useState(true)
+  // const [timeLoading,setTimeLoading]=useState(true)
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 0,
@@ -70,7 +74,8 @@ export default function OrderCard({
     let unit;
 
   if (absNumber.lte(0.1)) { // Less than or equal to 0.1
-    return '<0.1';
+    // return '< 0.1';
+    return setMany(absNumber.toString()).replace(/\.?0+$/, '')
   } else if (absNumber.gte(1e9)) { // Billions
     formattedNumber = absNumber.dividedBy(1e9).toFixed(2);
     unit = 'B';
@@ -87,7 +92,7 @@ export default function OrderCard({
   if (formattedNumber.includes('.')) {
     formattedNumber = formattedNumber.replace(/\.?0+$/, '');
   }
-
+  
   return `${formattedNumber}${unit}`;
     // if(num.modulo(1).isZero()){
     //   return num.toNumber().toString()
@@ -146,7 +151,7 @@ export default function OrderCard({
       // console.log(Number(tokenRate));
       // console.log(Number(order.orderPrice))
       const result = new Decimal(tokenRate).dividedBy(new Decimal(order.orderPrice));
-      console.log(result.toNumber());
+      if(result) setRateLoading(false)
       if(result.toNumber()>1){
         setRateRelation('incre')
         console.log('incre',result.toNumber()-1);
@@ -226,12 +231,15 @@ export default function OrderCard({
               {/* <span>
                 1 {order.inputTokenSymbol} = {Number(order.orderPrice)>1?Number(order.orderPrice).toFixed(4):Number(order.orderPrice).toFixed(6)}  {order.outputTokenSymbol}
               </span> */}
-              <div className={`order-price-change ${rateRelation}`}>
-                {/* <img src="/incre-icon.svg" alt="" /> */}
-                {rateRelation=='incre'&&<img src="/incre-icon.svg" alt="" />}
-                {rateRelation=='decre'&&<img src="/decre-icon.svg" alt="" />}
-                {diffRate!=='0'&&<span>{diffRate}%</span>}
+              {
+                rateLoading?<Skeleton.Button size='small' active />:(
+                  <div className={`order-price-change ${rateRelation}`}>
+                  {rateRelation=='incre'&&<img src="/incre-icon.svg" alt="" />}
+                  {rateRelation=='decre'&&<img src="/decre-icon.svg" alt="" />}
+                  {<span>{diffRate} %</span>}
               </div>
+                )}
+              
             </div>
           </div>
         </div>
@@ -247,21 +255,26 @@ export default function OrderCard({
       </div>
       <div className='new-order-body'>
         <div className='order-body-item'>
-          <span className='order-body-item-header'>单价</span>
+          <div style={{display:'flex',alignItems:'center'}}>
+            <span className='order-body-item-header'>单价</span>
+            <span style={{display:"flex",paddingLeft:'10px'}}>
+              <DefaultTokenImg name={order?.outputTokenSymbol} icon={''} />
+              <p>/</p>
+              <DefaultTokenImg name={order?.inputTokenSymbol} icon={''} />
+            </span>
+          </div>
           <span className='order-rate'>{BNtoNumber(order.orderPrice)} {order.outputTokenSymbol}/{order.inputTokenSymbol}</span>
-          <span style={{display:"flex"}}>
-            <DefaultTokenImg name={order?.outputTokenSymbol} icon={''} />
-            <p>/</p>
-            <DefaultTokenImg name={order?.inputTokenSymbol} icon={''} />
-        </span>
+          
         </div>
         <div className='order-body-item'>
-        <span className='order-body-item-header'>总价</span>
-        <span className='order-output-amount'>
-        {BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)} {order.outputTokenSymbol}
+        <div style={{display:'flex',alignItems:'center'}}>
+          <span className='order-body-item-header'>总价</span>
+          <span style={{paddingLeft:'10px'}}>
+            <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
         </span>
-        <span>
-          <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
+        </div>
+        <span className='order-rate'>
+        {BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)} {order.outputTokenSymbol}
         </span>
         </div>
       </div>
@@ -294,7 +307,7 @@ export default function OrderCard({
           {/* {timeBefore(order.createdAt)} */}
           {timeLeft.hours !== 0 || timeLeft.minutes !== 0 || timeLeft.seconds !== 0 ?
             `${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`
-          : ''}
+          : '已过期'}
           
         </span>
         {type === 'my' &&

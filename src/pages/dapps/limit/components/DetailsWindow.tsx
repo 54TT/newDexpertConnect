@@ -2,6 +2,8 @@ import { useEffect,useContext } from "react"
 import {BigNumber} from 'bignumber.js';
 import Copy from "@/components/copy";
 import { CountContext } from '@/Layout';
+import { getScanLink } from '@/utils/getScanLink';
+import { getAddressLink } from '@/utils/getAddressLink';
 
 const DetailsWindow=({order})=>{
   const {contractConfig} =useContext(CountContext)
@@ -83,11 +85,18 @@ const DetailsWindow=({order})=>{
           <div className="details-window-content-body-item">
             <span>Offer Creator</span>
             <span style={{display:"flex"}}>
-            {order.offerer.slice(0, 5)+'...'+order?.offerer.slice(-4)}
+              <p onClick={()=>{
+                if(order.fillTx){
+                  window.open(getAddressLink(order.chainId,order.offerer))
+                }
+              }}>
+                {order.offerer.slice(0, 5)+'...'+order?.offerer.slice(-4)}
+              </p>
             <div>
               <Copy
                 img={'/copy-icon.svg'}
                 name={order.offerer}
+                change={true}
               />
             </div>
             </span>
@@ -107,12 +116,19 @@ const DetailsWindow=({order})=>{
           <div className="details-window-content-body-item">
             <span>Filler</span>
             <span  style={{display:"flex"}}>
-              {order.filler===zeroAddress?'-':order.filler.slice(0, 5)+'...'+order?.filler.slice(-4)}
+              <p onClick={()=>{
+                if(order.fillTx){
+                  window.open(getAddressLink(order.chainId,order.filler))
+                }
+              }}>
+                {order.filler===zeroAddress?'-':order.filler.slice(0, 5)+'...'+order?.filler.slice(-4)}
+              </p>
               {order.filler!==zeroAddress &&
                 <div>
                   <Copy
                     img={'/copy-icon.svg'}
                     name={order.filler}
+                    change={true}
                   />
                 </div>
               }
@@ -126,20 +142,29 @@ const DetailsWindow=({order})=>{
           </div>
           <div className="details-window-content-body-item">
             <span>Fill Tx</span>
-            <span style={{display:"flex"}}>
-            {!order.fillTx?'-':order.fillTx.slice(0, 5)+'...'+order?.fillTx.slice(-4)}
+            <span
+              style={{display:"flex",cursor:order.fillTx?'pointer':'default'}}
+            >
+              <p onClick={()=>{
+                if(order.fillTx){
+                  window.open(getScanLink(order.chainId,order.fillTx))
+                }
+              }}>
+              {!order.fillTx?'-':order.fillTx.slice(0, 5)+'...'+order?.fillTx.slice(-4)}
+              </p>
               {order.fillTx &&
                 <div>
                   <Copy
                     img={'/copy-icon.svg'}
                     name={order.fillTx}
+                    change={true}
                   />
                 </div>
               }
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>Fill Time</span>
+            <span>Fill At</span>
             <span>
               -
             </span>

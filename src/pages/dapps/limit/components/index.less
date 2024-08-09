@@ -7,7 +7,8 @@
   display: flex !important;
   flex-direction: column;
   flex:1 1 calc(33.33% - 10px);
-  justify-content: space-between;
+  justify-content: space-evenly;
+  // justify-content: space-between;
   background-color: #303030;
   padding: 24px 16px 16px;
   box-sizing: border-box;
@@ -67,7 +68,7 @@
       }
       .order-output-amount{
         margin-left: 5px;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 700;
       }
       .order-price{
@@ -101,6 +102,14 @@
           background-color: rgba(134, 240, 151,0.1);
           span{
             color: #86f097;
+          }
+        }
+        .equality{
+          background-color: rgba(255,255,255,0.1);
+          padding: 4px 16px;
+          span{
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
           }
         }
         .decre{
@@ -222,7 +231,7 @@
   &-footer{
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 10px;
     // padding-top: 10px;
     box-sizing: border-box;
     .order-time{
@@ -735,7 +744,7 @@
     &-header-title{
       font-size: 28px;
       color: #fff;
-      font-size: 28px;
+      font-size: 20px;
       font-weight: 700;
     }
     &-body{
@@ -751,6 +760,28 @@
         span:last-child{
           font-size: 18px;
           color: #fff;
+          p{
+            position: relative;
+            cursor: pointer;
+            box-sizing: border-box;
+
+            &:after{
+              content: '';
+              position: absolute;
+              left: 0;
+              bottom: -2px;
+              width: 100%;
+              height: 1px;
+              transition: all 0.3s;
+            }
+            &:hover{
+              &:after{
+                background: #fff;
+              }
+              // border-bottom: 1px solid #fff;
+              // text-decoration: underline;
+            }
+          }
         }
         &:first-child{
           padding-top: 30px;
@@ -764,6 +795,9 @@
   }
 }
 .execute-window{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
   // width: 70%;
   width: 100%;
   // width: 750px;
@@ -778,9 +812,14 @@
     width: 100%;
     // justify-content: space-between;
     .execute-back{
+      display: flex;
+      justify-content: center;
+      align-items: center;
       // padding-top: 5px;
-      padding-right: 20px;
+      padding-right: 5px;
       // padding-bottom: 5px;
+      padding: 0;
+      margin: 0;
       height: 40px;
       line-height: 40px;
       font-size: 26px;
@@ -807,6 +846,20 @@
     }
     .header-row-one{
       display: flex;
+      justify-content: space-between;
+      span{
+        background-color: transparent;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0;
+        padding: 0;
+        &:first-child{
+          width: 40px;
+        }
+        &:last-child{
+          width: 40px;
+        }
+      }
     }
     .header-row-two{
       display: flex;
@@ -832,10 +885,99 @@
       }
     }
   }
-  &-body{
+  &-amount{
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    padding: 24px;
     margin-top: 20px;
+    width: calc(100% - 48px);
     background-color: #3e3e3e;
     border-radius: 18px;
+    .amount-text{
+      // flex: 1 1;
+      text-align: left;
+      font-size: 28px;
+      font-weight: 700;
+      flex-basis: 70%;
+    }
+    .order-price-change{
+      display: flex;
+      align-items: center;
+      padding: 13px;
+      border-radius: 6px;
+      img{
+        margin-right: 6px;
+      }
+    }
+    .incre{
+      background-color: rgba(134, 240, 151,0.1);
+      span{
+        color:#86f097
+      }
+    }
+    .decre{
+      background-color: rgba(199, 106, 106, 0.2);
+      span{
+        color:#ea6e6e
+      }
+    }
+    .equality{
+      background-color: rgba(255,255,255,0.1);
+      span{
+        color: rgba(255,255,255,0.4);
+      }
+    }
+    .default-token-img{
+      width: 60px;
+      height: 60px;
+      .token-name-img{
+        width: 100%;
+        height: 100%;
+        span{
+          font-size: 36px;
+          color:#1a1a1a
+        }
+      }
+    }
+  }
+  &-body{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #3e3e3e;
+    border-radius: 18px;
+    .execute-body-row{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      span:first-child{
+        font-size: 14px;
+        color: rgba(255,255,255,0.55);
+      }
+      span:last-child{
+        font-size: 28px;
+      }
+    }
+    .paytoken-balance{
+      padding:20px 0 0;
+      span:last-child{
+        font-size: 16px;
+      }
+    }
+    .execute-fee{
+      border-radius: 6px;
+      padding: 6px 20px;
+      font-size: 14px !important;
+      color: #86f097;
+      background-color: rgba(134, 240, 151,0.1);
+    }
+    .execute-order-price{
+      padding: 20px 0;
+      color: rgba(255,255,255,0.55);
+    }
     .buying-window{
       padding: 24px 18px 30px;
       height: 200px;
@@ -948,13 +1090,13 @@
     }
   }
   &-footer{
-    margin: 0 auto;
+    margin: 20px auto 0;
     // width: 99%;
     .execute-btn{
       display: block;
       width: 100%;
       height: auto;
-      padding: 12px 0;
+      padding: 18px 120px;
       background-color: #3e3e3e;
       border-radius: 18px;
       border: none;
@@ -1195,12 +1337,14 @@
   // height: 100px;
   display:flex;
   justify-content:space-between;
+  flex-direction: column;
+  
   padding: 0 8px;
-  margin-top: 20px;
+  margin-top: 8px;
   .order-body-item{
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 100%;
     justify-content: space-between;
     &-header{
       font-size: 14px;
@@ -1213,14 +1357,9 @@
     }
   }
   .order-rate{
-    font-size: 18px;
+    font-size: 14px;
     color: #fff;
-    margin: 12px 0;
-  }
-  .order-output-amount{
-    font-size: 18px;
-    color: #fff;
-    margin: 12px 0;
+    margin: 10px 0;
   }
   .default-token-img{
     width: 18px;
