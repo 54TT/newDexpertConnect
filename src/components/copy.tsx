@@ -5,7 +5,13 @@ import { useContext } from 'react';
 import { CountContext } from '../Layout.tsx';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-function Copy({ name, setSelect, select, img }: any) {
+function Copy({ 
+  name,
+  setSelect, 
+  select, 
+  img,
+  change //是否需要隐藏复制成功
+}: any) {
   const { t } = useTranslation();
   const { isCopy, setIsCopy }: any = useContext(CountContext);
   useEffect(() => {
@@ -23,7 +29,7 @@ function Copy({ name, setSelect, select, img }: any) {
       overlayClassName={'newPairLeftPopover'}
       content={isCopy ? t('token.Copied') : t('token.copy')}
     >
-      {(isCopy && !select) || (isCopy && select === 'select') ? (
+      {((isCopy && !select) || (isCopy && select === 'select'))&& !change ? (
         <img
           src="/copySucc.svg"
           alt=""

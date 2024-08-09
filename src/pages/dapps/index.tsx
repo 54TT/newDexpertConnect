@@ -16,6 +16,16 @@ export default function index() {
   const history = useNavigate();
   const top = [
     {
+      imgAc: '/mainActive.svg',
+      img: '/mainMore.svg',
+      status: params?.id === 'tokencreation',
+      name: 'Token Creation',
+      onClick: () => {
+        history('/dapps/tokencreation');
+      },
+      key: 'mint',
+    },
+    {
       status: params?.id === 'swap',
       imgAc: '/swapActive.png',
       img: '/swapMore.png',
@@ -46,18 +56,8 @@ export default function index() {
       key: 'buyBot',
     },
     {
-      imgAc: '/mainActive.svg',
-      img: '/mainMore.svg',
-      status: params?.id === 'tokencreation',
-      name: 'Token Creation',
-      onClick: () => {
-        history('/dapps/tokencreation');
-      },
-      key: 'mint',
-    },
-    {
-      imgAc: '/snipingActive.png',
-      img: '/snipingMore.png',
+      imgAc: '/limitActive.svg',
+      img: '/limit.svg',
       status: params?.id === 'limit',
       name: 'Limit',
       onClick: () => {
@@ -65,6 +65,16 @@ export default function index() {
       },
       key: 'limit',
     },
+    // {
+    //   imgAc: '/mainActive.svg',
+    //   img: '/mainMore.svg',
+    //   status: params?.id === 'tokencreation',
+    //   name: 'Token Creation',
+    //   onClick: () => {
+    //     history('/dapps/tokencreation');
+    //   },
+    //   key: 'mint',
+    // },
   ];
   const mouseOver = (key: string) => {
     setHoverKey(key);

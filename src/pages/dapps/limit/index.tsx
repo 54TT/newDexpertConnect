@@ -12,6 +12,7 @@ import Request from '@/components/axios';
 import OrderDetail from './components/OrderDetail';
 import ExecuteWindow from './components/ExcuteWindow';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Nodata from '@/components/Nodata'
 // import ExcuteWindow from './components/ExcuteWindow';
 // useContext
 import './index.less';
@@ -49,6 +50,8 @@ export default function index() {
   // 展示订单详情
   const [showDetailsWindow, setShowDetailsWindow] = useState(false);
   const [moreOrderLoading, setMoreOrderLoading] = useState(false);
+  // 首次加载
+  // const [initialized, setInitialized] = useState(false)
   // my orders type,0:all,1:executing,2:history
   const [orderType, setOrderType] = useState(0);
   const items: any = [
@@ -98,7 +101,7 @@ export default function index() {
     if (page === 1) setOrderLoading(true);
     if (orderType === 0 && currentIndex === 1) {
     }
-    console.log('get my all orders');
+    // console.log('get my all orders');
     if (orderType === 1 && currentIndex === 1) {
     }
     // console.log('get my executing orders');
@@ -139,6 +142,7 @@ export default function index() {
           setOrderLoading(false);
           setMoreOrderLoading(false);
         }
+        console.log(res.data.orders)
       }
     } catch (err) {
       setOrderLoading(false);
@@ -149,11 +153,15 @@ export default function index() {
   useEffect(() => {
     // if (currentIndex === 0) console.log('get all orders');
     // if (currentIndex === 1) console.log('get user orders');
+    console.log('currentIndex or orderType changed')
+    getOrderList(1,chainId)
   }, [currentIndex, orderType]);
   useEffect(() => {
-    if (chainId === contractConfig?.chainId.toString()) {
-      getOrderList(1, chainId);
-      setOrderLoading(true);
+    if(chainId && contractConfig){
+      if (chainId === contractConfig.chainId.toString()) {
+          getOrderList(1, chainId);
+          setOrderLoading(true);
+      }
     }
   }, [chainId, contractConfig]);
   return (
@@ -172,7 +180,10 @@ export default function index() {
               <div
                 style={{
                   display: 'flex',
-                  width: '45%',
+                  flex:'1 1',
+                  // width: '65%',
+                  maxWidth:'60%',
+                  
                   justifyContent: 'space-between',
                 }}
               >
@@ -215,6 +226,15 @@ export default function index() {
               >
                 <p>{t('limit.live orders')}</p>
               </span>
+              {/* <span> */}
+              <img
+                style={{width:'40px',cursor:'pointer'}}
+                src='/refresh.svg'
+                onClick={()=>{
+                  getOrderList(1, chainId);
+                }}
+              />
+              {/* </span> */}
               {/* <span className={`orders-btn ${currentIndex===1?'active':''}`}
                 onClick={()=>setCurrentIndex(1)}>
                 <p>
@@ -245,8 +265,6 @@ export default function index() {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
                       d="M13.762 8.15192C14.1077 7.72385 14.0727 7.06837 13.6837 6.68786L7.62603 0.761945C7.26901 0.412685 6.73099 0.412685 6.37397 0.761945L0.316282 6.68786C-0.0726863 7.06837 -0.107722 7.72385 0.238028 8.15192C0.583776 8.57999 1.17938 8.61855 1.56835 8.23804L7 2.92454L12.4316 8.23804C12.8206 8.61855 13.4162 8.57999 13.762 8.15192Z"
                       fill={
                         currentIndex === 1
@@ -292,7 +310,10 @@ export default function index() {
                   {/* <Spin /> */}
                 </div>
               ) : (
-                <>{orderLoading && <Loading status={'20'} />}</>
+                <>
+                  {orderLoading && <Loading status={'20'} />}
+                  {orderList.length===0&&!orderLoading&&(<Nodata />)}
+                </>
               )}
               {/* {currentIndex===2?(
                   orderList.filter((item:any)=>item?.uid===user?.uid).map((item)=>(
@@ -325,7 +346,7 @@ export default function index() {
             </div>
           </div>
           <div className="limit-right">
-            <CreateOrder getOrderList={getOrderList} />
+            <CreateOrder />
           </div>
           <Modal
             maskClosable={false}

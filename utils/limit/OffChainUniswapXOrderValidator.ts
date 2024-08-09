@@ -9,7 +9,7 @@ import {
   OrderType, 
 } from '@uniswap/uniswapx-sdk';
 import { BigNumber } from 'ethers'
-import { ONE_DAY_IN_SECONDS, chainConfig } from './constants'
+import { ONE_YEAR_IN_SECONDS, chainConfig } from './constants'
 import FieldValidator from './field-validator'
 import { OrderValidationResponse } from './response'
 
@@ -20,7 +20,7 @@ export type SkipValidationMap = {
 export class OffChainUniswapXOrderValidator {
   constructor(
     private readonly getCurrentTime = Math.round(new Date().getTime() / 1000),
-    private readonly deadlineValidityPeriodSeconds = ONE_DAY_IN_SECONDS,
+    private readonly deadlineValidityPeriodSeconds = ONE_YEAR_IN_SECONDS,
     // private readonly skipValidationMap?: SkipValidationMap
   ) {}
 
