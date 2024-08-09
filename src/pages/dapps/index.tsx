@@ -53,16 +53,16 @@ export default function index() {
       },
       key: 'buyBot',
     },
-    // {
-    //   imgAc: '/snipingActive.png',
-    //   img: '/snipingMore.png',
-    //   status: params?.id === 'limit',
-    //   name: 'Limit',
-    //   onClick: () => {
-    //     history('/dapps/limit');
-    //   },
-    //   key: 'limit',
-    // },
+    {
+      imgAc: '/limitActive.svg',
+      img: '/limit.svg',
+      status: params?.id === 'limit',
+      name: 'Limit',
+      onClick: () => {
+        history('/dapps/limit');
+      },
+      key: 'limit',
+    },
     // {
     //   imgAc: '/mainActive.svg',
     //   img: '/mainMore.svg',
