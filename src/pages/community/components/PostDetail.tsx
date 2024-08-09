@@ -1,8 +1,6 @@
 import React,{ useCallback, useEffect, useState, useContext } from 'react';
-const Tweets = React.lazy(() => import('@/components/Tweets/components/tweets'));
-
-const SendPost = React.lazy(() => import('./SendPost'));
-
+import Tweets from'@/components/Tweets/components/tweets'
+import SendPost from'./SendPost'
 import Request from '@/components/axios.tsx';
 import Cookies from 'js-cookie';
 const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));

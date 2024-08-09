@@ -71,7 +71,6 @@ function ManagePairListAndContract() {
         }}
         onClick={(data) => {
           history(
-            // `/dapps/tokencreation/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
             `/dapps/tokencreation/pairDetail/${data.pairAddress}/${data.token0}/${data.token1}`
           );
         }}
@@ -91,7 +90,6 @@ function ManagePairListAndContract() {
             data={{ title: t('token.can'), address: router?.address }}
             onClick={() => {
               history(
-                // `/dapps/tokencreation/tokenDetail?add=${router?.address}&cId=${router?.id}`
                 `/dapps/tokencreation/tokenDetail/${router?.address}/${router?.id}`
               );
             }}

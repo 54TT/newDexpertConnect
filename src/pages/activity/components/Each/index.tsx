@@ -2,17 +2,14 @@ import { useLocation, useParams } from 'react-router-dom';
 import { CountContext } from '@/Layout.tsx';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-const Modal = React.lazy(() => import('./components/modal.tsx'));
-
+import Modal from './components/modal.tsx'
 import cookie from 'js-cookie';
-const AcyivityList = React.lazy(() => import('./components/acyivityList.tsx'));
-
+import AcyivityList from './components/acyivityList.tsx'
 const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
-
 import NotificationChange from '@/components/message';
 import Request from '@/components/axios.tsx';
-const SpecialOrPass = React.lazy(() => import('../specialOrPass.tsx'));
-const Tables = React.lazy(() => import('./components/table.tsx'));
+import SpecialOrPass from'../specialOrPass.tsx'
+import Tables from './components/table.tsx'
 function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   const par = data.length > 0 ? data : data?.campaign ? [data] : [];
   const { browser, languageChange, isLogin, setUserPar, user }: any =

@@ -51,12 +51,10 @@ export default function OrderCard({
     const now=new Date()
     const then=new Date(timeStamp*1000)
     const diff=now.getTime()-then.getTime()
-
     const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-
     if (days > 0) {
       return `${days} day${days !== 1 ? 's' : ''} ago`;
     } else if (hours > 0) {

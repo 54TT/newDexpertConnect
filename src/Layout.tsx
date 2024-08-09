@@ -69,7 +69,7 @@ Decimal.set({ toExpPos: 24, precision: 24 });
 function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
-  const [contractConfig, setContractConfig] = useState(); 
+  const [contractConfig, setContractConfig] = useState();
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
   const [loginProvider, setloginProvider] = useState<any>(null);
@@ -87,7 +87,7 @@ function Layout() {
     if (walletRdns && environment.length > 0) {
       changeInfoRdns(walletRdns);
     }
-  }, [environment,walletRdns]);
+  }, [environment, walletRdns]);
   useEffect(() => {
     //   默认执行
     if (!walletRdns) {
@@ -190,6 +190,13 @@ function Layout() {
     setChainId(Number(targetChainId).toString());
     changeConfig(Number(targetChainId).toString());
   };
+
+  const onAccountsChanged = (account) => {
+    if (account.length > 0 && account?.[0] !== loginProvider?.selectAddress) {
+      handleLogin({ provider: loginProvider });
+    }
+  };
+
   useEffect(() => {
     if (isLogin && loginProvider) {
       let changeChainId = '1';
@@ -199,6 +206,7 @@ function Layout() {
       try {
         // @ts-ignore
         loginProvider?.on('chainChanged', onChainChange);
+        loginProvider?.on('accountsChanged', onAccountsChanged);
         loginProvider?.request({
           method: 'wallet_switchEthereumChain',
           params: [
@@ -377,6 +385,7 @@ function Layout() {
           if (token?.data && token?.status === 200) {
             // 签名消息
             const message = token?.data?.nonce;
+            console.log(message)
             const sign = await i?.provider?.request({
               method: 'personal_sign',
               params: [message, account[0]],

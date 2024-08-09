@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from "react";
-const SendPost = React.lazy(() => import('../components/SendPost.tsx'));
+import SendPost from'../components/SendPost.tsx'
 const TWeetHome = React.lazy(() => import('@/components/Tweets/index.tsx'));
 /* import classNames from "classnames"; */
 export interface TabType {

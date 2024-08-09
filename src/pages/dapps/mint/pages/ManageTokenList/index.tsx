@@ -76,7 +76,7 @@ function ManageTokenList() {
       setSearchPar('');
       setSearName('');
     }
-  }, [chainId,contractConfig]);
+  }, [chainId, contractConfig]);
   const items = (item: any) => {
     return (
       <TokenItem
@@ -87,6 +87,8 @@ function ManageTokenList() {
           desc: '（' + item.name + '）',
           id: item.contractId,
           address: item.address,
+          status:
+            item?.isDeploy === '0' ? t('token.Deploying') : item?.isDeploy === '1' ? t('token.Deploy') : t('token.failed'),
         }}
         onClick={({ id, address, title }) =>
           history(`/dapps/tokencreation/managePair/${id}/${address}/${title}`)

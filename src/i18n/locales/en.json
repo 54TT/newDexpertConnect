@@ -446,7 +446,9 @@
     "Limits":"Limits Removed",
     "Trade":"Trade Opened",
     "Renounces":"Renounce Ownership",
-    "go":"Go and check"
+    "go":"Go and check",
+    "Deploy":"Deploy successful",
+    "failed":"Deploy failed"
 
   }
 }

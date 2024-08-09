@@ -46,13 +46,22 @@ export default function resultBox({
   };
   const deployContract = async () => {
     try {
-      const { data } = await getByteCode();
+      // const { data } = await getByteCode();
+      // const signer = await ethersProvider.getSigner();
       const { decimals, launchFee } = contractConfig;
-      const { bytecode, metadataJson, contractId } = data;
       const ethersProvider = new ethers.providers.Web3Provider(loginProvider);
-      const signer = await ethersProvider.getSigner();
+      const data: any = await Promise.all([
+        getByteCode(),
+        ethersProvider.getSigner(),
+      ]);
+      const { bytecode, metadataJson, contractId } = data?.[0]?.data;
       const abi = JSON.parse(metadataJson).output.abi;
-      const contractFactory = new ethers.ContractFactory(abi, bytecode, signer);
+      const contractFactory = new ethers.ContractFactory(
+        abi,
+        bytecode,
+        data?.[1]?.signer
+      );
+
       // 先默认使用手续费版本
       // launchTokenPass, setLaunchTokenPass   pass或者收费   launchTokenPass
       const { deployTransaction, address } = await contractFactory.deploy(

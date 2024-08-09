@@ -113,7 +113,8 @@ function Left({ par }: any) {
         <div>
           <span>Pair:</span>
           <a
-            href={`https://etherscan.io/address/${simplify(par?.id)}`}
+          target='_blank'
+            href={`https://etherscan.io/address/${par?.id}`}
             style={{
               color: browser ? '#c2bebe' : 'rgb(89,175,255)',
               borderBottom: browser ? 'none' : '1px solid rgb(89,175,255)',

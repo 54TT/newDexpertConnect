@@ -2,10 +2,10 @@ import './eventsList.less'
 import cookie from "js-cookie";
 import { useTranslation } from "react-i18next";
 import { CountContext } from "@/Layout.tsx";
-import React,{ useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Request from "@/components/axios.tsx";
 import NotificationChange from '@/components/message'
-const EachActivity = React.lazy(() => import('./Each/index.tsx'));
+import EachActivity  from './Each/index.tsx'
 import { throttle, } from "lodash";
 function task({ getParams, data, select, setSelect, params, }: any) {
     const { getAll, } = Request()

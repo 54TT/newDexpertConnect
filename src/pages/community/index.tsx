@@ -1,15 +1,12 @@
-import React,{ useContext, useEffect, useState } from 'react';
-const UserInfo = React.lazy(() => import('./components/UserInfo'));
+import { useContext, useEffect, useState } from 'react';
+import UserInfo from'./components/UserInfo'
 import './index.less';
-const PostContent = React.lazy(() => import('./components/PostContent'));
-
-const CommunityRight = React.lazy(() => import('./components/RightSider'));
-
+import PostContent from'./components/PostContent'
+import CommunityRight from'./components/RightSider'
 import { useNavigate, useParams } from 'react-router-dom';
-const PostDetail = React.lazy(() => import('./components/PostDetail'));
-const Profile = React.lazy(() => import('./components/Profile'));
-
-const ContactList = React.lazy(() => import('./components/ContactList'));
+import PostDetail from'./components/PostDetail'
+import Profile from'./components/Profile'
+import ContactList from'./components/ContactList'
 import { CountContext } from '@/Layout.tsx';
 import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';

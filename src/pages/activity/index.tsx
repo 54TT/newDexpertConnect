@@ -8,7 +8,7 @@ const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import { CountContext } from '@/Layout.tsx';
 import { useTranslation } from 'react-i18next';
-const EventsList = React.lazy(() => import('./components/eventsList.tsx'));
+import EventsList from './components/eventsList.tsx'
 const Backgroundwall = React.lazy(
   () => import('@/components/Backgroundwall.tsx')
 );

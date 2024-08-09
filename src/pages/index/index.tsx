@@ -2,7 +2,6 @@ import { useContext } from 'react';
 // import Right from './components/right.tsx';
 import { CountContext } from '@/Layout.tsx';
 import Left from './components/left.tsx';
-
 import './index.less';
 function Index() {
   const { browser }: any = useContext(CountContext);
@@ -17,7 +16,7 @@ function Index() {
       }}
     >
       <Left />
-        {/* <Right /> */}
+      {/* <Right /> */}
     </div>
   );
 }

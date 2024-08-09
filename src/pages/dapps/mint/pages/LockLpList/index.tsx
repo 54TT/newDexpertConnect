@@ -11,7 +11,7 @@ import NotificationChange from '@/components/message';
 import dayjs, { Dayjs } from 'dayjs';
 import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
 const BottomButton = React.lazy(() => import('../../component/BottomButton'));
-const CommonModal = React.lazy(() => import('@/components/CommonModal'));
+import CommonModal from'@/components/CommonModal'
 import { DatePicker, Slider } from 'antd';
 import type { SliderSingleProps } from 'antd';
 import './index.less';

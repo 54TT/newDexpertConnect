@@ -2,7 +2,6 @@ import './index.less';
 import React from 'react'
 import { FormDataType } from './pages/LaunchFill/index.tsx';
 const LaunchFill = React.lazy(() => import('./pages/LaunchFill/index.tsx'));
-
 import { Route, Routes } from 'react-router-dom';
 const LaunchHome = React.lazy(() => import('./pages/LaunchHome/index.tsx'));
 

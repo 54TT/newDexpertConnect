@@ -1,11 +1,8 @@
-import { Button, ConfigProvider, InputNumber } from 'antd';
+import { InputNumber } from 'antd';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 const BottomButton = React.lazy(() => import('../../component/BottomButton'));
-
 const InfoList = React.lazy(() => import('../../component/InfoList'));
-
 const PageHeader = React.lazy(() => import('../../component/PageHeader'));
-
 const ToLaunchHeader = React.lazy(
   () => import('../../component/ToLaunchHeader')
 );
@@ -19,12 +16,10 @@ import { CountContext } from '@/Layout';
 import { LaunchERC20Abi } from '@abis/LaunchERC20Abi';
 import { ethers } from 'ethers';
 import NotificationChange from '@/components/message';
-import { CheckCircleOutlined, RightOutlined } from '@ant-design/icons';
 const CommonModal = React.lazy(() => import('@/components/CommonModal'));
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import Button from './component/button';
 function ManageTokenDetail() {
-  const history = useNavigate();
   const { t } = useTranslation();
   const router = useParams();
   const { chainId, loginProvider, browser, contractConfig } =
@@ -38,16 +33,11 @@ function ManageTokenDetail() {
   const [isOpenTrade, setIsOpenTrade] = useState(false);
   const [isRemoveLimit, setIsRemoveLimit] = useState(false);
   const [isOwn, setIsOwn] = useState(true);
-  const [, setLoadingPage] = useState(false);
   const [openTradeModal, setOpenTradeModal] = useState(false);
   const [ethBalance, setEthBalance] = useState('0');
   const [ethAmount, setEthAmount] = useState(0);
-  const [, setTokenBalance] = useState('0');
   // 按钮正在执行状态
   const [openTradeLoading, setOpenTradeLoading] = useState(false);
-  const [verifyLoading, setVerifyLoading] = useState(false);
-  const [removeLimitLoading, setRemoveLimitLoading] = useState(false);
-  const [renounceLoading, setRenounceLoading] = useState(false);
 
   useEffect(() => {
     setIsLoading(false);
@@ -58,10 +48,9 @@ function ManageTokenDetail() {
     ) {
       initData();
     }
-  }, [chainId, router?.address,contractConfig]);
+  }, [chainId, router?.address, contractConfig]);
 
   const initData = async () => {
-    setLoadingPage(true);
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = web3Provider.getSigner();
     const walletAddress = await signer.getAddress();
@@ -86,7 +75,6 @@ function ManageTokenDetail() {
       }),
     ]);
     setIsOwn(data[0] === walletAddress);
-    setTokenBalance(data[1]);
     setIsRemoveLimit(data[2]);
     setIsOpenTrade(data[3]);
     const ethWei = data[4].toString();
@@ -96,7 +84,6 @@ function ManageTokenDetail() {
     setEthBalance(ethers.utils.formatEther(ethWei));
     setTokenData(data[5]?.data);
     setIsLoading(true);
-    setLoadingPage(true);
   };
   const tokenInfoData = useMemo(() => {
     if (!tokenData) return [];
@@ -119,44 +106,6 @@ function ManageTokenDetail() {
       },
     ];
   }, [tokenData]);
-
-  const verifyingContract = async () => {
-    if (!isOwn) return;
-    if (isVerify) return;
-    setVerifyLoading(true);
-    try {
-      const data = await getAll({
-        method: 'post',
-        url: '/api/v1/launch-bot/contract/verify',
-        data: { contractId: router?.id },
-        token,
-        chainId,
-      });
-      if (data?.data?.tx) {
-        setVerifyLoading(false);
-        setIsVerify(true);
-      }
-    } catch (e) {
-      setVerifyLoading(false);
-      return null;
-    }
-    setVerifyLoading(false);
-  };
-
-  const removeLimit = async () => {
-    if (!isOwn) return;
-    if (isRemoveLimit) return;
-    try {
-      const tx = await erc20Contract.removeLimits();
-      const recipent = await tx.wait();
-      if (tx?.hash && recipent) {
-        history('/dapps/tokencreation/result/' + tx?.hash + '/removeLimits');
-      }
-    } catch (e) {
-      setRemoveLimitLoading(false);
-      return null;
-    }
-  };
 
   const approve = async (spender, amount) => {
     const tx = await erc20Contract.approve(spender, amount);
@@ -209,20 +158,16 @@ function ManageTokenDetail() {
     }
   };
 
-  const renounceOwnerShip = async () => {
-    if (!isOwn) return;
-    try {
-      const tx = await erc20Contract.renounceOwnership();
-      const recipent = await tx.wait();
-      if (tx?.hash && recipent) {
-        history(
-          '/dapps/tokencreation/result/' + tx?.hash + '/renounceOwnership'
-        );
-      }
-    } catch (e) {
-      setRenounceLoading(false);
-      return null;
-    }
+  const buttonParams = {
+    isVerify,
+    setIsVerify,
+    router,
+    isOwn,
+    erc20Contract,
+    isRemoveLimit,
+    setOpenTradeModal,
+    openTradeLoading,
+    isOpenTrade,
   };
   return (
     <div className="manage-tokenBox">
@@ -237,92 +182,7 @@ function ManageTokenDetail() {
         <Loading status={'20'} browser={browser} />
       )}
       {!isLoading && <div style={{ width: '100%', height: '20px' }}></div>}
-      <ConfigProvider
-        theme={{
-          components: {
-            Button: {
-              defaultGhostBorderColor: 'rgba(255, 255, 255, 0.55)',
-              defaultGhostColor: 'rgba(255, 255, 255, 0.55)',
-            },
-          },
-        }}
-      >
-        <div className={`manage-token-button_box ${isOwn ? '' : 'not-owner'}`}>
-          <Button
-            iconPosition={'end'}
-            className={isVerify ? 'buttonBackActi' : 'buttonBack'}
-            ghost
-            icon={
-              isVerify ? (
-                <CheckCircleOutlined style={{ marginLeft: '8px' }} />
-              ) : (
-                <RightOutlined style={{ marginLeft: '8px' }} />
-              )
-            }
-            loading={verifyLoading}
-            onClick={() => verifyingContract()}
-          >
-            {t('token.Verify')}
-          </Button>
-          <Button
-            iconPosition={'end'}
-            className={!isOwn ? 'buttonBackActi' : 'buttonBack'}
-            ghost
-            icon={
-              !isOwn ? (
-                <CheckCircleOutlined style={{ marginLeft: '8px' }} />
-              ) : (
-                <RightOutlined style={{ marginLeft: '8px' }} />
-              )
-            }
-            loading={renounceLoading}
-            onClick={() => {
-              setRenounceLoading(true);
-              renounceOwnerShip();
-            }}
-          >
-            {t('token.Renounce')}
-          </Button>
-          <Button
-            iconPosition={'end'}
-            className={isRemoveLimit ? 'buttonBackActi' : 'buttonBack'}
-            ghost
-            icon={
-              isRemoveLimit ? (
-                <CheckCircleOutlined style={{ marginLeft: '8px' }} />
-              ) : (
-                <RightOutlined style={{ marginLeft: '8px' }} />
-              )
-            }
-            loading={removeLimitLoading}
-            onClick={() => {
-              setRemoveLimitLoading(true);
-              removeLimit();
-            }}
-          >
-            {t('token.Remove')}
-          </Button>
-        </div>
-      </ConfigProvider>
-      <BottomButton
-        ghost
-        bottom
-        classname={isOpenTrade ? 'openTradeSelect' : 'openTrade'}
-        loading={openTradeLoading}
-        icon={
-          isOpenTrade ? (
-            <CheckCircleOutlined style={{ marginLeft: '8px' }} />
-          ) : (
-            <RightOutlined style={{ marginLeft: '8px' }} />
-          )
-        }
-        text={<div>{t('token.Open')}</div>}
-        onClick={() => {
-          if (!isOwn) return;
-          if (isOpenTrade) return;
-          setOpenTradeModal(true);
-        }}
-      />
+      <Button {...buttonParams} />
       <CommonModal
         className="mint-common-modal"
         open={openTradeModal}

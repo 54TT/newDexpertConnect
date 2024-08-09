@@ -16,19 +16,22 @@ interface TokenItemPropsType {
 }
 function TokenItem({ onClick, data, classname }: TokenItemPropsType) {
   // const { title, remark, desc, tips } = data;
-  const { title, desc} = data;
+  const { title, desc, status } = data;
   return (
     <div
       className={` launch-token-item  ${classname}`}
       onClick={() => onClick?.(data)}
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: 'pointer', justifyContent: 'space-between' }}
     >
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         {title && (
           <div className="launch-token-item-title">
             {title.toString().replace('/', ' / ')}
           </div>
         )}
-      {desc && <div className="launch-token-item-desc">{desc}</div>}
+        {desc && <div className="launch-token-item-desc">{desc}</div>}
+      </div>
+      <div style={{color:'rgba(255,255,255,0.55)',fontSize:'14px'}}>{status}</div>
     </div>
   );
 }

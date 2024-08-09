@@ -6,7 +6,7 @@ import Request from '@/components/axios.tsx';
 import Cookies from 'js-cookie';
 import cookie from 'js-cookie';
 import { formatAddress, getQueryParams } from '@/../utils/utils.ts';
-const CommonModal = React.lazy(() => import('@/components/CommonModal/index.tsx'));
+import CommonModal from'@/components/CommonModal/index.tsx'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { throttle } from 'lodash';
 import NotificationChange from '@/components/message';

@@ -45,6 +45,8 @@
 }
 
 .mint-scroll {
+  -ms-overflow-style: none;
+scrollbar-width: none;
   /* 滚动条 */
   &::-webkit-scrollbar-thumb:horizontal {
     /*水平滚动条的样式*/
@@ -75,6 +77,11 @@
     background-color: #9f9f9f;
     -webkit-border-radius: 4px;
   }
+}
+
+
+.mint-scroll::-webkit-scrollbar {
+display: none;
 }
 
 .mint-common-modal {
