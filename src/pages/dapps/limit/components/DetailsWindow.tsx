@@ -166,7 +166,7 @@ const DetailsWindow=({order})=>{
           <div className="details-window-content-body-item">
             <span>Fill At</span>
             <span>
-              -
+              {order?.fillerAt=='0'?'-':timeStampForrmat(order?.fillerAt)}
             </span>
           </div>
         </div>

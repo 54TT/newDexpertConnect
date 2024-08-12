@@ -130,6 +130,8 @@ export default function CreateOrder() {
             // "fillerAt": "1721136287",
             // price:tokenRateBN,
             uid:user.uid,
+            inputTokenLogo:payToken.logoUrl,
+            outputTokenLogo:receiveToken.logoUrl,
           }
         },
         token,
@@ -471,6 +473,7 @@ export default function CreateOrder() {
             variant="borderless"
             value={payTokenAmount}
             placeholder="0"
+            style={{cursor:isLogin?'':'not-allowed'}}
             onChange={(e)=>{
               if(Number(e.target.value)<=Number(payTokenBalance)) setPayTokenAmount(e.target.value)
               if(Number(e.target.value)>Number(payTokenBalance)) setPayTokenAmount(payTokenBalance.toString())
@@ -534,6 +537,7 @@ export default function CreateOrder() {
             variant="borderless"
             placeholder="0"
             value={receiveTokenAmount}
+            style={{cursor:isLogin?'':'not-allowed'}}
             onChange={(e)=>{
               if (/^\d*\.?\d*$/.test(e.target.value)) {
                 setReceiveTokenAmount(e.target.value);

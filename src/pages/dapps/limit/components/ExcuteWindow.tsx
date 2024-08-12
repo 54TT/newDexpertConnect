@@ -11,6 +11,7 @@ import { getUniswapV2RouterContract } from "@utils/contracts";
 import Decimal from "decimal.js";
 import { getAmountOut } from "@utils/swap/v2/getAmountOut";
 import getBalanceRpc from "@utils/getBalanceRpc";
+import {setMany} from "@utils/change";
 const ExecuteWindow = ({
   order,
   setShowDetailsWindow,
@@ -249,7 +250,7 @@ const ExecuteWindow = ({
         <span>
           <DefaultTokenImg
             name={order?.inputTokenSymbol}
-            icon={order?.logoUrl}
+            icon={order?.inputTokenLogo}
           />
         </span>
         <span className="amount-text">
@@ -358,7 +359,7 @@ const ExecuteWindow = ({
           <div  className="execute-body-row">
             <span>你将得到</span>
             <span>
-              {Number(tokenInputAmount)%1===0?Number(tokenInputAmount):Number(tokenInputAmount).toFixed(3)} {order?.inputTokenSymbol}
+              {Number(tokenInputAmount)%1===0?Number(tokenInputAmount):setMany(tokenInputAmount)} {order?.inputTokenSymbol}
               </span>
           </div>
           <div  className="execute-body-row paytoken-balance">

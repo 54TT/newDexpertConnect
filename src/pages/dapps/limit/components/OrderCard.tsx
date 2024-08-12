@@ -32,6 +32,7 @@ export default function OrderCard({
   const [rateLoading,setRateLoading]=useState(true)
   // const [timeLoading,setTimeLoading]=useState(true)
   const [timeLeft, setTimeLeft] = useState({
+    days:0,
     hours: 0,
     minutes: 0,
     seconds: 0
@@ -100,26 +101,6 @@ export default function OrderCard({
     //   return num.toNumber().toFixed(6).replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.$/, '')
     // }
   }
-  // const timeBefore=(timeStamp:number)=>{
-  //   const now=new Date()
-  //   const then=new Date(timeStamp*1000)
-  //   const diff=now.getTime()-then.getTime()
-
-  //   const seconds = Math.floor(diff / 1000);
-  //   const minutes = Math.floor(seconds / 60);
-  //   const hours = Math.floor(minutes / 60);
-  //   const days = Math.floor(hours / 24);
-
-  //   if (days > 0) {
-  //     return `${days} day${days !== 1 ? 's' : ''} ago`;
-  //   } else if (hours > 0) {
-  //     return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
-  //   } else if (minutes > 0) {
-  //     return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
-  //   } else {
-  //     return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
-  //   }
-  // }
   // 倒计时
   useEffect(() => {
     const timer = setInterval(() => {
@@ -128,17 +109,19 @@ export default function OrderCard({
 
       if (timeRemaining <= 0) {
         clearInterval(timer);
-        setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+        setTimeLeft({ days:0, hours: 0, minutes: 0, seconds: 0 });
       } else {
-        const hours = Math.floor(timeRemaining / (60 * 60));
+        const days = Math.floor(timeRemaining / (60 * 60 * 24));
+        const hours = Math.floor((timeRemaining % (60 * 60 * 24)) / (60 * 60));
         const minutes = Math.floor((timeRemaining % (60 * 60)) / 60);
         const seconds = Math.floor(timeRemaining % 60);
 
-        setTimeLeft({ hours, minutes, seconds });
+        setTimeLeft({days, hours, minutes, seconds });
       }
     }, 1000);
 
     // 清理定时器
+    // setTimeLoading(false)
     return () => clearInterval(timer);
   }, [deadline]);
   // 获取当前汇率与订单汇率的比值
@@ -221,8 +204,8 @@ export default function OrderCard({
       <div className="order-card-header">
         <div>
           <div className='order-card-header-left'>
-            <div style={{display:'flex',alignItems:'center'}}>
-              <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
+            <div style={{display:'flex',alignItems:'center',width:'80%'}}>
+              <DefaultTokenImg name={order.outputTokenSymbol} icon={order?.outputTokenLogo} />
               <span className="order-output-amount">{BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals) +' '+order.inputTokenSymbol} </span>
               </div>
             {/* <span style={{display:'block',marginTop:'4px'}}>{order.inputToken.slice(0,6)}...{order.inputToken.slice(-8)}</span> */}
@@ -258,9 +241,9 @@ export default function OrderCard({
           <div style={{display:'flex',alignItems:'center'}}>
             <span className='order-body-item-header'>单价</span>
             <span style={{display:"flex",paddingLeft:'10px'}}>
-              <DefaultTokenImg name={order?.outputTokenSymbol} icon={''} />
+              <DefaultTokenImg name={order?.outputTokenSymbol} icon={order?.outputTokenLogo?order?.outputTokenLogo:''} />
               <p>/</p>
-              <DefaultTokenImg name={order?.inputTokenSymbol} icon={''} />
+              <DefaultTokenImg name={order?.inputTokenSymbol} icon={order.inputTokenLogo?order.inputTokenLogo:''} />
             </span>
           </div>
           <span className='order-rate'>{BNtoNumber(order.orderPrice)} {order.outputTokenSymbol}/{order.inputTokenSymbol}</span>
@@ -270,7 +253,7 @@ export default function OrderCard({
         <div style={{display:'flex',alignItems:'center'}}>
           <span className='order-body-item-header'>总价</span>
           <span style={{paddingLeft:'10px'}}>
-            <DefaultTokenImg name={order.outputTokenSymbol} icon={''} />
+            <DefaultTokenImg name={order.outputTokenSymbol} icon={order?.outputTokenLogo?order?.outputTokenLogo:''} />
         </span>
         </div>
         <span className='order-rate'>
@@ -304,11 +287,35 @@ export default function OrderCard({
       <div className="order-card-footer">
         <span className="order-time">
           剩余时间：
-          {/* {timeBefore(order.createdAt)} */}
-          {timeLeft.hours !== 0 || timeLeft.minutes !== 0 || timeLeft.seconds !== 0 ?
-            `${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`
-          : '已过期'}
-          
+          {order?.orderStatus==='expired'?(
+            '已过期'
+          ):(
+            <>
+            {timeLeft.days > 0 && (
+              <span>
+                {timeLeft.days}d{' '}
+              </span>
+            )}
+            {timeLeft.hours > 0 && (
+              <span>
+                {timeLeft.hours}h{' '}
+              </span>
+            )}
+            {timeLeft.minutes > 0 && (
+              <span>
+                {timeLeft.minutes}m{' '}
+              </span>
+            )}
+            {timeLeft.seconds > 0 && (
+              <span>
+                {timeLeft.seconds}s
+              </span>
+            )}
+            {!(timeLeft.days > 0 || timeLeft.hours > 0 || timeLeft.minutes > 0 || timeLeft.seconds > 0) && (
+              <Skeleton.Button size="small" active />
+            )}
+          </>
+          )}
         </span>
         {type === 'my' &&
           <span
