@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
+import React,{ useState, useEffect, useContext } from 'react';
 import cookie from 'js-cookie';
-import Load from '@/components/allLoad/load';
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
-import { useState, useEffect, useContext } from 'react';
-import Loading from '@/components/allLoad/loading';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 import { getScanLink } from '../../../../utils/getScanLink';
 export default function sellTokenModal({
   handleCancel,

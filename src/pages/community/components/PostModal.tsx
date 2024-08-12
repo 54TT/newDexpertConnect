@@ -2,7 +2,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { Modal, ModalProps, Button } from 'antd'
 import classNames from 'classnames';
 import React from 'react';
-import SendPost from './SendPost';
+import SendPost from'./SendPost'
 interface PostSendModaltypeProps extends React.PropsWithChildren {
   open: boolean;
   onPublish: (data: any) => void;

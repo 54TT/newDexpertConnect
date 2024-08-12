@@ -6,17 +6,20 @@ import {
   Skeleton,
   Collapse,
 } from 'antd';
-import { useState, useContext } from 'react';
+import React,{ useState, useContext } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
 import { getERC20Contract } from '@utils/contracts';
-import Load from '@/components/allLoad/load';
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
+
 import NotificationChange from '@/components/message';
-import UsePass from '@/components/UsePass';
+const UsePass = React.lazy(() => import('@/components/UsePass'));
 import Decimal from 'decimal.js';
 import _ from 'lodash';
-import InputSearch from './inputSearch';
-import SelectTokenModal from '@/components/SelectTokenModal';
+const InputSearch = React.lazy(() => import('./inputSearch'));
+
+const SelectTokenModal = React.lazy(() => import('@/components/SelectTokenModal'));
+
 import { getUniswapV2RouterContract } from '@utils/contracts';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
 export default function fillData({

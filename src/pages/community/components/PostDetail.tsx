@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useState, useContext } from 'react';
-import Tweets from '@/components/Tweets/components/tweets';
-import SendPost from './SendPost';
+import React,{ useCallback, useEffect, useState, useContext } from 'react';
+import Tweets from'@/components/Tweets/components/tweets'
+import SendPost from'./SendPost'
 import Request from '@/components/axios.tsx';
 import Cookies from 'js-cookie';
-import Loading from '@/components/allLoad/loading.tsx';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getQueryParams } from '@/../utils/utils';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { throttle } from 'lodash';
-import Nodata from '@/components/Nodata.tsx';
+const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
 import { CountContext } from '@/Layout.tsx';
 // 渲染单条评论
 const RenderCommentTweet = ({ data = {}, type }: any) => {

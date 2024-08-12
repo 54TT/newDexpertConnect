@@ -5,7 +5,7 @@ import { formatAddress } from '@utils/utils';
 import {} from '../SelectTokenModal';
 import Request from '../axios';
 import Cookies from 'js-cookie';
-import DefaultTokenImg from '../DefaultTokenImg';
+import DefaultTokenImg from '../DefaultTokenImg'
 import { CountContext } from '@/Layout';
 import { getERC20Contract } from '@utils/contracts';
 import { getHistoryToken, addHistoryToken } from '@utils/indexDBfn';
@@ -139,7 +139,6 @@ function SelectToken({ onChange, chainName, disabledTokens }: SelectTokenType) {
     const signer = await provider.getSigner();
     const address = await signer.getAddress();
     const historyToken = await getHistoryToken({ address, chainId });
-
     setHistoryItems(historyToken || []);
   };
 

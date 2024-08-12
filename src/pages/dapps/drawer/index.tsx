@@ -1,15 +1,18 @@
-import Load from '@/components/allLoad/load.tsx';
-import Copy from '@/components/copy';
+import React,{ useEffect, useState, useContext } from 'react';
+const Copy = React.lazy(() => import('@/components/copy'));
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import './index.less';
-import { useEffect, useState, useContext } from 'react';
 import Request from '@/components/axios.tsx';
 import { Drawer } from 'antd';
-import Dpass from './components/dpass';
+const Dpass = React.lazy(() => import('./components/dpass'));
 import { CountContext } from '@/Layout.tsx';
 import { FloatingBubble } from 'antd-mobile';
-import History from './components/history';
-import AddWallet from './components/addWallet';
-import SetWallet from './components/setWallet';
+const History = React.lazy(() => import('./components/history'));
+
+const AddWallet = React.lazy(() => import('./components/addWallet'));
+
+const SetWallet = React.lazy(() => import('./components/setWallet'));
+
 import cookie from 'js-cookie';
 import { useTranslation } from 'react-i18next';
 

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './index.less';
-import WalletList from './components/walletList';
-import AddMethod from './components/addMethod';
-import ImportAndCreate from './components/importAndCreate';
+import WalletList from'./components/walletList'
+import AddMethod from'./components/addMethod'
+import ImportAndCreate from'./components/importAndCreate'
 import { useTranslation } from 'react-i18next';
 export default function index({ setAddWallet ,setWalletId,id}: any) {
 const { t } = useTranslation();

@@ -1,12 +1,12 @@
 import { Card } from 'antd';
+import React,{ useEffect, useState, useContext } from 'react';
 import { setMany, simplify } from '@/../utils/change.ts';
 import newPair from '@/components/getNewPair.tsx';
-import Loading from '@/components/allLoad/loading.tsx';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 import { DownOutlined } from '@ant-design/icons';
-import { useEffect, useState, useContext } from 'react';
 import { throttle } from 'lodash';
 import { useLocation } from 'react-router-dom';
-import Nodata from '@/components/Nodata.tsx';
+const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout.tsx';
 function RightCard({ data, par, load }: any) {

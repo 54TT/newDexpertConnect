@@ -422,9 +422,11 @@ export default function CreateOrder() {
   },[receiveTokenAmount])
 
   useEffect(()=>{
+    if(contractConfig?.defaultTokenIn){
     const { defaultTokenIn, defaultTokenOut } = contractConfig;
     if(defaultTokenIn) setPayToken(defaultTokenIn);
     if(defaultTokenOut) setReceiveToken(defaultTokenOut);
+    }
   },[contractConfig])
   // toekn发生改变
   useEffect(()=>{

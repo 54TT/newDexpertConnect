@@ -1,7 +1,7 @@
 import './index.less';
+import React,{ useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import Copy from '@/components/copy';
-import { useContext } from 'react';
+const Copy = React.lazy(() => import('@/components/copy'));
 import { CountContext } from '@/Layout';
 function InfoList({ data, className }: { data: any; className?: string }) {
   const { contractConfig } = useContext(CountContext);
@@ -48,7 +48,7 @@ function InfoList({ data, className }: { data: any; className?: string }) {
                 <span
                   className={'address'}
                   onClick={() => {
-                    window.open(contractConfig?.tokenScan + item.value);
+                    window.open(contractConfig?.tokenScan + item?.value);
                   }}
                 >
                   {item.value.slice(0, 4) + '...' + item.value.slice(-4)}

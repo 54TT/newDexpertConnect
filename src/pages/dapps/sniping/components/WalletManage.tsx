@@ -1,16 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
+import React,{ useContext, useEffect, useState } from 'react';
 import './index.less';
 import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
 import { CountContext } from '@/Layout';
-import Loading from '@components/allLoad/loading';
-import WalletDetail from './WalletDetail';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
+const WalletDetail = React.lazy(() => import('./WalletDetail'));
 import getBalance from '@utils/getBalance';
 import { Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-import InfiniteScrollPage from '@/components/InfiniteScroll';
-import Copy from '@/components/copy';
+const InfiniteScrollPage = React.lazy(() => import('@/components/InfiniteScroll'));
+const Copy = React.lazy(() => import('@/components/copy'));
 export default function WalletManage({
   id,
   setIsShow,

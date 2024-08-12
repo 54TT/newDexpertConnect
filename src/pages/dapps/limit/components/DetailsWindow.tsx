@@ -1,4 +1,4 @@
-import { useEffect,useContext } from "react"
+import {useContext } from "react"
 import {BigNumber} from 'bignumber.js';
 import Copy from "@/components/copy";
 import { CountContext } from '@/Layout';
@@ -41,12 +41,6 @@ const DetailsWindow=({order})=>{
 
     return formattedDate;
   };
-
-  useEffect(()=>{
-    console.log(zeroAddress);
-    
-    console.log(order)
-  },[])
   return (
   <>
     <div className="details-window">

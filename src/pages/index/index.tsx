@@ -16,7 +16,7 @@ function Index() {
       }}
     >
       <Left />
-        {/* <Right /> */}
+      {/* <Right /> */}
     </div>
   );
 }

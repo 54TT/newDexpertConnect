@@ -68,7 +68,7 @@ function HeaderModal() {
     { trailing: false }
   );
   const connectWallet = throttle(
-    async function (i: any) {
+     function (i: any) {
       handleLogin(i);
       setIsModalOpen(false);
     },

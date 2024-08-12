@@ -1,6 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
-import PageHeader from '../../component/PageHeader';
-import ToLaunchHeader from '../../component/ToLaunchHeader';
+import React, { useContext, useEffect, useState } from 'react';
+const PageHeader = React.lazy(() => import('../../component/PageHeader'));
+const ToLaunchHeader = React.lazy(
+  () => import('../../component/ToLaunchHeader')
+);
 import { CountContext } from '@/Layout';
 import { useParams } from 'react-router-dom';
 import { ethers } from 'ethers';
@@ -8,8 +10,8 @@ import { UncxAbi } from '@abis/UncxAbi';
 import NotificationChange from '@/components/message';
 import dayjs, { Dayjs } from 'dayjs';
 import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
-import BottomButton from '../../component/BottomButton';
-import CommonModal from '@/components/CommonModal';
+const BottomButton = React.lazy(() => import('../../component/BottomButton'));
+import CommonModal from'@/components/CommonModal'
 import { DatePicker, Slider } from 'antd';
 import type { SliderSingleProps } from 'antd';
 import './index.less';
@@ -19,9 +21,8 @@ import { zeroAddress } from '@utils/constants';
 import approve from '@utils/approve';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-
-import Loading from '@/components/allLoad/loading';
-import Nodata from '@/components/Nodata';
+const Loading = React.lazy(() => import('@/components/allLoad/loading'));
+const Nodata = React.lazy(() => import('@/components/Nodata'));
 function LockLpList() {
   const { t } = useTranslation();
   const { contractConfig, loginProvider, chainId, browser } =
@@ -70,20 +71,7 @@ function LockLpList() {
       const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
         item;
       return {
-        title: (
-          <div>
-            <div>解锁时间</div>
-            <div>
-              {dayjs.unix(unlockDate.toString()).format('YYYY/MM/DD HH:mm:ss')}
-            </div>
-          </div>
-        ),
-        remark: (
-          <div>
-            <div>锁定LP数量</div>
-            <div>{toEthWithDecimal(lockAmount, 18)}</div>
-          </div>
-        ),
+        remark: toEthWithDecimal(lockAmount, 18),
         unlockDate,
         lockAmount,
         lockDate,
@@ -191,7 +179,10 @@ function LockLpList() {
         className="launch-manage-token-header"
         title={t('token.Unon')}
       />
-      <div style={{ maxHeight: '330px', overflow: 'overlay' }} className='mint-scroll'>
+      <div
+        style={{ maxHeight: '330px', overflow: 'overlay', overflowX: 'hidden' }}
+        className="mint-scroll"
+      >
         {isLoading ? (
           infoData.length > 0 ? (
             infoData?.map?.((item, index) => (
@@ -206,7 +197,7 @@ function LockLpList() {
                       .unix(Number(item?.unlockDate?.toString()))
                       .format('YYYY-MM-DD HH:mm:ss')}
                   </p>
-                  <p>{item?.remark?.props?.children[1]?.props?.children}</p>
+                  <p>{item?.remark}</p>
                 </div>
                 <BottomButton
                   text={t('token.Unlock')}
@@ -301,6 +292,7 @@ function LockLpList() {
         <DatePicker
           value={lockDate}
           showHour
+          rootClassName="unlockDateDropdown"
           className="unlockDate"
           showMinute
           showTime

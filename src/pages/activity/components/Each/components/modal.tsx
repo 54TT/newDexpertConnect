@@ -3,8 +3,8 @@ import { useContext, useState } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import { useTranslation } from 'react-i18next';
 import cookie from 'js-cookie';
-import TwitterRelease from './twitterRelease';
-import Revalidate from './revalidate';
+import TwitterRelease from'./twitterRelease'
+import Revalidate from'./revalidate'
 import Request from '@/components/axios.tsx';
 export default function modal({
   isModalOpen,

@@ -118,7 +118,6 @@ const OrderHistory = () => {
   
   useEffect(()=>{
     setOrderList(mockOrderList)
-    console.log(mockOrderList)
   },[])
   return (
     <div className="order-history">

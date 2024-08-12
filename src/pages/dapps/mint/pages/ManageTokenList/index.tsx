@@ -1,26 +1,29 @@
 import { Input, Select } from 'antd';
-import PageHeader from '../../component/PageHeader';
-import ToLaunchHeader from '../../component/ToLaunchHeader';
+import React, { useContext, useEffect, useState } from 'react';
+const PageHeader = React.lazy(() => import('../../component/PageHeader'));
+const ToLaunchHeader = React.lazy(
+  () => import('../../component/ToLaunchHeader')
+);
 import './index.less';
-import Loading from '@/components/allLoad/loading';
+const Loading = React.lazy(() => import('@/components/allLoad/loading'));
 import Request from '@/components/axios';
 import Cookies from 'js-cookie';
-import { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout';
-import TokenItem from '../../component/TokenItem';
+const TokenItem = React.lazy(() => import('../../component/TokenItem'));
 import { useNavigate } from 'react-router-dom';
-import InfiniteScrollPage from '@/components/InfiniteScroll';
+const InfiniteScrollPage = React.lazy(
+  () => import('@/components/InfiniteScroll')
+);
 const { Search } = Input;
 import { useTranslation } from 'react-i18next';
 function ManageTokenList() {
   const { t } = useTranslation();
-  const { chainId, browser } = useContext(CountContext);
+  const { chainId, browser, contractConfig } = useContext(CountContext);
   const { getAll } = Request();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isNext, setIsNext] = useState(false);
   const [nextLoad, setNextLoad] = useState(false);
-
   const [searchPar, setSearchPar] = useState('');
   const [searName, setSearName] = useState('');
   const [key, setKey] = useState('0');
@@ -65,13 +68,15 @@ function ManageTokenList() {
     }
   };
   useEffect(() => {
-    getTokenList(1, '', '0');
-    setPage(1);
-    setLoading(false);
-    setKey('0');
-    setSearchPar('');
-    setSearName('');
-  }, [chainId]);
+    if (contractConfig?.chainId === Number(chainId)) {
+      getTokenList(1, '', '0');
+      setPage(1);
+      setLoading(false);
+      setKey('0');
+      setSearchPar('');
+      setSearName('');
+    }
+  }, [chainId, contractConfig]);
   const items = (item: any) => {
     return (
       <TokenItem
@@ -79,9 +84,13 @@ function ManageTokenList() {
         classname={'display'}
         data={{
           title: item.symbol,
-          desc: '（' + item.name + '）',
+          desc: '(' + item.name + ')',
           id: item.contractId,
           address: item.address,
+          status:
+            item?.isDeploy === '0' ? t('token.Deploying') : item?.isDeploy === '1' ? t('token.Deploy') : t('token.failed'),
+            contractConfig,
+            tx:item?.deployTx
         }}
         onClick={({ id, address, title }) =>
           history(`/dapps/tokencreation/managePair/${id}/${address}/${title}`)

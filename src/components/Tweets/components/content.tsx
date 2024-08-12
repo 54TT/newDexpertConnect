@@ -1,6 +1,5 @@
 import { throttle } from 'lodash';
 import { setMany,  } from '@/../utils/change.ts';
-
 export default function content({localData,text,setOpenComment,clickLike}) {
   return (
     <>

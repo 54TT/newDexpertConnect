@@ -1,15 +1,17 @@
 import './index.less';
-import { useContext, useEffect, useState } from 'react';
+import React,{ useContext, useEffect, useState } from 'react';
 import { throttle } from 'lodash';
 import Request from '@/components/axios.tsx';
 import { useNavigate } from 'react-router-dom';
 import cookie from 'js-cookie';
-import Loading from '@/components/allLoad/loading.tsx';
-import Load from '@/components/allLoad/load.tsx';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import { CountContext } from '@/Layout.tsx';
 import { useTranslation } from 'react-i18next';
-import EventsList from './components/eventsList.tsx';
-import Backgroundwall from '@/components/Backgroundwall.tsx';
+import EventsList from './components/eventsList.tsx'
+const Backgroundwall = React.lazy(
+  () => import('@/components/Backgroundwall.tsx')
+);
 function Index() {
   const history = useNavigate();
   const { getAll } = Request();

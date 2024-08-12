@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import './index.less';
-
 export default function load({ show }: any) {
   const [status, setStatus] = useState<any>(['deep', 'Shallow', 'light']);
   const change = () => {

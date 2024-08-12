@@ -1,11 +1,10 @@
-import { useEffect, useState, useContext } from 'react';
+import React,{ useEffect, useState, useContext } from 'react';
 import './index.less';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
-import LoadIng from '@components/allLoad/loading';
+const LoadIng = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 import { useTranslation } from 'react-i18next';
-
 import { getScanLink } from '@/utils/getScanLink';
 export default function oriderDetail({ orderId, tokenInAmount }: any) {
   const { t } = useTranslation();

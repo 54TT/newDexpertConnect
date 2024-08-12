@@ -50,7 +50,7 @@ const ActivePerson = React.lazy(
 const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
 );
-const Index = React.lazy(() => import('./pages/index/index.tsx'));
+import Index from './pages/index/index.tsx';
 const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Dapps = React.lazy(() => import('./pages/dapps/index.tsx'));
 // const Community = React.lazy(() => import('./pages/community/index.tsx'));
@@ -87,11 +87,13 @@ function Layout() {
     if (walletRdns && environment.length > 0) {
       changeInfoRdns(walletRdns);
     }
-  }, [environment]);
+  }, [environment, walletRdns]);
   useEffect(() => {
-    //   默认执行   --------------
-    changeConfig(chainId);
-  }, [chainId, walletRdns]);
+    //   默认执行
+    if (!walletRdns) {
+      changeConfig(chainId);
+    }
+  }, [chainId]);
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -186,7 +188,15 @@ function Layout() {
 
   const onChainChange = (targetChainId) => {
     setChainId(Number(targetChainId).toString());
+    changeConfig(Number(targetChainId).toString());
   };
+
+  const onAccountsChanged = (account) => {
+    if (account.length > 0 && account?.[0] !== loginProvider?.selectAddress) {
+      handleLogin({ provider: loginProvider });
+    }
+  };
+
   useEffect(() => {
     if (isLogin && loginProvider) {
       let changeChainId = '1';
@@ -196,6 +206,7 @@ function Layout() {
       try {
         // @ts-ignore
         loginProvider?.on('chainChanged', onChainChange);
+        loginProvider?.on('accountsChanged', onAccountsChanged);
         loginProvider?.request({
           method: 'wallet_switchEthereumChain',
           params: [
@@ -359,6 +370,7 @@ function Layout() {
       supprotChainId = walletChainId;
     }
     setChainId(supprotChainId);
+    changeConfig(supprotChainId);
     setloginProvider(provider[0]?.provider);
   };
   const handleLogin = async (i: any) => {

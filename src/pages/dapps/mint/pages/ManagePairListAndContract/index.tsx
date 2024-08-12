@@ -1,19 +1,25 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import PageHeader from '../../component/PageHeader';
-import ToLaunchHeader from '../../component/ToLaunchHeader';
-import TokenItem from '../../component/TokenItem';
+import React, { useContext, useEffect, useState } from 'react';
+const PageHeader = React.lazy(() => import('../../component/PageHeader'));
+
+const ToLaunchHeader = React.lazy(
+  () => import('../../component/ToLaunchHeader')
+);
+const TokenItem = React.lazy(() => import('../../component/TokenItem'));
 import Request from '@/components/axios';
-import { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout';
 import Cookies from 'js-cookie';
 import './index.less';
-import InfiniteScrollPage from '@/components/InfiniteScroll';
-import Loading from '@/components/allLoad/loading';
+const InfiniteScrollPage = React.lazy(
+  () => import('@/components/InfiniteScroll')
+);
+const Loading = React.lazy(() => import('@/components/allLoad/loading'));
 import { useTranslation } from 'react-i18next';
 function ManagePairListAndContract() {
   const { t } = useTranslation();
   const router = useParams();
-  const { chainId, browser } = useContext(CountContext);
+  const { chainId, browser, contractConfig } =
+    useContext(CountContext);
   const { getAll } = Request();
   const history = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -50,11 +56,11 @@ function ManagePairListAndContract() {
     }
   };
   useEffect(() => {
-    if (router?.id) {
+    if (router?.id && contractConfig?.chainId === Number(chainId)) {
       getTokenPairList();
       setLoading(false);
     }
-  }, [chainId]);
+  }, [contractConfig, chainId]);
   const items = (item: any) => {
     return (
       <TokenItem
@@ -65,7 +71,6 @@ function ManagePairListAndContract() {
         }}
         onClick={(data) => {
           history(
-            // `/dapps/tokencreation/pairDetail?add=${data.pairAddress}&t0=${data.token0}&t1=${data.token1}`
             `/dapps/tokencreation/pairDetail/${data.pairAddress}/${data.token0}/${data.token1}`
           );
         }}
@@ -85,12 +90,14 @@ function ManagePairListAndContract() {
             data={{ title: t('token.can'), address: router?.address }}
             onClick={() => {
               history(
-                // `/dapps/tokencreation/tokenDetail?add=${router?.address}&cId=${router?.id}`
                 `/dapps/tokencreation/tokenDetail/${router?.address}/${router?.id}`
               );
             }}
           />
-          <div style={{ height: '330px', overflow: 'overlay' }} className='mint-scroll'>
+          <div
+            style={{ height: '330px', overflow: 'overlay',overflowX:'hidden' }}
+            className="mint-scroll"
+          >
             <InfiniteScrollPage
               data={data}
               next={changePage}

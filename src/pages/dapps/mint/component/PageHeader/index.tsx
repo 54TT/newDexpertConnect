@@ -1,6 +1,7 @@
 import './index.less';
+import React from 'react'
 import { useNavigate } from 'react-router-dom';
-import ChangeChain from '@/components/ChangeChain';
+const ChangeChain = React.lazy(() => import('@/components/ChangeChain'));
 interface PageHeaderProps {
   arrow?: boolean;
   title?: string | React.ReactNode;

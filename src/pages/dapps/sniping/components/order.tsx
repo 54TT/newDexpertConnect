@@ -1,14 +1,18 @@
-import { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import './index.less';
 import { Modal, Dropdown, Tooltip } from 'antd';
 import cookie from 'js-cookie';
 import NotificationChange from '@/components/message';
-import LoadIng from '@components/allLoad/loading';
+const LoadIng = React.lazy(() => import('@/components/allLoad/loading.tsx'));
+
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
-import InputSearch from './inputSearch';
-import InfiniteScrollPage from '@/components/InfiniteScroll';
+const InputSearch = React.lazy(() => import('./inputSearch'));
+
+const InfiniteScrollPage = React.lazy(
+  () => import('@/components/InfiniteScroll')
+);
 export default function order({ setIsShow, setOrderPar, chainId }: any) {
   const { t } = useTranslation();
   const { getAll } = Request();
@@ -53,7 +57,7 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
         url: '/api/v1/preswap/cancel',
         data: { orderId: orderId },
         token,
-        chainId
+        chainId,
       });
       if (res?.status === 200) {
         const tt = data?.map((i: any) => {

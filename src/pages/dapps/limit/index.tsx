@@ -157,8 +157,6 @@ export default function index() {
     getOrderList(1,chainId)
   }, [currentIndex, orderType]);
   useEffect(() => {
-    console.log(chainId);
-    console.log(contractConfig.chainId);
     if(chainId && contractConfig){
       if (chainId === contractConfig.chainId.toString()) {
           getOrderList(1, chainId);
