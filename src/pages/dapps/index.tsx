@@ -119,7 +119,7 @@ export default function index() {
                         i.status || hoverKey == i.key
                           ? 'rgb(134,240,151)'
                           : 'rgb(162,162,162)',
-                      width: i.key === 'buyBot' ? '120px' : 'auto',
+                      width: i.key === 'buyBot' ? 'auto' : 'auto',
                     }}
                   >
                     {i.name}

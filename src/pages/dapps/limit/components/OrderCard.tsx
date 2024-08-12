@@ -71,10 +71,9 @@ export default function OrderCard({
     }
     let absNumber = num.abs();
     let formattedNumber;
-    let unit;
+    let unit:string;
 
-  if (absNumber.lte(0.1)) { // Less than or equal to 0.1
-    // return '< 0.1';
+  if (absNumber.lte(0.1)) { 
     return setMany(absNumber.toString()).replace(/\.?0+$/, '')
   } else if (absNumber.gte(1e9)) { // Billions
     formattedNumber = absNumber.dividedBy(1e9).toFixed(2);
@@ -129,19 +128,19 @@ export default function OrderCard({
     if(tokenRate&&order.orderPrice){
       // const orderRate=Number(Number(order.orderPrice).toFixed(6))
       // const rateNum = Number(rate.toFixed(6));
-      console.log('---getRateRelation---');
+      // console.log('---getRateRelation---');
       // console.log(Number(tokenRate));
       // console.log(Number(order.orderPrice))
       const result = new Decimal(tokenRate).dividedBy(new Decimal(order.orderPrice));
       if(result) setRateLoading(false)
       if(result.toNumber()>1){
         setRateRelation('incre')
-        console.log('incre',result.toNumber()-1);
+        // console.log('incre',result.toNumber()-1);
         setDiffRate(((result.toNumber()-1)*100).toFixed(2))
         // return result.toFixed(3)
       }else if(result.toNumber()<1){
         setRateRelation('decre')
-        console.log('decre',1-result.toNumber());
+        // console.log('decre',1-result.toNumber());
         setDiffRate(((1-result.toNumber())*100).toFixed(2))
       }
       // console.log(rateNum-orderRate);
@@ -174,7 +173,7 @@ export default function OrderCard({
     setTokenRate(amountValue.toString())
   }
   useEffect(()=>{
-    console.log(tokenRate);
+    // console.log(tokenRate);
     if(tokenRate) getRateRelation()
   },[tokenRate])
   useEffect(()=>{
@@ -283,6 +282,9 @@ export default function OrderCard({
         </div>
       </div> */}
       <div className="order-card-footer">
+        {order?.orderStatus==='filled'?(
+          <span className="order-time"></span>
+        ):(
         <span className="order-time">
           剩余时间：
           {order?.orderStatus==='expired'?(
@@ -291,17 +293,17 @@ export default function OrderCard({
             <>
             {timeLeft.days > 0 && (
               <span>
-                {timeLeft.days}d{' '}
+                {timeLeft.days}d&nbsp;
               </span>
             )}
             {timeLeft.hours > 0 && (
               <span>
-                {timeLeft.hours}h{' '}
+                {timeLeft.hours}h&nbsp;
               </span>
             )}
             {timeLeft.minutes > 0 && (
               <span>
-                {timeLeft.minutes}m{' '}
+                {timeLeft.minutes}m&nbsp;
               </span>
             )}
             {timeLeft.seconds > 0 && (
@@ -315,6 +317,7 @@ export default function OrderCard({
           </>
           )}
         </span>
+        )}
         {type === 'my' &&
           <span
             className="cancel-btn"

@@ -31,7 +31,7 @@ export default function index() {
     // transactionFee,
     // setTransactionFee,
     user,
-    // isLogin,
+    isLogin,
   } = useContext(CountContext);
   const { t } = useTranslation();
   // 0:live orders,1:my orders
@@ -54,6 +54,8 @@ export default function index() {
   // const [initialized, setInitialized] = useState(false)
   // my orders type,0:all,1:executing,2:history
   const [orderType, setOrderType] = useState(0);
+  // 搜索字段
+  const [search, setSearch] = useState('');
   const items: any = [
     {
       key: '0',
@@ -96,18 +98,12 @@ export default function index() {
     await getOrderList(orderPage + 1, chainId);
   };
   // 获取订单列表
-  const getOrderList = async (page: number, chainId: string) => {
+  const getOrderList = async (page: number, chainId: string,search?:string) => {
+    console.log('get order list')
+    console.log('search',search);
+    
     // if(currentIndex===1) console.log('ger user orders')
     if (page === 1) setOrderLoading(true);
-    if (orderType === 0 && currentIndex === 1) {
-    }
-    // console.log('get my all orders');
-    if (orderType === 1 && currentIndex === 1) {
-    }
-    // console.log('get my executing orders');
-    if (orderType === 2 && currentIndex === 1) {
-    }
-    // console.log('get my history orders');
     try {
       setReqNum(reqNum + 1);
       const token = Cookies.get('token');
@@ -115,12 +111,12 @@ export default function index() {
         method: 'get',
         url: '/api/v1/limit/order/list',
         data: {
-          // search:"",
+          search:search?search:"",
           // uid:0,
           page: page,
           // orderHash:"",
-          orderStatus: currentIndex === 0 ? 'open' : '',
-          offerer: currentIndex === 0 ? '' : user.username,
+          orderStatus: currentIndex === 0 ? 'open' : orderType===0?'':orderType==1?'open':'expired',
+          offerer: currentIndex === 1&& isLogin? user.username:'',
         },
         token,
         chainId,
@@ -147,23 +143,25 @@ export default function index() {
     } catch (err) {
       setOrderLoading(false);
       setMoreOrderLoading(false);
+      console.log(err)
+      setOrderList([])
       return null;
     }
   };
   useEffect(() => {
-    // if (currentIndex === 0) console.log('get all orders');
-    // if (currentIndex === 1) console.log('get user orders');
     console.log('currentIndex or orderType changed')
-    getOrderList(1,chainId)
   }, [currentIndex, orderType]);
   useEffect(() => {
+    // 默认有更多的订单
+    setHasMore(true)
+    // if(!loginProvider) setOrderList([]);
     if(chainId && contractConfig){
       if (chainId === contractConfig.chainId.toString()) {
           getOrderList(1, chainId);
           setOrderLoading(true);
       }
     }
-  }, [chainId, contractConfig]);
+  }, [chainId, contractConfig,currentIndex, orderType]);
   return (
     <>
       {showDetailsWindow && selectedOrder && (
@@ -194,10 +192,18 @@ export default function index() {
                   // onKeyDown={enter}
                   placeholder={'token address'}
                   allowClear
-                  // onChange={searchChange}
+                  value={search}
+                  onChange={(e)=>{
+                    setSearch(e.target.value)
+                  }}
+                  onPressEnter={()=>{
+                    getOrderList(1,chainId,search)
+                  }}
                   suffix={
                     <SearchOutlined
-                      // onClick={clickSearch}
+                      onClick={()=>{
+                        getOrderList(1,chainId,search)
+                      }}
                       style={{
                         color: 'rgb(134,240,151)',
                         fontSize: '16px',
@@ -219,14 +225,10 @@ export default function index() {
                   setCurrentIndex(0);
                   setOrderType(0);
                   setOrderPage(1);
-                  // getOrderList(1)
-                  // setOrderLoading(true)
-                  setHasMore(true);
                 }}
               >
                 <p>{t('limit.live orders')}</p>
               </span>
-              {/* <span> */}
               <img
                 style={{width:'40px',cursor:'pointer'}}
                 src='/refresh.svg'
@@ -234,13 +236,6 @@ export default function index() {
                   getOrderList(1, chainId);
                 }}
               />
-              {/* </span> */}
-              {/* <span className={`orders-btn ${currentIndex===1?'active':''}`}
-                onClick={()=>setCurrentIndex(1)}>
-                <p>
-                  Ongoing Order(s)
-                </p>
-              </span> */}
               <Dropdown
                 rootClassName="orders-type"
                 menu={{ items, selectable: false }}
@@ -252,7 +247,9 @@ export default function index() {
                   className={`orders-btn ${currentIndex === 1 ? 'active' : ''}`}
                   onClick={() => {
                     setCurrentIndex(1);
-                    setOrderPage(0);
+                    setOrderPage(1);
+                    setHasMore(true);
+                    setOrderType(0)
                     // getOrderList(1)
                   }}
                 >
@@ -273,7 +270,6 @@ export default function index() {
                       }
                     />
                   </svg>
-                  {/* <DownOutlined style={{fontSize:'14px',marginLeft:'4px'}} /> */}
                 </span>
               </Dropdown>
             </div>
@@ -315,34 +311,6 @@ export default function index() {
                   {orderList.length===0&&!orderLoading&&(<Nodata />)}
                 </>
               )}
-              {/* {currentIndex===2?(
-                  orderList.filter((item:any)=>item?.uid===user?.uid).map((item)=>(
-                    <OrderCard
-                      type={item?.uid===user?.uid?'my':''}
-                      key={item.orderHash}
-                      order={item}
-                      chainId={chainId}
-                      loginProvider={loginProvider}
-                      setShowExecuteWindow={setShowExecuteWindow}
-                      setSelectedOrder={setSelectedOrder}
-                      setShowDetailsWindow={setShowDetailsWindow}
-                    />
-                  ))
-                ):(
-                  orderList.map((item:any)=>(
-                    <OrderCard
-                      type={item?.uid===user?.uid?'my':''}
-                      key={item.orderHash}
-                      order={item}
-                      chainId={chainId}
-                      loginProvider={loginProvider}
-                      setShowExecuteWindow={setShowExecuteWindow}
-                      setSelectedOrder={setSelectedOrder}
-                      setShowDetailsWindow={setShowDetailsWindow}
-                    />
-                  ))
-                )
-                } */}
             </div>
           </div>
           <div className="limit-right">
@@ -363,17 +331,6 @@ export default function index() {
               setShowExecuteWindow={setShowExecuteWindow}
             />
           </Modal>
-          {/* <div
-        className="top border"
-        onClick={() => {
-          if (nonce) {
-            setOrder();
-          }
-        }}
-      >
-        ppppppp
-      </div> */}
-          {/* <div className="bot"></div> */}
         </div>
       )}
     </>

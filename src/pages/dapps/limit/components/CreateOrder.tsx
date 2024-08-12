@@ -55,6 +55,7 @@ export default function CreateOrder() {
   const [payRate,setPayRate]=useState(0)
   const [rateLoading,setRateLoading]=useState(true)
   const [createLoading,setCreateLoading]=useState(false)
+  // 底部单位price展示
   const [isShowUnitPrice,setIsShowUnitPrice]=useState(false)
   // paytoken的单位价格，U
   const [payTokenUnitPrice,setPayTokenUnitPrice]=useState<number>(0)
@@ -65,9 +66,9 @@ export default function CreateOrder() {
   // 过期时间数组
   const expiresList=[
     {
-      name:'1m',
-      label:'1m',
-      value:60
+      name:'5m',
+      label:'5m',
+      value:5*60
     },
     {
       name:'1h',
@@ -207,9 +208,10 @@ export default function CreateOrder() {
         const injectProvider=new ethers.providers.Web3Provider(loginProvider)
         try {
           const balance=await getBalanceRpc(injectProvider,token,wethAddress)
-        dispatch(balance)
+          dispatch(balance)
         } catch (error) {
           // console.log(error);
+
         }
       }
     },
@@ -347,42 +349,18 @@ export default function CreateOrder() {
     setToeknRateBN(new BigNumber(tokenRate))
     console.log('tokenRate',tokenRate)
   },[tokenRate])
-  // 订单token汇率
-  useEffect(()=>{
-    console.log('payRate',payRate)
-  },[payRate])
-  useEffect(()=>{
-    // console.log('transactionFee---',transactionFee?.limit?.toString());
-  },[transactionFee])
   // 自动计算手续费
   useEffect(() => {
     getTransactionFee({ chainId, provider, payType:0 });
   }, [chainId, provider]);
 
-  // 监听变化，自动计算pay余额，paytoken的市价
-  useEffect(()=>{
-    if(isLogin&&loginProvider){
-      // console.log(loginProvider);
-      // console.log(contractConfig);
-      // console.log(chainId);
-      // getTokenBalance(payToken?.contractAddress,setPayTokenBalance)
-      // console.log(payToken?.symbol);
-      // getToeknUnitPrice(payToken,'pay')
-    }
-    getToeknUnitPrice(payToken,'pay')
-  },[payToken,isLogin,loginProvider,chainId])
-  // receiveToken改变，自动获取receivetoken的单位价格
-  // useEffect(()=>{
-  //   getTokenBalance(receiveToken?.contractAddress,setReceiveTokenBalance)
-    
-  // },[receiveToken])
-
+  // 监听变化，自动计算token余额，token的市价
   useEffect(()=>{
     if(isLogin&&loginProvider){
       getTokenBalance(receiveToken?.contractAddress,setReceiveTokenBalance)
       getTokenBalance(payToken?.contractAddress,setPayTokenBalance)
-      // console.log(receiveToken?.symbol);
     }
+    getToeknUnitPrice(payToken,'pay')
     getToeknUnitPrice(receiveToken,'receive')
     console.log(payToken);
     console.log(receiveToken);
@@ -432,6 +410,7 @@ export default function CreateOrder() {
   useEffect(()=>{
     getExchangeRate()
     setRateLoading(true)
+
     setTokenRate(0)
   },[payToken,receiveToken])
   useEffect(()=>{
@@ -449,7 +428,11 @@ export default function CreateOrder() {
           </span>
           { isLogin?(
             <span className="token-card-header-right">
-              {t("limit.balance")}:{payTokenBalance?.toString?.()||'0'}
+              {t("limit.balance")}:{rateLoading? (
+                <Skeleton.Button active size="small" />
+              ):(
+                payTokenBalance?.toString?.()||'0'
+                )}
             </span>
           ):(<></>)
           }
@@ -475,6 +458,7 @@ export default function CreateOrder() {
             variant="borderless"
             value={payTokenAmount}
             placeholder="0"
+            disabled={!isLogin}
             style={{cursor:isLogin?'':'not-allowed'}}
             onChange={(e)=>{
               if(Number(e.target.value)<=Number(payTokenBalance)) setPayTokenAmount(e.target.value)
@@ -501,7 +485,13 @@ export default function CreateOrder() {
             {payToken?.symbol}
           </span>
           <span className="token-card-footer-right">
-            ~${(Number(payTokenAmount)*payTokenUnitPrice)?.toFixed(6)||0}
+            {isLogin ? (
+              <>
+                ~${(Number(payTokenAmount)*payTokenUnitPrice)?.toFixed(6)||0}
+              </>
+            ):(
+              <></>
+            )}
           </span>
         </div>
       </div>
@@ -512,7 +502,11 @@ export default function CreateOrder() {
           </span>
           { isLogin?(
             <span className="token-card-header-right">
-              {t("limit.balance")}:{receiveTokenBalance?.toFixed(4).toString?.()||'0'}
+              {t("limit.balance")}:{rateLoading? (
+                <Skeleton.Button active size="small" />
+              ):(
+                receiveTokenBalance?.toFixed(4).toString?.()||'0'
+              )}
             </span>
           ):(<></>)
           }
@@ -539,6 +533,7 @@ export default function CreateOrder() {
             variant="borderless"
             placeholder="0"
             value={receiveTokenAmount}
+            disabled={!isLogin}
             style={{cursor:isLogin?'':'not-allowed'}}
             onChange={(e)=>{
               if (/^\d*\.?\d*$/.test(e.target.value)) {
@@ -569,7 +564,13 @@ export default function CreateOrder() {
             {receiveToken?.symbol}
           </span>
           <span className="token-card-footer-right">
-            ~${(Number(receiveTokenAmount)*receiveTokenUnitPrice)?.toFixed(6)||0}
+            {isLogin ? (
+              <>
+                ~${(Number(receiveTokenAmount)*receiveTokenUnitPrice)?.toFixed(6)||0}
+              </>
+              ):(
+                <></>
+              )}
           </span>
         </div>
       </div>
@@ -585,6 +586,7 @@ export default function CreateOrder() {
               variant="borderless"
               controls={false}
               value={payRate}
+              disabled={!isLogin}
               onChange={(v)=>{
                 setTokenRate(v)
                 setPayRate(v)
