@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { CountContext } from '@/Layout';
 // import { ethers } from 'ethers';
-import { Input, Dropdown, Modal, List } from 'antd';
+import { Input, Dropdown, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
