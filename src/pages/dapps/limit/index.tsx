@@ -54,6 +54,8 @@ export default function index() {
   // const [initialized, setInitialized] = useState(false)
   // my orders type,0:all,1:executing,2:history
   const [orderType, setOrderType] = useState(0);
+  // 历史订单类型
+  const [historyOrderType, setHistoryOrderType] = useState(0);
   // 搜索字段
   const [search, setSearch] = useState('');
   const items: any = [
@@ -253,7 +255,9 @@ export default function index() {
                     // getOrderList(1)
                   }}
                 >
-                  <p>{t('limit.my orders')}</p>
+                  {orderType===0&&<p>{t('limit.my orders')}</p>}
+                  {orderType===1&&<p>{t('limit.executing')}</p>}
+                  {orderType===2&&<p>{t('limit.history')}</p>}
                   <svg
                     width="14"
                     height="9"
@@ -272,6 +276,36 @@ export default function index() {
                   </svg>
                 </span>
               </Dropdown>
+            </div>
+            <div className='history'>
+              <span
+                style={{color: historyOrderType === 0 ? '#86f097' : '#fff'}}
+                onClick={()=>{
+                  setHistoryOrderType(0)
+                }}
+                className='history-header-item'
+              >取消订单</span>
+              <span
+                style={{color: historyOrderType === 1 ? '#86f097' : '#fff'}}
+                onClick={()=>{
+                  setHistoryOrderType(1)
+                }}
+                className='history-header-item'
+              >过期订单</span>
+              <span
+                style={{color: historyOrderType === 2 ? '#86f097' : '#fff'}}
+                onClick={()=>{
+                  setHistoryOrderType(2)
+                }}
+                className='history-header-item'
+              >成功订单</span>
+              <span
+                style={{color: historyOrderType === 3 ? '#86f097' : '#fff'}}
+                onClick={()=>{
+                  setHistoryOrderType(3)
+                }}
+                className='history-header-item'
+              >失败订单</span>
             </div>
             <div className="limit-left-body">
               {orderList?.length > 0 && !orderLoading ? (
