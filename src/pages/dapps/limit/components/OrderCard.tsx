@@ -2,14 +2,15 @@ import './index.less'
 import {Modal, Skeleton } from 'antd'
 import DefaultTokenImg from '@/components/DefaultTokenImg'
 import { useEffect, useState,useContext } from 'react'
-import {BigNumber} from 'bignumber.js';
+// import {BigNumber} from 'bignumber.js';
 import { ethers, BigNumber as BNtype } from 'ethers'
 import {chainConfig} from '@utils/limit/constants'
 import Permit2ABI from '@utils/limit/Permit2ABI.json'
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout';
 import { getUniswapV2RouterContract } from "@utils/contracts";
-import {setMany} from "@utils/change";
+// import {setMany} from "@utils/change";
+import {BNtoNumber} from "@utils/limit/utils"
 import Decimal from "decimal.js";
 import { getAmountOut } from "@utils/swap/v2/getAmountOut";
 export default function OrderCard({
@@ -60,45 +61,45 @@ export default function OrderCard({
     const res= await permit2Contract.connect(signer).invalidateUnorderedNonces(wordPos, mask);
     console.log(res);
   }
-  // bignumber转换number
-  const BNtoNumber=(bn,decimals?)=>{
-    let num;
+  // // bignumber转换number
+  // const BNtoNumber=(bn,decimals?)=>{
+  //   let num;
 
-    if(!decimals){
-      num = new BigNumber(bn);
-    }else{
-      num = BigNumber(bn).dividedBy(new BigNumber(10).pow(decimals))
-    }
-    let absNumber = num.abs();
-    let formattedNumber;
-    let unit:string;
+  //   if(!decimals){
+  //     num = new BigNumber(bn);
+  //   }else{
+  //     num = BigNumber(bn).dividedBy(new BigNumber(10).pow(decimals))
+  //   }
+  //   let absNumber = num.abs();
+  //   let formattedNumber;
+  //   let unit:string;
 
-  if (absNumber.lte(0.1)) { 
-    return setMany(absNumber.toString()).replace(/\.?0+$/, '')
-  } else if (absNumber.gte(1e9)) { // Billions
-    formattedNumber = absNumber.dividedBy(1e9).toFixed(2);
-    unit = 'B';
-  } else if (absNumber.gte(1e6)) { // Millions
-    formattedNumber = absNumber.dividedBy(1e6).toFixed(2);
-    unit = 'M';
-  } else if (absNumber.gte(1e3)) { // Thousands
-    formattedNumber = absNumber.dividedBy(1e3).toFixed(2);
-    unit = 'K';
-  } else {
-    formattedNumber = absNumber.toFixed(2);
-    unit = '';
-  }
-  if (formattedNumber.includes('.')) {
-    formattedNumber = formattedNumber.replace(/\.?0+$/, '');
-  }
+  // if (absNumber.lte(0.1)) { 
+  //   return setMany(absNumber.toString()).replace(/\.?0+$/, '')
+  // } else if (absNumber.gte(1e9)) { // Billions
+  //   formattedNumber = absNumber.dividedBy(1e9).toFixed(2);
+  //   unit = 'B';
+  // } else if (absNumber.gte(1e6)) { // Millions
+  //   formattedNumber = absNumber.dividedBy(1e6).toFixed(2);
+  //   unit = 'M';
+  // } else if (absNumber.gte(1e3)) { // Thousands
+  //   formattedNumber = absNumber.dividedBy(1e3).toFixed(2);
+  //   unit = 'K';
+  // } else {
+  //   formattedNumber = absNumber.toFixed(2);
+  //   unit = '';
+  // }
+  // if (formattedNumber.includes('.')) {
+  //   formattedNumber = formattedNumber.replace(/\.?0+$/, '');
+  // }
   
-  return `${formattedNumber}${unit}`;
-    // if(num.modulo(1).isZero()){
-    //   return num.toNumber().toString()
-    // }else{
-    //   return num.toNumber().toFixed(6).replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.$/, '')
-    // }
-  }
+  // return `${formattedNumber}${unit}`;
+  //   // if(num.modulo(1).isZero()){
+  //   //   return num.toNumber().toString()
+  //   // }else{
+  //   //   return num.toNumber().toFixed(6).replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.$/, '')
+  //   // }
+  // }
   // 倒计时
   useEffect(() => {
     const timer = setInterval(() => {
@@ -202,7 +203,7 @@ export default function OrderCard({
         <div>
           <div className='order-card-header-left'>
             <div style={{display:'flex',alignItems:'center',width:'80%'}}>
-              <DefaultTokenImg name={order.outputTokenSymbol} icon={order?.outputTokenLogo} />
+              <DefaultTokenImg name={order.inputTokenSymbol} icon={order?.inputTokenLogo} />
               <span className="order-output-amount">{BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals) +' '+order.inputTokenSymbol} </span>
               </div>
             {/* <span style={{display:'block',marginTop:'4px'}}>{order.inputToken.slice(0,6)}...{order.inputToken.slice(-8)}</span> */}
@@ -236,7 +237,7 @@ export default function OrderCard({
       <div className='new-order-body'>
         <div className='order-body-item'>
           <div style={{display:'flex',alignItems:'center'}}>
-            <span className='order-body-item-header'>单价</span>
+            <span className='order-body-item-header'>{t('limit.price')}</span>
             <span style={{display:"flex",paddingLeft:'10px'}}>
               <DefaultTokenImg name={order?.outputTokenSymbol} icon={order?.outputTokenLogo?order?.outputTokenLogo:''} />
               <p>/</p>
@@ -248,7 +249,7 @@ export default function OrderCard({
         </div>
         <div className='order-body-item'>
         <div style={{display:'flex',alignItems:'center'}}>
-          <span className='order-body-item-header'>总价</span>
+          <span className='order-body-item-header'>{t("limit.total price")}</span>
           <span style={{paddingLeft:'10px'}}>
             <DefaultTokenImg name={order.outputTokenSymbol} icon={order?.outputTokenLogo?order?.outputTokenLogo:''} />
         </span>
@@ -282,11 +283,11 @@ export default function OrderCard({
         </div>
       </div> */}
       <div className="order-card-footer">
-        {order?.orderStatus==='filled'?(
+        {order?.orderStatus==='filled'||order?.orderStatus==='cancelled'||order?.orderStatus==='expired'?(
           <span className="order-time"></span>
         ):(
         <span className="order-time">
-          剩余时间：
+          {t('limit.deadline')}:&ensp;
           {order?.orderStatus==='expired'?(
             '已过期'
           ):(

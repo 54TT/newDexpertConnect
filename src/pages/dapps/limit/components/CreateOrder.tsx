@@ -91,8 +91,8 @@ export default function CreateOrder() {
       value:604800
     },
     {
-      name:'1m',
-      label:'1m',
+      name:'1mo',
+      label:'1mo',
       value:2592000
     }
   ]

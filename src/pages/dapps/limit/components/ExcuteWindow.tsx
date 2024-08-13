@@ -6,7 +6,7 @@ import checkConnection from "@utils/checkConnect";
 import {BigNumber} from 'bignumber.js';
 import executeOrder from '@utils/limit/executeOrder'
 import { ethers,BigNumber as BNtype } from "ethers";
-// import {useTranslation} from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import { getUniswapV2RouterContract } from "@utils/contracts";
 import Decimal from "decimal.js";
 import { getAmountOut } from "@utils/swap/v2/getAmountOut";
@@ -23,7 +23,7 @@ const ExecuteWindow = ({
     contractConfig,
     provider
   } = useContext(CountContext)
-  // const {t}=useTranslation()
+  const {t}=useTranslation()
   // 滑动条的值，百分比
   const [silderValue,setSliderValue]=useState(100)
   // 选择支付的token
@@ -231,7 +231,7 @@ const ExecuteWindow = ({
             >
               <img src="/back-icon.svg" alt="" />
             </span>
-            <span style={{flex:'1 1',textAlign:'center',fontSize:"20px"}}>确认执行</span>
+            <span style={{flex:'1 1',textAlign:'center',fontSize:"20px"}}>{t("limit.execute")}</span>
             <span></span>
           </div>
           {/* <div className="header-row-two">
@@ -269,15 +269,15 @@ const ExecuteWindow = ({
       <div className="execute-window-body">
         <div className="execute-body-row">
           <span>
-            平台服务费
+            {t("limit.fee")}
           </span>
           <span className="execute-fee">
-            限时免费
+            {t("limit.fees")}
           </span>
         </div>
         <div className="execute-body-row">
           <span>
-            价格
+            {t("limit.rate")}
           </span>
           <span className="execute-order-price">
             {order.orderPrice} {order.outputTokenSymbol} / {order.inputTokenSymbol}
@@ -285,7 +285,7 @@ const ExecuteWindow = ({
         </div>
         <div className="execute-body-row">
           <span>
-            总价
+            {t("limit.price")}
           </span>
           <span>
           {Number(tokenOutputAmount)%1===0?Number(tokenOutputAmount):Number(tokenOutputAmount).toFixed(3)} {order.outputTokenSymbol}
@@ -357,13 +357,13 @@ const ExecuteWindow = ({
       </div>
       <div className="execute-window-body">
           <div  className="execute-body-row">
-            <span>你将得到</span>
+            <span>{t("limit.you receive")}</span>
             <span>
               {Number(tokenInputAmount)%1===0?Number(tokenInputAmount):setMany(tokenInputAmount)} {order?.inputTokenSymbol}
               </span>
           </div>
           <div  className="execute-body-row paytoken-balance">
-            <span>{order.outputTokenSymbol}余额</span>
+            <span>{order.outputTokenSymbol}{t("limit.balance")}</span>
             {
               balanceLoading?( <Skeleton.Button active size="small" />
               ):(
@@ -406,14 +406,14 @@ const ExecuteWindow = ({
         <Button
           rootClassName="execute-btn"
           // className={`${!buttonDisable?'execute-btn-active':''}`}
-          className={'execute-btn-active'}
+          className={order?.orderStatus !=='open'?'':'execute-btn-active'}
           loading={buttonLoading}
-          // disabled={buttonDisable}
+          disabled={order?.orderStatus !=='open'}
           onClick={() => {
             selcetExecuteOrder()
           }}
         >
-          EXECUTE
+          {order?.orderStatus ==='open'?'EXECUTE':order.orderStatus}
         </Button>
         {/* <span className="execute-tips">
           {t("limit.desc buying")} 

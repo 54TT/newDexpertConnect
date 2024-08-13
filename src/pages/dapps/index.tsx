@@ -59,7 +59,7 @@ export default function index() {
       imgAc: '/limitActive.svg',
       img: '/limit.svg',
       status: params?.id === 'limit',
-      name: 'Limit',
+      name: 'Orders',
       onClick: () => {
         history('/dapps/limit');
       },
