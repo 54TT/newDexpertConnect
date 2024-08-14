@@ -12,6 +12,11 @@ import Decimal from "decimal.js";
 import { getAmountOut } from "@utils/swap/v2/getAmountOut";
 import getBalanceRpc from "@utils/getBalanceRpc";
 import {setMany} from "@utils/change";
+import NotificationChange from "@/components/message";
+// import { config as allConfig } from "@/config/config";
+// import { chainConfig } from "@utils/limit/constants";
+// import ERC20ABI from "@abis/ERC20ABI.json";
+
 const ExecuteWindow = ({
   order,
   setShowDetailsWindow,
@@ -25,7 +30,7 @@ const ExecuteWindow = ({
   } = useContext(CountContext)
   const {t}=useTranslation()
   // 滑动条的值，百分比
-  const [silderValue,setSliderValue]=useState(100)
+  // const [silderValue,setSliderValue]=useState(100)
   // 选择支付的token
   // const [payToken,setPayToken]=useState()
   // const [showSelect,setShowSelect]=useState(false)
@@ -33,11 +38,11 @@ const ExecuteWindow = ({
   // const [buttonDisable,setButtonDisable]=useState(true)
   const [tokenInputAmount,setTokenInputAmount]=useState('')
   const [tokenOutputAmount,setTokenOutputAmount]=useState('')
-  const [inputToken,setInputToken]=useState()
+  // const [inputToken,setInputToken]=useState()
   // 想要兑换多少数量的token0
   // const [exchangeAmount,setExchangeAmount]=useState(0)
   // 选择支付token1的数量
-  const [payTokenAmount,setPayTokenAmount]=useState('')
+  // const [payTokenAmount,setPayTokenAmount]=useState('')
   // 市场当前汇率
   const [tokenRate,setTokenRate]=useState('')
   // 涨幅跌幅
@@ -62,9 +67,12 @@ const ExecuteWindow = ({
     setButtonLoading(true)
     const output=JSON.parse(order.outputs)[0]
     const web3Provider=new ethers.providers.Web3Provider(loginProvider)
-    const value: BNtype = output.token === ethers.constants.AddressZero ? output.amount : BNtype.from(0);
+    console.log(output);
+    
+    const value: BNtype = output.token === ethers.constants.AddressZero ? output.startAmount : BNtype.from(0);
     const signer=await web3Provider.getSigner()
 
+    
     try {
       console.log('---executing---');
       const res=await executeOrder(
@@ -72,19 +80,59 @@ const ExecuteWindow = ({
         signer,
         order.encodedOrder,
         order.signature,
+        order.outputToken,
+        output.startAmount,
         value
       )
       console.log(res);
       if(res){
         setButtonLoading(false)
         setShowExecuteWindow(false)
+        NotificationChange('success',t('limit.executeOrderSuccess'))
       }
     } catch (error) {
       console.log(error);
       setButtonLoading(false)
+      NotificationChange('warning',t('limit.executeOrderError'))
     }
   }
   
+
+  // 查询授权额度，获取授权
+  // const approveOrder=async (
+  //   chainId:number,
+  //   filler:Signer,
+  //   outputToken:string,
+  //   tokenAmount:BigNumber,
+  // )=>{
+  //   console.log('---approve order---')
+  //   const config=chainConfig[chainId]
+  //   const provider=config.provider
+  //   const reactorAddress = config.reactorAddress
+  //   const permit2Address = config.permit2Address
+  //   const zeroConfig=allConfig[chainId]
+  //   const outputTokenToLowerCase = outputToken.toLowerCase();
+  //   const zeroAddress=zeroConfig.zeroAddress.toLowerCase()
+  //   let outputTokenContract: Contract;
+  //   let outputPermit2Allowance: BigNumber
+  //   let outputReactorAllowance: BigNumber
+  
+  //   if(outputTokenToLowerCase!==zeroAddress){
+  //     outputTokenContract = new ethers.Contract(outputToken, ERC20ABI, provider).connect(filler);
+  //     outputPermit2Allowance = await outputTokenContract.allowance(filler.getAddress(), permit2Address);
+  //     outputReactorAllowance = await outputTokenContract.allowance(filler.getAddress(), reactorAddress);
+  //     if (outputReactorAllowance.lt(tokenAmount)) {
+  //       const tx= await outputTokenContract.approve(reactorAddress,tokenAmount);
+  //       await tx.wait()
+  //     }
+  //     if (outputPermit2Allowance.lt(tokenAmount)) {
+  //       const tx= await outputTokenContract.approve(permit2Address,tokenAmount);
+  //       await tx.wait()
+  //     }
+  //   }
+  // }
+
+
   // 获取订单用于兑换的token信息
   const getInputToken=(token,decimals)=>{
     console.log('selected token');
@@ -93,7 +141,7 @@ const ExecuteWindow = ({
       try{
         const tokenObj=JSON.parse(jsonString)
         console.log(tokenObj.token);
-        setInputToken(tokenObj)
+        // setInputToken(tokenObj)
         const startAmount=BigNumber(tokenObj.startAmount.hex)
         const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
         console.log('inputtoken startAmountNum',startAmountNum.toString());
@@ -123,39 +171,27 @@ const ExecuteWindow = ({
   )
   // 获取订单想要兑换的token信息
   const getOutputToken=(outputToken:string,decimals:number)=>{
-    console.log('output token');
-    // console.log(JSON.parse(outputToken)[0]);
-    // console.log(decimals);
-    // setPayToken(JSON.parse(outputToken)[0])
     const startAmount=BigNumber(JSON.parse(outputToken)[0].startAmount.hex)
     const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
-    console.log('outputtoken startAmountNum',startAmountNum.toString());
-    console.log(JSON.parse(outputToken)[0].token);
+    // console.log('outputtoken startAmountNum',startAmountNum.toString());
+    // console.log(JSON.parse(outputToken)[0].token);
     
     setTokenOutputAmount(startAmountNum.toString())
-    // const outputTokenAddress=order.outputToken
-    // console.log(outputTokenAddress);
     
   }
   // 获取当前汇率与订单汇率的比值
   const getRateRelation=()=>{
     if(tokenRate&&order.orderPrice){
-      console.log('---getRateRelation---');
       const result = new Decimal(tokenRate).dividedBy(new Decimal(order.orderPrice));
-      console.log(result.toNumber());
       if(result) setRateLoading(false)
       if(result.toNumber()>1){
         setRateRelation('incre')
-        console.log('incre',result.toNumber()-1);
         setDiffRate(((result.toNumber()-1)*100).toFixed(2))
         // return result.toFixed(3)
       }else if(result.toNumber()<1){
         setRateRelation('decre')
-        console.log('decre',1-result.toNumber());
         setDiffRate(((1-result.toNumber())*100).toFixed(2))
       }
-      // console.log(rateNum-orderRate);
-      // console.log(Number(tokenRate)-Number(order.orderPrice));
     }
   }
   // 获取两个token当前的汇率
@@ -183,25 +219,11 @@ const ExecuteWindow = ({
     // console.log(amountValue.toString());
     setTokenRate(amountValue.toString())
   }
-  useEffect(()=>{
-    // console.log(payTokenAmount);
-    
-    // setSliderValue(Number(payTokenAmount)/Number(tokenInputAmount)*100)
-    if(payTokenAmount){
-      // const percent=Number(payTokenAmount)/Number(tokenInputAmount)*100>100?100:Number(payTokenAmount)/Number(tokenInputAmount)*100
-      // console.log(percent)
-      // setSliderValue(Number(percent.toFixed(2)))
-    }
-  },[payTokenAmount])
-  useEffect(()=>{
+  // useEffect(()=>{
     // console.log(silderValue);
     // setExchangeAmount(Number(tokenInputAmount)*silderValue/100)
-    setPayTokenAmount((Number(tokenOutputAmount)*(silderValue/100)).toString())
-  },[silderValue])
-  useEffect(()=>{
-    // console.log(inputToken);
-    
-  },[inputToken])
+    // setPayTokenAmount((Number(tokenOutputAmount)*(silderValue/100)).toString())
+  // },[silderValue])
   // 有市场汇率之后便于订单汇率进行比较
   useEffect(()=>{
     console.log(tokenRate);
@@ -213,7 +235,7 @@ const ExecuteWindow = ({
     getOutputToken(order.outputs,order.outputTokenDecimals)
     getTokenRate(order.inputToken,order.inputTokenDecimals,order.outputToken,order.outputTokenDecimals)
     getTokenBalance(order.outputToken,setPayTokenBalance)
-    setSliderValue(100)
+    // setSliderValue(100)
   },[order])
 
   return (
