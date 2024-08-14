@@ -316,7 +316,15 @@
     "fill tx":"Fill Tx",
     "fill at":"Fill At",
     "amount":"Amount",
-    "expire in":"Expire At"
+    "expire in":"Expire At",
+    "cancel title":"Cancel Order",
+    "cancel content":"Cancel the order?",
+    "yes":"Yes",
+    "no":"No",
+    "createOrderSuccess":"Create Order Successfully!",
+    "createOrderError":"Create Order Failed!",
+    "executeOrderSuccess":"Execute Order Successfully!",
+    "executeOrderError":"Execute Order Failed!"
   },
   "sniping": {
     "choose": "Choose wallet",

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { CountContext } from '@/Layout';
 // import { ethers } from 'ethers';
-import { Input, Dropdown, Modal, List } from 'antd';
+import { Input, Dropdown, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -31,6 +31,7 @@ export default function index() {
     // setChainId,
     // transactionFee,
     // setTransactionFee,
+    setIsModalOpen,
     user,
     isLogin,
   } = useContext(CountContext);
@@ -70,6 +71,7 @@ export default function index() {
           onClick={() => {
             setCurrentIndex(1);
             setOrderType(1);
+            setSearch('')
           }}
         >
           {t('limit.executing')}
@@ -86,6 +88,7 @@ export default function index() {
           onClick={() => {
             setCurrentIndex(1);
             setOrderType(2);
+            setSearch('')
             setHistoryOrderType('cancelled')
           }}
         >
@@ -118,7 +121,7 @@ export default function index() {
           // uid:0,
           page: page,
           // orderHash:"",
-          orderStatus: currentIndex === 0 ? 'open' : 
+          orderStatus: currentIndex === 0||search ? 'open' : 
                           orderType===0 ? '': orderType===1 ?'open':historyOrderType,
           offerer: currentIndex === 1&& isLogin? user.username:'',
         },
@@ -165,6 +168,8 @@ export default function index() {
           setOrderLoading(true);
       }
     }
+    if(isLogin) console.log(user);
+    
   }, [chainId, contractConfig,currentIndex, orderType,historyOrderType]);
   return (
     <>
@@ -195,18 +200,24 @@ export default function index() {
                   variant="borderless"
                   // onKeyDown={enter}
                   placeholder={'Token Address'}
-                  allowClear
+                  allowClear={true}
+                  onClear={()=>{
+                    console.log('clear all')
+                    getOrderList(1,chainId)
+                  }}
                   value={search}
                   onChange={(e)=>{
                     setSearch(e.target.value)
                   }}
                   onPressEnter={()=>{
                     getOrderList(1,chainId,search)
+                    setCurrentIndex(0)
                   }}
                   suffix={
                     <SearchOutlined
                       onClick={()=>{
                         getOrderList(1,chainId,search)
+                        setCurrentIndex(0)
                       }}
                       style={{
                         color: 'rgb(134,240,151)',
@@ -233,21 +244,26 @@ export default function index() {
               >
                 <p>{t('limit.live orders')}</p>
               </span>
-             
               <Dropdown
                 rootClassName="orders-type"
                 menu={{ items, selectable: false }}
                 trigger={['hover']}
-                // open
+                disabled={!isLogin}
                 // destroyPopupOnHide={true}
               >
                 <span
                   className={`orders-btn ${currentIndex === 1 ? 'active' : ''}`}
                   onClick={() => {
-                    setCurrentIndex(1);
-                    setOrderPage(1);
-                    setHasMore(true);
-                    setOrderType(0)
+                    if(!isLogin){
+                      console.log('not login');
+                      setIsModalOpen(true)
+                    }else{
+                      setSearch('')
+                      setCurrentIndex(1);
+                      setOrderPage(1);
+                      setHasMore(true);
+                      setOrderType(0)
+                    }
                     // getOrderList(1)
                   }}
                 >
@@ -331,7 +347,7 @@ export default function index() {
                     {orderType!==2&& orderList.map((item: any) => (
                       <OrderCard
                         type={
-                          item.uid === user?.uid
+                          item.offerer.toLowerCase() === user?.username
                             ? currentIndex === 0
                               ? 'my'
                               : 'open'
@@ -355,7 +371,6 @@ export default function index() {
                       historyOrderType={historyOrderType}
                       />
                     ))
-
                     }
                   </InfiniteScroll>
                   {moreOrderLoading && <Spin />}

@@ -5,7 +5,7 @@ import { useEffect, useState,useContext } from 'react'
 // import {BigNumber} from 'bignumber.js';
 import { ethers, BigNumber as BNtype } from 'ethers'
 import {chainConfig} from '@utils/limit/constants'
-import Permit2ABI from '@utils/limit/Permit2ABI.json'
+import Permit2ABI from '@abis/Permit2ABI.json'
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout';
 import { getUniswapV2RouterContract } from "@utils/contracts";
@@ -22,7 +22,7 @@ export default function OrderCard({
   setShowDetailsWindow,
   loginProvider,
 }: any) {
-  const {contractConfig,provider}=useContext(CountContext)
+  const {contractConfig,provider,user}=useContext(CountContext)
   const [showCancelWindow,setShowCancelWindow]=useState(false)
   const {t}=useTranslation()
   const [tokenRate,setTokenRate]=useState('')
@@ -319,7 +319,7 @@ export default function OrderCard({
           )}
         </span>
         )}
-        {type === 'my' &&
+        {(order?.orderStatus=== 'open'&&order?.offerer.toLowerCase()===user?.username)&&
           <span
             className="cancel-btn"
             onClick={(e)=>{
@@ -329,15 +329,17 @@ export default function OrderCard({
               setSelectedOrder(order)
           }}>{t("limit.cancel order")}</span>
         }
+        {order?.orderStatus=== 'open'?(
         <span className="order-status" onClick={(e)=>{
           e.stopPropagation()
           setSelectedOrder(order)
           setShowExecuteWindow(true);
         }}>{t("limit.execute order")}</span>
+      ):<span></span>}
       </div>
       <Modal
         rootClassName='cancel-window'
-        title="取消订单"
+        title={`${t("limit.cancel title")}`}
         open={showCancelWindow}
         onOk={(e)=>{
           e.stopPropagation()
@@ -348,10 +350,10 @@ export default function OrderCard({
           e.stopPropagation()
           setShowCancelWindow(false)
         }}
-        okText="确认"
-        cancelText="取消"
+        okText={`${t("limit.yes")}`}
+        cancelText={`${t("limit.no")}`}
       >
-        <p>cancel the order?</p>
+        <p>{t("limit.cancel content")}</p>
       </Modal>
     </div>
   )

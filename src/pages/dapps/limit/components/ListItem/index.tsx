@@ -1,5 +1,5 @@
 import './index.less';
-import { useState, useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import Copy from "@/components/copy";
 import {BNtoNumber} from "@utils/limit/utils"
 import { useTranslation } from 'react-i18next';

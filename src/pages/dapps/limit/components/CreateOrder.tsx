@@ -18,6 +18,7 @@ import { getSwapFee } from '@utils/getSwapFee';
 import { createOrder } from "@utils/limit/createOrder";
 import Request from '@/components/axios';
 import { useTranslation } from "react-i18next";
+import NotificationChange from "@/components/message";
 // interface CreateOrderType{
 //   initChainId?:string;
 //   initToken?:[tokenIn:TokenItemData,tokenOut:TokenItemData];
@@ -144,9 +145,11 @@ export default function CreateOrder() {
         console.log('oreder submit success');
         // getOrderList(1,chainId)
         setCreateLoading(false)
+        NotificationChange('success',t('limit.createOrderSuccess'))
       }
     }catch(err){
       console.log(err);
+      NotificationChange('warning',t('limit.createOrderError'))
       setCreateLoading(false)
     }finally{
       setCreateLoading(false)
@@ -158,9 +161,6 @@ export default function CreateOrder() {
     console.log('createOrder:');
     console.log('---now time---')
     console.log(Number(payTokenAmount)/Number(receiveTokenAmount));
-    console.log(payToken.contractAddress)
-    console.log(receiveToken.contractAddress)
-    console.log(new Date(new Date().getTime()))
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await web3Provider.getSigner();
     const receipt: string = await signer.getAddress();
@@ -170,10 +170,6 @@ export default function CreateOrder() {
       console.log('---createOrder---')
       const payTokenAmountInWei = ethers.utils.parseUnits(payTokenAmount, payToken.decimals);
       const receiveTokenAmountInwei =ethers.utils.parseUnits(Number(receiveTokenAmount).toFixed(Number(receiveToken.decimals)).toString(), receiveToken.decimals);
-      console.log(payTokenAmount);
-      console.log(payTokenAmountInWei);
-      console.log(receiveTokenAmount)
-      console.log(receiveTokenAmountInwei);
 
       // 发起创建订单请求
       try {
@@ -190,7 +186,11 @@ export default function CreateOrder() {
         )
         console.log('return orderParams')
         console.log(orderParams);
-        submitOrder(orderParams)
+        if(orderParams){
+          submitOrder(orderParams)
+        }else{
+          NotificationChange('warning',t('limit.createOrderError'))
+        }
       } catch (error) {
         console.log(error);
         setCreateLoading(false)
@@ -215,7 +215,7 @@ export default function CreateOrder() {
         }
       }
     },
-    [contractConfig,loginProvider]
+    [contractConfig,loginProvider,user]
   )
   // 计算手续费
   const getTransactionFee = async (data) => {
@@ -356,7 +356,10 @@ export default function CreateOrder() {
 
   // 监听变化，自动计算token余额，token的市价
   useEffect(()=>{
-    if(isLogin&&loginProvider){
+    console.log('loginProvider change');
+    
+    if(loginProvider){
+      console.log('loginProvider change--');
       getTokenBalance(receiveToken?.contractAddress,setReceiveTokenBalance)
       getTokenBalance(payToken?.contractAddress,setPayTokenBalance)
     }
@@ -364,8 +367,9 @@ export default function CreateOrder() {
     getToeknUnitPrice(receiveToken,'receive')
     console.log(payToken);
     console.log(receiveToken);
+    console.log(user);
     
-  },[payToken,receiveToken,isLogin,loginProvider,chainId])
+  },[payToken,receiveToken,isLogin,loginProvider,chainId,user])
 
   useEffect(()=>{
     // console.log(tokenRate);
