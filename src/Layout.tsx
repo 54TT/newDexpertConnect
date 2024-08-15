@@ -216,6 +216,7 @@ function Layout() {
           ],
         });
       } catch (e) {
+        console.error(e);
         return null;
       }
     }

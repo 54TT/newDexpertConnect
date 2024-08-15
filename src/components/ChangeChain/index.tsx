@@ -36,6 +36,7 @@ function ChangeChain({
         });
         setChainId(evmChainId);
       } catch (e) {
+        console.error(e);
         return null;
       }
     }
