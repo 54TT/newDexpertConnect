@@ -225,7 +225,7 @@ export default function index() {
                   rootClassName="limit-input"
                   variant="borderless"
                   // onKeyDown={enter}
-                  placeholder={currentIndex===0?t('limit.search'):t('limit.order hash')}
+                  placeholder={currentIndex===0?t('limit.search'):t('limit.order hash').toLowerCase()}
                   allowClear={true}
                   onClear={()=>{
                     console.log('clear all')
