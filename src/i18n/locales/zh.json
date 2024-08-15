@@ -271,6 +271,7 @@
     "expired":"过期订单",
     "error":"失败订单",
     "filled":"成功订单",
+    "insufficient-funds":"INSUFFICIENT_FUNDS",
     "partial fill":"PARTIAL FILL",
     "offer":"OFFER",
     "for":"FOR",

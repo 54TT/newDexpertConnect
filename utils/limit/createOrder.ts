@@ -85,11 +85,10 @@ async function buildOrder(
   // console.log(new Date((deadline-deadlineSeconds)*1000).toUTCString())
   // console.log(new Date(new Date().getTime()))
   // console.log('---deadline---')
-  console.log(new Date().toUTCString())
-  console.log(new Date(deadline*1000).toUTCString())
-  console.log('---deadline---',deadline)
-  const deadlineNew = Math.round(new Date(deadline*1000).getTime() / 1000)
-  console.log('=====deadlineNew=====',deadlineNew)
+  // console.log(new Date().toUTCString())
+  // console.log(new Date(deadline*1000).toUTCString())
+  // console.log('---deadline---',deadline)
+  // console.log('=====deadlineNew=====',deadlineNew)
   const decayStartTime = Math.round(new Date().getTime() / 1000)
   const creatAddress=await orderCreator.getAddress()
   // 生成荷兰式订单，传入相关参数
@@ -190,10 +189,10 @@ export const createOrder = async (
 
 
 
-  console.log(inputTokenDecimals);
+  // console.log(inputTokenDecimals);
   // console.log(inputTokenDecimals.toNumber());
-  console.log(inputTokenToLowerCase==zeroAddress);
-  console.log(Number(inputTokenDecimals));
+  // console.log(inputTokenToLowerCase==zeroAddress);
+  // console.log(Number(inputTokenDecimals));
   
   // const inputTokenName = await inputTokenContract.name();
   // const inputTokenSymbol = await inputTokenContract.symbol();

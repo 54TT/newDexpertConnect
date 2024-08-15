@@ -9,7 +9,7 @@ import {  ethers } from "ethers";
 import getBalanceRpc from "@utils/getBalanceRpc";
 import Decimal from "decimal.js";
 import BigNumber from 'bignumber.js';
-import { InputNumber,Skeleton,Select ,Button, Input } from "antd";
+import { Skeleton,Select ,Button, Input } from "antd";
 import { debounce } from "lodash";
 import { getAmountOut } from "@utils/swap/v2/getAmountOut";
 import { getUniswapV2RouterContract } from "@utils/contracts";
@@ -116,8 +116,6 @@ export default function CreateOrder() {
   async function submitOrder(order) {
     console.log('---send order---');
     console.log(order);
-    setPayTokenAmount('')
-    setReceiveTokenAmount('')
     try{
       const token = Cookies.get('token');
       const res=await getAll({
@@ -188,8 +186,11 @@ export default function CreateOrder() {
         console.log(orderParams);
         if(orderParams){
           submitOrder(orderParams)
+          setPayTokenAmount('')
+          setReceiveTokenAmount('')
         }else{
           NotificationChange('warning',t('limit.createOrderError'))
+          setCreateLoading(false)
         }
       } catch (error) {
         console.log(error);
@@ -347,7 +348,6 @@ export default function CreateOrder() {
     // console.log(payToken?.symbol,'---',receiveToken?.symbol,'tokenRate:',tokenRate);
     // console.log(tokenRateBN);
     setToeknRateBN(new BigNumber(tokenRate))
-    console.log('tokenRate',tokenRate)
   },[tokenRate])
   // 自动计算手续费
   useEffect(() => {
@@ -356,10 +356,7 @@ export default function CreateOrder() {
 
   // 监听变化，自动计算token余额，token的市价
   useEffect(()=>{
-    console.log('loginProvider change');
-    
     if(loginProvider){
-      console.log('loginProvider change--');
       getTokenBalance(receiveToken?.contractAddress,setReceiveTokenBalance)
       getTokenBalance(payToken?.contractAddress,setPayTokenBalance)
     }
@@ -367,8 +364,6 @@ export default function CreateOrder() {
     getToeknUnitPrice(receiveToken,'receive')
     console.log(payToken);
     console.log(receiveToken);
-    console.log(user);
-    
   },[payToken,receiveToken,isLogin,loginProvider,chainId,user])
 
   useEffect(()=>{
@@ -383,7 +378,8 @@ export default function CreateOrder() {
       setRateLoading(false)
       setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
     }
-    if(tokenRate===0||tokenRate===undefined){
+    // if(tokenRate===0||tokenRate===undefined){
+    if(tokenRate===undefined){
       setTokenRate(0)
       setRateLoading(true)
       getTokenRateDebounce()
@@ -491,7 +487,7 @@ export default function CreateOrder() {
           <span className="token-card-footer-right">
             {isLogin ? (
               <>
-                ~${(Number(payTokenAmount)*payTokenUnitPrice)?.toFixed(6)||0}
+                ~${(Number(payTokenAmount)*payTokenUnitPrice)===0?0:(Number(payTokenAmount)*payTokenUnitPrice)?.toFixed(6)}
               </>
             ):(
               <></>
@@ -499,13 +495,18 @@ export default function CreateOrder() {
           </span>
         </div>
       </div>
+      <div style={{display:'flex',justifyContent:'center',alignItems:'center',height:'0px',margin:'4px 0'}}>
+        <span className="limit-icon">
+          <img src="/down-icon-black.svg" />
+        </span>
+      </div>
       <div className="receive token-card">
       <div className="token-card-header dis-between">
           <span className="token-card-header-left">
           {t("limit.receive")}
           </span>
           { isLogin?(
-            <span className="token-card-header-right">
+            <span className="token-card-header-right text-easy-in">
               {t("limit.balance")}:{rateLoading? (
                 <Skeleton.Button active size="small" />
               ):(
@@ -570,7 +571,7 @@ export default function CreateOrder() {
           <span className="token-card-footer-right">
             {isLogin ? (
               <>
-                ~${(Number(receiveTokenAmount)*receiveTokenUnitPrice)?.toFixed(6)||0}
+                ~${(Number(receiveTokenAmount)*receiveTokenUnitPrice)===0?0:(Number(receiveTokenAmount)*receiveTokenUnitPrice)?.toFixed(6)}
               </>
               ):(
                 <></>
@@ -585,15 +586,17 @@ export default function CreateOrder() {
         {
           rateLoading ? ( <Skeleton.Button active size="small" />
           ):(
-            <InputNumber
+            <Input
               className="rate-input"
               variant="borderless"
-              controls={false}
+              // controls={false}
               value={payRate}
               disabled={!isLogin}
-              onChange={(v)=>{
-                setTokenRate(v)
-                setPayRate(v)
+              onChange={(e)=>{
+                if (/^\d*\.?\d*$/.test(e.target.value)) {
+                  setTokenRate(Number(e.target.value));
+                  setPayRate(Number(e.target.value));
+                }
               }}
             />
           )

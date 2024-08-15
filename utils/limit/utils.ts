@@ -2,7 +2,7 @@ import {BigNumber} from 'bignumber.js';
 import {setMany} from "../../utils/change"
 
 // bignumber转换number
-export const BNtoNumber=(bn,decimals?)=>{
+export const BNtoNumber=(bn?,decimals?)=>{
     let num;
 
     if(!decimals){

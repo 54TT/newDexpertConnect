@@ -18,6 +18,7 @@ import Nodata from '@/components/Nodata'
 // useContext
 import './index.less';
 import Loading from '@/components/allLoad/loading';
+import { ethers } from 'ethers';
 // import { BigNumber, ethers } from 'ethers';
 // import { CountContext } from '@/Layout';
 // import { createOrder,  } from "@/../utils/limit/order"
@@ -32,7 +33,6 @@ export default function index() {
     // transactionFee,
     // setTransactionFee,
     setIsModalOpen,
-    user,
     isLogin,
   } = useContext(CountContext);
   const { t } = useTranslation();
@@ -55,22 +55,24 @@ export default function index() {
   // 首次加载
   // const [initialized, setInitialized] = useState(false)
   // my orders type,0:all,1:executing,2:history
-  const [orderType, setOrderType] = useState(0);
+  const [myOrderType, setMyOrderType] = useState(0);
   // 历史订单类型
   const [historyOrderType, setHistoryOrderType] = useState('cancelled');
   // 搜索字段
   const [search, setSearch] = useState('');
+  // 当前地址
+  const [userAddress, setUserAddress] = useState('');
   const items: any = [
     {
       key: '0',
       label: (
         <p
           className={
-            orderType === 1 ? 'drop-item-selected drop-item' : 'drop-item'
+            myOrderType === 1 ? 'drop-item-selected drop-item' : 'drop-item'
           }
           onClick={() => {
             setCurrentIndex(1);
-            setOrderType(1);
+            setMyOrderType(1);
             setSearch('')
           }}
         >
@@ -83,11 +85,11 @@ export default function index() {
       label: (
         <p
           className={
-            orderType === 2 ? 'drop-item-selected drop-item' : 'drop-item'
+            myOrderType === 2 ? 'drop-item-selected drop-item' : 'drop-item'
           }
           onClick={() => {
             setCurrentIndex(1);
-            setOrderType(2);
+            setMyOrderType(2);
             setSearch('')
             setHistoryOrderType('cancelled')
           }}
@@ -98,6 +100,16 @@ export default function index() {
     },
   ];
 
+  // 获取用户address
+  const getAddress=async()=>{
+    const web3Provider=new ethers.providers.Web3Provider(loginProvider)
+    const signer=web3Provider.getSigner()
+    const address=await signer.getAddress()
+    // setUserAddress('0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89')
+    setUserAddress(address)
+    console.log(address)
+  }
+
   // 加载更多订单
   const moreOrder = async () => {
     setOrderPage(orderPage + 1);
@@ -105,25 +117,35 @@ export default function index() {
     await getOrderList(orderPage + 1, chainId);
   };
   // 获取订单列表
-  const getOrderList = async (page: number, chainId: string,search?:string) => {
-    console.log('get order list')
-    console.log('search',search);
-    
-    // if(currentIndex===1) console.log('ger user orders')
+  const getOrderList = async (page: number, chainId: string) => {
     if (page === 1) setOrderLoading(true);
+    // console.log(search.length)
     try {
       const token = Cookies.get('token');
       const res = await getAll({
         method: 'get',
         url: '/api/v1/limit/order/list',
         data: {
-          search:search?search:"",
-          // uid:0,
+          // search有内容就搜索内容，如果没有，且在我的订单filled分类，则搜索用户订单，否则搜索全部订单
+          search:search&&(search.length!==66)?
+                  search:(historyOrderType==='filled'?
+                  userAddress:''),
           page: page,
-          // orderHash:"",
-          orderStatus: currentIndex === 0||search ? 'open' : 
-                          orderType===0 ? '': orderType===1 ?'open':historyOrderType,
-          offerer: currentIndex === 1&& isLogin? user.username:'',
+          // 订单哈希搜索
+          orderHash:search.length===66?search:'',
+          // o 市场订单或有search就open，
+          // orderStatus: currentIndex === 0||search ?
+          //               open
+          //               : (myOrderType===0 ? '': 
+          //                 (myOrderType===1 ?'open':historyOrderType)),
+          // 在市场订单有search就open，在我的订单就展示所有订单，在我的订单executing就展示open，否则就按照分类展示订单
+          orderStatus:currentIndex === 0||search ?
+                        (search.length!==66?'open':''):(myOrderType===0?'':(myOrderType===1?'open':historyOrderType)),
+          // 在我的订单且已登录？如果历史订单状态为filled，就为空，search进行用户地址搜索（filler和offerer都能检索）：用户地址；空
+          offerer: currentIndex === 1&& isLogin?
+                    (historyOrderType==='filled'?
+                      '':userAddress)
+                        :'',
         },
         token,
         chainId,
@@ -157,20 +179,26 @@ export default function index() {
   };
   useEffect(() => {
     console.log('currentIndex or orderType changed')
-  }, [currentIndex, orderType]);
+  }, [currentIndex, myOrderType]);
   useEffect(() => {
     // 默认有更多的订单
     setHasMore(true)
     // if(!loginProvider) setOrderList([]);
+    console.log(historyOrderType);
+    
     if(chainId && contractConfig){
       if (chainId === contractConfig.chainId.toString()) {
+          // setCurrentIndex(0);
+          // setMyOrderType(0)
+          // setHistoryOrderType('cancelled')
           getOrderList(1, chainId);
           setOrderLoading(true);
       }
     }
-    if(isLogin) console.log(user);
+    if(isLogin) getAddress()
     
-  }, [chainId, contractConfig,currentIndex, orderType,historyOrderType]);
+  }, [chainId, contractConfig,currentIndex, myOrderType,historyOrderType]);
+
   return (
     <>
       {showDetailsWindow && selectedOrder && (
@@ -203,6 +231,7 @@ export default function index() {
                   allowClear={true}
                   onClear={()=>{
                     console.log('clear all')
+                    setSearch('')
                     getOrderList(1,chainId)
                   }}
                   value={search}
@@ -210,14 +239,20 @@ export default function index() {
                     setSearch(e.target.value)
                   }}
                   onPressEnter={()=>{
-                    getOrderList(1,chainId,search)
-                    setCurrentIndex(0)
+                    getOrderList(1,chainId)
+                    // setCurrentIndex(0)
+                    setMyOrderType(0)
+                    setOrderPage(1)
+                    setHasMore(true)
                   }}
                   suffix={
                     <SearchOutlined
                       onClick={()=>{
-                        getOrderList(1,chainId,search)
-                        setCurrentIndex(0)
+                        getOrderList(1,chainId)
+                        // setCurrentIndex(0)
+                        setMyOrderType(0)
+                        setHasMore(true)
+                        setOrderPage(1)
                       }}
                       style={{
                         color: 'rgb(134,240,151)',
@@ -238,8 +273,9 @@ export default function index() {
                 className={`orders-btn ${currentIndex === 0 ? 'active' : ''}`}
                 onClick={() => {
                   setCurrentIndex(0);
-                  setOrderType(0);
+                  setMyOrderType(0);
                   setOrderPage(1);
+                  setHistoryOrderType('cancelled')
                 }}
               >
                 <p>{t('limit.live orders')}</p>
@@ -262,14 +298,14 @@ export default function index() {
                       setCurrentIndex(1);
                       setOrderPage(1);
                       setHasMore(true);
-                      setOrderType(0)
+                      setMyOrderType(0)
                     }
                     // getOrderList(1)
                   }}
                 >
-                  {orderType===0&&<p>{t('limit.my orders')}</p>}
-                  {orderType===1&&<p>{t('limit.executing')}</p>}
-                  {orderType===2&&<p>{t('limit.history')}</p>}
+                  {myOrderType===0&&<p>{t('limit.my orders')}</p>}
+                  {myOrderType===1&&<p>{t('limit.executing')}</p>}
+                  {myOrderType===2&&<p>{t('limit.history')}</p>}
                   <svg
                     width="14"
                     height="9"
@@ -297,17 +333,20 @@ export default function index() {
                 }}
                 src='/refresh.svg'
                 onClick={()=>{
+                  setOrderPage(1)
                   getOrderList(1, chainId);
                   setReqNum(reqNum + 1);
+                  setHasMore(true)
                 }}
               />
             </div>
-            { currentIndex===1&&orderType===2&&(
+            { currentIndex===1&&myOrderType===2&&(
               <div className={`history history-${historyOrderType}`}>
               <span
                 style={{color: historyOrderType === 'cancelled' ? '#86f097' : '#fff'}}
                 onClick={()=>{
                   setHistoryOrderType('cancelled')
+                  setOrderPage(1)
                 }}
                 className={`history-header-item ${historyOrderType === 'cancelled' ? 'history-header-item-active':''}`}
               >{t("limit.cancelled")}</span>
@@ -315,6 +354,7 @@ export default function index() {
                 style={{color: historyOrderType === 'expired' ? '#86f097' : '#fff'}}
                 onClick={()=>{
                   setHistoryOrderType('expired')
+                  setOrderPage(1)
                 }}
                 className={`history-header-item ${historyOrderType === 'expired' ? 'history-header-item-active':''}`}
               >{t("limit.expired")}</span>
@@ -322,13 +362,15 @@ export default function index() {
                 style={{color: historyOrderType === 'filled' ? '#86f097' : '#fff'}}
                 onClick={()=>{
                   setHistoryOrderType('filled')
+                  setOrderPage(1)
                 }}
                 className={`history-header-item ${historyOrderType === 'filled' ? 'history-header-item-active':''}`}
               >{t("limit.filled")}</span>
               <span
-                style={{color: historyOrderType === 'failed' ? '#86f097' : '#fff'}}
+                style={{color: historyOrderType === 'error' ? '#86f097' : '#fff'}}
                 onClick={()=>{
-                  setHistoryOrderType('failed')
+                  setHistoryOrderType('error')
+                  setOrderPage(1)
                 }}
                 className={`history-header-item ${historyOrderType === 'failed' ? 'history-header-item-active':''}`}
               >{t("limit.error")}</span>
@@ -336,7 +378,7 @@ export default function index() {
             )}
             <div className="limit-left-body">
               {orderList?.length > 0 && !orderLoading ? (
-                <div id="order-list" className={orderType===2?"order-list-col":''}>
+                <div id="order-list" className={myOrderType===2?"order-list-col":''}>
                   <InfiniteScroll
                     hasMore={hasMore}
                     next={moreOrder}
@@ -344,10 +386,10 @@ export default function index() {
                     loader={null}
                     dataLength={orderList.length}
                   >
-                    {orderType!==2&& orderList.map((item: any) => (
+                    {myOrderType!==2&& orderList.map((item: any) => (
                       <OrderCard
                         type={
-                          item.offerer.toLowerCase() === user?.username
+                          item.offerer === userAddress
                             ? currentIndex === 0
                               ? 'my'
                               : 'open'
@@ -360,15 +402,17 @@ export default function index() {
                         setShowExecuteWindow={setShowExecuteWindow}
                         setSelectedOrder={setSelectedOrder}
                         setShowDetailsWindow={setShowDetailsWindow}
+                        userAddress={userAddress}
                       />
                     ))}
-                    { orderType===2&&orderList.map((item: any) => (
+                    { myOrderType===2&&orderList.map((item: any) => (
                       <ListItem
                       key={item.orderHash}
                       order={item}
                       setSelectedOrder={setSelectedOrder}
                       setShowDetailsWindow={setShowDetailsWindow}
                       historyOrderType={historyOrderType}
+                      userAddress={userAddress}
                       />
                     ))
                     }

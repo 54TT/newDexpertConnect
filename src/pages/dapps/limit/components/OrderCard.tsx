@@ -21,8 +21,9 @@ export default function OrderCard({
   setShowExecuteWindow,
   setShowDetailsWindow,
   loginProvider,
+  userAddress
 }: any) {
-  const {contractConfig,provider,user}=useContext(CountContext)
+  const {contractConfig,provider}=useContext(CountContext)
   const [showCancelWindow,setShowCancelWindow]=useState(false)
   const {t}=useTranslation()
   const [tokenRate,setTokenRate]=useState('')
@@ -136,12 +137,12 @@ export default function OrderCard({
       if(result) setRateLoading(false)
       if(result.toNumber()>1){
         setRateRelation('incre')
-        // console.log('incre',result.toNumber()-1);
+        console.log('incre',result.toNumber()-1);
         setDiffRate(((result.toNumber()-1)*100).toFixed(2))
         // return result.toFixed(3)
       }else if(result.toNumber()<1){
         setRateRelation('decre')
-        // console.log('decre',1-result.toNumber());
+        console.log('decre',1-result.toNumber());
         setDiffRate(((1-result.toNumber())*100).toFixed(2))
       }
       // console.log(rateNum-orderRate);
@@ -178,16 +179,16 @@ export default function OrderCard({
     if(tokenRate) getRateRelation()
   },[tokenRate])
   useEffect(()=>{
-    // console.log(order.offerer);
-    // console.log(order.orderStatus)
-    // console.log(order.filler)
+    // console.log('offerer',order.offerer);
+    // console.log(order.orderHash.length)
+    // console.log('filler',order.filler)
     getTokenRate(order.inputToken,order.inputTokenDecimals,order.outputToken,order.outputTokenDecimals)
     setDeadline(Number(order.deadline))
   },[order])
   return (
     <div
       className={"order-card " + 
-        (type === 'my' ? 'my-order' : '') +
+        (type === 'my' ? 'my-order ' : '') +
         (type === 'open'&&order.orderStatus==='open'? 'open-order ' : '')+
         (order.orderStatus === 'error' ? 'error-order' : '')+
         (order.orderStatus === 'cancelled' ? 'cancelled-order' : '')+
@@ -319,7 +320,7 @@ export default function OrderCard({
           )}
         </span>
         )}
-        {(order?.orderStatus=== 'open'&&order?.offerer.toLowerCase()===user?.username)&&
+        {(order?.orderStatus=== 'open'&&order?.offerer===userAddress)&&
           <span
             className="cancel-btn"
             onClick={(e)=>{

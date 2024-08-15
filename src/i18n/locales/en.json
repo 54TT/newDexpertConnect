@@ -273,6 +273,7 @@
     "expired":"EXPIRED",
     "error":"ERROR",
     "filled":"FILLED",
+    "insufficient-funds":"INSUFFICIENT_FUNDS",
     "partial fill":"PARTIAL FILL",
     "offer":"OFFER",
     "for":"FOR",
