@@ -34,6 +34,7 @@ export default function CreateOrder() {
     setTransactionFee,
     user,
     isLogin,
+    setIsModalOpen
   } = useContext(CountContext)
   const { getAll } = Request();
   const {t}=useTranslation()
@@ -641,10 +642,14 @@ export default function CreateOrder() {
       rootClassName="create-order-btn"
       className={`${payToken&&receiveToken&&payTokenAmount && receiveTokenAmount ? 'order-active' : ''} ` }
       loading={createLoading}
-      disabled={!payTokenAmount && !receiveTokenAmount}
+      // disabled={!payTokenAmount && !receiveTokenAmount}
       onClick={() => {
+        if(isLogin){
         approveOder()
         setCreateLoading(true)
+        }else{
+          setIsModalOpen(true)
+        }
       }}
     >
       {isLogin?t("limit.place an order"):t("limit.connect")}
