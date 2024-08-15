@@ -59,7 +59,7 @@ export default function resultBox({
       const contractFactory = new ethers.ContractFactory(
         abi,
         bytecode,
-        data?.[1]?.signer
+        data?.[1]
       );
 
       // 先默认使用手续费版本
@@ -84,6 +84,7 @@ export default function resultBox({
         setTx(deployTransaction?.hash);
       }
     } catch (e) {
+      console.error(e);
       setResult('error');
       setLoading(false);
       return null;

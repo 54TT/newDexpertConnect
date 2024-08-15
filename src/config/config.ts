@@ -403,7 +403,7 @@ export const config: Record<ChainIdList, any> = {
   //   },
   // },
   '3441006': {
-    rpcUrl: 'https://bsc-dataseed.bnbchain.org',
+    rpcUrl: 'https://pacific-rpc.sepolia-testnet.manta.network/http',
     chainId: 3441006,
     name: 'Manta-sepolia',
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
