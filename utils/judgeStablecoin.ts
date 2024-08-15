@@ -173,12 +173,12 @@ const chainList = [
     chainId: '995',
   },
   {
-    value: 'bitLayer',
+    value: 'BitLayer',
     icon: '/bitlayer.jpg',
     chainId: '200901',
   },
   {
-    value: 'bitLayer test',
+    value: 'BitLayer test',
     icon: '/bitlayer.jpg',
     chainId: '200810',
   },
@@ -187,6 +187,16 @@ const chainList = [
     icon: '/unkonwLogo.png',
     key: '0xaa36a7',
     chainId: '11155111',
+  },
+  {
+    value: 'Manta',
+    icon: '/unkonwLogo.png',
+    chainId: '169',
+  },
+  {
+    value: 'Manta test',
+    icon: '/unkonwLogo.png',
+    chainId: '3441006',
   },
 ];
 

@@ -208,7 +208,8 @@ function Layout() {
           ],
         });
       } catch (e) {
-        return null
+        console.error(e);
+        return null;
       }
     }
     return () => {
@@ -245,7 +246,7 @@ function Layout() {
       url: '/api/v1/userinfo/' + id,
       data: {},
       token,
-      chainId
+      chainId,
     });
     if (data?.status === 200) {
       const user = data?.data?.data;
