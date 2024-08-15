@@ -502,7 +502,7 @@
       }
     }
     .pay{
-      margin-bottom: 10px;
+      // margin-bottom: 10px;
     }
   }
   .choose-card{
@@ -595,6 +595,7 @@
   span{
     font-size: 14px;
     color: rgba(255,255,255,0.85);
+    transition: all 0.3s;
   }
   .create-order-btn{
     background-color: #4b4c4b;
@@ -652,9 +653,24 @@
     margin-right: 6px;
   }
 }
+.limit-icon{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #86f097;
+  z-index: 5;
+  border: 6px solid #2f2f2f;
+}
 .rate-input{
   height: 20px;
   width: 100%;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  padding: 0;
   .ant-input-number-input-wrap{
     height: 100%;
     input{

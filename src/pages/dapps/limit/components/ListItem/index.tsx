@@ -11,7 +11,8 @@ const ListItem=({
   order,
   setSelectedOrder,
   setShowDetailsWindow,
-  historyOrderType
+  historyOrderType,
+  userAddress
 })=>{
   const {t}=useTranslation()
 
@@ -27,8 +28,10 @@ const ListItem=({
   }
 
   useEffect(()=>{
-    console.log(order);
-    
+    // console.log(order);
+    // console.log('offer',order.offerer)
+    console.log('filler',order?.filler)
+    // console.log('filler'.order?.filler)
   },[order])
 
 
@@ -59,7 +62,13 @@ const ListItem=({
           />
         </span>
       </span>
-      <span className='item-header-right gray-font'>
+      <span
+        className='item-header-right gray-font'
+        style={{
+          color:order.orderStatus==="filled"?
+                (order.offerer===userAddress?'#ff5555':'#83e72d'):'rgba(255,255,255,0.55)'
+        }}
+      >
         {t(`limit.${order?.orderStatus.toLowerCase()}`)}</span>
     </div>
     <div className='item-body'>
@@ -77,7 +86,12 @@ const ListItem=({
           {t("limit.total price")}
         </span>
         <span className='item-body-col-bottom white-font'>
-        {BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)}  {order.outputTokenSymbol}
+          {order.outputs?(
+            BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals) 
+          ):(
+            '-'
+          )}&ensp;{order.outputs&&(order.outputTokenSymbol)}
+        {/* {BNtoNumber(JSON.parse(order.outputs)[0].startAmount.hex,order.outputTokenDecimals)||'-'}  {order.outputTokenSymbol} */}
         </span>
       </div>
 
@@ -86,7 +100,12 @@ const ListItem=({
           {t("limit.amount")}
         </span>
         <span className='item-body-col-bottom white-font'>
-        {BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals)+' '+order.inputTokenSymbol}
+        {/* {BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals)+' '+order.inputTokenSymbol} */}
+        {order.input?(
+            BNtoNumber(JSON.parse(order.input).startAmount.hex,order.inputTokenDecimals) 
+          ):(
+            '-'
+          )}&ensp;{order.input&&(order.inputTokenSymbol)}
         </span>
       </div>
 
@@ -95,7 +114,6 @@ const ListItem=({
         {(historyOrderType==="cancelled"||historyOrderType==='error')&&t("limit.create at")}
         {historyOrderType==="expired"&&t("limit.expire in")}
         {historyOrderType==="filled"&&t("limit.fill at")}
-        
         </span>
         <span className='item-body-col-bottom white-font'>
           {/* {order?.createdAt} */}

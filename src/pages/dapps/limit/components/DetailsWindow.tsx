@@ -50,8 +50,15 @@ const DetailsWindow=({order})=>{
         <div className="details-window-content-body">
           <div className="details-window-content-body-item">
             <span>{t("limit.order hash")}</span>
-            <span>
+            <span style={{display:'flex'}}>
+              <p>
               {order.orderHash.slice(0, 5)+'...'+order?.orderHash.slice(-4)}
+              </p>
+                  <Copy
+                    img={'/copy-icon.svg'}
+                    name={order.orderHash}
+                    change={true}
+                  />
             </span>
           </div>
           <div className="details-window-content-body-item">
@@ -105,7 +112,7 @@ const DetailsWindow=({order})=>{
             </span>
           </div>
           <div className="details-window-content-body-item">
-            <span>{t("limit.Filler")}</span>
+            <span>{t("limit.filler")}</span>
             <span  style={{display:"flex"}}>
               <p onClick={()=>{
                 if(order.filler){
