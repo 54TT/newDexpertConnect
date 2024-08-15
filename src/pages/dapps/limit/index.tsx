@@ -62,6 +62,8 @@ export default function index() {
   const [search, setSearch] = useState('');
   // 当前地址
   const [userAddress, setUserAddress] = useState('');
+  // 打开创建订单窗口
+  const [showCreateOrder, setShowCreateOrder] = useState(false);
   const items: any = [
     {
       key: '0',
@@ -119,7 +121,7 @@ export default function index() {
   // 获取订单列表
   const getOrderList = async (page: number, chainId: string) => {
     if (page === 1) setOrderLoading(true);
-    // console.log(search.length)
+    console.log(search)
     try {
       const token = Cookies.get('token');
       const res = await getAll({
@@ -177,6 +179,13 @@ export default function index() {
       return null;
     }
   };
+
+  useEffect(()=>{
+    console.log(search);
+    if(search===''){
+      getOrderList(1,chainId)
+    }
+  },[search])
   useEffect(() => {
     console.log('currentIndex or orderType changed')
   }, [currentIndex, myOrderType]);
@@ -228,9 +237,9 @@ export default function index() {
                   placeholder={currentIndex===0?t('limit.search'):t('limit.order hash').toLowerCase()}
                   allowClear={true}
                   onClear={()=>{
-                    console.log('clear all')
                     setSearch('')
-                    getOrderList(1,chainId)
+                    // getOrderList(1,chainId)
+                    
                   }}
                   value={search}
                   onChange={(e)=>{
@@ -337,6 +346,12 @@ export default function index() {
                   setHasMore(true)
                 }}
               />
+              <span
+                className='create-order-icon'
+                onClick={() => {
+                  setShowCreateOrder(true);
+                }}
+              ></span>
             </div>
             { currentIndex===1&&myOrderType===2&&(
               <div className={`history history-${historyOrderType}`}>
@@ -443,6 +458,19 @@ export default function index() {
               setShowDetailsWindow={setShowDetailsWindow}
               setShowExecuteWindow={setShowExecuteWindow}
             />
+          </Modal>
+          <Modal
+            maskClosable={false}
+            className='modal-create-order'
+            centered
+            open={showCreateOrder}
+            onCancel={() => setShowCreateOrder(false)}
+            footer={null}
+            destroyOnClose
+            width={600}
+            title={'Limit Order'}
+          >
+            <CreateOrder />
           </Modal>
         </div>
       )}
