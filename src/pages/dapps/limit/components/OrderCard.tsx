@@ -137,12 +137,12 @@ export default function OrderCard({
       if(result) setRateLoading(false)
       if(result.toNumber()>1){
         setRateRelation('incre')
-        console.log('incre',result.toNumber()-1);
+        // console.log('incre',result.toNumber()-1);
         setDiffRate(((result.toNumber()-1)*100).toFixed(2))
         // return result.toFixed(3)
       }else if(result.toNumber()<1){
         setRateRelation('decre')
-        console.log('decre',1-result.toNumber());
+        // console.log('decre',1-result.toNumber());
         setDiffRate(((1-result.toNumber())*100).toFixed(2))
       }
       // console.log(rateNum-orderRate);

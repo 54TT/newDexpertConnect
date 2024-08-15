@@ -107,7 +107,7 @@ export default function index() {
     const address=await signer.getAddress()
     // setUserAddress('0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89')
     setUserAddress(address)
-    console.log(address)
+    console.log('address  ',address)
   }
 
   // 加载更多订单
@@ -184,8 +184,6 @@ export default function index() {
     // 默认有更多的订单
     setHasMore(true)
     // if(!loginProvider) setOrderList([]);
-    console.log(historyOrderType);
-    
     if(chainId && contractConfig){
       if (chainId === contractConfig.chainId.toString()) {
           // setCurrentIndex(0);
@@ -195,7 +193,7 @@ export default function index() {
           setOrderLoading(true);
       }
     }
-    if(isLogin) getAddress()
+    if(isLogin&&loginProvider) getAddress()
     
   }, [chainId, contractConfig,currentIndex, myOrderType,historyOrderType]);
 
@@ -227,7 +225,7 @@ export default function index() {
                   rootClassName="limit-input"
                   variant="borderless"
                   // onKeyDown={enter}
-                  placeholder={'Token Address'}
+                  placeholder={currentIndex===0?t('limit.search'):t('limit.order hash')}
                   allowClear={true}
                   onClear={()=>{
                     console.log('clear all')
@@ -372,7 +370,7 @@ export default function index() {
                   setHistoryOrderType('error')
                   setOrderPage(1)
                 }}
-                className={`history-header-item ${historyOrderType === 'failed' ? 'history-header-item-active':''}`}
+                className={`history-header-item ${historyOrderType === 'error' ? 'history-header-item-active':''}`}
               >{t("limit.error")}</span>
             </div>
             )}

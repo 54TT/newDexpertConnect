@@ -362,8 +362,8 @@ export default function CreateOrder() {
     }
     getToeknUnitPrice(payToken,'pay')
     getToeknUnitPrice(receiveToken,'receive')
-    console.log(payToken);
-    console.log(receiveToken);
+    // console.log(payToken);
+    // console.log(receiveToken);
   },[payToken,receiveToken,isLogin,loginProvider,chainId,user])
 
   useEffect(()=>{

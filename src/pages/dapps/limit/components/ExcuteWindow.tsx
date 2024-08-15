@@ -277,7 +277,7 @@ const ExecuteWindow = ({
         </span>
         <span className="amount-text">
           {/* {Number(tokenInputAmount)%1===0?Number(tokenInputAmount):Number(tokenInputAmount).toFixed(3)} {order?.inputTokenSymbol} */}
-          {tokenInputAmount.toString()} {order?.inputTokenSymbol}
+          {setMany(tokenInputAmount.toString())} {order?.inputTokenSymbol}
         </span>
         {
           rateLoading? <Skeleton.Button size="small" active />:(
