@@ -186,6 +186,7 @@ export default function OrderCard({
     setDeadline(Number(order.deadline))
   },[order])
   return (
+    <>
     <div
       className={"order-card " + 
         (type === 'my' ? 'my-order ' : '') +
@@ -338,9 +339,11 @@ export default function OrderCard({
         }}>{t("limit.execute order")}</span>
       ):<span></span>}
       </div>
-      <Modal
+    </div>
+    <Modal
         rootClassName='cancel-window'
         title={`${t("limit.cancel title")}`}
+        // getContainer={document.body}
         open={showCancelWindow}
         onOk={(e)=>{
           e.stopPropagation()
@@ -356,6 +359,6 @@ export default function OrderCard({
       >
         <p>{t("limit.cancel content")}</p>
       </Modal>
-    </div>
+    </>
   )
 }

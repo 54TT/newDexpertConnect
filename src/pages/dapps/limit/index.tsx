@@ -109,7 +109,7 @@ export default function index() {
     const address=await signer.getAddress()
     // setUserAddress('0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89')
     setUserAddress(address)
-    console.log('address  ',address)
+    // console.log('address  ',address)
   }
 
   // 加载更多订单
@@ -121,7 +121,7 @@ export default function index() {
   // 获取订单列表
   const getOrderList = async (page: number, chainId: string) => {
     if (page === 1) setOrderLoading(true);
-    console.log(search)
+    // console.log(search)
     try {
       const token = Cookies.get('token');
       const res = await getAll({
@@ -181,14 +181,13 @@ export default function index() {
   };
 
   useEffect(()=>{
-    console.log(search);
-    if(search===''){
-      getOrderList(1,chainId)
+    if(chainId && contractConfig){
+      if(search===''&&chainId === contractConfig.chainId.toString()){
+        getOrderList(1,chainId)
+      }
     }
+    // console.log('search change')
   },[search])
-  useEffect(() => {
-    console.log('currentIndex or orderType changed')
-  }, [currentIndex, myOrderType]);
   useEffect(() => {
     // 默认有更多的订单
     setHasMore(true)
@@ -202,8 +201,9 @@ export default function index() {
           setOrderLoading(true);
       }
     }
-    if(isLogin&&loginProvider) getAddress()
-    
+    if(isLogin&&loginProvider){
+      getAddress()
+    }
   }, [chainId, contractConfig,currentIndex, myOrderType,historyOrderType]);
 
   return (
@@ -234,7 +234,7 @@ export default function index() {
                   rootClassName="limit-input"
                   variant="borderless"
                   // onKeyDown={enter}
-                  placeholder={currentIndex===0?t('limit.search'):t('limit.order hash').toLowerCase()}
+                  placeholder={currentIndex===0?t('limit.search'):t('limit.order hash')}
                   allowClear={true}
                   onClear={()=>{
                     setSearch('')
@@ -251,6 +251,7 @@ export default function index() {
                     setMyOrderType(0)
                     setOrderPage(1)
                     setHasMore(true)
+                    if(search.length!==66) setCurrentIndex(0)
                   }}
                   suffix={
                     <SearchOutlined
@@ -260,6 +261,7 @@ export default function index() {
                         setMyOrderType(0)
                         setHasMore(true)
                         setOrderPage(1)
+                        if(search.length!==66) setCurrentIndex(0)
                       }}
                       style={{
                         color: 'rgb(134,240,151)',
