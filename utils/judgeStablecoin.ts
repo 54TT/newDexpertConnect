@@ -197,7 +197,13 @@ export const chainList = [
     value: 'Manta test',
     icon: '/unkonwLogo.png',
     chainId: '3441006',
+  
   },
+  {
+    value: 'Conflux test',
+    icon: '/unkonwLogo.png',
+    chainId: '71',
+  }
 ];
 
 export const swapChain = chainList.map((item) => ({
