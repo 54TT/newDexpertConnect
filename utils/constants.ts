@@ -27,7 +27,7 @@ export type ChainId =
   | '200810'
   | '200901'
   | '3441006'
-  | '169';
+  | '169'
   | '71';
 export type ChainName =
   | 'solana'
@@ -40,7 +40,7 @@ export type ChainName =
   | 'bitLayer test'
   | 'bitLayer'
   | 'manta-sepolia'
-  | 'manta';
+  | 'manta'
   | 'conflux test';
 
 export const ChainID_TO_ChainName: Record<ChainId, ChainName> = {

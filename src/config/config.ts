@@ -407,7 +407,6 @@ export const config: Record<ChainIdList, any> = {
     rpcUrl: 'https://pacific-rpc.sepolia-testnet.manta.network/http',
     chainId: 3441006,
     name: 'Manta-sepolia',
-    chainId: 71,
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
     uniswapV2RouterAddress: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
@@ -444,6 +443,7 @@ export const config: Record<ChainIdList, any> = {
       balance: '0',
       decimals: '6',
     },
+  },
   '71': {
     rpcUrl: 'https://evmtestnet.confluxrpc.com',
     name: 'Conflux test',
@@ -508,7 +508,6 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://pacific-explorer.manta.network/tx',
-    scan: 'https://testnet.bscscan.com/tx/',
     tokenScan: 'https://testnet.bscscan.com/token/',
     scanName: 'Testnet.bscscan',
     launchFee: '0.08',
