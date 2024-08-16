@@ -290,12 +290,14 @@ export const createOrder = async (
     inputToken:inputToken,
     inputTokenName: inputTokenName,
     inputTokenSymbol: inputTokenSymbol,
-    inputTokenDecimals:inputTokenToLowerCase==zeroAddress?Number(inputTokenDecimals): inputTokenDecimals.toNumber(),
+    // inputTokenDecimals:inputTokenToLowerCase==zeroAddress?Number(inputTokenDecimals): inputTokenDecimals.toNumber(),
+    inputTokenDecimals:Number(inputTokenDecimals),
     orderPrice: orderPrice,
     outputToken:outputToken,
     outputTokenName: outputTokenName,
     outputTokenSymbol: outputTokenSymbol,
-    outputTokenDecimals: outputTokenToLowerCase===zeroAddress?Number(outputTokenDecimals): outputTokenDecimals.toNumber(),
+    // outputTokenDecimals: outputTokenToLowerCase===zeroAddress?Number(outputTokenDecimals): outputTokenDecimals.toNumber(),
+    outputTokenDecimals: Number(outputTokenDecimals),
   }
   return orderParams
 } catch (error) {

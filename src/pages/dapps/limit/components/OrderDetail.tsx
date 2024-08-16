@@ -15,7 +15,7 @@ const OrderDetail = ({order,setShowDetailsWindow,setShowExecuteWindow}) => {
           dataLength={1}
           next={()=>{}}
         >
-          <div style={{display:'flex',justifyContent:'space-around'}}>
+          <div className="order-detail-content">
             <div className="order-detail-left">
               <ExcuteWindow
                 order={order?order:null}

@@ -51,10 +51,10 @@ export default function CreateOrder() {
   // const [ratename,setRatename]=useState('ETH')
   const [isExchangeRate,setIsExchangeRate]=useState(false)
   // pay/receive token汇率
-  const [tokenRate,setTokenRate]=useState(0)
+  const [tokenRate,setTokenRate]=useState('')
   const [tokenRateBN,setToeknRateBN]=useState<BigNumber>()
   // const [tokenRateDE,setToeknRateDE]=useState<Decimal>()
-  const [payRate,setPayRate]=useState(0)
+  const [payRate,setPayRate]=useState('')
   const [rateLoading,setRateLoading]=useState(true)
   const [createLoading,setCreateLoading]=useState(false)
   // 底部单位price展示
@@ -63,6 +63,7 @@ export default function CreateOrder() {
   const [payTokenUnitPrice,setPayTokenUnitPrice]=useState<number>(0)
   // receivetoken的单位价格，U
   const [receiveTokenUnitPrice,setReceiveTokenUnitPrice]=useState<number>(0)
+  const [rateStr,setRateStr]=useState<string>('')
   // 过期时间
   const [expires,setExpires]=useState(3600)
   // 过期时间数组
@@ -303,9 +304,9 @@ export default function CreateOrder() {
     // console.log(new BigNumber(amountValue.toString()));
     setToeknRateBN(new BigNumber(amountValue.toString()))
     // setToeknRateDE(amount)
-    setPayRate(Number(amount.toFixed(6)))
+    setPayRate((Number(amount.toFixed(6))).toString())
     setRateLoading(false)
-    setTokenRate(Number(amount.toFixed(6)))
+    setTokenRate((Number(amount.toFixed(6))).toString())
   }
   // 计算receice的token数量
   const getAmount=async(
@@ -335,7 +336,7 @@ export default function CreateOrder() {
     // 其他设置，
   }
   // 获取汇率
-  const getTokenRateDebounce=useCallback(debounce(getExchangeRate,500),[payToken,receiveToken,provider])
+  const getTokenRateDebounce=useCallback(debounce(getExchangeRate,2000),[payToken,receiveToken,provider])
 
   // 防抖获取数据
   const getAmountDebounce=useCallback(debounce(getAmount,500),[
@@ -370,18 +371,18 @@ export default function CreateOrder() {
   useEffect(()=>{
     // console.log(tokenRate);
     if(Number(payTokenAmount)<=Number(payTokenBalance)){
-      if(tokenRate!==0&&payTokenAmount){
+      if(Number(tokenRate)!==0&&payTokenAmount){
         setRateLoading(false)
-        setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
+        setReceiveTokenAmount((Number(payTokenAmount)*Number(tokenRate)).toString())
       }
     }else{
       setPayTokenAmount(String(payTokenBalance))
       setRateLoading(false)
-      setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
+      setReceiveTokenAmount((Number(payTokenAmount)*Number(tokenRate)).toString())
     }
     // if(tokenRate===0||tokenRate===undefined){
     if(tokenRate===undefined){
-      setTokenRate(0)
+      setTokenRate('0')
       setRateLoading(true)
       getTokenRateDebounce()
     }
@@ -389,7 +390,7 @@ export default function CreateOrder() {
 
   useEffect(()=>{
     if(payTokenAmount){
-      setReceiveTokenAmount((Number(payTokenAmount)*tokenRate).toString())
+      setReceiveTokenAmount((Number(payTokenAmount)*Number(tokenRate)).toString())
       // console.log(tokenRateDE.mul(payTokenAmount).toString())
     }
     getToeknUnitPrice(receiveToken,'receive')
@@ -412,7 +413,7 @@ export default function CreateOrder() {
     getExchangeRate()
     setRateLoading(true)
 
-    setTokenRate(0)
+    setTokenRate('0')
   },[payToken,receiveToken])
   useEffect(()=>{
     setReceiveTokenAmount('')
@@ -594,9 +595,11 @@ export default function CreateOrder() {
               value={payRate}
               disabled={!isLogin}
               onChange={(e)=>{
-                if (/^\d*\.?\d*$/.test(e.target.value)) {
-                  setTokenRate(Number(e.target.value));
-                  setPayRate(Number(e.target.value));
+                const value = e.target.value;
+                // setRateStr(value)
+                if (/^\d*\.?\d*$/.test(value)) {
+                  setTokenRate(value);
+                  setPayRate(value);
                 }
               }}
             />
@@ -608,7 +611,7 @@ export default function CreateOrder() {
         <span className="market-price" onClick={()=>getTokenRateDebounce()}>{t("limit.market")}</span>
         <div className="exchange-rate" onClick={()=>{
           setIsExchangeRate(!isExchangeRate)
-          setPayRate(1/payRate)
+          setPayRate((1/Number(payRate)).toString())
         }}>
           <span>{isExchangeRate?payToken?.symbol:receiveToken?.symbol}</span>
           <img src="/exchange-icon.svg" alt="" />
@@ -642,7 +645,7 @@ export default function CreateOrder() {
       rootClassName="create-order-btn"
       className={`${payToken&&receiveToken&&payTokenAmount && receiveTokenAmount ? 'order-active' : ''} ` }
       loading={createLoading}
-      // disabled={!payTokenAmount && !receiveTokenAmount}
+      disabled={!payTokenAmount && !receiveTokenAmount}
       onClick={() => {
         if(isLogin){
         approveOder()
@@ -668,7 +671,7 @@ export default function CreateOrder() {
             rateLoading?(
               <Skeleton.Button active size="small" />
             ):(
-              <span>{numberToFixed(1/tokenRate)} </span>
+              <span>{numberToFixed(1/Number(tokenRate))} </span>
             )
           }
           <span>{payToken?.symbol} ~ </span>
@@ -677,7 +680,7 @@ export default function CreateOrder() {
             rateLoading?(
               <Skeleton.Button active size="small" />
             ):(
-              <span style={{color:'#86f097'}}>{numberToFixed(((1/tokenRate)*payTokenUnitPrice))}</span>
+              <span style={{color:'#86f097'}}>{numberToFixed(((1/Number(tokenRate))*payTokenUnitPrice))}</span>
             )
           }
           
@@ -693,7 +696,7 @@ export default function CreateOrder() {
             rateLoading?(
               <Skeleton.Button active size="small" />
             ):(
-              <span>{numberToFixed(tokenRate)} </span>
+              <span>{numberToFixed(Number(tokenRate))} </span>
             )
           }
           <span>{receiveToken?.symbol} ~ </span>
@@ -704,7 +707,7 @@ export default function CreateOrder() {
             rateLoading?(
               <Skeleton.Button active size="small" />
             ):(
-              <span style={{color:'#86f097'}}>{numberToFixed(tokenRate*receiveTokenUnitPrice)}</span>
+              <span style={{color:'#86f097'}}>{numberToFixed(Number(tokenRate)*receiveTokenUnitPrice)}</span>
             )
           }
         </div>
