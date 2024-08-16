@@ -68,46 +68,51 @@ function ChooseChain({
   };
   const chain = (
     <div className={`headerChain dis`}>
-      {chainList.map((i: ChooseChainValueType, ind: number) => {
-        return (
-          <div
-            key={ind}
-            style={
-              hideChain
-                ? {
-                    display: i?.hide ? 'none' : 'flex',
-                    cursor:
-                      disabledChain && i.disabled === true
-                        ? 'not-allowed'
-                        : 'pointer',
-                    border:
-                      value?.chainId === i?.chainId
-                        ? '2px solid rgb(134,240,151)'
-                        : '2px solid rgb(60, 69, 60)',
-                  }
-                : {}
-            }
-            className={'chain disDis'}
-            onClick={() => click(i)}
-          >
-            <img
-              src={i?.icon}
-              alt=""
-              style={{
-                width: i?.value === 'Arbitrum' ? '20px' : '18px',
-                borderRadius: '100%',
-              }}
-            />
-            <span
-              style={{
-                color: disabledChain && i.disabled === true ? 'gray' : 'white',
-              }}
+      {chainList
+        .filter((item) =>
+          import.meta.env.MODE === 'production' ? !item?.hideOnPro : true
+        )
+        .map((i: ChooseChainValueType, ind: number) => {
+          return (
+            <div
+              key={ind}
+              style={
+                hideChain
+                  ? {
+                      display: i?.hide ? 'none' : 'flex',
+                      cursor:
+                        disabledChain && i.disabled === true
+                          ? 'not-allowed'
+                          : 'pointer',
+                      border:
+                        value?.chainId === i?.chainId
+                          ? '2px solid rgb(134,240,151)'
+                          : '2px solid rgb(60, 69, 60)',
+                    }
+                  : {}
+              }
+              className={'chain disDis'}
+              onClick={() => click(i)}
             >
-              {i?.value === 'BSC' ? 'BNB Chain' : i?.value}
-            </span>
-          </div>
-        );
-      })}
+              <img
+                src={i?.icon}
+                alt=""
+                style={{
+                  width: i?.value === 'Arbitrum' ? '20px' : '18px',
+                  borderRadius: '100%',
+                }}
+              />
+              <span
+                style={{
+                  color:
+                    disabledChain && i.disabled === true ? 'gray' : 'white',
+                }}
+              >
+                {i?.value === 'BSC' ? 'BNB Chain' : i?.value}
+              </span>
+            </div>
+          );
+        })}
     </div>
   );
   useEffect(() => {
