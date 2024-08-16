@@ -427,9 +427,9 @@ const ExecuteWindow = ({
         <Button
           rootClassName="execute-btn"
           // className={`${!buttonDisable?'execute-btn-active':''}`}
-          className={order?.orderStatus !=='open'?'':'execute-btn-active'}
+          className={order?.orderStatus !=='open'||Number(payTokenBalance.toString())<Number(tokenOutputAmount)?'':'execute-btn-active'}
           loading={buttonLoading}
-          disabled={order?.orderStatus !=='open'}
+          disabled={order?.orderStatus !=='open'||Number(payTokenBalance.toString())<Number(tokenOutputAmount)}
           onClick={() => {
             selcetExecuteOrder()
           }}
