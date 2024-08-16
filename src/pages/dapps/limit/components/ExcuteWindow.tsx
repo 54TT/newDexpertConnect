@@ -67,7 +67,7 @@ const ExecuteWindow = ({
     setButtonLoading(true)
     const output=JSON.parse(order.outputs)[0]
     const web3Provider=new ethers.providers.Web3Provider(loginProvider)
-    console.log(output);
+    // console.log(output);
     
     const value: BNtype = output.token === ethers.constants.AddressZero ? output.startAmount : BNtype.from(0);
     const signer=await web3Provider.getSigner()
@@ -135,19 +135,19 @@ const ExecuteWindow = ({
 
   // 获取订单用于兑换的token信息
   const getInputToken=(token,decimals)=>{
-    console.log('selected token');
+    // console.log('selected token');
     if(token){
       const jsonString=token
       try{
         const tokenObj=JSON.parse(jsonString)
-        console.log(tokenObj.token);
+        // console.log(tokenObj.token);
         // setInputToken(tokenObj)
         const startAmount=BigNumber(tokenObj.startAmount.hex)
         const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
-        console.log('inputtoken startAmountNum',startAmountNum.toString());
+        // console.log('inputtoken startAmountNum',startAmountNum.toString());
         setTokenInputAmount(startAmountNum.toString())
       }catch(error){
-        console.log(error);
+        // console.log(error);
       }
     }
   }
@@ -213,7 +213,7 @@ const ExecuteWindow = ({
     try {
       amount=await getAmountOut.apply(null,params)
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
     const amountValue=new Decimal(amount)
     // console.log(amountValue.toString());
@@ -226,11 +226,11 @@ const ExecuteWindow = ({
   // },[silderValue])
   // 有市场汇率之后便于订单汇率进行比较
   useEffect(()=>{
-    console.log(tokenRate);
+    // console.log(tokenRate);
     if(tokenRate) getRateRelation()
   },[tokenRate])
   useEffect(()=>{
-    console.log(order);
+    // console.log(order);
     getInputToken(order.input,order.inputTokenDecimals)
     getOutputToken(order.outputs,order.outputTokenDecimals)
     getTokenRate(order.inputToken,order.inputTokenDecimals,order.outputToken,order.outputTokenDecimals)
@@ -246,7 +246,6 @@ const ExecuteWindow = ({
             <span
               className="execute-back"
               onClick={()=>{
-                console.log('back');
                 setShowDetailsWindow(false)
                 setShowExecuteWindow(false)
               }}
