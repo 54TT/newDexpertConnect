@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import NotificationChange from './message';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { ChainID_TO_ChainName, ChainId } from '@/../utils/constants.ts';
+import { ChainId, ID_TO_CHAIN_NAME_LOW } from '@/../utils/constants.ts';
 const requestA = axios.create({
   baseURL:
     import.meta.env.MODE === 'development'
@@ -67,8 +67,8 @@ const Request = () => {
         'x-chainId': chainId ? chainId : chain || '1',
         'x-app': 'dexpert',
         'x-chainName': chainId
-          ? ChainID_TO_ChainName[chainId as ChainId]
-          : ChainID_TO_ChainName[chain as ChainId] || 'eth',
+          ? ID_TO_CHAIN_NAME_LOW[chainId as ChainId]
+          : ID_TO_CHAIN_NAME_LOW[chain as ChainId] || 'eth',
       },
     });
     if (abc?.status === 200) {

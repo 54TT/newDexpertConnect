@@ -25,7 +25,8 @@ export type ChainId =
   | '995'
   | '997'
   | '200810'
-  | '200901';
+  | '200901'
+  | '71';
 export type ChainName =
   | 'solana'
   | 'ton'
@@ -35,7 +36,8 @@ export type ChainName =
   | '5ire'
   | '5ire test'
   | 'bitLayer test'
-  | 'bitLayer';
+  | 'bitLayer'
+  | 'conflux test';
 
 export const ChainID_TO_ChainName: Record<ChainId, ChainName> = {
   '-1': 'solana',
@@ -47,6 +49,7 @@ export const ChainID_TO_ChainName: Record<ChainId, ChainName> = {
   '997': '5ire test',
   '200810': 'bitLayer test',
   '200901': 'bitLayer',
+  '71': 'conflux test',
 };
 
 //  链的  id
@@ -177,6 +180,7 @@ export const CHAIN_NAME_TO_CHAIN_ID = {
   '5ire-test': '997',
   Biylayer: '200810',
   'Bitlayer-test': '200901',
+  'Conflux-test': '71',
 };
 
 export const CHAIN_VERSION_TO_CHAIN_ID = {
@@ -202,6 +206,7 @@ export const ID_TO_CHAIN_NAME_LOW = {
   '997': '5ire-test',
   '200810': 'bitlayer-test',
   '200901': 'bitlater',
+  '71': 'conflux-testnet',
 };
 
 export const CHAIN_ID_TO_CHAIN_NAME = () =>

@@ -188,6 +188,11 @@ const chainList = [
     key: '0xaa36a7',
     chainId: '11155111',
   },
+  {
+    value: 'Conflux test',
+    icon: '/unkonwLogo.png',
+    chainId: '71',
+  },
 ];
 
 export const swapChain = chainList.map((item) => ({
