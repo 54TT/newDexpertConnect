@@ -1,8 +1,9 @@
 import { swapChain } from '@utils/judgeStablecoin';
-import ChooseChain, { ChooseChainValueType } from '../chooseChain';
 import { useContext } from 'react';
+import { ChooseChainValueType } from './components/chooseChain';
+// const ChooseChain = React.lazy(() => import('./components/chooseChain'));
+import ChooseChain from './components/chooseChain'
 import { CountContext } from '@/Layout';
-
 export interface ChangeChainPropsType {
   wrapClassName?: string; // 弹窗的classname
   hideChain?: boolean; // 隐藏有hide属性的链
@@ -21,7 +22,6 @@ function ChangeChain({
     const evmChainIdHex = v.key;
     const evmChainId = v.chainId;
     if (!isLogin) {
-      setChainId(evmChainId);
     } else {
       // 有evm钱包环境
       try {
@@ -34,6 +34,7 @@ function ChangeChain({
             },
           ],
         });
+        setChainId(evmChainId);
       } catch (e) {
         return null;
       }

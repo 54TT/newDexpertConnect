@@ -1,13 +1,13 @@
 import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
 import { Slider, Modal, Input, InputNumber } from 'antd';
-import { useEffect, useState, useContext } from 'react';
-import SellTokenModal from './sellTokenModal';
+import React,{ useEffect, useState, useContext } from 'react';
+const SellTokenModal = React.lazy(() => import('./sellTokenModal'));
 import { useTranslation } from 'react-i18next';
-import Loading from '@/components/allLoad/loading';
-import Load from '@/components/allLoad/load';
+const Loading = React.lazy(() => import('@/components/allLoad/loading'));
+const Load = React.lazy(() => import('@/components/allLoad/load'));
 import { CountContext } from '@/Layout';
-import InfiniteScrollPage from '@/components/InfiniteScroll';
+const InfiniteScrollPage = React.lazy(() => import('@/components/InfiniteScroll'));
 export default function WalletDetail({
   setShowWalletDetail,
   setIsShow,

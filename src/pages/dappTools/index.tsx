@@ -1,8 +1,8 @@
 import './index.less'
-import Left from './components/left.tsx'
-import Center from './components/center.tsx'
-import CommunityRight from "../community/components/RightSider.tsx";
-import { useContext, } from "react";
+import React,{ useContext, } from "react";
+const Left = React.lazy(() => import('./components/left.tsx'));
+const Center = React.lazy(() => import('./components/center.tsx'));
+const CommunityRight = React.lazy(() => import('../community/components/RightSider.tsx'));
 import { CountContext } from "@/Layout.tsx";
 function Index() {
     const { browser }: any = useContext(CountContext);

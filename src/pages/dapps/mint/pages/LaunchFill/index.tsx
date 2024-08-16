@@ -1,13 +1,12 @@
 import './index.less';
-import PageHeader from '../../component/PageHeader';
-import { useState, useContext } from 'react';
-import BottomButton from '../../component/BottomButton';
-import FormD from './components/form';
-import Pass from './components/pass';
-import Result from './components/result';
-import Confirm from './components/confirm';
+import React,{ useState, useContext } from 'react';
+const PageHeader = React.lazy(() => import('../../component/PageHeader'));
+const BottomButton = React.lazy(() => import('../../component/BottomButton'));
+const FormD = React.lazy(() => import('./components/form'));
+const Pass = React.lazy(() => import('./components/pass'));
+const Result = React.lazy(() => import('./components/result'));
+const Confirm = React.lazy(() => import('./components/confirm'));
 import { useTranslation } from 'react-i18next';
-
 export interface FormDataType {
   filename: string;
   name: string;

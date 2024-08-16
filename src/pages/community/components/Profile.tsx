@@ -1,18 +1,17 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import TWeetHome from '@/components/tweetHome.tsx';
+import React,{ useContext, useEffect, useMemo, useRef, useState } from 'react';
+const TWeetHome = React.lazy(() => import('@/components/Tweets/index.tsx'));
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import Request from '@/components/axios.tsx';
 import Cookies from 'js-cookie';
 import cookie from 'js-cookie';
 import { formatAddress, getQueryParams } from '@/../utils/utils.ts';
-import CommonModal from '@/components/CommonModal/index.tsx';
+import CommonModal from'@/components/CommonModal/index.tsx'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { throttle } from 'lodash';
 import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout.tsx';
-
 function Profie() {
   const { getAll } = Request();
   const { t } = useTranslation();

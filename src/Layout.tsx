@@ -1,4 +1,4 @@
-import Header, { I18N_Key } from './components/header.tsx';
+import Header, { I18N_Key } from './components/header/index.tsx';
 import {
   Route,
   Routes,
@@ -45,12 +45,12 @@ import { ethers } from 'ethers';
 import Decimal from 'decimal.js';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
 const ActivePerson = React.lazy(
-  () => import('./pages/activity/components/person.tsx')
+  () => import('./pages/activity/components/Person/index.tsx')
 );
 const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
 );
-const Index = React.lazy(() => import('./pages/index/index.tsx'));
+import Index from './pages/index/index.tsx';
 const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Dapps = React.lazy(() => import('./pages/dapps/index.tsx'));
 // const Community = React.lazy(() => import('./pages/community/index.tsx'));
@@ -82,8 +82,17 @@ function Layout() {
     //@ts-ignore
     setProvider(rpcProvider);
   };
+  const walletRdns = cookie.get('walletRdns');
   useEffect(() => {
-    changeConfig(chainId);
+    if (walletRdns && environment.length > 0) {
+      changeInfoRdns(walletRdns);
+    }
+  }, [environment, walletRdns]);
+  useEffect(() => {
+    //   默认执行
+    if (!walletRdns) {
+      changeConfig(chainId);
+    }
   }, [chainId]);
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
@@ -93,7 +102,6 @@ function Layout() {
       tonConnect('login');
     }
   }, [userFriendlyAddress]);
-
   //ton钱包连接
   const tonConnect = async (log?: any) => {
     if (log) {
@@ -133,6 +141,7 @@ function Layout() {
         setTonWallet(null);
       }
     });
+    getUserNow();
   }, []);
   const router: any = useLocation();
   const [search] = useSearchParams();
@@ -152,7 +161,6 @@ function Layout() {
   const [isModalSet, setIsModalSet] = useState(false);
   const language = (localStorage.getItem('language') || 'en_US') as I18N_Key;
   const [languageChange, setLanguageChange] = useState(language);
-  const [newAccount, setNewAccount] = useState('');
   const [switchChain, setSwitchChain] = useState('Ethereum');
   const [browser, setBrowser] = useState<any>(false);
   const [big, setBig] = useState<any>(false);
@@ -162,14 +170,6 @@ function Layout() {
   });
   // copy
   const [isCopy, setIsCopy] = useState(false);
-  useEffect(() => {
-    if (newAccount && user?.address) {
-      if (newAccount !== user?.address) {
-        // handleLogin()
-      }
-    }
-  }, [newAccount]);
-
   const createClient = async () => {
     try {
       const _client: any = await Client.init({
@@ -188,6 +188,13 @@ function Layout() {
 
   const onChainChange = (targetChainId) => {
     setChainId(Number(targetChainId).toString());
+    changeConfig(Number(targetChainId).toString());
+  };
+
+  const onAccountsChanged = (account) => {
+    if (account.length > 0 && account?.[0] !== loginProvider?.selectAddress) {
+      handleLogin({ provider: loginProvider });
+    }
   };
 
   useEffect(() => {
@@ -199,6 +206,7 @@ function Layout() {
       try {
         // @ts-ignore
         loginProvider?.on('chainChanged', onChainChange);
+        loginProvider?.on('accountsChanged', onAccountsChanged);
         loginProvider?.request({
           method: 'wallet_switchEthereumChain',
           params: [
@@ -208,7 +216,7 @@ function Layout() {
           ],
         });
       } catch (e) {
-        return null
+        return null;
       }
     }
     return () => {
@@ -216,16 +224,17 @@ function Layout() {
       (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
     };
   }, [isLogin, loginProvider, chainId]);
-
   const clear = async () => {
     history('/re-register');
     setloginProvider(null);
+    setChainId('1');
     cookie.remove('token');
     cookie.remove('walletRdns');
     cookie.remove('currentAddress');
     changeBindind.current = '';
     cookie.remove('jwt');
     localStorage.clear();
+    setContractConfig(null);
     if (tonConnectUI?.connected) {
       tonConnectUI.disconnect();
     }
@@ -239,13 +248,19 @@ function Layout() {
     setIsLogin(false);
     setBindingAddress(null);
   };
-  const getUser = async (id: string, token: string, name: string, jwt: any) => {
+  const getUser = async (
+    id: string,
+    token: string,
+    name: string,
+    jwt: any,
+    i?: any
+  ) => {
     const data: any = await getAll({
       method: 'get',
       url: '/api/v1/userinfo/' + id,
       data: {},
       token,
-      chainId
+      chainId,
     });
     if (data?.status === 200) {
       const user = data?.data?.data;
@@ -254,6 +269,10 @@ function Layout() {
       setUserPar(user);
       setIsLogin(true);
       cookie.set('token', token);
+      if (i?.info?.rdns) {
+        cookie.set('walletRdns', i?.info?.rdns);
+        changeInfoRdns(i?.info?.rdns);
+      }
       if (jwt) {
         cookie.set('jwt', JSON.stringify(jwt));
       }
@@ -267,8 +286,7 @@ function Layout() {
       setLoad(false);
     }
   };
-
-  const login = async (par: any, chain: string, name: string) => {
+  const login = async (par: any, chain: string, name: string, i?: any) => {
     try {
       const inviteCode = search.get('inviteCode')
         ? search.get('inviteCode')
@@ -296,7 +314,6 @@ function Layout() {
             token: token,
             chainId: chain === 'ton' ? '-2' : '1',
           });
-
           if (bind?.status === 200) {
             getUserNow();
             NotificationChange('success', t('person.bind'));
@@ -319,12 +336,11 @@ function Layout() {
           const base64Url = res.data?.accessToken.split('.')[1];
           const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
           const decodedToken = JSON.parse(atob(base64));
-          setNewAccount('');
           setTonWallet(null);
           cookie.set('currentAddress', par?.address ? par?.address : par?.addr);
           if (decodedToken && decodedToken?.uid) {
             const uid = decodedToken.sub.split('-')[1];
-            getUser(uid, res.data?.accessToken, name, decodedToken);
+            getUser(uid, res.data?.accessToken, name, decodedToken, i);
             localStorage.setItem('login-chain', chain === 'ton' ? '-2' : '1');
           }
         } else {
@@ -337,15 +353,12 @@ function Layout() {
     }
   };
 
-  useEffect(() => {
-    if (cookie.get('walletRdns') && environment.length > 0) {
-      const at = cookie.get('walletRdns');
-      const provider = environment.filter((i: any) => i?.info?.rdns === at);
-      if (provider.length > 0) {
-        setCurrentSwapChain(provider);
-      }
+  const changeInfoRdns = (name: string) => {
+    const provider = environment.filter((i: any) => i?.info?.rdns === name);
+    if (provider.length > 0) {
+      setCurrentSwapChain(provider);
     }
-  }, [cookie.get('walletRdns'), environment]);
+  };
 
   const setCurrentSwapChain = async (provider) => {
     const walletChainIdHex = await provider[0]?.provider.request({
@@ -357,11 +370,10 @@ function Layout() {
       supprotChainId = walletChainId;
     }
     setChainId(supprotChainId);
+    changeConfig(supprotChainId);
     setloginProvider(provider[0]?.provider);
   };
-
   const handleLogin = async (i: any) => {
-    cookie.set('walletRdns', i?.info?.rdns);
     try {
       const account = await i?.provider?.request({
         method: 'eth_requestAccounts',
@@ -378,7 +390,7 @@ function Layout() {
               params: [message, account[0]],
             });
             const data = { signature: sign, addr: account[0], message };
-            login(data, 'eth', 'more');
+            login(data, 'eth', 'more', i);
           } else {
             setLoad(false);
           }
@@ -512,26 +524,21 @@ function Layout() {
     const token = cookie.get('token');
     if (jwt && token) {
       const jwtPar = JSON.parse(jwt);
-      setNewAccount('');
       if (jwtPar?.uid) {
         const uid = jwtPar.sub.split('-')[1];
         getUser(uid, token, '', jwtPar);
       }
     }
   };
-  useEffect(() => {
-    getUserNow();
-    // 监测钱包切换
-    // if ((window as any).ethereum) {
-    //     (window as any).ethereum.on('accountsChanged', function (accounts: any) {
-    //         // setNewAccount(accounts[0])
-    //     })
-    // }
-    // // 监测链切换
-    // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
-    // })
-  }, []);
-
+  // 监测钱包切换
+  // if ((window as any).ethereum) {
+  //     (window as any).ethereum.on('accountsChanged', function (accounts: any) {
+  //         // setNewAccount(accounts[0])
+  //     })
+  // }
+  // // 监测链切换
+  // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
+  // })
   useEffect(() => {
     if (!client) {
       createClient();
@@ -648,10 +655,7 @@ function Layout() {
       >
         <CountContext.Provider value={value}>
           <Header />
-          <div
-            className={big ? 'bigCen' : ''}
-            style={{ marginTop: '45px', overflow: 'hidden' }}
-          >
+          <div className={big ? 'bigCen' : ''} style={{ overflow: 'hidden' }}>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/re-register" element={<Index />} />

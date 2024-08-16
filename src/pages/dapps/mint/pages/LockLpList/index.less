@@ -5,6 +5,7 @@
     margin-top: 20px;
   }
   .locklp-list-balance {
+    margin-top: 4px;
     color: rgba(255, 255, 255, 0.55);
   }
   .date {
@@ -75,6 +76,95 @@
       margin: 0;
       color: #fff;
       padding: 0;
+    }
+  }
+}
+
+.unlockDateDropdown {
+  .ant-picker-panel-container {
+    background-color: rgb(36, 36, 36);
+    .ant-picker-panel {
+      .ant-picker-date-panel {
+        .ant-picker-header {
+          button {
+            color: rgba(255, 255, 255, 0.85);
+          }
+        }
+        .ant-picker-body {
+          .ant-picker-content {
+            thead {
+              th {
+                color: white;
+              }
+            }
+            tbody {
+              .ant-picker-cell {
+                color: rgba(255, 255, 255, 0.55);
+              }
+              .ant-picker-cell-in-view {
+                color: white;
+              }
+              .ant-picker-cell-hover {
+                .ant-picker-cell-inner {
+                  background-color: rgba(134, 240, 151, 0.2);
+                }
+              }
+              .ant-picker-cell-selected {
+                .ant-picker-cell-inner {
+                  background-color: rgba(134, 240, 151, 0.2);
+                }
+              }
+              .ant-picker-cell-today {
+                .ant-picker-cell-inner::before {
+                  border: 1px solid rgb(134, 240, 151);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .ant-picker-time-panel {
+        .ant-picker-header{
+          .ant-picker-header-view{
+            color: rgba(134, 240, 151, 0.8);
+          }
+        }
+        .ant-picker-content {
+          .ant-picker-time-panel-column {
+            scrollbar-color:rgba(134,240,151,0.5) transparent; 
+            .ant-picker-time-panel-cell {
+              .ant-picker-time-panel-cell-inner {
+                color: rgba(255, 255, 255, 0.85);
+              }
+            }
+           .ant-picker-time-panel-cell-selected{
+            .ant-picker-time-panel-cell-inner{
+              background-color: rgb(134, 240, 151);
+              color: black;
+            }
+           }
+          }
+       
+        }
+      }
+    }
+    .ant-picker-footer {
+      .ant-picker-now {
+        .ant-picker-now-btn {
+          color: rgb(134, 240, 151);
+        }
+      }
+      .ant-picker-ok {
+        .ant-btn {
+          color: rgb(134, 240, 151);
+          border: 1px solid rgb(134, 240, 151);
+        }
+        .ant-btn-primary {
+          background: transparent;
+          box-shadow: 0 2px 0 rgba(134, 240, 151, 0.2);
+        }
+      }
     }
   }
 }

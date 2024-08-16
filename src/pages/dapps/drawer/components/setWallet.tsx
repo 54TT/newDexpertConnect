@@ -1,5 +1,6 @@
 import './index.less';
-import Copy from '@/components/copy.tsx';
+import React from 'react'
+const Copy = React.lazy(() => import('@/components/copy.tsx'));
 import { Input } from 'antd';
 export default function setWallet({ walletId }: any) {
   return (

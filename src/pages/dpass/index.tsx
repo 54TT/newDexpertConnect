@@ -1,20 +1,23 @@
 import Cookies from 'js-cookie';
 import './index.less';
 import Request from '@/components/axios';
-import { useContext, useEffect, useState } from 'react';
+import React,{ useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CaretDownOutlined } from '@ant-design/icons';
-import Load from '@/components/allLoad/load.tsx';
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
+
 import { CountContext } from '@/Layout';
 import NotificationChange from '@/components/message';
 import { useParams } from 'react-router-dom';
-import Loading from '@/components/allLoad/loading.tsx';
-import Nodata from '@/components/Nodata.tsx';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
+const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
 import dayjs from 'dayjs';
 import { throttle, find } from 'lodash';
+const Pass = React.lazy(() => import('./components/pass'));
 
 function Dpass() {
   const token = Cookies.get('token');
+  const { user, setUserPar, browser, chainId }: any = useContext(CountContext);
   const params: any = useParams();
   const { getAll } = Request();
   const [redeemCount, setRedeemCount] = useState(1);
@@ -36,6 +39,7 @@ function Dpass() {
         url: '/api/v1/d_pass/list',
         data: { page: 1 },
         token,
+        chainId,
       });
       if (res?.status === 200 && res?.data?.list) {
         setPassList(res?.data?.list);
@@ -47,14 +51,11 @@ function Dpass() {
       }
     }
   };
-
-  const { user, setUserPar, browser }: any = useContext(CountContext);
   const redeemDpass = throttle(
     async function () {
       const at = find(passList, (i: any) => i?.name === imgSta?.name);
       if (!at?.name?.includes('Golden')) {
         setIsExchange(true);
-
         let point: any = null;
         if (at?.name?.includes('Creation')) {
           point = redeemCount * 6000;
@@ -104,7 +105,6 @@ function Dpass() {
       },
       token,
     });
-
     if (res?.status === 200) {
       setIsHistory(true);
       if (res?.data?.list?.length !== 10) {
@@ -326,7 +326,6 @@ function Dpass() {
                   style={{ borderRight: '1px solid #999', cursor: 'pointer' }}
                 >
                   <div className="dpass-content-right-info-title">
-                    {' '}
                     {Number(imgSta?.stopAt)
                       ? t('Dpass.date')
                       : t('Dpass.required')}
@@ -347,6 +346,13 @@ function Dpass() {
               </div>
             </div>
           </div>
+          <Pass
+            nextPass={nextPass}
+            isHistory={isHistory}
+            dPassHistory={dPassHistory}
+            isShow={isShow}
+            isNext={isNext}
+          />
           <div className="dpass-redeem">
             <div className="dpass-redeem-table">
               <div className="dpass-redeem-table-th">

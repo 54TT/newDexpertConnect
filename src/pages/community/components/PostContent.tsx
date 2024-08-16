@@ -1,7 +1,6 @@
-import {useEffect, useState} from "react";
-import SendPost from '../components/SendPost.tsx'
-import TWeetHome from '@/components/tweetHome.js'
-
+import React,{useEffect, useState} from "react";
+import SendPost from'../components/SendPost.tsx'
+const TWeetHome = React.lazy(() => import('@/components/Tweets/index.tsx'));
 /* import classNames from "classnames"; */
 export interface TabType {
     label: 'For you' | 'Following',

@@ -1,6 +1,7 @@
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Load from '@/components/allLoad/load';
-import Nodata from '@/components/Nodata';
+import React from 'react'
+const Load = React.lazy(() => import('@/components/allLoad/load'));
+const Nodata = React.lazy(() => import('@/components/Nodata'));
 export default function InfiniteScrollPage({
   data,
   next,

@@ -14,3 +14,12 @@ export const SCAN: Record<NETWORK_MAPPING_KEY, string> = {
   "-1": "solana",
   "-2": "ton",
 };
+
+export const ADDRESS: Record<NETWORK_MAPPING_KEY, string> = {
+  "1": "https://etherscan.io/address/",
+  "11155111": "https://sepolia.etherscan.io/address/",
+  "42161": "https://arbiscan.io/address/",
+  "8453": "https://basescan.org/address/",
+  "-1": "solana",
+  "-2": "ton",
+};

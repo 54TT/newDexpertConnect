@@ -1,20 +1,25 @@
 import './index.less';
-import { useState, useContext, useEffect } from 'react';
+import React,{ useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
+const FillData = React.lazy(() => import('./components/fillData'));
 
-import FillData from './components/fillData';
-import SelectWallet from './components/selectWallet';
-import WalletManage from './components/WalletManage';
-import Order from './components/order';
-import OrderDetail from './components/oriderDetail';
+const SelectWallet = React.lazy(() => import('./components/selectWallet'));
+
+const WalletManage = React.lazy(() => import('./components/WalletManage'));
+
+const Order = React.lazy(() => import('./components/order'));
+
+const OrderDetail = React.lazy(() => import('./components/oriderDetail'));
+
 // import WalletDetail from './components/WalletDetail';
 import { ethers } from 'ethers';
-import ChooseChain from '@/components/chooseChain';
+const ChooseChain = React.lazy(() => import('@/components/ChangeChain/components/chooseChain'));
 import { swapChain } from '@utils/judgeStablecoin';
 import { config } from '@/config/config.ts';
-import AddWallet from './components/addWallet';
-import Drawer from '../drawer';
+const AddWallet = React.lazy(() => import('./components/addWallet'));
+const Drawer = React.lazy(() => import('../drawer'));
+
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
 import _ from 'lodash';

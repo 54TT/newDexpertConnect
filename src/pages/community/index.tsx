@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
-import UserInfo from './components/UserInfo';
+import UserInfo from'./components/UserInfo'
 import './index.less';
-import PostContent from './components/PostContent';
-import CommunityRight from './components/RightSider';
+import PostContent from'./components/PostContent'
+import CommunityRight from'./components/RightSider'
 import { useNavigate, useParams } from 'react-router-dom';
-import PostDetail from './components/PostDetail';
-import Profile from './components/Profile.tsx';
-import ContactList from './components/ContactList.tsx';
+import PostDetail from'./components/PostDetail'
+import Profile from'./components/Profile'
+import ContactList from'./components/ContactList'
 import { CountContext } from '@/Layout.tsx';
 import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';

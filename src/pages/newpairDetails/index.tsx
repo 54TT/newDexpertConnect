@@ -1,8 +1,10 @@
-import Left from './compontent/left.tsx';
-import Center from './compontent/center.tsx';
-import Right from './compontent/right.tsx';
+import React,{ useContext, useEffect, useState } from 'react';
+const Left = React.lazy(() => import('./compontent/left.tsx'));
+
+const Center = React.lazy(() => import('./compontent/center.tsx'));
+
+const Right = React.lazy(() => import('./compontent/right.tsx'));
 import './compontent/all.less';
-import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CountContext } from '@/Layout.tsx';
 import { gql, useQuery } from '@apollo/client';

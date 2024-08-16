@@ -1,10 +1,12 @@
 import './index.less';
 import { useTranslation } from 'react-i18next';
-import BottomButton from '../../component/BottomButton';
-import ToLaunchHeader from '../../component/ToLaunchHeader';
+import React from 'react'
+const BottomButton = React.lazy(() => import('../../component/BottomButton'));
+const ToLaunchHeader = React.lazy(() => import('../../component/ToLaunchHeader'));
+
 import { useParams } from 'react-router-dom';
 import { useContext } from 'react';
-import Loading from '@/components/allLoad/loading';
+const Loading = React.lazy(() => import('@/components/allLoad/loading'));
 import { useNavigate } from 'react-router-dom';
 import { CountContext } from '@/Layout';
 export default function index() {

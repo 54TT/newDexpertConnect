@@ -1,8 +1,8 @@
 import { Select, Input } from 'antd';
+import React from 'react'
 import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
-import Load from '@/components/allLoad/load.tsx';
-
+const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import { useState } from 'react';
 export default function importWallet({ setStatus, status }: any) {
   const { getAll } = Request();

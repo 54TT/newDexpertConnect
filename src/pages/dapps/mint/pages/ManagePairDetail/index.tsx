@@ -1,14 +1,16 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import BottomButton from '../../component/BottomButton';
-import InfoList from '../../component/InfoList';
-import PageHeader from '../../component/PageHeader';
-import ToLaunchHeader from '../../component/ToLaunchHeader';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+const BottomButton = React.lazy(() => import('../../component/BottomButton'));
+const InfoList = React.lazy(() => import('../../component/InfoList'));
+const PageHeader = React.lazy(() => import('../../component/PageHeader'));
+const ToLaunchHeader = React.lazy(
+  () => import('../../component/ToLaunchHeader')
+);
 import './index.less';
-import { useContext, useEffect, useMemo, useState } from 'react';
 import { CountContext } from '@/Layout';
 import { BigNumber, ethers } from 'ethers';
 import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
-import CommonModal from '@/components/CommonModal';
+import CommonModal from'@/components/CommonModal'
 import { zeroAddress } from '@utils/constants';
 import Decimal from 'decimal.js';
 import { UniswapV2RouterAbi } from '@abis/UniswapV2RouterAbi';
@@ -32,7 +34,7 @@ function ManagePairDetail() {
   //  loading
   const [loading, setLoading] = useState(false);
   const [pairContract, setPairContract] = useState<ethers.Contract>();
-  const getPairInfo = async () => {  
+  const getPairInfo = async () => {
     const { uncxAddress, wethAddress } = contractConfig;
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await web3Provider.getSigner();
@@ -121,7 +123,7 @@ function ManagePairDetail() {
       const web3Provider = new ethers.providers.Web3Provider(loginProvider);
       const signer = await web3Provider.getSigner();
       const v2RouterContract = new ethers.Contract(
-        contractConfig.uniswapV2RouterAddress,
+        contractConfig?.uniswapV2RouterAddress,
         UniswapV2RouterAbi,
         signer
       );
@@ -129,7 +131,7 @@ function ManagePairDetail() {
       const token0 = await pairContract.token0();
       const balance = await pairContract.balanceOf(walletAddress);
       const approveTx = await pairContract.approve(
-        contractConfig.uniswapV2RouterAddress,
+        contractConfig?.uniswapV2RouterAddress,
         balance
       );
       const tx = await approveTx.wait();
@@ -167,6 +169,27 @@ function ManagePairDetail() {
     () => Object?.keys?.(infoData || {})?.map?.((key) => infoData[key]) ?? [],
     [infoData]
   );
+
+  const item = (name?: string) => {
+    return (
+      <div style={{ color: '#fff', marginBottom: '6px' }}>
+        <p style={{ marginBottom: '5px' }}> {t('token.remove')}</p>
+        <p>
+          {t('token.alls')}
+          <span
+            style={{
+              fontWeight: 'bold',
+              color: 'rgba(255,255,255,0.55)',
+              margin: '0 5px',
+            }}
+          >{`${router?.t0} / ${router?.t1}`}</span>
+          {t('token.pools')}
+        </p>
+        {name && <p>{t('token.Note')}</p>}
+      </div>
+    );
+  };
+
   return (
     <>
       <ToLaunchHeader />
@@ -218,38 +241,8 @@ function ManagePairDetail() {
           }
         }}
       >
-        {isOpenStatus === 'remove' && (
-          <div style={{ color: '#fff', marginBottom: '6px' }}>
-            <p style={{ marginBottom: '5px' }}> {t('token.remove')}</p>
-            <p>
-              {t('token.alls')}
-              <span
-                style={{
-                  fontWeight: 'bold',
-                  color: 'rgba(255,255,255,0.55)',
-                  margin: '0 5px',
-                }}
-              >{`${router?.t0} / ${router?.t1}`}</span>
-              {t('token.pools')}
-            </p>
-          </div>
-        )}
-        {isOpenStatus === 'burn' && (
-          <div style={{ color: '#fff', marginBottom: '6px' }}>
-            <p style={{ marginBottom: '5px' }}> {t('token.al')}</p>
-            <p style={{ marginBottom: '5px' }}>
-              {t('token.allss')}
-              <span
-                style={{
-                  fontWeight: 'bold',
-                  color: 'rgba(255,255,255,0.55)',
-                  margin: '0 5px',
-                }}
-              >{`${router?.t0} / ${router?.t1}`}</span>
-            </p>
-            <p>{t('token.Note')}</p>
-          </div>
-        )}
+        {isOpenStatus === 'remove' && item()}
+        {isOpenStatus === 'burn' && item('have')}
         <p style={{ height: '20px' }}></p>
         <BottomButton
           ghost

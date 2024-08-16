@@ -1,5 +1,6 @@
-import RightCard from "./RightCard";
-import { useEffect, useState } from "react";
+
+import React,{ useEffect, useState } from "react";
+const RightCard = React.lazy(() => import('./RightCard'));
 import { gql, useQuery } from "@apollo/client";
 import { useTranslation } from "react-i18next";
 function CommunityRight({ isShow }: any) {

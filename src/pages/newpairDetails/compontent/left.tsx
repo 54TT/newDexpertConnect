@@ -1,8 +1,8 @@
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
-import { useContext, useState } from 'react';
+import React,{ useContext, useState } from 'react';
 import { setMany, simplify } from '@/../utils/change.ts';
-import Copy from '@/components/copy.tsx';
+const Copy = React.lazy(() => import('@/components/copy.tsx'));
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { throttle } from 'lodash';
@@ -113,7 +113,8 @@ function Left({ par }: any) {
         <div>
           <span>Pair:</span>
           <a
-            href={`https://etherscan.io/address/${simplify(par?.id)}`}
+          target='_blank'
+            href={`https://etherscan.io/address/${par?.id}`}
             style={{
               color: browser ? '#c2bebe' : 'rgb(89,175,255)',
               borderBottom: browser ? 'none' : '1px solid rgb(89,175,255)',

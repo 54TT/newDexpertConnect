@@ -5,6 +5,9 @@ import { resolve } from 'path';
 export default ({ mode }: { mode: 'development' | 'production' }) => {
   return defineConfig({
     plugins: [react()],
+    define: {
+      // 'process.cwd': '() => "/"'
+    },
     build: {
       sourcemap: mode === 'development' ? 'inline' : false,
     },
@@ -17,6 +20,7 @@ export default ({ mode }: { mode: 'development' | 'production' }) => {
         '@components': resolve(__dirname, 'src/components'),
         '@abis': resolve(__dirname, 'abis'),
         '@utils': resolve(__dirname, 'utils'),
+        // '@uniswap/uniswapx-sdk': '@uniswap/uniswapx-sdk/dist/src/index.js'
       },
     },
     // server: {

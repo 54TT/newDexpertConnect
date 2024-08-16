@@ -1,14 +1,22 @@
 import './index.less';
-import LaunchFill, { FormDataType } from './pages/LaunchFill/index.tsx';
+import React from 'react'
+import { FormDataType } from './pages/LaunchFill/index.tsx';
+const LaunchFill = React.lazy(() => import('./pages/LaunchFill/index.tsx'));
 import { Route, Routes } from 'react-router-dom';
-import LaunchHome from './pages/LaunchHome/index.tsx';
+const LaunchHome = React.lazy(() => import('./pages/LaunchHome/index.tsx'));
+
 import { useState, createContext } from 'react';
-import ManageTokenList from './pages/ManageTokenList';
-import ManagePairListAndContract from './pages/ManagePairListAndContract';
-import ManageTokenDetail from './pages/ManageTokenDetail/index.tsx';
-import ManagePairDetail from './pages/ManagePairDetail/index.tsx';
-import LockLpList from './pages/LockLpList/index.tsx';
-import Result from './pages/Result';
+const ManageTokenList = React.lazy(() => import('./pages/ManageTokenList'));
+
+const ManagePairListAndContract = React.lazy(() => import('./pages/ManagePairListAndContract'));
+
+const ManageTokenDetail = React.lazy(() => import('./pages/ManageTokenDetail'));
+
+const ManagePairDetail = React.lazy(() => import('./pages/ManagePairDetail'));
+
+const LockLpList = React.lazy(() => import('./pages/LockLpList'));
+const Result = React.lazy(() => import('./pages/Result'));
+
 export const MintContext = createContext(null);
 export const initFormData: Partial<FormDataType> = {
   decimals: '18',
@@ -35,10 +43,15 @@ function Mint() {
     setFormData,
   };
 
+
+
+
+
+
   return (
     <div
       className="dis mint"
-      style={{ height: 'calc(100vh - 90px)', justifyContent: 'center' }}
+      style={{justifyContent: 'center' }}
     >
       <div className="mint-box">
         <MintContext.Provider value={minContextValue}>

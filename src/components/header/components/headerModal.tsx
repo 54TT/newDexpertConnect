@@ -1,10 +1,10 @@
 import { Input, Modal } from 'antd';
 import { useContext, useState, useEffect } from 'react';
-import { CountContext } from '../Layout.tsx';
+import { CountContext } from '@/Layout.tsx';
 import cookie from 'js-cookie';
-import Request from './axios.tsx';
+import Request from '@/components/axios.tsx';
 import { throttle } from 'lodash';
-import NotificationChange from './message';
+import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 function HeaderModal() {
   const {
@@ -68,7 +68,7 @@ function HeaderModal() {
     { trailing: false }
   );
   const connectWallet = throttle(
-    async function (i: any) {
+     function (i: any) {
       handleLogin(i);
       setIsModalOpen(false);
     },

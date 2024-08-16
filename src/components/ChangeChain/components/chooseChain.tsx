@@ -1,5 +1,5 @@
 import { Popover } from 'antd';
-import './index.less';
+import '@/components/index.less';
 import { useEffect, useState } from 'react';
 import { throttle } from 'lodash';
 interface ChooseChainType {
@@ -51,7 +51,6 @@ function ChooseChain({
         ) {
           if (onClick) {
             onClick(i);
-            setValue(i);
           }
           if (onChange) {
             onChange(i.value);

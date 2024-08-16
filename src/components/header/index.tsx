@@ -1,12 +1,14 @@
-import { useContext, useState } from 'react';
-import { Collapse, Drawer, Dropdown } from 'antd';
-import { CountContext } from '../Layout.tsx';
+
+import React,{ useContext, useState } from 'react';
+import { CountContext } from '@/Layout.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { simplify } from '@/../utils/change.ts';
-import Load from './allLoad/load.tsx';
-import HeaderModal from './headerModal.tsx';
+const Load = React.lazy(() => import('../allLoad/load.tsx'));
+import HeaderModal  from './components/headerModal.tsx';
 import { throttle } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { Collapse, Drawer, Dropdown } from 'antd';
+
 export type I18N_Key = 'zh_CN' | 'en_US';
 function Header() {
   const router = useLocation();

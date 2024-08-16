@@ -1,10 +1,9 @@
 import './index.less';
 import { useContext, useEffect, useState } from 'react';
 import Request from '../axios';
-
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
-import SelectComp from '@/components/SelectComp';
+import SelectComp from '@/components/SelectComp'
 import { Tag } from 'antd';
 import { useTranslation } from 'react-i18next';
 function UsePass({ type, onChange, payType, refreshPass, status }: any) {

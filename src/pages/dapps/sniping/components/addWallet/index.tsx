@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import './index.less';
-import AddMethod from './components/addMethod';
-import ImportAndCreate from './components/importAndCreate';
+const AddMethod = React.lazy(() => import('./components/addMethod'));
+const ImportAndCreate = React.lazy(() => import('./components/importAndCreate'));
 import { useTranslation } from 'react-i18next';
 export default function index({setAddWallet,chainId}:any) {
 const { t } = useTranslation();

@@ -1,11 +1,12 @@
 import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
-import { useEffect, useState, useContext } from 'react';
-import Loading from '@/components/allLoad/loading.tsx';
+import React,{ useEffect, useState, useContext } from 'react';
+const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
+
 import { CountContext } from '@/Layout.tsx';
 import getBalance from '@/../utils/getBalance';
 import { useTranslation } from 'react-i18next';
-import InfiniteScrollPage from '@/components/InfiniteScroll';
+const InfiniteScrollPage = React.lazy(() => import('@/components/InfiniteScroll'));
 export default function walletList({
   setStatus,
   setAddWallet,
