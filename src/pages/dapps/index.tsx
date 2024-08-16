@@ -43,16 +43,16 @@ export default function index() {
       },
       key: 'sniping',
     },
-    {
-      imgAc: '/buybotActive.png',
-      img: '/buybotMore.png',
-      status: params?.id === 'buyBot',
-      name: 'TG Group Notification Bot',
-      onClick: () => {
-        history('/dapps/buyBot');
-      },
-      key: 'buyBot',
-    },
+    // {
+    //   imgAc: '/buybotActive.png',
+    //   img: '/buybotMore.png',
+    //   status: params?.id === 'buyBot',
+    //   name: 'TG Group Notification Bot',
+    //   onClick: () => {
+    //     history('/dapps/buyBot');
+    //   },
+    //   key: 'buyBot',
+    // },
     // {
     //   imgAc: '/snipingActive.png',
     //   img: '/snipingMore.png',

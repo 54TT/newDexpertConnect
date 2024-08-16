@@ -166,6 +166,7 @@ const chainList = [
     icon: '/5ire.png',
     key: '0x3e3',
     chainId: '997',
+    hideOnPro: true,
   },
   {
     value: '5ire',
@@ -181,12 +182,14 @@ const chainList = [
     value: 'bitLayer test',
     icon: '/bitlayer.jpg',
     chainId: '200810',
+    hideOnPro: true,
   },
   {
     value: 'Sepolia',
     icon: '/unkonwLogo.png',
     key: '0xaa36a7',
     chainId: '11155111',
+    hideOnPro: true,
   },
 ];
 
