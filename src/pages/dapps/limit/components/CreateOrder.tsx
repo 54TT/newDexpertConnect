@@ -63,7 +63,6 @@ export default function CreateOrder() {
   const [payTokenUnitPrice,setPayTokenUnitPrice]=useState<number>(0)
   // receivetoken的单位价格，U
   const [receiveTokenUnitPrice,setReceiveTokenUnitPrice]=useState<number>(0)
-  const [rateStr,setRateStr]=useState<string>('')
   // 过期时间
   const [expires,setExpires]=useState(3600)
   // 过期时间数组

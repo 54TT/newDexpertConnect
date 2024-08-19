@@ -107,7 +107,6 @@ export default function index() {
     const web3Provider=new ethers.providers.Web3Provider(loginProvider)
     const signer=web3Provider.getSigner()
     const address=await signer.getAddress()
-    // setUserAddress('0xD3952283B16C813C6cE5724B19eF56CBEE0EaA89')
     setUserAddress(address)
     // console.log('address  ',address)
   }

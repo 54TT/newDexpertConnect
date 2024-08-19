@@ -98,41 +98,6 @@ const ExecuteWindow = ({
   }
   
 
-  // 查询授权额度，获取授权
-  // const approveOrder=async (
-  //   chainId:number,
-  //   filler:Signer,
-  //   outputToken:string,
-  //   tokenAmount:BigNumber,
-  // )=>{
-  //   console.log('---approve order---')
-  //   const config=chainConfig[chainId]
-  //   const provider=config.provider
-  //   const reactorAddress = config.reactorAddress
-  //   const permit2Address = config.permit2Address
-  //   const zeroConfig=allConfig[chainId]
-  //   const outputTokenToLowerCase = outputToken.toLowerCase();
-  //   const zeroAddress=zeroConfig.zeroAddress.toLowerCase()
-  //   let outputTokenContract: Contract;
-  //   let outputPermit2Allowance: BigNumber
-  //   let outputReactorAllowance: BigNumber
-  
-  //   if(outputTokenToLowerCase!==zeroAddress){
-  //     outputTokenContract = new ethers.Contract(outputToken, ERC20ABI, provider).connect(filler);
-  //     outputPermit2Allowance = await outputTokenContract.allowance(filler.getAddress(), permit2Address);
-  //     outputReactorAllowance = await outputTokenContract.allowance(filler.getAddress(), reactorAddress);
-  //     if (outputReactorAllowance.lt(tokenAmount)) {
-  //       const tx= await outputTokenContract.approve(reactorAddress,tokenAmount);
-  //       await tx.wait()
-  //     }
-  //     if (outputPermit2Allowance.lt(tokenAmount)) {
-  //       const tx= await outputTokenContract.approve(permit2Address,tokenAmount);
-  //       await tx.wait()
-  //     }
-  //   }
-  // }
-
-
   // 获取订单用于兑换的token信息
   const getInputToken=(token,decimals)=>{
     // console.log('selected token');
