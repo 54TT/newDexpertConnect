@@ -65,8 +65,8 @@ export default function index() {
   // 打开创建订单窗口
   const [showCreateOrder, setShowCreateOrder] = useState
   (false);
-  // 展示搜索输入框
-  const [showSearch, setShowSearch]=useState(false)
+    // 展示limit搜索输入框
+  // const [showSearch, setShowSearch]=useState(false)
   const items: any = [
     {
       key: '0',
@@ -221,26 +221,14 @@ export default function index() {
         <div className="limit">
           <div className="limit-left">
             <div className="limit-left-header">
-            {!showSearch&&
-              <SearchOutlined
-              onClick={() => {
-                setShowSearch(!showSearch);
-              }}
-              style={{
-                color: 'rgb(134,240,151)',
-                fontSize: '16px',
-                cursor: 'pointer',
-              }}
-            />
-            }
+            
               <div
                 style={{
-                  display: 'flex',
+                  display:'flex',
                   flex:'1 1',
-                  // width: '65%',
-                  maxWidth:showSearch?'65%':'0%',
+                  maxWidth:'60%',
                   justifyContent: 'space-between',
-                  transition:"all 0.2s",
+                  transition:"all .3s",
                   overflow:'hidden'
                 }}
               >
@@ -284,6 +272,7 @@ export default function index() {
                     />
                   }
                 />
+                
                 <div
                   style={{
                     borderRight: '2px solid #565656',
@@ -291,6 +280,23 @@ export default function index() {
                   }}
                 ></div>
               </div>
+              {/* {!showSearch&&
+                <div
+                  style={{width:'10%'}}
+                >
+                  <SearchOutlined
+                  onClick={() => {
+                    setShowSearch(!showSearch);
+                  }}
+                  style={{
+                    color: 'rgb(134,240,151)',
+                    fontSize: '16px',
+                    cursor: 'pointer',
+                    marginLeft:'10px'
+                  }}
+                />
+                </div>
+              } */}
               <span
                 className={`orders-btn ${currentIndex === 0 ? 'active' : ''}`}
                 onClick={() => {
@@ -366,7 +372,9 @@ export default function index() {
                 onClick={() => {
                   setShowCreateOrder(true);
                 }}
-              ></span>
+              >
+                <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4339" width="32" height="32"><path d="M512 48.761905a65.015873 65.015873 0 0 1 65.015873 65.015873v333.206349H910.222222a65.015873 65.015873 0 1 1 0 130.031746H576.999619L577.015873 910.222222a65.015873 65.015873 0 1 1-130.031746 0l-0.016254-333.206349H113.777778a65.015873 65.015873 0 1 1 0-130.031746h333.206349V113.777778a65.015873 65.015873 0 0 1 65.015873-65.015873z" fill="#1a1a1a" p-id="4340"></path></svg>
+              </span>
             </div>
             { currentIndex===1&&myOrderType===2&&(
               <div className={`history history-${historyOrderType}`}>

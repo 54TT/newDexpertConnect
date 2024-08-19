@@ -167,12 +167,12 @@ export default function OrderCard({
     let amount:Decimal
     try {
       amount=await getAmountOut.apply(null,params)
+      const amountValue=new Decimal(amount)
+      // console.log(amountValue.toString());
+      setTokenRate(amountValue.toString())
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
-    const amountValue=new Decimal(amount)
-    // console.log(amountValue.toString());
-    setTokenRate(amountValue.toString())
   }
   useEffect(()=>{
     // console.log(tokenRate);
