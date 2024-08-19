@@ -67,7 +67,10 @@ export default function resultBox({
       const { deployTransaction, address } = await contractFactory.deploy(
         launchTokenPass === 'more' ? 0 : 2,
         {
-          value: toWeiWithDecimal(launchFee, decimals),
+          value:
+            launchTokenPass === 'more'
+              ? toWeiWithDecimal(launchFee, decimals)
+              : 0,
         }
       );
       reportDeploy({
