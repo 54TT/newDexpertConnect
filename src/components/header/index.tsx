@@ -108,7 +108,8 @@ function Header() {
               img: '/snipingMore.png',
               key: 'sniping',
             },
-            { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
+            // { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
+            { name:'Orders',img:'/limit.svg',key:'limit'}
           ].map((i: any) => {
             return (
               <p

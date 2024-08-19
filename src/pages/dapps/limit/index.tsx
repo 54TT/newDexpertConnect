@@ -63,7 +63,10 @@ export default function index() {
   // 当前地址
   const [userAddress, setUserAddress] = useState('');
   // 打开创建订单窗口
-  const [showCreateOrder, setShowCreateOrder] = useState(false);
+  const [showCreateOrder, setShowCreateOrder] = useState
+  (false);
+  // 展示搜索输入框
+  const [showSearch, setShowSearch]=useState(false)
   const items: any = [
     {
       key: '0',
@@ -219,14 +222,27 @@ export default function index() {
         <div className="limit">
           <div className="limit-left">
             <div className="limit-left-header">
+            {!showSearch&&
+              <SearchOutlined
+              onClick={() => {
+                setShowSearch(!showSearch);
+              }}
+              style={{
+                color: 'rgb(134,240,151)',
+                fontSize: '16px',
+                cursor: 'pointer',
+              }}
+            />
+            }
               <div
                 style={{
                   display: 'flex',
                   flex:'1 1',
                   // width: '65%',
-                  maxWidth:'60%',
-                  
+                  maxWidth:showSearch?'65%':'0%',
                   justifyContent: 'space-between',
+                  transition:"all 0.2s",
+                  overflow:'hidden'
                 }}
               >
                 <Input
@@ -238,8 +254,6 @@ export default function index() {
                   allowClear={true}
                   onClear={()=>{
                     setSearch('')
-                    // getOrderList(1,chainId)
-                    
                   }}
                   value={search}
                   onChange={(e)=>{
