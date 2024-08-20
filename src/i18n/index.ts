@@ -20,8 +20,8 @@ i18n
     resources: {
       en_US: { translation: enTranslation },
       zh_CN: { translation: zhTranslation },
-      zh_tw: { translation: twTranslation },
-      zh_jp: { translation: jpTranslation },
+      zh_TW: { translation: twTranslation },
+      zh_JP: { translation: jpTranslation },
     },
     fallbackLng: 'en_US', // 默认当前环境的语言
     // 需要链式调用messages.welcome

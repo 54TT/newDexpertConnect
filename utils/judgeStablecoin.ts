@@ -203,7 +203,7 @@ export const chainList = [
   },
   {
     value: 'Conflux test',
-    icon: '/unkonwLogo.png',
+    icon: '/conflux-logo.png',
     chainId: '71',
   },
 ];

@@ -1,7 +1,7 @@
 import './index.less';
-import React,{ useContext } from 'react';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-const Copy = React.lazy(() => import('@/components/copy'));
+import Copy from '@/components/copy';
 import { CountContext } from '@/Layout';
 function InfoList({ data, className }: { data: any; className?: string }) {
   const { contractConfig } = useContext(CountContext);

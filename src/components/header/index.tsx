@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { simplify } from '@/../utils/change.ts';
-const Load = React.lazy(() => import('../allLoad/load.tsx'));
+import Load from '../allLoad/load.tsx';
 import HeaderModal from './components/headerModal.tsx';
 import { throttle } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
@@ -64,6 +64,7 @@ function Header() {
       label: <p onClick={logout}>{t('person.logout')}</p>,
     },
   ];
+
   const loginModal = throttle(
     function () {
       if (!load) {
@@ -236,14 +237,43 @@ function Header() {
   };
 
   const changeLanguage = throttle(
-    function () {
-      localStorage.setItem('language', languageChange);
-      setLanguageChange(languageChange);
-      i18n.changeLanguage(languageChange);
+    function (language) {
+      console.log(language);
+      localStorage.setItem('language', language);
+      setLanguageChange(language);
+      i18n.changeLanguage(language);
     },
     1500,
     { trailing: false }
   );
+
+  const translateList: any = [
+    {
+      key: 'en_US',
+      value: t('Translate.en_US'),
+      label: 'English',
+    },
+    {
+      key: 'zh_CN',
+      value: t('Translate.zh_CN'),
+      label: '简体中文',
+    },
+    {
+      key: 'zh_TW',
+      value: t('Translate.zh_TW'),
+      label: '繁體中文',
+    },
+    {
+      key: 'zh_JP',
+      value: t('Translate.zh_JP'),
+      label: '日本語',
+    },
+  ];
+
+  const onClickTranslate = ({ key }) => {
+    changeLanguage(key);
+  };
+
   return (
     <div className={'headerBox'}>
       <div className="dis">
@@ -404,15 +434,22 @@ function Header() {
             )}
           </>
         )}
-        <span>
-          <img
-            src="/earth.svg"
-            alt=""
-            style={{ cursor: 'pointer', display: 'block', width: '25px' }}
-            onClick={changeLanguage}
-          />
-          {languageChange}
-        </span>
+        <Dropdown menu={{ items: translateList, onClick: onClickTranslate }}>
+          <div
+            className="dis"
+            style={{ alignItems: 'flex-end' }}
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <img
+              src="/earth.svg"
+              alt=""
+              style={{ cursor: 'pointer', display: 'block', width: '25px' }}
+            />
+            <span style={{ color: '#ccc' }}>{languageChange}</span>
+          </div>
+        </Dropdown>
         {!browser && (
           <img
             src="/rightOpen.png"

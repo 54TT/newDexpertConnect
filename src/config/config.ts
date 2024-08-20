@@ -477,6 +477,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV3FeeAmounts: [500, 3000, 10000],
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://evmtestnet.confluxscan.net/tx/',
+    tokenScan: 'https://evmtestnet.confluxscan.net/address/',
     launchFee: '0.08',
     defaultTokenIn: {
       name: 'ETH',
