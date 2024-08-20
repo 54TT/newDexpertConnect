@@ -1,16 +1,16 @@
 import copy from 'copy-to-clipboard';
 import { Popover } from 'antd';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { useContext } from 'react';
 import { CountContext } from '../Layout.tsx';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-function Copy({ 
+function Copy({
   name,
-  setSelect, 
-  select, 
+  setSelect,
+  select,
   img,
-  change //是否需要隐藏复制成功
+  change, //是否需要隐藏复制成功
 }: any) {
   const { t } = useTranslation();
   const { isCopy, setIsCopy }: any = useContext(CountContext);
@@ -29,7 +29,7 @@ function Copy({
       overlayClassName={'newPairLeftPopover'}
       content={isCopy ? t('token.Copied') : t('token.copy')}
     >
-      {((isCopy && !select) || (isCopy && select === 'select'))&& !change ? (
+      {((isCopy && !select) || (isCopy && select === 'select')) && !change ? (
         <img
           src="/copySucc.svg"
           alt=""

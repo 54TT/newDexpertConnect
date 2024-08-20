@@ -10,7 +10,7 @@ const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 const Left = React.lazy(() => import('./components/left'));
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import NotificationChange from '@/components/message';
 import copy from 'copy-to-clipboard';
 const Right = React.lazy(() => import('./components/right'));

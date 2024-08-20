@@ -22,7 +22,7 @@ import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
 } from '@utils/contracts';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import './index.less';
 import SelectTokenModal from '@/components/SelectTokenModal';
 import Decimal from 'decimal.js';
@@ -737,7 +737,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
   }, [tokenIn, isLogin, chainId, contractConfig, loginProvider]);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (isLogin && contractConfig?.defaultTokenOut) {
       getTokenBalance(tokenOut?.contractAddress, setBalanceOut);
     }

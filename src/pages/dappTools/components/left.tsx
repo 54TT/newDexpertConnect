@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CountContext } from '@/Layout.tsx';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { Swiper, SwiperSlide } from 'swiper/react';
 function Left() {
   const history = useNavigate();

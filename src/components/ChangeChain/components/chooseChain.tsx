@@ -1,7 +1,7 @@
 import { Popover } from 'antd';
 import '@/components/index.less';
 import { useEffect, useState } from 'react';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 interface ChooseChainType {
   onChange?: (v: any) => void;
   onClick?: (v: ChooseChainValueType) => void;

@@ -1,5 +1,5 @@
 import { Button, ConfigProvider } from 'antd';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { CheckCircleOutlined, RightOutlined } from '@ant-design/icons';
 import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
@@ -9,6 +9,7 @@ const BottomButton = React.lazy(
   () => import('../../../component/BottomButton')
 );
 import { useTranslation } from 'react-i18next';
+import NotificationChange from '@/components/message';
 export default function button({
   router,
   setOpenTradeModal,
@@ -17,7 +18,8 @@ export default function button({
   isRemoveLimit,
   erc20Contract,
   isOwn,
-  isVerify,setIsVerify
+  isVerify,
+  setIsVerify,
 }) {
   const { t } = useTranslation();
   const history = useNavigate();
@@ -27,6 +29,42 @@ export default function button({
   const [removeLimitLoading, setRemoveLimitLoading] = useState(false);
   const token = Cookies.get('token');
   const [verifyLoading, setVerifyLoading] = useState(false);
+  let timer = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      clearInterval(timer.current);
+    };
+  }, []);
+  const checkVerify = async ({ tx }) => {
+    try {
+      const data = await getAll({
+        method: 'post',
+        url: '/api/v1/launch-bot/tx/status/check',
+        data: {
+          tx,
+          txType: 10,
+          txTableId: router.id,
+        },
+        token,
+        chainId,
+      });
+      if (data.data.code === '1') {
+        setVerifyLoading(false);
+        setIsVerify(true);
+        clearInterval(timer.current);
+        NotificationChange('success', t('person.bind'));
+      }
+      if (data.data.code === '2') {
+        setVerifyLoading(false);
+        setIsVerify(false);
+        clearInterval(timer.current);
+        NotificationChange('error', t('token.verifyfaild'));
+      }
+    } catch (e) {
+      setVerifyLoading(false);
+    }
+  };
   const verifyingContract = async () => {
     if (!isOwn) return;
     if (isVerify) return;
@@ -39,15 +77,16 @@ export default function button({
         token,
         chainId,
       });
-      if (data?.data?.tx) {
-        setVerifyLoading(false);
-        setIsVerify(true);
+      const tx = data?.data?.tx;
+      if (tx) {
+        timer.current = setInterval(() => {
+          checkVerify({ tx });
+        }, 5000);
       }
     } catch (e) {
       setVerifyLoading(false);
-      return null;
+      console.error(e);
     }
-    setVerifyLoading(false);
   };
 
   const renounceOwnerShip = async () => {

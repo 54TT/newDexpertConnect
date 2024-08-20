@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import Back from '../../../component/Background';
 import './index.less';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
@@ -8,7 +8,7 @@ import { MintContext } from '../../../index';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import { useNavigate } from 'react-router-dom';
-const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
+import Load from '@/components/allLoad/load.tsx';
 import { useTranslation } from 'react-i18next';
 export default function resultBox({
   loading,
@@ -59,7 +59,7 @@ export default function resultBox({
       const contractFactory = new ethers.ContractFactory(
         abi,
         bytecode,
-        data?.[1]?.signer
+        data?.[1]
       );
 
       // 先默认使用手续费版本
@@ -87,9 +87,9 @@ export default function resultBox({
         setTx(deployTransaction?.hash);
       }
     } catch (e) {
+      console.error(e);
       setResult('error');
       setLoading(false);
-      return null;
     }
   };
   useEffect(() => {

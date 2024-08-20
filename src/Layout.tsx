@@ -35,7 +35,6 @@ import {
   getOptionalNamespaces,
   getRequiredNamespaces,
 } from '../utils/default';
-import _ from 'lodash';
 import NotificationChange from './components/message';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';

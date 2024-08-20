@@ -1,8 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
-const PageHeader = React.lazy(() => import('../../component/PageHeader'));
-const ToLaunchHeader = React.lazy(
-  () => import('../../component/ToLaunchHeader')
-);
+import { useContext, useEffect, useState } from 'react';
+import PageHeader from '../../component/PageHeader';
+import ToLaunchHeader from '../../component/ToLaunchHeader';
 import { CountContext } from '@/Layout';
 import { useParams } from 'react-router-dom';
 import { ethers } from 'ethers';
@@ -10,8 +8,8 @@ import { UncxAbi } from '@abis/UncxAbi';
 import NotificationChange from '@/components/message';
 import dayjs, { Dayjs } from 'dayjs';
 import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
-const BottomButton = React.lazy(() => import('../../component/BottomButton'));
-import CommonModal from'@/components/CommonModal'
+import BottomButton from '../../component/BottomButton';
+import CommonModal from '@/components/CommonModal';
 import { DatePicker, Slider } from 'antd';
 import type { SliderSingleProps } from 'antd';
 import './index.less';
@@ -21,8 +19,9 @@ import { zeroAddress } from '@utils/constants';
 import approve from '@utils/approve';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-const Loading = React.lazy(() => import('@/components/allLoad/loading'));
-const Nodata = React.lazy(() => import('@/components/Nodata'));
+import Decimal from 'decimal.js';
+import Loading from '@/components/allLoad/loading';
+import Nodata from '@/components/Nodata';
 function LockLpList() {
   const { t } = useTranslation();
   const { contractConfig, loginProvider, chainId, browser } =
@@ -98,9 +97,10 @@ function LockLpList() {
       const fee = (await uncxContract.gFees()).ethFee;
       const decimals = await pairContract.decimals();
       const lockAmount = toWeiWithDecimal(
-        ((slider * Number(lpTokenBalance)) / 100).toString(),
+        new Decimal(lpTokenBalance).mul(slider).div(100).toString(),
         decimals
       );
+      console.log(lockAmount.toString());
       const unlockDate = lockDate.unix();
       const isShow = await approve(pairContract, uncxAddress, lockAmount);
       if (isShow) {

@@ -1,6 +1,6 @@
 import './index.less';
-import React,{ useContext, useEffect, useState } from 'react';
-import { throttle } from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
+import { throttle } from 'lodash-es';
 import Request from '@/components/axios.tsx';
 import { useNavigate } from 'react-router-dom';
 import cookie from 'js-cookie';
@@ -8,7 +8,7 @@ const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import { CountContext } from '@/Layout.tsx';
 import { useTranslation } from 'react-i18next';
-import EventsList from './components/eventsList.tsx'
+import EventsList from './components/eventsList.tsx';
 const Backgroundwall = React.lazy(
   () => import('@/components/Backgroundwall.tsx')
 );

@@ -1,11 +1,10 @@
-
-import React,{ useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { simplify } from '@/../utils/change.ts';
 const Load = React.lazy(() => import('../allLoad/load.tsx'));
-import HeaderModal  from './components/headerModal.tsx';
-import { throttle } from 'lodash';
+import HeaderModal from './components/headerModal.tsx';
+import { throttle } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { Collapse, Drawer, Dropdown } from 'antd';
 
@@ -109,7 +108,7 @@ function Header() {
               key: 'sniping',
             },
             // { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
-            { name:'Orders',img:'/limit.svg',key:'limit'}
+            { name: 'Orders', img: '/limit.svg', key: 'limit' },
           ].map((i: any) => {
             return (
               <p
@@ -238,15 +237,9 @@ function Header() {
 
   const changeLanguage = throttle(
     function () {
-      if (languageChange === 'zh_CN') {
-        localStorage.setItem('language', 'en_US');
-        setLanguageChange('en_US');
-        i18n.changeLanguage('en_US');
-      } else {
-        localStorage.setItem('language', 'zh_CN');
-        setLanguageChange('zh_CN');
-        i18n.changeLanguage('zh_CN');
-      }
+      localStorage.setItem('language', languageChange);
+      setLanguageChange(languageChange);
+      i18n.changeLanguage(languageChange);
     },
     1500,
     { trailing: false }
@@ -411,12 +404,15 @@ function Header() {
             )}
           </>
         )}
-        <img
-          src="/earth.svg"
-          alt=""
-          style={{ cursor: 'pointer', display: 'block', width: '25px' }}
-          onClick={changeLanguage}
-        />
+        <span>
+          <img
+            src="/earth.svg"
+            alt=""
+            style={{ cursor: 'pointer', display: 'block', width: '25px' }}
+            onClick={changeLanguage}
+          />
+          {languageChange}
+        </span>
         {!browser && (
           <img
             src="/rightOpen.png"

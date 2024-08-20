@@ -193,7 +193,7 @@ function ManageTokenDetail() {
         <div>
           <InputNumber
             value={ethAmount}
-            addonAfter="ETH"
+            addonAfter={contractConfig?.tokenSymbol || 'ETH'}
             controls={false}
             stringMode={true}
             onChange={(v) => {
@@ -202,7 +202,7 @@ function ManageTokenDetail() {
           />
           <div
             style={{ color: '#fff', marginTop: '6px' }}
-          >{`ETH ${t('token.Banlance')}: ${ethBalance}`}</div>
+          >{`${contractConfig.tokenSymbol} ${t('token.Banlance')}: ${ethBalance}`}</div>
         </div>
         <BottomButton
           text={t('token.Open')}

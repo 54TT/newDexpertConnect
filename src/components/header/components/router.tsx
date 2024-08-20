@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function list() {

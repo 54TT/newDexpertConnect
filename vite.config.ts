@@ -10,6 +10,15 @@ export default ({ mode }: { mode: 'development' | 'production' }) => {
     },
     build: {
       sourcemap: mode === 'development' ? 'inline' : false,
+      rollupOptions: {
+        output: {
+          entryFileNames: 'assets/[name].js',
+          // 块文件名
+          chunkFileNames: 'assets/[name]-[hash].js',
+          // 资源文件名 css 图片等等
+          assetFileNames: 'assets/[name]-[hash]-balabala.[ext]',
+        },
+      },
     },
     resolve: {
       alias: {

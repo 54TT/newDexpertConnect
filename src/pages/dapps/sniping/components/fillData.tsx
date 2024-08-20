@@ -6,7 +6,7 @@ import {
   Skeleton,
   Collapse,
 } from 'antd';
-import React,{ useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
 import { getERC20Contract } from '@utils/contracts';
@@ -15,10 +15,12 @@ const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import NotificationChange from '@/components/message';
 const UsePass = React.lazy(() => import('@/components/UsePass'));
 import Decimal from 'decimal.js';
-import _ from 'lodash';
+import { debounce } from 'lodash-es';
 const InputSearch = React.lazy(() => import('./inputSearch'));
 
-const SelectTokenModal = React.lazy(() => import('@/components/SelectTokenModal'));
+const SelectTokenModal = React.lazy(
+  () => import('@/components/SelectTokenModal')
+);
 
 import { getUniswapV2RouterContract } from '@utils/contracts';
 import { getAmountOut } from '@utils/swap/v2/getAmountOut';
@@ -88,7 +90,7 @@ export default function fillData({
   };
   const enter = async (e?: any) => {
     if (searchValue?.length === 42) {
-     if (e?.key === 'Enter'||e === 'click') {
+      if (e?.key === 'Enter' || e === 'click') {
         setIsToken(true);
         implement();
       }
@@ -128,7 +130,7 @@ export default function fillData({
   const onChangeGas = (e: number) => {
     setGasPrice(e);
   };
-  const change = _.debounce((e: number) => {
+  const change = debounce((e: number) => {
     getAmount(e);
     setIsShow(true);
   }, 1000);
