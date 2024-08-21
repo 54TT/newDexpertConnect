@@ -1,36 +1,61 @@
 import SelectComp, { SelectCompItemType } from '../SelectComp';
-
-function QuotoPathSelect({ data, onChange }) {
-  const WrapTitle = ({ text }) => (
+import './index.less';
+function QuotoPathSelect({ data, onChange, chainId }) {
+  const WrapTitle = ({ text, icon, className = '' }) => (
     <div
-      className="disCen"
+      className={`disCen quoto-item ${className}`}
       style={{
         color: 'rgba(255, 255, 255, 0.85)',
         fontWeight: '300',
         marginRight: '4px',
       }}
     >
-      <img
-        style={{ width: '24px', marginRight: '8px', marginBottom: '4px' }}
-        src="/uniswap-uni-logo.svg"
-        alt=""
-      />
+      <img src={icon} alt="" />
       <span style={{ display: 'inline-block' }}>{text}</span>
     </div>
   );
-  const list: SelectCompItemType[] = [
-    {
-      label: <WrapTitle text="Uniswap V2" />,
-      key: '0',
-      title: <WrapTitle text="Uniswap V2" />,
-    },
-    {
-      label: <WrapTitle text="Uniswap V3" />,
-      key: '1',
-      title: <WrapTitle text="Uniswap V3" />,
-    },
-  ];
-  return <SelectComp list={list} data={data} onChange={onChange} />;
+
+  const QuotoPathList: Record<string, SelectCompItemType[]> = {
+    default: [
+      {
+        key: '0',
+        title: <WrapTitle text="Uniswap V2" icon={'/uniswap-uni-logo.svg'} />,
+        label: <WrapTitle text="Uniswap V2" icon={'/uniswap-uni-logo.svg'} />,
+      },
+      {
+        key: '1',
+        title: <WrapTitle text="Uniswap V3" icon={'/uniswap-uni-logo.svg'} />,
+        label: <WrapTitle text="Uniswap V2" icon={'/uniswap-uni-logo.svg'} />,
+      },
+    ],
+    '71': [
+      {
+        key: '0',
+        title: (
+          <WrapTitle
+            text="Swappi"
+            icon={'/swappi.png'}
+            className="swappi-logo"
+          />
+        ),
+        label: (
+          <WrapTitle
+            text="Swappi"
+            icon={'/swappi.png'}
+            className="swappi-logo"
+          />
+        ),
+      },
+    ],
+  };
+
+  return (
+    <SelectComp
+      list={QuotoPathList[chainId] ?? QuotoPathList['default']}
+      data={data}
+      onChange={onChange}
+    />
+  );
 }
 
 export default QuotoPathSelect;

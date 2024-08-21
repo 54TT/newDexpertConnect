@@ -944,6 +944,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         <div className="exchange-path">
           <span>{t('Slider.Dex')}</span>
           <QuotoPathSelect
+            chainId={chainId}
             data={quotePath}
             onChange={(key: string) => {
               setQuotePath(key);
