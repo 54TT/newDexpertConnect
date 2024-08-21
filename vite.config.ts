@@ -22,9 +22,6 @@ export default ({ mode }: { mode: 'development' | 'production' }) => {
             if (id.includes('antd')) {
               return 'antd-vendor';
             }
-            if (id.includes('react')) {
-              return 'react-vendor';
-            }
             if (id.includes('lodash')) {
               return 'lodash-vendor';
             }
