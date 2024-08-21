@@ -319,7 +319,7 @@ function Header() {
         className={'headerData'}
         style={{
           justifyContent: browser ? 'center' : 'space-between',
-          width: browser ? '' : '35%',
+          width: browser ? '' : '40%',
         }}
       >
         <div
@@ -437,7 +437,11 @@ function Header() {
         <Dropdown menu={{ items: translateList, onClick: onClickTranslate }}>
           <div
             className="dis"
-            style={{ alignItems: 'flex-end' }}
+            style={{
+              alignItems: 'flex-end',
+              marginRight: '6px',
+              fontSize: '12px',
+            }}
             onClick={(e) => {
               e.preventDefault();
             }}
@@ -447,7 +451,11 @@ function Header() {
               alt=""
               style={{ cursor: 'pointer', display: 'block', width: '25px' }}
             />
-            <span style={{ color: '#ccc' }}>{languageChange}</span>
+            <span
+              style={{ color: '#ccc', marginLeft: '2px', marginBottom: '2px' }}
+            >
+              {translateList.find((item) => item.key === languageChange).value}
+            </span>
           </div>
         </Dropdown>
         {!browser && (

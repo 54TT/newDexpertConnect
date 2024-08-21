@@ -1,7 +1,7 @@
 import './index.less';
-import React from 'react'
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-const ChangeChain = React.lazy(() => import('@/components/ChangeChain'));
+import ChangeChain from '@/components/ChangeChain';
 interface PageHeaderProps {
   arrow?: boolean;
   title?: string | React.ReactNode;
@@ -28,7 +28,7 @@ function PageHeader({
             <img
               src="/backImg.svg"
               alt=""
-              style={{cursor:'pointer' }}
+              style={{ cursor: 'pointer' }}
               onClick={() => {
                 if (name === 'tokenList') {
                   history('/dapps/tokencreation');

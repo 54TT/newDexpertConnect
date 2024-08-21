@@ -1,9 +1,9 @@
 {
   "Translate": {
-    "zh_CN": "Cn",
-    "zh_TW": "Tw",
-    "zh_JP": "Jp",
-    "en_US": "Eng"
+    "zh_CN": "CN",
+    "zh_TW": "TW",
+    "zh_JP": "JP",
+    "en_US": "ENG"
   },
   "Common": {
     "Events": "活動",

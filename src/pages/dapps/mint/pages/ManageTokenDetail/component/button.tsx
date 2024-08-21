@@ -1,13 +1,11 @@
 import { Button, ConfigProvider } from 'antd';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { CheckCircleOutlined, RightOutlined } from '@ant-design/icons';
 import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-const BottomButton = React.lazy(
-  () => import('../../../component/BottomButton')
-);
+import BottomButton from '../../../component/BottomButton';
 import { useTranslation } from 'react-i18next';
 import NotificationChange from '@/components/message';
 export default function button({

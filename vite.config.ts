@@ -17,6 +17,34 @@ export default ({ mode }: { mode: 'development' | 'production' }) => {
           chunkFileNames: 'assets/[name]-[hash].js',
           // 资源文件名 css 图片等等
           assetFileNames: 'assets/[name]-[hash]-balabala.[ext]',
+          manualChunks(id, { getModuleInfo }) {
+            // 打包依赖
+            if (id.includes('antd')) {
+              return 'antd-vendor';
+            }
+            if (id.includes('react')) {
+              return 'react-vendor';
+            }
+            if (id.includes('lodash')) {
+              return 'lodash-vendor';
+            }
+            if (id.includes('ethers')) {
+              return 'ethers-vendor';
+            }
+            const utilsReg = /(.*)\/src\/utils\/(.*)/;
+            if (utilsReg.test(id)) {
+              return 'utils-vendor';
+            }
+
+            const reg = /(.*)\/src\/components\/(.*)/;
+            if (reg.test(id)) {
+              const importersLen = getModuleInfo(id).importers.length;
+              // 被多处引用
+              if (importersLen > 1) {
+                return 'common';
+              }
+            }
+          },
         },
       },
     },

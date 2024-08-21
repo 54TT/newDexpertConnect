@@ -1,19 +1,15 @@
 import { Input, Select } from 'antd';
-import React, { useContext, useEffect, useState } from 'react';
-const PageHeader = React.lazy(() => import('../../component/PageHeader'));
-const ToLaunchHeader = React.lazy(
-  () => import('../../component/ToLaunchHeader')
-);
+import { useContext, useEffect, useState } from 'react';
+import PageHeader from '../../component/PageHeader';
+import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
-const Loading = React.lazy(() => import('@/components/allLoad/loading'));
+import Loading from '@/components/allLoad/loading';
 import Request from '@/components/axios';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
-const TokenItem = React.lazy(() => import('../../component/TokenItem'));
+import TokenItem from '../../component/TokenItem';
 import { useNavigate } from 'react-router-dom';
-const InfiniteScrollPage = React.lazy(
-  () => import('@/components/InfiniteScroll')
-);
+import InfiniteScrollPage from '@/components/InfiniteScroll';
 const { Search } = Input;
 import { useTranslation } from 'react-i18next';
 function ManageTokenList() {
@@ -88,9 +84,13 @@ function ManageTokenList() {
           id: item.contractId,
           address: item.address,
           status:
-            item?.isDeploy === '0' ? t('token.Deploying') : item?.isDeploy === '1' ? t('token.Deploy') : t('token.failed'),
-            contractConfig,
-            tx:item?.deployTx
+            item?.isDeploy === '0'
+              ? t('token.Deploying')
+              : item?.isDeploy === '1'
+                ? t('token.Deploy')
+                : t('token.failed'),
+          contractConfig,
+          tx: item?.deployTx,
         }}
         onClick={({ id, address, title }) =>
           history(`/dapps/tokencreation/managePair/${id}/${address}/${title}`)

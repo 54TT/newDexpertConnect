@@ -20,7 +20,7 @@ const ChooseChain = React.lazy(
 import { swapChain } from '@utils/judgeStablecoin';
 import { config } from '@/config/config.ts';
 const AddWallet = React.lazy(() => import('./components/addWallet'));
-const Drawer = React.lazy(() => import('../drawer'));
+// const Drawer = React.lazy(() => import('../drawer'));
 
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
@@ -356,7 +356,7 @@ export default function index() {
                   : t('Slider.Confirm')
             : t('Common.Connect Wallet')}
         </div>
-        {user?.uid && <Drawer id={sniperChainId} />}
+        {/* {user?.uid && <Drawer id={sniperChainId} />} */}
       </div>
     </div>
   );

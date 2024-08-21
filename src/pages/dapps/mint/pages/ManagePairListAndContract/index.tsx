@@ -1,15 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 
-const TokenItem = React.lazy(() => import('../../component/TokenItem'));
+import TokenItem from '../../component/TokenItem';
 import { CountContext } from '@/Layout';
 import './index.less';
-const InfiniteScrollPage = React.lazy(
-  () => import('@/components/InfiniteScroll')
-);
-const Loading = React.lazy(() => import('@/components/allLoad/loading'));
+import InfiniteScrollPage from '@/components/InfiniteScroll';
+import Loading from '@/components/allLoad/loading';
 import { useTranslation } from 'react-i18next';
 import { ethers } from 'ethers';
 import getPairByV2Factory from '@utils/getPairByV2Factory';
