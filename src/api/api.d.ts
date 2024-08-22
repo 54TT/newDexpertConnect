@@ -1,6 +1,21 @@
+interface CommonOption {
+  options: {
+    header?: string;
+    chainId: string;
+    token: string;
+  };
+}
+
 declare namespace API {
+  interface ReportPayTypeParam extends CommonOption {
+    data: {
+      payType: string;
+      tx: string;
+    };
+  }
+
   interface ReportPayTypeReq {
-    name: string;
-    age: number;
+    code: string;
+    massage: string;
   }
 }

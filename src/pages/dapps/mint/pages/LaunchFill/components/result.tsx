@@ -10,6 +10,7 @@ import { CountContext } from '@/Layout';
 import { useNavigate } from 'react-router-dom';
 import Load from '@/components/allLoad/load.tsx';
 import { useTranslation } from 'react-i18next';
+import { reportPayType } from '@/api';
 export default function resultBox({
   loading,
   result,
@@ -44,6 +45,27 @@ export default function resultBox({
       chainId,
     });
   };
+
+  const sendReportPayType = async (tx, payType) => {
+    return reportPayType(getAll, {
+      data: {
+        tx,
+        payType,
+      },
+      options: {
+        token,
+        chainId,
+      },
+    });
+  };
+
+  // dpass类型
+  const payTypeMap = {
+    0: '0', // pay fee
+    1: '4', // glodenPass
+    2: '1', // dpass
+  };
+
   const deployContract = async () => {
     try {
       // const { data } = await getByteCode();
@@ -72,6 +94,11 @@ export default function resultBox({
               ? toWeiWithDecimal(launchFee, decimals)
               : 0,
         }
+      );
+
+      sendReportPayType(
+        deployTransaction.hash,
+        payTypeMap[launchTokenPass === 'more' ? 0 : 2]
       );
       reportDeploy({
         contractAddress: address,

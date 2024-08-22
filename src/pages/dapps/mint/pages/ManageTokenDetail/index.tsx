@@ -163,6 +163,7 @@ function ManageTokenDetail() {
     isOwn,
     erc20Contract,
     isRemoveLimit,
+    setIsRemoveLimit,
     setOpenTradeModal,
     openTradeLoading,
     isOpenTrade,
@@ -200,7 +201,7 @@ function ManageTokenDetail() {
           />
           <div
             style={{ color: '#fff', marginTop: '6px' }}
-          >{`${contractConfig.tokenSymbol} ${t('token.Banlance')}: ${ethBalance}`}</div>
+          >{`${contractConfig?.tokenSymbol || 'ETH'} ${t('token.Banlance')}: ${ethBalance}`}</div>
         </div>
         <BottomButton
           text={t('token.Open')}

@@ -9,7 +9,8 @@ import { useTranslation } from 'react-i18next';
 export default function pass() {
   const { t } = useTranslation();
   const { getAll } = Request();
-  const { browser, chainId, contractConfig }: any = useContext(CountContext);
+  const { browser, chainId, contractConfig, launchFee, tokenSymbol }: any =
+    useContext(CountContext);
   const { launchTokenPass, setLaunchTokenPass }: any = useContext(MintContext);
   const [params, setParams] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -71,7 +72,7 @@ export default function pass() {
     <div className="passBox">
       <p className="title">{t('token.Fee')}</p>
       <p className="hint" style={{ fontSize: '15px', margin: '8px 0' }}>
-        {t('token.need')}
+        {t('token.need', { value: launchFee, token: tokenSymbol })}
       </p>
       {loading ? (
         <div className="passItem">

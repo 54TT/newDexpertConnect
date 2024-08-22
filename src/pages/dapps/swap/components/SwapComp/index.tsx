@@ -49,6 +49,7 @@ import { getSwapFee } from '@utils/getSwapFee';
 import DefaultTokenImg from '@/components/DefaultTokenImg';
 import { expandToDecimalsBN } from '@utils/utils';
 import ChangeChain from '@/components/ChangeChain';
+import { reportPayType } from '@/api';
 interface SwapCompType {
   changeAble?: boolean; // 是否可修改Token || 网络
   initChainId?: string; // 初始化的chainId;
@@ -479,19 +480,22 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     return { commands, inputs, etherValue };
   };
 
-  const reportPayType = async (tx) => {
+  const sendReportPayType = async (tx) => {
     const token = Cookies.get('token');
     const payTypeMap = {
       0: 0, // pay fee
       1: 4, // glodenPass
       2: 2, // dpass
     };
-    return getAll({
-      method: 'get',
-      url: '/api/v1/d_pass/pay',
-      data: { payType: payTypeMap[payType], tx },
-      token,
-      chainId,
+    return reportPayType(getAll, {
+      data: {
+        tx,
+        payType: payTypeMap[payType],
+      },
+      options: {
+        token,
+        chainId,
+      },
     });
   };
 
@@ -544,7 +548,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     }
     setButtonLoading(false);
     setButtonDescId('1');
-    await reportPayType(tx?.hash);
+    await sendReportPayType(tx?.hash);
     setPayType('0');
     setAmountIn(0);
     setAmountOut(0);

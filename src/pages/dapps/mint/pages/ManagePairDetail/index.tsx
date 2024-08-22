@@ -126,7 +126,10 @@ function ManagePairDetail() {
         signer
       );
       const walletAddress = await signer.getAddress();
-      const token0 = await pairContract.token0();
+      let token: string = await pairContract.token0();
+      if (token.toLowerCase() === contractConfig.wethAddress.toLowerCase()) {
+        token = await pairContract.token1();
+      }
       const balance = await pairContract.balanceOf(walletAddress);
       const approveTx = await pairContract.approve(
         contractConfig?.uniswapV2RouterAddress,
@@ -136,7 +139,7 @@ function ManagePairDetail() {
       if (tx?.status === 1) {
         const deadline = dayjs().add(10, 'm').unix();
         const removeLiquidityTx = await v2RouterContract.removeLiquidityETH(
-          token0,
+          token,
           balance,
           0,
           0,
@@ -156,6 +159,7 @@ function ManagePairDetail() {
       setOpen(false);
       setIsButton(false);
     } catch (e) {
+      console.error(e);
       setIsButton(false);
     }
   };

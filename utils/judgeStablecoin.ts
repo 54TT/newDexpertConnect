@@ -206,6 +206,11 @@ export const chainList = [
     icon: '/conflux-logo.png',
     chainId: '71',
   },
+  {
+    value: 'Conflux',
+    icon: '/conflux-logo.png',
+    chainId: '1030',
+  },
 ];
 
 export const swapChain = chainList.map((item) => ({

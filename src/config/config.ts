@@ -9,7 +9,8 @@ type ChainIdList =
   | '97'
   | '3441006'
   | '169'
-  | '71';
+  | '71'
+  | '1030';
 export const config: Record<ChainIdList, any> = {
   '1': {
     rpcUrl:
@@ -478,7 +479,50 @@ export const config: Record<ChainIdList, any> = {
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://evmtestnet.confluxscan.net/tx/',
     tokenScan: 'https://evmtestnet.confluxscan.net/address/',
-    launchFee: '0.08',
+    launchFee: '0.8',
+    defaultTokenIn: {
+      name: 'CFX',
+      symbol: 'CFX',
+      logoUrl: '/conflux-logo.png',
+      contractAddress: '0x0000000000000000000000000000000000000000',
+      balance: '0',
+      decimals: '18',
+    },
+    defaultTokenOut: {
+      name: 'USDT',
+      symbol: 'USDT',
+      logoUrl: '/usdt.svg',
+      contractAddress: '0x193B740874a723f00a51a05E6d5eb60bFCeCFA90',
+      balance: '0',
+      decimals: '6',
+    },
+  },
+  '1030': {
+    rpcUrl: 'https://evm.confluxrpc.com',
+    name: 'Confluxt',
+    chainId: 1030,
+    verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
+    verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
+    uniswapV2RouterAddress: '0x62b0873055Bf896DD869e172119871ac24aEA305',
+    uniswapV2FactoryAddress: '0xe2a6f7c0ce4d5d300f97aa7e125455f5cd3342f5',
+    uniswapV3FactoryAddress: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
+    permit2Address: '0x208931C00a31c2C3d0e313d4434DDAEF260a3510',
+    uncxAddress: '0xb55bF103dA5cB8Ed06cf1bD4132A1603e1Dde6D0',
+    universalRouterAddress: '0x5c3A493A279dD744f07bC8269311E8F21908184a',
+    wethAddress: '0x14b2D3bC65e74DAE1030EAFd8ac30c533c976A9b',
+    wethUsdtPairAddress: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
+    wethDecimal: 18,
+    decimals: 18,
+    tokenSymbol: 'CFX',
+    usdtAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    usdtDecimal: 6,
+    ethAddress: '0x0000000000000000000000000000000000000000',
+    zeroAddress: '0x0000000000000000000000000000000000000000',
+    uniswapV3FeeAmounts: [500, 3000, 10000],
+    quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
+    scan: 'https://evm.confluxscan.net/tx/',
+    tokenScan: 'https://evm.confluxscan.net/address/',
+    launchFee: '0.8',
     defaultTokenIn: {
       name: 'CFX',
       symbol: 'CFX',

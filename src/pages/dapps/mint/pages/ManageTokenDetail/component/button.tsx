@@ -14,6 +14,7 @@ export default function button({
   isOpenTrade,
   openTradeLoading,
   isRemoveLimit,
+  setIsRemoveLimit,
   erc20Contract,
   isOwn,
   isVerify,
@@ -83,6 +84,7 @@ export default function button({
       }
     } catch (e) {
       setVerifyLoading(false);
+      NotificationChange('error', t('token.verifyfaild'));
       console.error(e);
     }
   };
@@ -108,12 +110,16 @@ export default function button({
     try {
       const tx = await erc20Contract.removeLimits();
       const recipent = await tx.wait();
-      if (tx?.hash && recipent) {
-        history('/dapps/tokencreation/result/' + tx?.hash + '/removeLimits');
+      if (recipent.status === 1) {
+        setRemoveLimitLoading(false);
+        setIsRemoveLimit(true);
+      } else {
+        setRemoveLimitLoading(false);
+        NotificationChange('error', t('token.Remove limit failed'));
       }
     } catch (e) {
       setRemoveLimitLoading(false);
-      return null;
+      console.error(e);
     }
   };
 

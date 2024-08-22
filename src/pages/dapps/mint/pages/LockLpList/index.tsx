@@ -100,7 +100,6 @@ function LockLpList() {
         new Decimal(lpTokenBalance).mul(slider).div(100).toString(),
         decimals
       );
-      console.log(lockAmount.toString());
       const unlockDate = lockDate.unix();
       const isShow = await approve(pairContract, uncxAddress, lockAmount);
       if (isShow) {
@@ -116,6 +115,7 @@ function LockLpList() {
               value: fee,
             }
           );
+
           if (tx?.hash) {
             history('/dapps/tokencreation/result/' + tx?.hash + '/lock');
           }
