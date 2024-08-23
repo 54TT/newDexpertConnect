@@ -103,6 +103,7 @@ export default function button({
       NotificationChange('error', t('token.renounceOwnershipfailed'));
       console.error(e);
     }
+    setRenounceLoading(false);
   };
   const removeLimit = async () => {
     if (!isOwn) return;
