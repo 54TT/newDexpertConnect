@@ -180,7 +180,7 @@ function Header() {
     if (
       router.pathname === '/' ||
       router.pathname === '/newpairDetails' ||
-      router.pathname === '/re-register'
+      router.pathname === '/logout'
     ) {
       if (ind === 'Market') {
         return 'rgb(134,240,151)';
