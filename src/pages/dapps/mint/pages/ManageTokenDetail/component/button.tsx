@@ -52,7 +52,7 @@ export default function button({
         setVerifyLoading(false);
         setIsVerify(true);
         clearInterval(timer.current);
-        NotificationChange('success', t('person.bind'));
+        NotificationChange('success', t('token.verifysuccess'));
       }
       if (data.data.code === '2') {
         setVerifyLoading(false);
@@ -62,6 +62,7 @@ export default function button({
       }
     } catch (e) {
       setVerifyLoading(false);
+      NotificationChange('error', t('token.verifyfaild'));
     }
   };
   const verifyingContract = async () => {
@@ -94,14 +95,15 @@ export default function button({
     try {
       const tx = await erc20Contract.renounceOwnership();
       const recipent = await tx.wait();
-      if (tx?.hash && recipent) {
-        history(
-          '/dapps/tokencreation/result/' + tx?.hash + '/renounceOwnership'
-        );
+      if (recipent.status === 1) {
+        NotificationChange('success', t('token.renounceOwnership'));
+      } else {
+        NotificationChange('error', t('token.renounceOwnershipfailed'));
       }
     } catch (e) {
       setRenounceLoading(false);
-      return null;
+      NotificationChange('error', t('token.renounceOwnershipfailed'));
+      console.error(e);
     }
   };
   const removeLimit = async () => {
@@ -113,12 +115,14 @@ export default function button({
       if (recipent.status === 1) {
         setRemoveLimitLoading(false);
         setIsRemoveLimit(true);
+        NotificationChange('success', t('token.removeLimits'));
       } else {
         setRemoveLimitLoading(false);
         NotificationChange('error', t('token.Remove limit failed'));
       }
     } catch (e) {
       setRemoveLimitLoading(false);
+      NotificationChange('error', t('token.Remove limit failed'));
       console.error(e);
     }
   };

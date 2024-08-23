@@ -169,7 +169,8 @@
     "start": "開始",
     "Completed": "已完成",
     "Claim": "領取",
-    "no": "尚無活動"
+    "no": "尚無活動",
+    "Next": "下一頁"
   },
   "Active": {
     "tw": "推文",
@@ -332,7 +333,16 @@
     "createOrderSuccess": "訂單創建成功！",
     "createOrderError": "訂單創建失敗！",
     "executeOrderSuccess": "訂單執行成功！",
-    "executeOrderError": "訂單執行失敗！"
+    "executeOrderError": "訂單執行失敗！",
+    "cancelOrderError": "訂單取消失敗！",
+    "cancelOrderSuccess": "訂單取消成功！",
+    "fillOrderError": "訂單填充失敗！",
+    "orderPartialFill": "訂單部分填充",
+    "fillOrderSuccess": "訂單成功下單！",
+    "orderCanceled": "訂單已取消！",
+    "orderError": "订单错误！",
+    "orderExpired": "訂單已過期！",
+    "orderFilled": "訂單已填寫！"
   },
   "sniping": {
     "choose": "選擇錢包",
@@ -436,7 +446,7 @@
     "gao": "高級選項",
     "first": "首字母大寫",
     "Fee": "服務費支付",
-    "need": "代幣創建服務費為{{value}} {{token}}。D Pass或黃金通行證持有者免費。",
+    "need": "用於支付代幣創建服務費。D Pass或Golden Pass持有者免費",
     "Notice": "重要通知：",
     "be": "請注意，通過啟動機器人部署智能合約將產生0.08 ETH的服務費。該費用用於持續開發、市場推廣和代幣回購。",
     "Before": "防止交換之前",
@@ -482,6 +492,18 @@
     "Renounces": "放棄所有權",
     "go": "去查看",
     "Deploy": "部署成功",
-    "failed": "部署失敗"
+    "failed": "部署失敗",
+    "verifyfaild": "驗證失敗",
+    "Remove limit failed": "解除限制失敗",
+    "verifysuccess": "驗證成功",
+    "renounceOwnershipfailed": "放棄所有權失敗"
+  },
+  "Swap": {
+    "Order expire in": "訂單過期時間"
+  },
+  "pair": {
+    "unlockfail": "解鎖失敗",
+    "removeLpfail": "移除流動性代幣失敗",
+    "burnfail": "銷毀失敗"
   }
 }

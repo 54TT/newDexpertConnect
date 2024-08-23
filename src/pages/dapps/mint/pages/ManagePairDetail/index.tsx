@@ -18,6 +18,7 @@ import Loading from '@/components/allLoad/loading';
 import getBalanceRpcEther from '@utils/getBalanceRpc';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
 import { useTranslation } from 'react-i18next';
+import NotificationChange from '@/components/message';
 function ManagePairDetail() {
   const { t } = useTranslation();
   const router = useParams();
@@ -105,14 +106,19 @@ function ManagePairDetail() {
         BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
       );
       const data = await tx.wait();
-      if (tx?.hash && data) {
-        history('/dapps/tokencreation/result/' + tx?.hash + '/burnLP');
+      if (data.status === 1) {
+        if (tx?.hash && data) {
+          history('/dapps/tokencreation/result/' + tx?.hash + '/burnLP');
+        }
+      } else {
+        NotificationChange('error', 'pair.burnfail');
       }
       setIsOpenStatus('');
       setOpen(false);
       setIsButton(false);
     } catch (e) {
       setIsButton(false);
+      NotificationChange('error', 'pair.burnfail');
     }
   };
 
@@ -147,12 +153,16 @@ function ManagePairDetail() {
           deadline
         );
         const data = await removeLiquidityTx.wait();
-        if (removeLiquidityTx?.hash && data) {
-          history(
-            '/dapps/tokencreation/result/' +
-              removeLiquidityTx?.hash +
-              '/removeLP'
-          );
+        if (data.status === 1) {
+          if (removeLiquidityTx?.hash && data) {
+            history(
+              '/dapps/tokencreation/result/' +
+                removeLiquidityTx?.hash +
+                '/removeLP'
+            );
+          }
+        } else {
+          NotificationChange('error', 'pair.removeLpfail');
         }
       }
       setIsOpenStatus('');
@@ -160,6 +170,7 @@ function ManagePairDetail() {
       setIsButton(false);
     } catch (e) {
       console.error(e);
+      NotificationChange('error', 'pair.removeLpfail');
       setIsButton(false);
     }
   };

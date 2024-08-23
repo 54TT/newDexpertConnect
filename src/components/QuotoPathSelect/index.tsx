@@ -47,6 +47,25 @@ function QuotoPathSelect({ data, onChange, chainId }) {
         ),
       },
     ],
+    '1030': [
+      {
+        key: '0',
+        title: (
+          <WrapTitle
+            text="Swappi"
+            icon={'/swappi.png'}
+            className="swappi-logo"
+          />
+        ),
+        label: (
+          <WrapTitle
+            text="Swappi"
+            icon={'/swappi.png'}
+            className="swappi-logo"
+          />
+        ),
+      },
+    ],
   };
 
   return (

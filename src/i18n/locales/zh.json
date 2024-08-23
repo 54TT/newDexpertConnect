@@ -35,7 +35,9 @@
     "set": "修改用户名称",
     "This": "此操作不可撤销，你确定要删除吗？",
     "del": "删除帖子?",
-    "SearchPairPlaceholder": "输入搜索的代币名称"
+    "SearchPairPlaceholder": "输入搜索的代币名称",
+    "Next": "下一页",
+    "twi": "此Twitter账户已被关联"
   },
   "Dapps": {
     "Token Creation Bot": "发币机器人",
@@ -63,9 +65,9 @@
     "Authenticating": "等待许可",
     "Converting": "转换中",
     "Confirming": "正在确认",
-    "Awaiting wallet's response": "等待钱包响应"
+    "Awaiting wallet's response": "等待钱包响应",
+    "Sniper Bot": "狙击机器人"
   },
-
   "Slider": {
     "eth": "点击此处在 etherscan 上查看",
     "succ": "交易提交成功！",
@@ -102,7 +104,11 @@
     "Send": "发送",
     "Receive": "接收",
     "Select Token": "选择代币",
-    "Token Contract Address": "代币合约地址"
+    "Token Contract Address": "代币合约地址",
+    "Invalid": "无效的链",
+    "c": "当前链不支持该操作",
+    "chain": "请选择链并输入正确的地址",
+    "max": "最大"
   },
   "Community": {
     "Share your insights...": "请在这分享你的见闻...",
@@ -443,7 +449,7 @@
     "gao": "高级选项",
     "first": "首字母英文大写",
     "Fee": "服务费支付",
-    "need": "代币创建需支付 {{value}} {{token}} 服务费。 D 通行证或黄金通行证持有者免费",
+    "need": "用于支付代币创建服务费。 D Pass或Golden Pass持有者免费",
     "Notice": "重要的提醒:",
     "be": "请注意，通过 Launch 机器人部署智能合约将产生0.08 ETH的服务费。该费用用于持续开发、营销和代币回购。",
     "Before": "禁止交易之前",
@@ -480,8 +486,9 @@
     "Creation": "代币创建",
     "loSu": "锁仓成功",
     "unLoSu": "解锁成功",
-    "removeLimits": "删除流动性成功",
+    "removeLimits": "删除限制成功",
     "renounceOwnership": "放弃所有权成功",
+    "renounceOwnershipfailed": "放弃所有权失败",
     "burnLP": "销毁成功",
     "removeLP": "删除成功",
     "Limits": "已删除流动性",
@@ -490,6 +497,13 @@
     "go": "去查看",
     "Deploy": "部署成功",
     "failed": "部署失败",
-    "Remove limit failed": "移除限制失败"
+    "Remove limit failed": "移除限制失败",
+    "verifyfaild": "验证失败",
+    "verifysuccess": "验证成功"
+  },
+  "pair": {
+    "unlockfail": "解锁失败",
+    "removeLpfail": "移除流动性代币失败",
+    "burnfail": "销毁失败"
   }
 }

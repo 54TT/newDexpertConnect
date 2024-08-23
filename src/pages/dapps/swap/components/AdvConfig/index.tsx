@@ -11,6 +11,7 @@ import './index.less';
 import { CloseOutlined } from '@ant-design/icons';
 import ProInputNumber from '@/components/ProInputNumber';
 import { useTranslation } from 'react-i18next';
+import { valueType } from 'antd/es/statistic/utils';
 interface AdvConfigProps {
   onClose: (data: AdvConfigType) => void;
   initData: AdvConfigType;
@@ -69,7 +70,7 @@ interface SettingContentRef {
 
 export interface AdvConfigType {
   slipType: '0' | '1';
-  slip: number;
+  slip: valueType;
   tradeDeadline: TradeDeadlineType;
 }
 
@@ -98,7 +99,7 @@ export const SettingContent: ForwardRefExoticComponent<
     },
   ];
   const [slipType, setSlipType] = useState(initData.slipType);
-  const [slip, setSlip] = useState<number>(initData.slip);
+  const [slip, setSlip] = useState<valueType>(initData.slip);
   const [tradeDeadline, setTradeDeadline] = useState<TradeDeadlineType>(
     initData.tradeDeadline
   );

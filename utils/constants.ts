@@ -189,6 +189,7 @@ export const CHAIN_NAME_TO_CHAIN_ID = {
   'Manta-sepolia': '3441006',
   Manta: '169',
   'Conflux-test': '71',
+  Conflux: '1030',
 };
 
 export const CHAIN_VERSION_TO_CHAIN_ID = {
@@ -217,6 +218,7 @@ export const ID_TO_CHAIN_NAME_LOW = {
   '3441006': 'manta-sepolia',
   '169': 'manta',
   '71': 'conflux-testnet',
+  '1030': 'conflux',
 };
 
 export const CHAIN_ID_TO_CHAIN_NAME = () =>

@@ -115,8 +115,8 @@ function LockLpList() {
               value: fee,
             }
           );
-
-          if (tx?.hash) {
+          const recipent = await tx.wait();
+          if (recipent.status === 1) {
             history('/dapps/tokencreation/result/' + tx?.hash + '/lock');
           }
         } catch (e) {
@@ -149,11 +149,13 @@ function LockLpList() {
         lockId,
         amount
       );
-      if (data?.hash) {
+      const recipent = await data.wait();
+      if (recipent.status === 1) {
         history('/dapps/tokencreation/result/' + data?.hash + '/unlock');
         setLockLoing('');
       }
     } catch (e) {
+      NotificationChange('error', 'pair.unlockfail');
       setLockLoing('');
     }
   };

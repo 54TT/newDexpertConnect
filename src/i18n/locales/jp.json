@@ -169,7 +169,8 @@
     "start": "開始",
     "Completed": "完了",
     "Claim": "請求",
-    "no": "まだアクティビティがありません"
+    "no": "まだアクティビティがありません",
+    "Next": "次のページ"
   },
   "Active": {
     "tw": "ツイート",
@@ -332,7 +333,16 @@
     "createOrderSuccess": "注文が正常に作成されました！",
     "createOrderError": "注文の作成に失敗しました！",
     "executeOrderSuccess": "注文が正常に実行されました！",
-    "executeOrderError": "注文の実行に失敗しました！"
+    "executeOrderError": "注文の実行に失敗しました！",
+    "fillOrderSuccess": "注文が正常に完了しました！",
+    "orderCanceled": "注文がキャンセルされました！",
+    "orderError": "注文にエラーがあります！",
+    "orderExpired": "注文が期限切れになりました！",
+    "orderFilled": "注文が満たされました！",
+    "cancelOrderError": "注文のキャンセルに失敗しました！",
+    "cancelOrderSuccess": "注文のキャンセルが成功しました！",
+    "fillOrderError": "注文の満たしに失敗しました！",
+    "orderPartialFill": "注文が部分的に満たされました！"
   },
   "sniping": {
     "choose": "ウォレットを選択",
@@ -436,7 +446,7 @@
     "gao": "高度なオプション",
     "first": "最初の文字を大文字にする",
     "Fee": "サービス料金の支払い",
-    "need": "トークン作成には{{value}} {{token}}のサービス料金がかかります。D Passまたはゴールデンパス保有者は無料です。",
+    "need": " はトークン作成サービス料の支払いに使用されます。Dパスまたはゴールドパス保持者は無料",
     "Notice": "重要なお知らせ：",
     "be": "Launchボットを使用してスマートコントラクトを展開する場合、0.08 ETHのサービス料金が発生します。この料金は、開発の継続、マーケティング、トークンの買戻しに使用されます。",
     "Before": "スワップ前に防止",
@@ -482,6 +492,18 @@
     "Renounces": "所有権を放棄",
     "go": "チェックに行く",
     "Deploy": "デプロイ成功",
-    "failed": "デプロイ失敗"
+    "failed": "デプロイ失敗",
+    "Remove limit failed": "制限解除に失敗しました",
+    "verifyfaild": "認証に失敗しました",
+    "verifysuccess": "認証に成功しました",
+    "renounceOwnershipfailed": "所有権の放棄に失敗しました"
+  },
+  "Swap": {
+    "Order expire in": "注文の有効期限"
+  },
+  "pair": {
+    "unlockfail": "ロック解除に失敗しました",
+    "removeLpfail": "流動性トークンの除去に失敗しました",
+    "burnfail": "破棄に失敗しました"
   }
 }

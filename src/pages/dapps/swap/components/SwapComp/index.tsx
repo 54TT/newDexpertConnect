@@ -50,6 +50,7 @@ import DefaultTokenImg from '@/components/DefaultTokenImg';
 import { expandToDecimalsBN } from '@utils/utils';
 import ChangeChain from '@/components/ChangeChain';
 import { reportPayType } from '@/api';
+import { valueType } from 'antd/es/statistic/utils';
 interface SwapCompType {
   changeAble?: boolean; // 是否可修改Token || 网络
   initChainId?: string; // 初始化的chainId;
@@ -67,8 +68,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     loginProvider,
   } = useContext(CountContext);
   const { t } = useTranslation();
-  const [amountIn, setAmountIn] = useState<number | null>(0);
-  const [amountOut, setAmountOut] = useState<number | null>(0);
+  const [amountIn, setAmountIn] = useState<valueType>('0');
+  const [amountOut, setAmountOut] = useState<valueType>('0');
   const [tokenIn, setTokenIn] = useState<TokenItemData>();
   const [tokenOut, setTokenOut] = useState<TokenItemData>();
   const [openSelect, setOpenSelect] = useState(false);
@@ -103,8 +104,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       const [initTokenIn, initTokenOut] = initToken;
       setTokenIn(initTokenIn);
       setTokenOut(initTokenOut);
-      setAmountIn(0);
-      setAmountOut(0);
+      setAmountIn('0');
+      setAmountOut('0');
     }
     if (initChainId) {
       changeWalletChain(initChainId);
@@ -219,7 +220,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       setButtonDescId('1');
     }
 
-    const amountInDecimal = new Decimal(amountIn || 0);
+    const amountInDecimal = new Decimal(amountIn || '0');
     if (amountInDecimal.lessThanOrEqualTo(balanceIn)) {
       setButtonDisable(false);
       setButtonDescId('1');
@@ -250,16 +251,17 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setTokenIn(newTokenIn);
     setTokenOut(newTokenOut);
     setAmountIn(amountOut);
-    setAmountOut(0);
-    getAmount('in', amountOut || 0, quotePath);
+    setAmountOut('0');
+    getAmount('in', amountOut || '0', quotePath);
   };
 
   const getAmount = async (
     type: 'in' | 'out',
-    value: number,
+    value: valueType,
     quotePath: string
   ) => {
-    if (value == null || value === 0) return;
+    console.log(type, value);
+    if (value == null || value === '0') return;
     if (
       ((type === 'in' || type === 'out') && !tokenIn?.contractAddress) ||
       !tokenOut?.contractAddress
@@ -317,7 +319,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           amount = quoteAmount;
           setSwapV3Pool(poolInfo);
         }
-        setAmountIn(Number(amount.toString()));
+        setAmountIn(amount.toString());
       } catch (e) {
         return null;
       }
@@ -550,8 +552,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     setButtonDescId('1');
     await sendReportPayType(tx?.hash);
     setPayType('0');
-    setAmountIn(0);
-    setAmountOut(0);
+    setAmountIn('0');
+    setAmountOut('0');
     setRefreshPass(true);
   };
 
@@ -671,8 +673,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       setTokenIn(defaultTokenIn);
       setTokenOut(defaultTokenOut);
     }
-    setAmountIn(0);
-    setAmountOut(0);
+    setAmountIn('0');
+    setAmountOut('0');
   }, [contractConfig]);
   const changeWalletChain = async (v: string) => {
     const evmChainId = CHAIN_NAME_TO_CHAIN_ID[v];
@@ -716,7 +718,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     if (
       tokenIn?.contractAddress &&
       tokenOut?.contractAddress &&
-      amountOut !== 0
+      amountOut !== '0'
     ) {
       currentInputToken.current = 'out';
       getAmount('out', amountOut, quotePath);
@@ -751,7 +753,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     if (
       tokenOut?.contractAddress &&
       tokenIn?.contractAddress &&
-      amountIn !== 0
+      amountIn !== '0'
     ) {
       currentInputToken.current = 'in';
       getAmount('in', amountIn, quotePath);
@@ -760,10 +762,10 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
 
   useEffect(() => {
     if (tokenIn?.contractAddress && tokenOut?.contractAddress) {
-      if (currentInputToken.current === 'in' && amountIn !== 0) {
+      if (currentInputToken.current === 'in' && amountIn !== '0') {
         getAmount('in', amountIn, quotePath);
       }
-      if (currentInputToken.current === 'out' && amountOut !== 0) {
+      if (currentInputToken.current === 'out' && amountOut !== '0') {
         getAmount('out', amountOut, quotePath);
       }
     }
@@ -851,10 +853,13 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           </div>
         </div>
         <ProInputNumber
+          inputNumberProps={{
+            stringMode: true,
+          }}
           value={amountIn}
           className={inLoading && 'inut-font-gray'}
           onChange={(v) => {
-            setAmountIn(v || 0);
+            setAmountIn(v || '0');
             if (currentInputToken.current !== 'in')
               currentInputToken.current = 'in';
             getAmountDebounce('in', v, quotePath);
@@ -907,7 +912,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           value={amountOut}
           className={outLoading && 'inut-font-gray'}
           onChange={(v) => {
-            setAmountOut(v || 0);
+            setAmountOut(v || '0');
             if (currentInputToken.current !== 'out')
               currentInputToken.current = 'out';
             getAmountDebounce('out', v, quotePath);

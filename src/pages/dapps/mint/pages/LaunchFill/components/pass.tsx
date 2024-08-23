@@ -9,8 +9,7 @@ import { useTranslation } from 'react-i18next';
 export default function pass() {
   const { t } = useTranslation();
   const { getAll } = Request();
-  const { browser, chainId, contractConfig, launchFee, tokenSymbol }: any =
-    useContext(CountContext);
+  const { browser, chainId, contractConfig }: any = useContext(CountContext);
   const { launchTokenPass, setLaunchTokenPass }: any = useContext(MintContext);
   const [params, setParams] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -68,11 +67,12 @@ export default function pass() {
       getPass();
     }
   }, [chainId, contractConfig]);
+  console.log(contractConfig);
   return (
     <div className="passBox">
       <p className="title">{t('token.Fee')}</p>
       <p className="hint" style={{ fontSize: '15px', margin: '8px 0' }}>
-        {t('token.need', { value: launchFee, token: tokenSymbol })}
+        {`${contractConfig.launchFee} ${contractConfig.tokenSymbol} ${t('token.need')}`}
       </p>
       {loading ? (
         <div className="passItem">
@@ -103,7 +103,12 @@ export default function pass() {
       )}
       <div className="showBot">
         <p className="hint">{t('token.Notice')}</p>
-        <p className="hint">{t('token.be')}</p>
+        <p className="hint">
+          {t('token.be', {
+            value: contractConfig.launchFee,
+            symbol: contractConfig.tokenSymbol,
+          })}
+        </p>
       </div>
     </div>
   );
