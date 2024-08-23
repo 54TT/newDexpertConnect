@@ -4,7 +4,6 @@ import { CheckCircleOutlined, RightOutlined } from '@ant-design/icons';
 import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
 import BottomButton from '../../../component/BottomButton';
 import { useTranslation } from 'react-i18next';
 import NotificationChange from '@/components/message';
@@ -21,7 +20,6 @@ export default function button({
   setIsVerify,
 }) {
   const { t } = useTranslation();
-  const history = useNavigate();
   const { getAll } = Request();
   const { chainId } = useContext(CountContext);
   const [renounceLoading, setRenounceLoading] = useState(false);

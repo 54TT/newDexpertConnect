@@ -1,5 +1,5 @@
 import './index.less';
-function Loading({ status, browser }: any) {
+function Loading({ status }: any) {
   //   const changeWidth = () => {
   //     if (status === 'none') {
   //       if (browser) {
