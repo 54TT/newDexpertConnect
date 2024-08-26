@@ -17,6 +17,7 @@ export default function button({
   erc20Contract,
   isOwn,
   isVerify,
+  setIsOwn,
   setIsVerify,
 }) {
   const { t } = useTranslation();
@@ -90,10 +91,12 @@ export default function button({
 
   const renounceOwnerShip = async () => {
     if (!isOwn) return;
+    setRenounceLoading(true);
     try {
       const tx = await erc20Contract.renounceOwnership();
       const recipent = await tx.wait();
       if (recipent.status === 1) {
+        setIsOwn(false);
         NotificationChange('success', t('token.renounceOwnership'));
       } else {
         NotificationChange('error', t('token.renounceOwnershipfailed'));
@@ -168,7 +171,6 @@ export default function button({
             }
             loading={renounceLoading}
             onClick={() => {
-              setRenounceLoading(true);
               renounceOwnerShip();
             }}
           >
