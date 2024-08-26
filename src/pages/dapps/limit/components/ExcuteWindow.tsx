@@ -130,11 +130,9 @@ const ExecuteWindow = ({
     const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
     console.log('outputtoken startAmountNum',startAmountNum.toString());
     console.log(JSON.parse(outputToken)[0].token);
-    
     setTokenOutputAmount(startAmountNum.toString())
     // const outputTokenAddress=order.outputToken
     // console.log(outputTokenAddress);
-    
   }
   // 获取当前汇率与订单汇率的比值
   const getRateRelation=()=>{

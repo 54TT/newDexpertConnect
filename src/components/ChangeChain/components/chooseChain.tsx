@@ -41,7 +41,9 @@ function ChooseChain({
   const click = throttle(
     function (i: any) {
       if (value !== i) {
-        if (i?.disabled && disabledChain) {
+        if (i.value === 'Ton' && i.chainId === '-2') {
+          window.open('http://192.168.51.246:3000/');
+        } else if (i?.disabled && disabledChain) {
           return;
         }
         if (

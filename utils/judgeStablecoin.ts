@@ -183,6 +183,11 @@ export const chainList = [
     chainId: '200810',
   },
   {
+    value: 'Ton',
+    icon: '/ton_symbol.svg',
+    chainId: '-2',
+  },
+  {
     value: 'Sepolia',
     icon: '/unkonwLogo.png',
     key: '0xaa36a7',
