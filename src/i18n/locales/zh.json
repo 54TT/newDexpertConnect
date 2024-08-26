@@ -499,7 +499,8 @@
     "failed": "部署失败",
     "Remove limit failed": "移除限制失败",
     "verifyfaild": "验证失败",
-    "verifysuccess": "验证成功"
+    "verifysuccess": "验证成功",
+    "nameValidMessage": "必须以大写字母开头，并且不能包含空格、下划线或其他特殊字符"
   },
   "pair": {
     "unlockfail": "解锁失败",

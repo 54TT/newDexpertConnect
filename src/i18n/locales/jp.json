@@ -496,7 +496,8 @@
     "Remove limit failed": "制限解除に失敗しました",
     "verifyfaild": "認証に失敗しました",
     "verifysuccess": "認証に成功しました",
-    "renounceOwnershipfailed": "所有権の放棄に失敗しました"
+    "renounceOwnershipfailed": "所有権の放棄に失敗しました",
+    "nameValidMessage": "大文字で始まり、スペース、アンダースコア、またはその他の特殊文字を含めないでください"
   },
   "Swap": {
     "Order expire in": "注文の有効期限"
