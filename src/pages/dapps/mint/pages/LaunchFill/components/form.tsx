@@ -35,13 +35,25 @@ export default function form({ form, formData, onFinishForm }) {
         >
           <Form.Item
             name="name"
-            rules={[{ required: true, message: t('token.input') }]}
+            rules={[
+              { required: true, message: t('token.input') },
+              {
+                pattern: new RegExp('^[A-Za-z][A-Za-z0-9]*$'),
+                message: t('token.nameValidMessage'),
+              },
+            ]}
           >
             <Input placeholder={t('token.token')} autoComplete={'off'} />
           </Form.Item>
           <Form.Item
             name="symbol"
-            rules={[{ required: true, message: t('token.input') }]}
+            rules={[
+              { required: true, message: t('token.input') },
+              {
+                pattern: new RegExp('^[A-Za-z][A-Za-z0-9]*$'),
+                message: t('token.nameValidMessage'),
+              },
+            ]}
           >
             <Input
               placeholder={t('token.symbol') + '  ( ' + t('token.first') + ' )'}

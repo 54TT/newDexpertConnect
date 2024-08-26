@@ -496,7 +496,8 @@
     "verifyfaild": "Verification Failed",
     "verifysuccess": "Verification Successful",
     "Remove limit failed": "Remove limit failed",
-    "renounceOwnershipfailed": "Failed to renounce ownership"
+    "renounceOwnershipfailed": "Failed to renounce ownership",
+    "nameValidMessage": "Must start with an uppercase letter and contain no spaces, underscores, or other special characters"
   },
   "Swap": {
     "Order expire in": "Order expire in"
