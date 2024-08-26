@@ -215,7 +215,8 @@ function Layout() {
           ],
         });
       } catch (e) {
-        return null;
+        // 如果用户拒绝切换链或不支持此方法
+        console.error(e);
       }
     }
     return () => {
