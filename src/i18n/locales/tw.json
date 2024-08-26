@@ -496,7 +496,8 @@
     "verifyfaild": "驗證失敗",
     "Remove limit failed": "解除限制失敗",
     "verifysuccess": "驗證成功",
-    "renounceOwnershipfailed": "放棄所有權失敗"
+    "renounceOwnershipfailed": "放棄所有權失敗",
+    "nameValidMessage": "必須以大寫字母開頭，並且不能包含空格、下劃線或其他特殊字符"
   },
   "Swap": {
     "Order expire in": "訂單過期時間"

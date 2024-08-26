@@ -110,7 +110,7 @@ export const config: Record<ChainIdList, any> = {
     /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
     verificationURL: 'https://api.basescan.org/api',
     chainId: 8453,
-    name: 'Base',
+    name: 'Base Mainnet',
     verificationApiKey: '26DA1KNJPI4SMP8GUDAUA4611JIHQK16AD',
     uniswapV2RouterAddress: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
     uniswapV2FactoryAddress: '0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6',
@@ -155,7 +155,7 @@ export const config: Record<ChainIdList, any> = {
     /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
     verificationURL: 'https://contract.evm.scan.5ire.network/5ire/verify',
     chainId: 995,
-    name: '5ire',
+    name: '5ire Mainnet',
     verificationApiKey: 'fireqa',
     uniswapV2RouterAddress: '0x4e823D28e97b06f4230132701b4f40a2467dB4F2',
     uniswapV2FactoryAddress: '0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6',
@@ -199,8 +199,8 @@ export const config: Record<ChainIdList, any> = {
     rpcUrl: 'https://qa-http-nodes.5ire.network',
     /*     'https://public.stackup.sh/api/v1/node/ethereum-sepolia', */
     verificationURL: 'https://api.basescan.org/api',
-    name: '5ire-test',
-    chainId: 995,
+    name: '5ire Testnet',
+    chainId: 997,
     verificationApiKey: '26DA1KNJPI4SMP8GUDAUA4611JIHQK16AD',
     uniswapV2RouterAddress: '0xC4227695a1Cf0dc5A805f8b2c4C2aeE151879dE2',
     uniswapV2FactoryAddress: '0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6',
@@ -243,7 +243,7 @@ export const config: Record<ChainIdList, any> = {
   '200810': {
     rpcUrl: 'https://testnet-rpc.bitlayer.org',
     chainId: 200810,
-    name: 'Bitlayer-test',
+    name: 'Bitlayer Testnet',
     verificationURL: 'https://api.etherscan.io/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
     uniswapV2RouterAddress: '0x6239cA7C648EEC451f1152BEfb003eB322139455',
@@ -287,7 +287,7 @@ export const config: Record<ChainIdList, any> = {
   '200901': {
     rpcUrl: 'https://rpc.bitlayer.org',
     chainId: 200901,
-    name: 'Bitlayer',
+    name: 'Bitlayer Mainnet',
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
     uniswapV2RouterAddress: '0x774960245f1113c26d0548886F55298266C8fF45',
@@ -330,7 +330,7 @@ export const config: Record<ChainIdList, any> = {
   },
   '97': {
     rpcUrl: 'https://bsc-testnet-dataseed.bnbchain.org',
-    name: 'Bsc-test',
+    name: 'Bsc Testnet',
     chainId: 97,
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
@@ -416,7 +416,7 @@ export const config: Record<ChainIdList, any> = {
   '3441006': {
     rpcUrl: 'https://pacific-rpc.sepolia-testnet.manta.network/http',
     chainId: 3441006,
-    name: 'Manta-sepolia',
+    name: 'Manta Sepolia',
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
     uniswapV2RouterAddress: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
@@ -456,7 +456,7 @@ export const config: Record<ChainIdList, any> = {
   },
   '71': {
     rpcUrl: 'https://evmtestnet.confluxrpc.com',
-    name: 'Conflux testnet',
+    name: 'Conflux Testnet',
     chainId: 71,
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
@@ -499,7 +499,7 @@ export const config: Record<ChainIdList, any> = {
   },
   '1030': {
     rpcUrl: 'https://evm.confluxrpc.com',
-    name: 'Confluxt',
+    name: 'Conflux Mainnet',
     chainId: 1030,
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
@@ -543,7 +543,7 @@ export const config: Record<ChainIdList, any> = {
   '169': {
     rpcUrl: 'https://pacific-rpc.manta.network/http',
     chainId: 169,
-    name: 'Manta',
+    name: 'Manta Mainnet',
     verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
     verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
     uniswapV2RouterAddress: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
