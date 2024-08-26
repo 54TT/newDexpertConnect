@@ -248,7 +248,7 @@ function Header() {
 
   const translateList: any = [
     {
-      key: 'en_US',
+      key: 'en_US', 
       value: t('Translate.en_US'),
       label: 'English',
     },
