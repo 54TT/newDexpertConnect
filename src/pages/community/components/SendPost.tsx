@@ -5,7 +5,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import Cookies from 'js-cookie';
 import Picker from '@emoji-mart/react';
 import emojiData from '@emoji-mart/data';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout.tsx';
@@ -254,7 +254,7 @@ function SendPost({
         </div>
       </div>
       <div className="post-send-imgList">
-        {imgPreview && 
+        {imgPreview && (
           <div className="post-send-imgList-delete">
             <img loading={'lazy'} src={imgPreview} alt="" />
             <Button
@@ -264,7 +264,7 @@ function SendPost({
               onClick={() => clearImg()}
             />
           </div>
-        }
+        )}
       </div>
       <input
         ref={inputRef}

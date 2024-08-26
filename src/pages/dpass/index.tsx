@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import './index.less';
 import Request from '@/components/axios';
-import React,{ useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CaretDownOutlined } from '@ant-design/icons';
 const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom';
 const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
 import dayjs from 'dayjs';
-import { throttle, find } from 'lodash';
+import { throttle, find } from 'lodash-es';
 const Pass = React.lazy(() => import('./components/pass'));
 
 function Dpass() {

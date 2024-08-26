@@ -6,6 +6,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 import OrderCard from './components/OrderCard';
+import ListItem from './components/ListItem';
 import CreateOrder from './components/CreateOrder';
 import Cookies from 'js-cookie';
 import Request from '@/components/axios';
@@ -17,6 +18,7 @@ import Nodata from '@/components/Nodata'
 // useContext
 import './index.less';
 import Loading from '@/components/allLoad/loading';
+import { ethers } from 'ethers';
 // import { BigNumber, ethers } from 'ethers';
 // import { CountContext } from '@/Layout';
 // import { createOrder,  } from "@/../utils/limit/order"
@@ -30,13 +32,13 @@ export default function index() {
     // setChainId,
     // transactionFee,
     // setTransactionFee,
-    user,
-    // isLogin,
+    setIsModalOpen,
+    isLogin,
   } = useContext(CountContext);
   const { t } = useTranslation();
   // 0:live orders,1:my orders
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [reqNum, setReqNum] = useState(0);
+  const [reqNum, setReqNum] = useState(1);
   const { getAll } = Request();
   const [orderList, setOrderList] = useState([]);
   // 订单列表加载状态
@@ -53,18 +55,30 @@ export default function index() {
   // 首次加载
   // const [initialized, setInitialized] = useState(false)
   // my orders type,0:all,1:executing,2:history
-  const [orderType, setOrderType] = useState(0);
+  const [myOrderType, setMyOrderType] = useState(0);
+  // 历史订单类型
+  const [historyOrderType, setHistoryOrderType] = useState('cancelled');
+  // 搜索字段
+  const [search, setSearch] = useState('');
+  // 当前地址
+  const [userAddress, setUserAddress] = useState('');
+  // 打开创建订单窗口
+  const [showCreateOrder, setShowCreateOrder] = useState
+  (false);
+    // 展示limit搜索输入框
+  // const [showSearch, setShowSearch]=useState(false)
   const items: any = [
     {
       key: '0',
       label: (
         <p
           className={
-            orderType === 1 ? 'drop-item-selected drop-item' : 'drop-item'
+            myOrderType === 1 ? 'drop-item-selected drop-item' : 'drop-item'
           }
           onClick={() => {
             setCurrentIndex(1);
-            setOrderType(1);
+            setMyOrderType(1);
+            setSearch('')
           }}
         >
           {t('limit.executing')}
@@ -76,11 +90,13 @@ export default function index() {
       label: (
         <p
           className={
-            orderType === 2 ? 'drop-item-selected drop-item' : 'drop-item'
+            myOrderType === 2 ? 'drop-item-selected drop-item' : 'drop-item'
           }
           onClick={() => {
             setCurrentIndex(1);
-            setOrderType(2);
+            setMyOrderType(2);
+            setSearch('')
+            setHistoryOrderType('cancelled')
           }}
         >
           {t('limit.history')}
@@ -88,6 +104,14 @@ export default function index() {
       ),
     },
   ];
+
+  // 获取用户address
+  const getAddress=async()=>{
+    const web3Provider=new ethers.providers.Web3Provider(loginProvider)
+    const signer=web3Provider.getSigner()
+    const address=await signer.getAddress()
+    setUserAddress(address)
+  }
 
   // 加载更多订单
   const moreOrder = async () => {
@@ -97,30 +121,33 @@ export default function index() {
   };
   // 获取订单列表
   const getOrderList = async (page: number, chainId: string) => {
-    // if(currentIndex===1) console.log('ger user orders')
     if (page === 1) setOrderLoading(true);
-    if (orderType === 0 && currentIndex === 1) {
-    }
-    // console.log('get my all orders');
-    if (orderType === 1 && currentIndex === 1) {
-    }
-    // console.log('get my executing orders');
-    if (orderType === 2 && currentIndex === 1) {
-    }
-    // console.log('get my history orders');
     try {
-      setReqNum(reqNum + 1);
       const token = Cookies.get('token');
       const res = await getAll({
         method: 'get',
         url: '/api/v1/limit/order/list',
         data: {
-          // search:"",
-          // uid:0,
+          // search有内容就搜索内容，如果没有，且在我的订单filled分类，则搜索用户订单，否则搜索全部订单
+          search:search&&(search.length!==66)?
+                  search:(historyOrderType==='filled'?
+                  userAddress:''),
           page: page,
-          // orderHash:"",
-          orderStatus: currentIndex === 0 ? 'open' : '',
-          offerer: currentIndex === 0 ? '' : user.username,
+          // 订单哈希搜索
+          orderHash:search.length===66?search:'',
+          // o 市场订单或有search就open，
+          // orderStatus: currentIndex === 0||search ?
+          //               open
+          //               : (myOrderType===0 ? '': 
+          //                 (myOrderType===1 ?'open':historyOrderType)),
+          // 在市场订单有search就open，在我的订单就展示所有订单，在我的订单executing就展示open，否则就按照分类展示订单
+          orderStatus:currentIndex === 0||search ?
+                        (search.length!==66?'open':''):(myOrderType===0?'':(myOrderType===1?'open':historyOrderType)),
+          // 在我的订单且已登录？如果历史订单状态为filled，就为空，search进行用户地址搜索（filler和offerer都能检索）：用户地址；空
+          offerer: currentIndex === 1&& isLogin?
+                    (historyOrderType==='filled'?
+                      '':userAddress)
+                        :'',
         },
         token,
         chainId,
@@ -142,28 +169,36 @@ export default function index() {
           setOrderLoading(false);
           setMoreOrderLoading(false);
         }
-        console.log(res.data.orders)
       }
     } catch (err) {
       setOrderLoading(false);
       setMoreOrderLoading(false);
+      setOrderList([])
       return null;
     }
   };
+
+  useEffect(()=>{
+    if(chainId && contractConfig){
+      if(search===''&&chainId === contractConfig.chainId.toString()){
+        getOrderList(1,chainId)
+      }
+    }
+  },[search])
   useEffect(() => {
-    // if (currentIndex === 0) console.log('get all orders');
-    // if (currentIndex === 1) console.log('get user orders');
-    console.log('currentIndex or orderType changed')
-    getOrderList(1,chainId)
-  }, [currentIndex, orderType]);
-  useEffect(() => {
+    // 默认有更多的订单
+    setHasMore(true)
     if(chainId && contractConfig){
       if (chainId === contractConfig.chainId.toString()) {
           getOrderList(1, chainId);
           setOrderLoading(true);
       }
     }
-  }, [chainId, contractConfig]);
+    if(isLogin&&loginProvider){
+      getAddress()
+    }
+  }, [chainId, contractConfig,currentIndex, myOrderType,historyOrderType]);
+
   return (
     <>
       {showDetailsWindow && selectedOrder && (
@@ -177,14 +212,15 @@ export default function index() {
         <div className="limit">
           <div className="limit-left">
             <div className="limit-left-header">
+            
               <div
                 style={{
-                  display: 'flex',
+                  display:'flex',
                   flex:'1 1',
-                  // width: '65%',
                   maxWidth:'60%',
-                  
                   justifyContent: 'space-between',
+                  transition:"all .3s",
+                  overflow:'hidden'
                 }}
               >
                 <Input
@@ -192,12 +228,30 @@ export default function index() {
                   rootClassName="limit-input"
                   variant="borderless"
                   // onKeyDown={enter}
-                  placeholder={'token address'}
-                  allowClear
-                  // onChange={searchChange}
+                  placeholder={currentIndex===0?t('limit.search'):t('limit.order hash')}
+                  allowClear={true}
+                  value={search}
+                  onChange={(e)=>{
+                    setSearch(e.target.value)
+                  }}
+                  onPressEnter={()=>{
+                    getOrderList(1,chainId)
+                    // setCurrentIndex(0)
+                    setMyOrderType(0)
+                    setOrderPage(1)
+                    setHasMore(true)
+                    if(search.length!==66) setCurrentIndex(0)
+                  }}
                   suffix={
                     <SearchOutlined
-                      // onClick={clickSearch}
+                      onClick={()=>{
+                        getOrderList(1,chainId)
+                        // setCurrentIndex(0)
+                        setMyOrderType(0)
+                        setHasMore(true)
+                        setOrderPage(1)
+                        if(search.length!==66) setCurrentIndex(0)
+                      }}
                       style={{
                         color: 'rgb(134,240,151)',
                         fontSize: '16px',
@@ -206,6 +260,7 @@ export default function index() {
                     />
                   }
                 />
+                
                 <div
                   style={{
                     borderRight: '2px solid #565656',
@@ -213,50 +268,59 @@ export default function index() {
                   }}
                 ></div>
               </div>
+              {/* {!showSearch&&
+                <div
+                  style={{width:'10%'}}
+                >
+                  <SearchOutlined
+                  onClick={() => {
+                    setShowSearch(!showSearch);
+                  }}
+                  style={{
+                    color: 'rgb(134,240,151)',
+                    fontSize: '16px',
+                    cursor: 'pointer',
+                    marginLeft:'10px'
+                  }}
+                />
+                </div>
+              } */}
               <span
                 className={`orders-btn ${currentIndex === 0 ? 'active' : ''}`}
                 onClick={() => {
                   setCurrentIndex(0);
-                  setOrderType(0);
+                  setMyOrderType(0);
                   setOrderPage(1);
-                  // getOrderList(1)
-                  // setOrderLoading(true)
-                  setHasMore(true);
+                  setHistoryOrderType('cancelled')
                 }}
               >
                 <p>{t('limit.live orders')}</p>
               </span>
-              {/* <span> */}
-              <img
-                style={{width:'40px',cursor:'pointer'}}
-                src='/refresh.svg'
-                onClick={()=>{
-                  getOrderList(1, chainId);
-                }}
-              />
-              {/* </span> */}
-              {/* <span className={`orders-btn ${currentIndex===1?'active':''}`}
-                onClick={()=>setCurrentIndex(1)}>
-                <p>
-                  Ongoing Order(s)
-                </p>
-              </span> */}
               <Dropdown
                 rootClassName="orders-type"
                 menu={{ items, selectable: false }}
                 trigger={['hover']}
-                // open
+                disabled={!isLogin}
                 // destroyPopupOnHide={true}
               >
                 <span
                   className={`orders-btn ${currentIndex === 1 ? 'active' : ''}`}
                   onClick={() => {
-                    setCurrentIndex(1);
-                    setOrderPage(0);
+                    if(!isLogin){
+                      setIsModalOpen(true)
+                    }else{
+                      setSearch('')
+                      setCurrentIndex(1);
+                      setOrderPage(1);
+                      setHasMore(true);
+                      setMyOrderType(0)
+                    }
                     // getOrderList(1)
                   }}
                 >
-                  <p>{t('limit.my orders')}</p>
+                  {myOrderType===0&&<p>{t('limit.my orders')}</p>}
+                  {myOrderType===1&&<p>{t('limit.executing')}</p>}
+                  {myOrderType===2&&<p>{t('limit.history')}</p>}
                   <svg
                     width="14"
                     height="9"
@@ -273,13 +337,71 @@ export default function index() {
                       }
                     />
                   </svg>
-                  {/* <DownOutlined style={{fontSize:'14px',marginLeft:'4px'}} /> */}
                 </span>
               </Dropdown>
+              <img
+                style={{
+                  width:'40px',
+                  transform:`rotate(-${reqNum*360}deg)`,
+                  transition:'all 1s',
+                  cursor:'pointer'
+                }}
+                src='/refresh.svg'
+                onClick={()=>{
+                  setOrderPage(1)
+                  getOrderList(1, chainId);
+                  setReqNum(reqNum + 1);
+                  setHasMore(true)
+                }}
+              />
+              <span
+                className='create-order-icon'
+                onClick={() => {
+                  setShowCreateOrder(true);
+                }}
+              >
+                <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4339" width="32" height="32"><path d="M512 48.761905a65.015873 65.015873 0 0 1 65.015873 65.015873v333.206349H910.222222a65.015873 65.015873 0 1 1 0 130.031746H576.999619L577.015873 910.222222a65.015873 65.015873 0 1 1-130.031746 0l-0.016254-333.206349H113.777778a65.015873 65.015873 0 1 1 0-130.031746h333.206349V113.777778a65.015873 65.015873 0 0 1 65.015873-65.015873z" fill="#1a1a1a" p-id="4340"></path></svg>
+              </span>
             </div>
+            { currentIndex===1&&myOrderType===2&&(
+              <div className={`history history-${historyOrderType}`}>
+              <span
+                style={{color: historyOrderType === 'cancelled' ? '#86f097' : '#fff'}}
+                onClick={()=>{
+                  setHistoryOrderType('cancelled')
+                  setOrderPage(1)
+                }}
+                className={`history-header-item ${historyOrderType === 'cancelled' ? 'history-header-item-active':''}`}
+              >{t("limit.cancelled")}</span>
+              <span
+                style={{color: historyOrderType === 'expired' ? '#86f097' : '#fff'}}
+                onClick={()=>{
+                  setHistoryOrderType('expired')
+                  setOrderPage(1)
+                }}
+                className={`history-header-item ${historyOrderType === 'expired' ? 'history-header-item-active':''}`}
+              >{t("limit.expired")}</span>
+              <span
+                style={{color: historyOrderType === 'filled' ? '#86f097' : '#fff'}}
+                onClick={()=>{
+                  setHistoryOrderType('filled')
+                  setOrderPage(1)
+                }}
+                className={`history-header-item ${historyOrderType === 'filled' ? 'history-header-item-active':''}`}
+              >{t("limit.filled")}</span>
+              <span
+                style={{color: historyOrderType === 'error' ? '#86f097' : '#fff'}}
+                onClick={()=>{
+                  setHistoryOrderType('error')
+                  setOrderPage(1)
+                }}
+                className={`history-header-item ${historyOrderType === 'error' ? 'history-header-item-active':''}`}
+              >{t("limit.error")}</span>
+            </div>
+            )}
             <div className="limit-left-body">
               {orderList?.length > 0 && !orderLoading ? (
-                <div id="order-list">
+                <div id="order-list" className={myOrderType===2?"order-list-col":''}>
                   <InfiniteScroll
                     hasMore={hasMore}
                     next={moreOrder}
@@ -287,10 +409,10 @@ export default function index() {
                     loader={null}
                     dataLength={orderList.length}
                   >
-                    {orderList.map((item: any) => (
+                    {myOrderType!==2&& orderList.map((item: any) => (
                       <OrderCard
                         type={
-                          item.uid === user?.uid
+                          item.offerer === userAddress
                             ? currentIndex === 0
                               ? 'my'
                               : 'open'
@@ -303,8 +425,20 @@ export default function index() {
                         setShowExecuteWindow={setShowExecuteWindow}
                         setSelectedOrder={setSelectedOrder}
                         setShowDetailsWindow={setShowDetailsWindow}
+                        userAddress={userAddress}
                       />
                     ))}
+                    { myOrderType===2&&orderList.map((item: any) => (
+                      <ListItem
+                      key={item.orderHash}
+                      order={item}
+                      setSelectedOrder={setSelectedOrder}
+                      setShowDetailsWindow={setShowDetailsWindow}
+                      historyOrderType={historyOrderType}
+                      userAddress={userAddress}
+                      />
+                    ))
+                    }
                   </InfiniteScroll>
                   {moreOrderLoading && <Spin />}
                   {/* <Spin /> */}
@@ -315,34 +449,6 @@ export default function index() {
                   {orderList.length===0&&!orderLoading&&(<Nodata />)}
                 </>
               )}
-              {/* {currentIndex===2?(
-                  orderList.filter((item:any)=>item?.uid===user?.uid).map((item)=>(
-                    <OrderCard
-                      type={item?.uid===user?.uid?'my':''}
-                      key={item.orderHash}
-                      order={item}
-                      chainId={chainId}
-                      loginProvider={loginProvider}
-                      setShowExecuteWindow={setShowExecuteWindow}
-                      setSelectedOrder={setSelectedOrder}
-                      setShowDetailsWindow={setShowDetailsWindow}
-                    />
-                  ))
-                ):(
-                  orderList.map((item:any)=>(
-                    <OrderCard
-                      type={item?.uid===user?.uid?'my':''}
-                      key={item.orderHash}
-                      order={item}
-                      chainId={chainId}
-                      loginProvider={loginProvider}
-                      setShowExecuteWindow={setShowExecuteWindow}
-                      setSelectedOrder={setSelectedOrder}
-                      setShowDetailsWindow={setShowDetailsWindow}
-                    />
-                  ))
-                )
-                } */}
             </div>
           </div>
           <div className="limit-right">
@@ -363,17 +469,19 @@ export default function index() {
               setShowExecuteWindow={setShowExecuteWindow}
             />
           </Modal>
-          {/* <div
-        className="top border"
-        onClick={() => {
-          if (nonce) {
-            setOrder();
-          }
-        }}
-      >
-        ppppppp
-      </div> */}
-          {/* <div className="bot"></div> */}
+          <Modal
+            maskClosable={false}
+            className='modal-create-order'
+            centered
+            open={showCreateOrder}
+            onCancel={() => setShowCreateOrder(false)}
+            footer={null}
+            destroyOnClose
+            width={600}
+            title={'Limit Order'}
+          >
+            <CreateOrder />
+          </Modal>
         </div>
       )}
     </>

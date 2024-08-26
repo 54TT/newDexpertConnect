@@ -45,21 +45,21 @@ export default function index() {
       },
       key: 'sniping',
     },
-    {
-      imgAc: '/buybotActive.png',
-      img: '/buybotMore.png',
-      status: params?.id === 'buyBot',
-      name: 'TG Group Notification Bot',
-      onClick: () => {
-        history('/dapps/buyBot');
-      },
-      key: 'buyBot',
-    },
+    // {
+    //   imgAc: '/buybotActive.png',
+    //   img: '/buybotMore.png',
+    //   status: params?.id === 'buyBot',
+    //   name: 'TG Group Notification Bot',
+    //   onClick: () => {
+    //     history('/dapps/buyBot');
+    //   },
+    //   key: 'buyBot',
+    // },
     {
       imgAc: '/limitActive.svg',
       img: '/limit.svg',
       status: params?.id === 'limit',
-      name: 'Limit',
+      name: 'Orders',
       onClick: () => {
         history('/dapps/limit');
       },
@@ -119,7 +119,7 @@ export default function index() {
                         i.status || hoverKey == i.key
                           ? 'rgb(134,240,151)'
                           : 'rgb(162,162,162)',
-                      width: i.key === 'buyBot' ? '120px' : 'auto',
+                      width: i.key === 'buyBot' ? 'auto' : 'auto',
                     }}
                   >
                     {i.name}

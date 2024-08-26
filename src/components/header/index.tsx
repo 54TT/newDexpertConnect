@@ -1,11 +1,10 @@
-
-import React,{ useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { simplify } from '@/../utils/change.ts';
-const Load = React.lazy(() => import('../allLoad/load.tsx'));
-import HeaderModal  from './components/headerModal.tsx';
-import { throttle } from 'lodash';
+import Load from '../allLoad/load.tsx';
+import HeaderModal from './components/headerModal.tsx';
+import { throttle } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { Collapse, Drawer, Dropdown } from 'antd';
 
@@ -65,6 +64,7 @@ function Header() {
       label: <p onClick={logout}>{t('person.logout')}</p>,
     },
   ];
+
   const loginModal = throttle(
     function () {
       if (!load) {
@@ -108,7 +108,8 @@ function Header() {
               img: '/snipingMore.png',
               key: 'sniping',
             },
-            { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
+            // { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
+            { name: 'Orders', img: '/limit.svg', key: 'limit' },
           ].map((i: any) => {
             return (
               <p
@@ -179,7 +180,7 @@ function Header() {
     if (
       router.pathname === '/' ||
       router.pathname === '/newpairDetails' ||
-      router.pathname === '/re-register'
+      router.pathname === '/logout'
     ) {
       if (ind === 'Market') {
         return 'rgb(134,240,151)';
@@ -236,20 +237,42 @@ function Header() {
   };
 
   const changeLanguage = throttle(
-    function () {
-      if (languageChange === 'zh_CN') {
-        localStorage.setItem('language', 'en_US');
-        setLanguageChange('en_US');
-        i18n.changeLanguage('en_US');
-      } else {
-        localStorage.setItem('language', 'zh_CN');
-        setLanguageChange('zh_CN');
-        i18n.changeLanguage('zh_CN');
-      }
+    function (language) {
+      localStorage.setItem('language', language);
+      setLanguageChange(language);
+      i18n.changeLanguage(language);
     },
     1500,
     { trailing: false }
   );
+
+  const translateList: any = [
+    {
+      key: 'en_US',
+      value: t('Translate.en_US'),
+      label: 'English',
+    },
+    {
+      key: 'zh_CN',
+      value: t('Translate.zh_CN'),
+      label: '简体中文',
+    },
+    {
+      key: 'zh_TW',
+      value: t('Translate.zh_TW'),
+      label: '繁體中文',
+    },
+    {
+      key: 'zh_JP',
+      value: t('Translate.zh_JP'),
+      label: '日本語',
+    },
+  ];
+
+  const onClickTranslate = ({ key }) => {
+    changeLanguage(key);
+  };
+
   return (
     <div className={'headerBox'}>
       <div className="dis">
@@ -295,7 +318,7 @@ function Header() {
         className={'headerData'}
         style={{
           justifyContent: browser ? 'center' : 'space-between',
-          width: browser ? '' : '35%',
+          width: browser ? '' : '40%',
         }}
       >
         <div
@@ -410,12 +433,30 @@ function Header() {
             )}
           </>
         )}
-        <img
-          src="/earth.svg"
-          alt=""
-          style={{ cursor: 'pointer', display: 'block', width: '25px' }}
-          onClick={changeLanguage}
-        />
+        <Dropdown menu={{ items: translateList, onClick: onClickTranslate }}>
+          <div
+            className="dis"
+            style={{
+              alignItems: 'flex-end',
+              marginRight: '6px',
+              fontSize: '12px',
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <img
+              src="/earth.svg"
+              alt=""
+              style={{ cursor: 'pointer', display: 'block', width: '25px' }}
+            />
+            <span
+              style={{ color: '#ccc', marginLeft: '2px', marginBottom: '2px' }}
+            >
+              {translateList.find((item) => item.key === languageChange).value}
+            </span>
+          </div>
+        </Dropdown>
         {!browser && (
           <img
             src="/rightOpen.png"

@@ -2,7 +2,7 @@
 import { ethers,BigNumber,Contract,Signer } from "ethers"
 import { DutchOrderBuilder } from "@uniswap/uniswapx-sdk";
 import {OffChainUniswapXOrderValidator} from "./OffChainUniswapXOrderValidator";
-import ERC20ABI from "./ERC20ABI.json";
+import ERC20ABI from "@abis/ERC20ABI.json";
 import { config as allConfig } from "@/config/config";
 // import {BigNumber as NewBigNumber} from 'bignumber.js';
 
@@ -79,17 +79,6 @@ async function buildOrder(
   // const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds
   // 订单过期时间，GMT+8,中国时间
   const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds
-  // console.log('---now time---')
-  // 获取现在的时间
-  // console.log(new Date().toUTCString())
-  // console.log(new Date((deadline-deadlineSeconds)*1000).toUTCString())
-  // console.log(new Date(new Date().getTime()))
-  // console.log('---deadline---')
-  console.log(new Date().toUTCString())
-  console.log(new Date(deadline*1000).toUTCString())
-  console.log('---deadline---',deadline)
-  const deadlineNew = Math.round(new Date(deadline*1000).getTime() / 1000)
-  console.log('=====deadlineNew=====',deadlineNew)
   const decayStartTime = Math.round(new Date().getTime() / 1000)
   const creatAddress=await orderCreator.getAddress()
   // 生成荷兰式订单，传入相关参数
@@ -102,15 +91,9 @@ async function buildOrder(
     .input({ token:inputToken,startAmount:inputAmount,endAmount:inputAmount })
     .output({token:outputToken,startAmount:outputAmount,endAmount:outputAmount,recipient:recipient})
     .build()
-    console.log("---order---")
-    console.log(order)
     const{ domain,types,values }=order.permitData()
-    // console.log("domain:",domain)
-    // console.log("types:",types)
-    // console.log("values:",values)
     // @ts-ignore
     const signature=await orderCreator._signTypedData(domain,types,values)
-    console.log("signature:"+signature);
     const encodedOrder=order.serialize()
     return{
       order,
@@ -131,7 +114,6 @@ export const createOrder = async (
   // 汇率
   orderPrice:string,
 )=>{
-  console.log('---orderCreating---')
   const config = chainConfig[chainId]
   const zeroConfig=allConfig[chainId]
   const provider = config.provider
@@ -142,9 +124,9 @@ export const createOrder = async (
   // let outputTokenContract: Contract = new ethers.Contract(outputToken, ERC20ABI, provider).connect(orderCreator);
   let outputTokenContract: Contract
   let inputPermit2Allowance: BigNumber
-  let outputPermit2Allowance: BigNumber
+  // let outputPermit2Allowance: BigNumber
   let inputReactorAllowance: BigNumber
-  let outputReactorAllowance: BigNumber
+  // let outputReactorAllowance: BigNumber
 
 
 
@@ -169,8 +151,6 @@ export const createOrder = async (
   if(inputTokenToLowerCase===zeroAddress){
     inputTokenName=zeroConfig.defaultTokenIn.name
     inputTokenSymbol=zeroConfig.defaultTokenIn.symbol
-    console.log(zeroConfig.defaultTokenIn.decimals);
-    
     inputTokenDecimals=zeroConfig.defaultTokenIn.decimals
   }else{
     inputTokenContract = new ethers.Contract(inputToken, ERC20ABI, provider).connect(orderCreator);
@@ -189,17 +169,12 @@ export const createOrder = async (
     outputTokenName = await outputTokenContract.name();
     outputTokenSymbol = await outputTokenContract.symbol();
     outputTokenDecimals = await outputTokenContract.decimals();
-    outputPermit2Allowance = await outputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
-    outputReactorAllowance = await outputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
+    // outputPermit2Allowance = await outputTokenContract.allowance(orderCreator.getAddress(), permit2Address);
+    // outputReactorAllowance = await outputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
   }
 
 
 
-  console.log(inputTokenDecimals);
-  // console.log(inputTokenDecimals.toNumber());
-  console.log(inputTokenToLowerCase==zeroAddress);
-  console.log(Number(inputTokenDecimals));
-  
   // const inputTokenName = await inputTokenContract.name();
   // const inputTokenSymbol = await inputTokenContract.symbol();
   // const inputTokenDecimals = await inputTokenContract.decimals();
@@ -213,30 +188,32 @@ export const createOrder = async (
   // inputReactorAllowance = await inputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
   // outputReactorAllowance = await outputTokenContract.allowance(orderCreator.getAddress(), reactorAddress);
 
+
+
+  // 授权最大额度
   if(inputTokenToLowerCase!==zeroAddress){
-    if (inputPermit2Allowance.lt(ethers.constants.MaxUint256.div(2))) {
-      await inputTokenContract.approve(permit2Address, ethers.constants.MaxUint256);
+    if (inputPermit2Allowance.lt(inputAmount)) {
+      await inputTokenContract.approve(permit2Address, inputAmount);
     }
-    if (inputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
-      await inputTokenContract.approve(reactorAddress, ethers.constants.MaxUint256);
+    if (inputReactorAllowance.lt(inputAmount)) {
+      await inputTokenContract.approve(reactorAddress, inputAmount);
     }
   }
   
 
 
-if(outputTokenToLowerCase!==zeroAddress){
-  if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
-    await outputTokenContract.approve(reactorAddress, ethers.constants.MaxUint256);
-  }
-  if (outputPermit2Allowance.lt(ethers.constants.MaxUint256.div(2))) {
-    await outputTokenContract.approve(permit2Address, ethers.constants.MaxUint256);
-  }
-}
+// if(outputTokenToLowerCase!==zeroAddress){
+//   if (outputReactorAllowance.lt(ethers.constants.MaxUint256.div(2))) {
+//     await outputTokenContract.approve(reactorAddress, ethers.constants.MaxUint256);
+//   }
+//   if (outputPermit2Allowance.lt(ethers.constants.MaxUint256.div(2))) {
+//     await outputTokenContract.approve(permit2Address, ethers.constants.MaxUint256);
+//   }
+// }
 
 
 
   // 构建荷兰式拍卖订单，并获得签名
-  console.log('---buildOrder---')
   try {
     const { order ,payload,nonce }=await buildOrder(chainId,recipient,inputAmount,outputAmount,deadlineSeconds,inputToken,outputToken,orderCreator)
   
@@ -293,16 +270,18 @@ if(outputTokenToLowerCase!==zeroAddress){
     inputToken:inputToken,
     inputTokenName: inputTokenName,
     inputTokenSymbol: inputTokenSymbol,
-    inputTokenDecimals:inputTokenToLowerCase==zeroAddress?Number(inputTokenDecimals): inputTokenDecimals.toNumber(),
+    // inputTokenDecimals:inputTokenToLowerCase==zeroAddress?Number(inputTokenDecimals): inputTokenDecimals.toNumber(),
+    inputTokenDecimals:Number(inputTokenDecimals),
     orderPrice: orderPrice,
     outputToken:outputToken,
     outputTokenName: outputTokenName,
     outputTokenSymbol: outputTokenSymbol,
-    outputTokenDecimals: outputTokenToLowerCase===zeroAddress?Number(outputTokenDecimals): outputTokenDecimals.toNumber(),
+    // outputTokenDecimals: outputTokenToLowerCase===zeroAddress?Number(outputTokenDecimals): outputTokenDecimals.toNumber(),
+    outputTokenDecimals: Number(outputTokenDecimals),
   }
   return orderParams
 } catch (error) {
-    console.log(error)
+  return null
 }
   // return 'test'
 }

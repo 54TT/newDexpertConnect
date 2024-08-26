@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import newPair from '@/components/getNewPair.tsx';
 const Nodata = React.lazy(() => import('@/components/Nodata'));
 const Loading = React.lazy(() => import('@/components/allLoad/loading'));
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { CountContext } from '@/Layout';
 import { setMany, simplify } from '@/../utils/change.ts';
 import { useTranslation } from 'react-i18next';

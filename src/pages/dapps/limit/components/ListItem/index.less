@@ -1,0 +1,51 @@
+.order-list-item{
+  width: 100%;
+  padding: 18px;
+  background-color: #303030;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: all 0.3s;
+  &:hover{
+    background-color: #404040;
+  }
+  .item-header{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #4a4a4a;
+    &-left{
+      display: flex;
+      align-items: center;
+    }
+    // span:last-child{
+    //   white-space: nowrap; /* 防止文本换行 */
+    //   overflow: hidden; /* 隐藏超出的内容 */
+    //   text-overflow: ellipsis; /* 显示省略号 */
+    //   max-width: 200px;
+    // }
+  }
+  .item-body{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 18px;
+    &-col{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 25%;
+      &-bottom{
+        padding-top: 16px;
+        text-align: center;
+      }
+    }
+  }
+  .gray-font{
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 14px;
+  }
+  .white-font{
+    color: #fff;
+    font-size: 16px;
+  }
+}

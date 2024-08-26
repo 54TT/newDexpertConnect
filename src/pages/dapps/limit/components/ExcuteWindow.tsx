@@ -6,11 +6,17 @@ import checkConnection from "@utils/checkConnect";
 import {BigNumber} from 'bignumber.js';
 import executeOrder from '@utils/limit/executeOrder'
 import { ethers,BigNumber as BNtype } from "ethers";
-// import {useTranslation} from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import { getUniswapV2RouterContract } from "@utils/contracts";
 import Decimal from "decimal.js";
 import { getAmountOut } from "@utils/swap/v2/getAmountOut";
 import getBalanceRpc from "@utils/getBalanceRpc";
+import {setMany} from "@utils/change";
+import NotificationChange from "@/components/message";
+// import { config as allConfig } from "@/config/config";
+// import { chainConfig } from "@utils/limit/constants";
+// import ERC20ABI from "@abis/ERC20ABI.json";
+
 const ExecuteWindow = ({
   order,
   setShowDetailsWindow,
@@ -22,9 +28,9 @@ const ExecuteWindow = ({
     contractConfig,
     provider
   } = useContext(CountContext)
-  // const {t}=useTranslation()
+  const {t}=useTranslation()
   // 滑动条的值，百分比
-  const [silderValue,setSliderValue]=useState(100)
+  // const [silderValue,setSliderValue]=useState(100)
   // 选择支付的token
   // const [payToken,setPayToken]=useState()
   // const [showSelect,setShowSelect]=useState(false)
@@ -32,11 +38,11 @@ const ExecuteWindow = ({
   // const [buttonDisable,setButtonDisable]=useState(true)
   const [tokenInputAmount,setTokenInputAmount]=useState('')
   const [tokenOutputAmount,setTokenOutputAmount]=useState('')
-  const [inputToken,setInputToken]=useState()
+  // const [inputToken,setInputToken]=useState()
   // 想要兑换多少数量的token0
   // const [exchangeAmount,setExchangeAmount]=useState(0)
   // 选择支付token1的数量
-  const [payTokenAmount,setPayTokenAmount]=useState('')
+  // const [payTokenAmount,setPayTokenAmount]=useState('')
   // 市场当前汇率
   const [tokenRate,setTokenRate]=useState('')
   // 涨幅跌幅
@@ -57,48 +63,46 @@ const ExecuteWindow = ({
   // };
   // 执行限价兑换订单
   const selcetExecuteOrder=async ()=>{
-    console.log('---execute order---');
     setButtonLoading(true)
     const output=JSON.parse(order.outputs)[0]
     const web3Provider=new ethers.providers.Web3Provider(loginProvider)
-    const value: BNtype = output.token === ethers.constants.AddressZero ? output.amount : BNtype.from(0);
+    const value: BNtype = output.token === ethers.constants.AddressZero ? output.startAmount : BNtype.from(0);
     const signer=await web3Provider.getSigner()
-
     try {
-      console.log('---executing---');
       const res=await executeOrder(
         chainId,
         signer,
         order.encodedOrder,
         order.signature,
+        order.outputToken,
+        output.startAmount,
         value
       )
-      console.log(res);
       if(res){
         setButtonLoading(false)
         setShowExecuteWindow(false)
+        NotificationChange('success',t('limit.executeOrderSuccess'))
       }
     } catch (error) {
-      console.log(error);
       setButtonLoading(false)
+      NotificationChange('warning',t('limit.executeOrderError'))
+      return null
     }
   }
   
+
   // 获取订单用于兑换的token信息
   const getInputToken=(token,decimals)=>{
-    console.log('selected token');
     if(token){
       const jsonString=token
       try{
         const tokenObj=JSON.parse(jsonString)
-        console.log(tokenObj.token);
-        setInputToken(tokenObj)
+        // setInputToken(tokenObj)
         const startAmount=BigNumber(tokenObj.startAmount.hex)
         const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
-        console.log('inputtoken startAmountNum',startAmountNum.toString());
         setTokenInputAmount(startAmountNum.toString())
       }catch(error){
-        console.log(error);
+        return null
       }
     }
   }
@@ -107,14 +111,13 @@ const ExecuteWindow = ({
     async (token,dispatch)=>{
       const {wethAddress}=contractConfig
       if(checkConnection()&&token&&loginProvider){
-        // console.log(loginProvider)
         const injectProvider=new ethers.providers.Web3Provider(loginProvider)
         try {
           const balance=await getBalanceRpc(injectProvider,token,wethAddress)
           if(balance) setBalanceLoading(false)
         dispatch(balance)
         } catch (error) {
-          // console.log(error);
+          return null
         }
       }
     },
@@ -122,37 +125,24 @@ const ExecuteWindow = ({
   )
   // 获取订单想要兑换的token信息
   const getOutputToken=(outputToken:string,decimals:number)=>{
-    console.log('output token');
-    // console.log(JSON.parse(outputToken)[0]);
-    // console.log(decimals);
-    // setPayToken(JSON.parse(outputToken)[0])
     const startAmount=BigNumber(JSON.parse(outputToken)[0].startAmount.hex)
     const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
-    console.log('outputtoken startAmountNum',startAmountNum.toString());
-    console.log(JSON.parse(outputToken)[0].token);
     setTokenOutputAmount(startAmountNum.toString())
-    // const outputTokenAddress=order.outputToken
-    // console.log(outputTokenAddress);
+    
   }
   // 获取当前汇率与订单汇率的比值
   const getRateRelation=()=>{
     if(tokenRate&&order.orderPrice){
-      console.log('---getRateRelation---');
       const result = new Decimal(tokenRate).dividedBy(new Decimal(order.orderPrice));
-      console.log(result.toNumber());
       if(result) setRateLoading(false)
       if(result.toNumber()>1){
         setRateRelation('incre')
-        console.log('incre',result.toNumber()-1);
         setDiffRate(((result.toNumber()-1)*100).toFixed(2))
         // return result.toFixed(3)
       }else if(result.toNumber()<1){
         setRateRelation('decre')
-        console.log('decre',1-result.toNumber());
         setDiffRate(((1-result.toNumber())*100).toFixed(2))
       }
-      // console.log(rateNum-orderRate);
-      // console.log(Number(tokenRate)-Number(order.orderPrice));
     }
   }
   // 获取两个token当前的汇率
@@ -174,43 +164,22 @@ const ExecuteWindow = ({
     try {
       amount=await getAmountOut.apply(null,params)
     } catch (error) {
-      console.log(error);
+      return null
     }
     const amountValue=new Decimal(amount)
-    // console.log(amountValue.toString());
     setTokenRate(amountValue.toString())
   }
-  useEffect(()=>{
-    // console.log(payTokenAmount);
-    
-    // setSliderValue(Number(payTokenAmount)/Number(tokenInputAmount)*100)
-    if(payTokenAmount){
-      // const percent=Number(payTokenAmount)/Number(tokenInputAmount)*100>100?100:Number(payTokenAmount)/Number(tokenInputAmount)*100
-      // console.log(percent)
-      // setSliderValue(Number(percent.toFixed(2)))
-    }
-  },[payTokenAmount])
-  useEffect(()=>{
-    // console.log(silderValue);
-    // setExchangeAmount(Number(tokenInputAmount)*silderValue/100)
-    setPayTokenAmount((Number(tokenOutputAmount)*(silderValue/100)).toString())
-  },[silderValue])
-  useEffect(()=>{
-    // console.log(inputToken);
-    
-  },[inputToken])
+
   // 有市场汇率之后便于订单汇率进行比较
   useEffect(()=>{
-    console.log(tokenRate);
     if(tokenRate) getRateRelation()
   },[tokenRate])
   useEffect(()=>{
-    console.log(order);
     getInputToken(order.input,order.inputTokenDecimals)
     getOutputToken(order.outputs,order.outputTokenDecimals)
     getTokenRate(order.inputToken,order.inputTokenDecimals,order.outputToken,order.outputTokenDecimals)
     getTokenBalance(order.outputToken,setPayTokenBalance)
-    setSliderValue(100)
+    // setSliderValue(100)
   },[order])
 
   return (
@@ -221,14 +190,13 @@ const ExecuteWindow = ({
             <span
               className="execute-back"
               onClick={()=>{
-                console.log('back');
                 setShowDetailsWindow(false)
                 setShowExecuteWindow(false)
               }}
             >
               <img src="/back-icon.svg" alt="" />
             </span>
-            <span style={{flex:'1 1',textAlign:'center',fontSize:"20px"}}>确认执行</span>
+            <span style={{flex:'1 1',textAlign:'center',fontSize:"20px"}}>{t("limit.execute")}</span>
             <span></span>
           </div>
           {/* <div className="header-row-two">
@@ -247,12 +215,12 @@ const ExecuteWindow = ({
         <span>
           <DefaultTokenImg
             name={order?.inputTokenSymbol}
-            icon={order?.logoUrl}
+            icon={order?.inputTokenLogo}
           />
         </span>
         <span className="amount-text">
           {/* {Number(tokenInputAmount)%1===0?Number(tokenInputAmount):Number(tokenInputAmount).toFixed(3)} {order?.inputTokenSymbol} */}
-          {tokenInputAmount.toString()} {order?.inputTokenSymbol}
+          {setMany(tokenInputAmount.toString())} {order?.inputTokenSymbol}
         </span>
         {
           rateLoading? <Skeleton.Button size="small" active />:(
@@ -266,15 +234,15 @@ const ExecuteWindow = ({
       <div className="execute-window-body">
         <div className="execute-body-row">
           <span>
-            平台服务费
+            {t("limit.fee")}
           </span>
           <span className="execute-fee">
-            限时免费
+            {t("limit.fees")}
           </span>
         </div>
         <div className="execute-body-row">
           <span>
-            价格
+            {t("limit.rate")}
           </span>
           <span className="execute-order-price">
             {order.orderPrice} {order.outputTokenSymbol} / {order.inputTokenSymbol}
@@ -282,7 +250,7 @@ const ExecuteWindow = ({
         </div>
         <div className="execute-body-row">
           <span>
-            总价
+            {t("limit.price")}
           </span>
           <span>
           {Number(tokenOutputAmount)%1===0?Number(tokenOutputAmount):Number(tokenOutputAmount).toFixed(3)} {order.outputTokenSymbol}
@@ -354,13 +322,13 @@ const ExecuteWindow = ({
       </div>
       <div className="execute-window-body">
           <div  className="execute-body-row">
-            <span>你将得到</span>
+            <span>{t("limit.you receive")}</span>
             <span>
-              {Number(tokenInputAmount)%1===0?Number(tokenInputAmount):Number(tokenInputAmount).toFixed(3)} {order?.inputTokenSymbol}
+              {Number(tokenInputAmount)%1===0?Number(tokenInputAmount):setMany(tokenInputAmount)} {order?.inputTokenSymbol}
               </span>
           </div>
           <div  className="execute-body-row paytoken-balance">
-            <span>{order.outputTokenSymbol}余额</span>
+            <span>{order.outputTokenSymbol}{t("limit.balance")}</span>
             {
               balanceLoading?( <Skeleton.Button active size="small" />
               ):(
@@ -403,14 +371,14 @@ const ExecuteWindow = ({
         <Button
           rootClassName="execute-btn"
           // className={`${!buttonDisable?'execute-btn-active':''}`}
-          className={'execute-btn-active'}
+          className={order?.orderStatus !=='open'||Number(payTokenBalance.toString())<Number(tokenOutputAmount)?'':'execute-btn-active'}
           loading={buttonLoading}
-          // disabled={buttonDisable}
+          disabled={order?.orderStatus !=='open'||Number(payTokenBalance.toString())<Number(tokenOutputAmount)}
           onClick={() => {
             selcetExecuteOrder()
           }}
         >
-          EXECUTE
+          {order?.orderStatus ==='open'?'EXECUTE':order.orderStatus}
         </Button>
         {/* <span className="execute-tips">
           {t("limit.desc buying")} 

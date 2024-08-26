@@ -1,10 +1,11 @@
 import { InputNumber, InputNumberProps } from 'antd';
 import classnames from 'classnames';
 import './index.less';
+import { valueType } from 'antd/es/statistic/utils';
 interface ProInputPropsType {
   inputNumberProps?: InputNumberProps<number>;
-  value: number | null;
-  onChange: (data: number | null) => void;
+  value: InputNumberProps['value'];
+  onChange: (data: valueType) => void;
   style?: React.CSSProperties;
   className?: string;
 }

@@ -1,48 +1,49 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from 'react';
-const PageHeader = React.lazy(() => import('../../component/PageHeader'));
+import { useContext, useEffect, useState } from 'react';
+import PageHeader from '../../component/PageHeader';
+import ToLaunchHeader from '../../component/ToLaunchHeader';
 
-const ToLaunchHeader = React.lazy(
-  () => import('../../component/ToLaunchHeader')
-);
-const TokenItem = React.lazy(() => import('../../component/TokenItem'));
-import Request from '@/components/axios';
+import TokenItem from '../../component/TokenItem';
 import { CountContext } from '@/Layout';
-import Cookies from 'js-cookie';
 import './index.less';
-const InfiniteScrollPage = React.lazy(
-  () => import('@/components/InfiniteScroll')
-);
-const Loading = React.lazy(() => import('@/components/allLoad/loading'));
+import InfiniteScrollPage from '@/components/InfiniteScroll';
+import Loading from '@/components/allLoad/loading';
 import { useTranslation } from 'react-i18next';
+import { ethers } from 'ethers';
+import getPairByV2Factory from '@utils/getPairByV2Factory';
 function ManagePairListAndContract() {
   const { t } = useTranslation();
   const router = useParams();
-  const { chainId, browser, contractConfig } =
+  const { chainId, browser, contractConfig, loginProvider } =
     useContext(CountContext);
-  const { getAll } = Request();
+  // const { getAll } = Request();
   const history = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [isNext, setIsNext] = useState(false);
+  const [isNext, _] = useState(false);
   const [nextLoad, setNextLoad] = useState(false);
   const [page, setPage] = useState(1);
-  const token = Cookies.get('token');
+  // const token = Cookies.get('token');
   const [data, setData] = useState([]);
   const getTokenPairList = async () => {
-    const res = await getAll({
-      method: 'get',
-      url: '/api/v1/launch-bot/pairs',
-      data: {
-        contractId: router?.id,
-      },
-      token,
-      chainId,
+    const { uniswapV2FactoryAddress, wethAddress } = contractConfig;
+    const provider = new ethers.providers.Web3Provider(loginProvider);
+    const signer = await provider.getSigner();
+
+    const pairAddress = await getPairByV2Factory({
+      factoryAddress: uniswapV2FactoryAddress,
+      token0: router?.address,
+      token1: wethAddress,
+      signer,
     });
-    if (res?.status === 200) {
-      setData(res?.data?.list);
-      if (res?.data?.list?.length !== 10) {
-        setIsNext(true);
-      }
+
+    if (pairAddress) {
+      setData([
+        {
+          pairAddress,
+          token0: router.name,
+          token1: 'W' + contractConfig.tokenSymbol,
+        },
+      ]);
       setLoading(true);
     } else {
       setLoading(true);
@@ -95,7 +96,11 @@ function ManagePairListAndContract() {
             }}
           />
           <div
-            style={{ height: '330px', overflow: 'overlay',overflowX:'hidden' }}
+            style={{
+              height: '330px',
+              overflow: 'overlay',
+              overflowX: 'hidden',
+            }}
             className="mint-scroll"
           >
             <InfiniteScrollPage

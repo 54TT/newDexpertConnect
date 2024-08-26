@@ -35,7 +35,6 @@ import {
   getOptionalNamespaces,
   getRequiredNamespaces,
 } from '../utils/default';
-import _ from 'lodash';
 import NotificationChange from './components/message';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
@@ -225,7 +224,7 @@ function Layout() {
     };
   }, [isLogin, loginProvider, chainId]);
   const clear = async () => {
-    history('/re-register');
+    history('/logout');
     setloginProvider(null);
     setChainId('1');
     cookie.remove('token');
@@ -585,7 +584,7 @@ function Layout() {
     const handleResize = () => {
       changeBody();
     };
-    if (router.pathname === '/re-register') {
+    if (router.pathname === '/logout') {
       setUserPar(null);
       setBindingAddress(null);
       setIsLogin(false);
@@ -658,7 +657,7 @@ function Layout() {
           <div className={big ? 'bigCen' : ''} style={{ overflow: 'hidden' }}>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/re-register" element={<Index />} />
+              <Route path="/logout" element={<Index />} />
               <Route path="/specialActive/:id" element={<SpecialActive />} />
               <Route path="/newpairDetails/:id" element={<NewpairDetails />} />
               {/* <Route path="/community/:tab" element={<Community />} /> */}

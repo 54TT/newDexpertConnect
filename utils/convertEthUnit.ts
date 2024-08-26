@@ -17,11 +17,12 @@ export const toEthWithDecimal = (
     .toString();
 };
 
+// 去除小数
 export const toWeiWithDecimal = (
   amount: string,
   decimal: number
 ): BigNumberish => {
   return BigNumber.from(
-    new Decimal(amount).mul(new Decimal(10).pow(decimal)).toString()
+    new Decimal(amount).mul(new Decimal(10).pow(decimal)).floor().toString()
   );
 };

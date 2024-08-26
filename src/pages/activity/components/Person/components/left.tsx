@@ -1,9 +1,9 @@
-import React,{ useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import { simplify } from '@/../utils/change.ts';
 import cookie from 'js-cookie';
 import { Popover } from 'antd';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 const Copy = React.lazy(() => import('@/components/copy.tsx'));
 export default function left() {

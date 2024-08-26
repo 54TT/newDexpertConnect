@@ -1,16 +1,14 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-const BottomButton = React.lazy(() => import('../../component/BottomButton'));
-const InfoList = React.lazy(() => import('../../component/InfoList'));
-const PageHeader = React.lazy(() => import('../../component/PageHeader'));
-const ToLaunchHeader = React.lazy(
-  () => import('../../component/ToLaunchHeader')
-);
+import { useContext, useEffect, useMemo, useState } from 'react';
+import BottomButton from '../../component/BottomButton';
+import InfoList from '../../component/InfoList';
+import PageHeader from '../../component/PageHeader';
+import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
 import { CountContext } from '@/Layout';
 import { BigNumber, ethers } from 'ethers';
 import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
-import CommonModal from'@/components/CommonModal'
+import CommonModal from '@/components/CommonModal';
 import { zeroAddress } from '@utils/constants';
 import Decimal from 'decimal.js';
 import { UniswapV2RouterAbi } from '@abis/UniswapV2RouterAbi';
@@ -20,6 +18,7 @@ import Loading from '@/components/allLoad/loading';
 import getBalanceRpcEther from '@utils/getBalanceRpc';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
 import { useTranslation } from 'react-i18next';
+import NotificationChange from '@/components/message';
 function ManagePairDetail() {
   const { t } = useTranslation();
   const router = useParams();
@@ -107,14 +106,19 @@ function ManagePairDetail() {
         BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
       );
       const data = await tx.wait();
-      if (tx?.hash && data) {
-        history('/dapps/tokencreation/result/' + tx?.hash + '/burnLP');
+      if (data.status === 1) {
+        if (tx?.hash && data) {
+          history('/dapps/tokencreation/result/' + tx?.hash + '/burnLP');
+        }
+      } else {
+        NotificationChange('error', 'pair.burnfail');
       }
       setIsOpenStatus('');
       setOpen(false);
       setIsButton(false);
     } catch (e) {
       setIsButton(false);
+      NotificationChange('error', 'pair.burnfail');
     }
   };
 
@@ -128,7 +132,10 @@ function ManagePairDetail() {
         signer
       );
       const walletAddress = await signer.getAddress();
-      const token0 = await pairContract.token0();
+      let token: string = await pairContract.token0();
+      if (token.toLowerCase() === contractConfig.wethAddress.toLowerCase()) {
+        token = await pairContract.token1();
+      }
       const balance = await pairContract.balanceOf(walletAddress);
       const approveTx = await pairContract.approve(
         contractConfig?.uniswapV2RouterAddress,
@@ -138,7 +145,7 @@ function ManagePairDetail() {
       if (tx?.status === 1) {
         const deadline = dayjs().add(10, 'm').unix();
         const removeLiquidityTx = await v2RouterContract.removeLiquidityETH(
-          token0,
+          token,
           balance,
           0,
           0,
@@ -146,19 +153,25 @@ function ManagePairDetail() {
           deadline
         );
         const data = await removeLiquidityTx.wait();
-        if (removeLiquidityTx?.hash && data) {
-          history(
-            '/dapps/tokencreation/result/' +
-              removeLiquidityTx?.hash +
-              '/removeLP'
-          );
+        if (data.status === 1) {
+          if (removeLiquidityTx?.hash && data) {
+            history(
+              '/dapps/tokencreation/result/' +
+                removeLiquidityTx?.hash +
+                '/removeLP'
+            );
+          }
+        } else {
+          NotificationChange('error', 'pair.removeLpfail');
         }
       }
       setIsOpenStatus('');
       setOpen(false);
       setIsButton(false);
     } catch (e) {
+      NotificationChange('error', 'pair.removeLpfail');
       setIsButton(false);
+      return null
     }
   };
 

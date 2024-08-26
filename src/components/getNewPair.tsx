@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { useContext, useEffect, useState } from 'react';
-import { cloneDeep, differenceBy } from 'lodash';
+import { cloneDeep, differenceBy } from 'lodash-es';
 import { judgeStablecoin } from '@/../utils/judgeStablecoin.ts';
 import { CountContext } from '../Layout.tsx';
 
@@ -19,7 +19,7 @@ function GetNewPair() {
     setWait(true);
     setCurrent(1);
     setMoreLoad(true);
-  }, [switchChain,searchStr]);
+  }, [switchChain, searchStr]);
   const GET_DATA = gql`query LiveNewPair {
   _meta {
     block {
@@ -102,7 +102,7 @@ function GetNewPair() {
 }`;
   const { loading, data, refetch } = useQuery(GET_DATA) as any;
   useEffect(() => {
-    const interval = setInterval( () => {
+    const interval = setInterval(() => {
       setPolling(true);
       refetch();
     }, 8000);

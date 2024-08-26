@@ -60,7 +60,7 @@ function AdvConfig({ onClose, initData }: AdvConfigProps) {
 
 export interface TradeDeadlineType {
   uint: 'h' | 'm';
-  value: number;
+  value: any;
 }
 
 interface SettingContentRef {
@@ -69,7 +69,7 @@ interface SettingContentRef {
 
 export interface AdvConfigType {
   slipType: '0' | '1';
-  slip: number;
+  slip: any;
   tradeDeadline: TradeDeadlineType;
 }
 
@@ -98,7 +98,7 @@ export const SettingContent: ForwardRefExoticComponent<
     },
   ];
   const [slipType, setSlipType] = useState(initData.slipType);
-  const [slip, setSlip] = useState<number>(initData.slip);
+  const [slip, setSlip] = useState<any>(initData.slip);
   const [tradeDeadline, setTradeDeadline] = useState<TradeDeadlineType>(
     initData.tradeDeadline
   );

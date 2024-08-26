@@ -7,7 +7,7 @@ import React, { useCallback } from 'react';
 export interface SelectCompItemType {
   key: string;
   title: string | React.ReactNode;
-  label: string | React.ReactNode;
+  label?: string | React.ReactNode;
 }
 
 interface SelectCompType {

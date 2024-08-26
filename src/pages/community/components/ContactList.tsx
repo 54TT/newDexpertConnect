@@ -1,12 +1,12 @@
 import classNames from 'classnames';
-import React,{ useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
 import { formatAddress, getQueryParams } from '@/../utils/utils';
 const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 import { useNavigate } from 'react-router';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout.tsx';
@@ -192,7 +192,7 @@ export default function ContactList() {
       {
         <div
           className="community-content-post-tab"
-          style={{ width: browser ? '50%' : '90%' ,marginTop:'40px'}}
+          style={{ width: browser ? '50%' : '90%', marginTop: '40px' }}
         >
           {postTab.map((tab: FollowTabType, ind: number) => (
             <div

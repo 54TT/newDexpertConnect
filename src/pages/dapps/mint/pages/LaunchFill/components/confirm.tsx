@@ -1,7 +1,7 @@
-import React,{ useContext } from 'react';
+import { useContext } from 'react';
 import './index.less';
 import { MintContext } from '../../../index';
-const InfoList = React.lazy(() => import('../../../component/InfoList'));
+import InfoList from '../../../component/InfoList';
 function ConfirmPage() {
   const { formData } = useContext(MintContext);
   return (
