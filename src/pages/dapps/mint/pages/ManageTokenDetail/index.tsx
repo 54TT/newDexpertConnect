@@ -167,6 +167,7 @@ function ManageTokenDetail() {
     setOpenTradeModal,
     openTradeLoading,
     isOpenTrade,
+    setIsOwn,
   };
   return (
     <div className="manage-tokenBox">
