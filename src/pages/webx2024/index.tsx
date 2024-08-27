@@ -1,6 +1,6 @@
 import { Button } from 'antd';
 import './index.less';
-import { useContext, useState,useEffect } from 'react';
+import { useContext, useState } from 'react';
 import CommonModal from '@/components/CommonModal';
 import { CountContext } from '@/Layout';
 import Request from '@/components/axios';
@@ -15,22 +15,20 @@ export default function Webx2024() {
   const [rewardModal, setRewardModal] = useState(false);
   // 2: tokenCreationBot 3: sniperBot 4: fastTrade 
   const [selectCard,setSelectCard]=useState(2)
-  const { setIsModalOpen, loginProvider, isLogin } = useContext(CountContext);
+  const { setIsModalOpen, isLogin } = useContext(CountContext);
 
   const clickGetPassCardButton = () => {
-    console.log('clickGetPassCardButton');
     // setRewardModal(true);
     if (isLogin) {
       // setRewardModal(true);
       setShowPassModal(true);
     } else {
-      console.log('not login');
       setConnectWalletModal(true);
     }
   };
   // 领取passCard
   const getPassCard= async()=>{
-    console.log(selectCard)
+
     setClaimLoading(true)
     try {
       const token=Cookies.get('token')
@@ -43,7 +41,6 @@ export default function Webx2024() {
         },
         token
       })
-      console.log(res);
       if(res.status===200){
         setShowPassModal(false);
         setRewardModal(true);
@@ -59,15 +56,10 @@ export default function Webx2024() {
   
   // useNow
   const clickUseNowButton = () => {
-    console.log('clickUseNowButton');
     if(selectCard===2) history('/dapps/tokencreation');
     if(selectCard===3) history('/dapps/sniping');
     if(selectCard===4) history('/dapps/swap');
   }
-  useEffect(()=>{
-    console.log(loginProvider);
-    
-  },[loginProvider])
 
 
   return (
@@ -139,7 +131,6 @@ export default function Webx2024() {
         footer={null}
         onCancel={() =>{
           setConnectWalletModal(false)
-          console.log('close')
         }}
       >
         <div>
