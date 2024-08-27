@@ -1,0 +1,61 @@
+.webx {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  .webx-head {
+    display: flex;
+    margin: 6vh 8vw;
+    justify-content: space-between;
+  }
+  &-body {
+    margin: 12vh 16vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &-left {
+      width: 40%;
+      color: #fff;
+      > div {
+        margin-bottom: 48px;
+      }
+      font-family: Arial;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 32.2px;
+      text-align: left;
+      .action-button {
+        font-size: 18px;
+        color: black;
+        font-weight: 600;
+        height: 48px;
+        width: 300px;
+      }
+    }
+  }
+  &-city {
+    opacity: 0.1;
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+  }
+  &-tower {
+    position: absolute;
+    bottom: 100px;
+    right: 0;
+  }
+}
+
+.webx-modal {
+  > div {
+    text-align: center;
+  }
+  width: 200px;
+  .ant-modal-title {
+    display: flex;
+    justify-content: center;
+  }
+  .action-button {
+    width: 300px;
+    height: 42px;
+  }
+}
