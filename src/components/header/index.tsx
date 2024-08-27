@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Collapse, Drawer, Dropdown } from 'antd';
 
 export type I18N_Key = 'zh_CN' | 'en_US';
-function Header() {
+function Header({ className }) {
   const router = useLocation();
   const {
     user,
@@ -274,7 +274,7 @@ function Header() {
   };
 
   return (
-    <div className={'headerBox'}>
+    <div className={`headerBox ${className}`}>
       <div className="dis">
         <img
           src="/logo1111.svg"

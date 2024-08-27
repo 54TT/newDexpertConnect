@@ -50,6 +50,7 @@ const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
 );
 import Index from './pages/index/index.tsx';
+import Webx2024 from './pages/webx2024/index.tsx';
 const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
 const Dapps = React.lazy(() => import('./pages/dapps/index.tsx'));
 // const Community = React.lazy(() => import('./pages/community/index.tsx'));
@@ -644,6 +645,9 @@ function Layout() {
     uri: chain[switchChain],
     cache: new InMemoryCache(),
   });
+
+  const noHeaderRoutes = ['/webx2024'];
+
   return (
     <ApolloProvider client={clients}>
       <Suspense
@@ -654,7 +658,12 @@ function Layout() {
         }
       >
         <CountContext.Provider value={value}>
-          <Header />
+          <Header
+            className={`${noHeaderRoutes.includes(router.pathname) ? 'hide-header' : ''}`}
+          />
+          <Routes>
+            <Route path="/webx2024" element={<Webx2024 />} />
+          </Routes>
           <div className={big ? 'bigCen' : ''} style={{ overflow: 'hidden' }}>
             <Routes>
               <Route path="/" element={<Index />} />

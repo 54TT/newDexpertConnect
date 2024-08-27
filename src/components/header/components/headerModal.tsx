@@ -6,6 +6,7 @@ import Request from '@/components/axios.tsx';
 import { throttle } from 'lodash-es';
 import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 function HeaderModal() {
   const {
     browser,
@@ -23,6 +24,13 @@ function HeaderModal() {
     environment,
     setEnvironment,
   }: any = useContext(CountContext);
+  const routerLocation = useLocation();
+  useEffect(() => {
+    console.log(routerLocation.pathname);
+    if(routerLocation.pathname === '/webx2024'){
+
+    }
+  }, []);
   function onAnnouncement(event?: any) {
     environment.push(event?.detail);
     setEnvironment([...environment]);
@@ -83,6 +91,15 @@ function HeaderModal() {
     1500,
     { trailing: false }
   );
+  // only wallect connect
+  const newWallet=[
+    {
+      name: 'WalletConnect',
+      img: '/webAll.svg',
+      key: 'WalletConnect',
+      binding: 'ETH',
+    },
+  ]
   const wallet = [
     {
       name: 'MetaMask',
@@ -213,7 +230,43 @@ function HeaderModal() {
             style={{ width: '120px' }}
           />
           <p>{t('Common.Connect to Dexpert')}</p>
-          {wallet.map((i: any) => {
+          {
+            routerLocation.pathname === '/webx2024'?
+            (
+              newWallet.map((i: any) => {
+                return (
+                  (!changeBindind?.current ||
+                    changeBindind?.current === i?.binding) && (
+                    <button
+                      key={i?.key}
+                      onClick={() => allConnect(i)}
+                      className={'walletButton'}
+                    >
+                      <img src={i?.img} loading={'lazy'} alt="" />
+                      <span>{i.name}</span>
+                    </button>
+                  )
+                );
+              })
+            ):(
+              wallet.map((i: any) => {
+                return (
+                  (!changeBindind?.current ||
+                    changeBindind?.current === i?.binding) && (
+                    <button
+                      key={i?.key}
+                      onClick={() => allConnect(i)}
+                      className={'walletButton'}
+                    >
+                      <img src={i?.img} loading={'lazy'} alt="" />
+                      <span>{i.name}</span>
+                    </button>
+                  )
+                );
+              })
+            )
+          }
+          {/* {wallet.map((i: any) => {
             return (
               (!changeBindind?.current ||
                 changeBindind?.current === i?.binding) && (
@@ -227,7 +280,7 @@ function HeaderModal() {
                 </button>
               )
             );
-          })}
+          })} */}
         </div>
       )}
     </Modal>
