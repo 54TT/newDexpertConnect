@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { ChainID_TO_ChainName, ChainId } from '@/../utils/constants.ts';
 const requestA = axios.create({
-  baseURL:'http://165.22.51.161:8081',
+  baseURL:
+    'http://165.22.51.161:8081',
   timeout: 20000,
 });
 requestA.interceptors.request.use(
@@ -39,7 +40,7 @@ const Request = () => {
   const { t } = useTranslation();
   const history = useNavigate();
   const clear = () => {
-    history('/logout');
+    history('/re-register');
     cookie.remove('token');
     cookie.remove('jwt');
   };
