@@ -1,4 +1,4 @@
-import React,{ useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 const TWeetHome = React.lazy(() => import('@/components/Tweets/index.tsx'));
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
@@ -6,9 +6,9 @@ import Request from '@/components/axios.tsx';
 import Cookies from 'js-cookie';
 import cookie from 'js-cookie';
 import { formatAddress, getQueryParams } from '@/../utils/utils.ts';
-import CommonModal from'@/components/CommonModal/index.tsx'
+import CommonModal from '@/components/CommonModal/index.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout.tsx';
@@ -16,7 +16,7 @@ function Profie() {
   const { getAll } = Request();
   const { t } = useTranslation();
   const history = useNavigate();
-  const { user, setUserPar,  } = useContext(CountContext) as any;
+  const { user, setUserPar } = useContext(CountContext) as any;
   const [options, setOptions] = useState('Community');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState<any>({});
@@ -310,7 +310,7 @@ function Profie() {
   );
   return (
     <div className={'username-page'}>
-      <div >
+      <div>
         <div className={`back`}>
           <div className="left">
             <ArrowLeftOutlined

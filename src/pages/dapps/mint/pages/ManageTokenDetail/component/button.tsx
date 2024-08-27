@@ -1,32 +1,69 @@
 import { Button, ConfigProvider } from 'antd';
-import React, { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { CheckCircleOutlined, RightOutlined } from '@ant-design/icons';
 import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
-const BottomButton = React.lazy(
-  () => import('../../../component/BottomButton')
-);
+import BottomButton from '../../../component/BottomButton';
 import { useTranslation } from 'react-i18next';
+import NotificationChange from '@/components/message';
 export default function button({
   router,
   setOpenTradeModal,
   isOpenTrade,
   openTradeLoading,
   isRemoveLimit,
+  setIsRemoveLimit,
   erc20Contract,
   isOwn,
-  isVerify,setIsVerify
+  isVerify,
+  setIsOwn,
+  setIsVerify,
 }) {
   const { t } = useTranslation();
-  const history = useNavigate();
   const { getAll } = Request();
   const { chainId } = useContext(CountContext);
   const [renounceLoading, setRenounceLoading] = useState(false);
   const [removeLimitLoading, setRemoveLimitLoading] = useState(false);
   const token = Cookies.get('token');
   const [verifyLoading, setVerifyLoading] = useState(false);
+  let timer = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      clearInterval(timer.current);
+    };
+  }, []);
+  const checkVerify = async ({ tx }) => {
+    try {
+      const data = await getAll({
+        method: 'post',
+        url: '/api/v1/launch-bot/tx/status/check',
+        data: {
+          tx,
+          txType: 10,
+          txTableId: router.id,
+        },
+        token,
+        chainId,
+      });
+      if (data.data.code === '1') {
+        setVerifyLoading(false);
+        setIsVerify(true);
+        clearInterval(timer.current);
+        NotificationChange('success', t('token.verifysuccess'));
+      }
+      if (data.data.code === '2') {
+        setVerifyLoading(false);
+        setIsVerify(false);
+        clearInterval(timer.current);
+        NotificationChange('error', t('token.verifyfaild'));
+      }
+    } catch (e) {
+      setVerifyLoading(false);
+      NotificationChange('error', t('token.verifyfaild'));
+    }
+  };
   const verifyingContract = async () => {
     if (!isOwn) return;
     if (isVerify) return;
@@ -39,31 +76,37 @@ export default function button({
         token,
         chainId,
       });
-      if (data?.data?.tx) {
-        setVerifyLoading(false);
-        setIsVerify(true);
+      const tx = data?.data?.tx;
+      if (tx) {
+        timer.current = setInterval(() => {
+          checkVerify({ tx });
+        }, 5000);
       }
     } catch (e) {
       setVerifyLoading(false);
-      return null;
+      NotificationChange('error', t('token.verifyfaild'));
+      return null
     }
-    setVerifyLoading(false);
   };
 
   const renounceOwnerShip = async () => {
     if (!isOwn) return;
+    setRenounceLoading(true);
     try {
       const tx = await erc20Contract.renounceOwnership();
       const recipent = await tx.wait();
-      if (tx?.hash && recipent) {
-        history(
-          '/dapps/tokencreation/result/' + tx?.hash + '/renounceOwnership'
-        );
+      if (recipent.status === 1) {
+        setIsOwn(false);
+        NotificationChange('success', t('token.renounceOwnership'));
+      } else {
+        NotificationChange('error', t('token.renounceOwnershipfailed'));
       }
     } catch (e) {
       setRenounceLoading(false);
-      return null;
+      NotificationChange('error', t('token.renounceOwnershipfailed'));
+      return null
     }
+    setRenounceLoading(false);
   };
   const removeLimit = async () => {
     if (!isOwn) return;
@@ -71,12 +114,18 @@ export default function button({
     try {
       const tx = await erc20Contract.removeLimits();
       const recipent = await tx.wait();
-      if (tx?.hash && recipent) {
-        history('/dapps/tokencreation/result/' + tx?.hash + '/removeLimits');
+      if (recipent.status === 1) {
+        setRemoveLimitLoading(false);
+        setIsRemoveLimit(true);
+        NotificationChange('success', t('token.removeLimits'));
+      } else {
+        setRemoveLimitLoading(false);
+        NotificationChange('error', t('token.Remove limit failed'));
       }
     } catch (e) {
       setRemoveLimitLoading(false);
-      return null;
+      NotificationChange('error', t('token.Remove limit failed'));
+      return null
     }
   };
 
@@ -122,7 +171,6 @@ export default function button({
             }
             loading={renounceLoading}
             onClick={() => {
-              setRenounceLoading(true);
               renounceOwnerShip();
             }}
           >

@@ -1,6 +1,6 @@
 import { CountContext } from '@/Layout.tsx';
-import React,{ useContext,  } from 'react';
-import { throttle } from 'lodash';
+import React, { useContext } from 'react';
+import { throttle } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 const Load = React.lazy(() => import('@/components/allLoad/load.tsx'));
 import cookie from 'js-cookie';

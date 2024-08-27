@@ -139,6 +139,7 @@ export const chainList = [
     disabled: true,
     key: '0xa4b1',
     chainId: '42161',
+    hideOnPro: true,
   },
   {
     value: 'BSC',
@@ -146,6 +147,7 @@ export const chainList = [
     disabled: true,
     key: '0x38',
     chainId: '56',
+    hideOnPro: true,
   },
   {
     value: 'Optimism',
@@ -153,8 +155,9 @@ export const chainList = [
     disabled: true,
     chainId: '10',
     key: '0xa',
+    hideOnPro: true,
   },
-  { value: 'Blast', icon: '/Blast.svg', hide: true },
+  { value: 'Blast', icon: '/Blast.svg', hide: true, hideOnPro: true },
   {
     value: 'Base',
     icon: '/BASE.png',
@@ -185,6 +188,11 @@ export const chainList = [
     hideOnPro: true,
   },
   {
+    value: 'Ton',
+    icon: '/ton_symbol.svg',
+    chainId: '-2',
+  },
+  {
     value: 'Sepolia',
     icon: '/unkonwLogo.png',
     key: '0xaa36a7',
@@ -195,18 +203,25 @@ export const chainList = [
     value: 'Manta',
     icon: '/unkonwLogo.png',
     chainId: '169',
+    hideOnPro: true,
   },
   {
     value: 'Manta test',
     icon: '/unkonwLogo.png',
     chainId: '3441006',
-  
+    hideOnPro: true,
   },
   {
-    value: 'Conflux test',
-    icon: '/unkonwLogo.png',
+    value: 'Conflux testnet',
+    icon: '/conflux-logo.png',
     chainId: '71',
-  }
+    hideOnPro: true,
+  },
+  {
+    value: 'Conflux',
+    icon: '/conflux-logo.png',
+    chainId: '1030',
+  },
 ];
 
 export const swapChain = chainList.map((item) => ({

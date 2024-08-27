@@ -2,8 +2,9 @@ import { swapChain } from '@utils/judgeStablecoin';
 import { useContext } from 'react';
 import { ChooseChainValueType } from './components/chooseChain';
 // const ChooseChain = React.lazy(() => import('./components/chooseChain'));
-import ChooseChain from './components/chooseChain'
+import ChooseChain from './components/chooseChain';
 import { CountContext } from '@/Layout';
+import { config } from '@/config/config';
 export interface ChangeChainPropsType {
   wrapClassName?: string; // 弹窗的classname
   hideChain?: boolean; // 隐藏有hide属性的链
@@ -18,6 +19,18 @@ function ChangeChain({
 }: ChangeChainPropsType) {
   const { setChainId, isLogin, loginProvider, chainId } =
     useContext(CountContext);
+
+  async function addChain(chainId, chainData) {
+    try {
+      await loginProvider.request({
+        method: 'wallet_addEthereumChain',
+        params: [chainData],
+      });
+      console.log('Chain added:', chainId);
+    } catch (error) {
+      console.error('Error adding chain:', error);
+    }
+  }
   const changeWalletChain = async (v: ChooseChainValueType) => {
     const evmChainIdHex = v.key;
     const evmChainId = v.chainId;
@@ -36,8 +49,26 @@ function ChangeChain({
         });
         setChainId(evmChainId);
       } catch (e) {
-        console.error(e);
-        return null;
+        if (e.code === 4902) {
+          console.error('Switch chain not supported');
+          const { name, chainId, rpcUrl, tokenSymbol, decimals, scan } =
+            config[evmChainId];
+          const chainData = {
+            chainId: evmChainIdHex,
+            chainName: name,
+            blockExplorerUrls: [scan.replace('tx', '')],
+            nativeCurrency: {
+              name: tokenSymbol,
+              symbol: tokenSymbol,
+              decimals,
+            },
+            rpcUrls: [rpcUrl],
+          };
+          // 尝试添加链
+          addChain(chainId, chainData);
+        } else {
+          console.error('Error switching chain:', e);
+        }
       }
     }
   };

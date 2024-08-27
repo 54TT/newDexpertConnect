@@ -1,11 +1,13 @@
 import Tweets from './components/tweets.tsx';
-import React,{ useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Request from '../axios.tsx';
 import cookie from 'js-cookie';
 const Loading = React.lazy(() => import('../allLoad/loading.tsx'));
 import { CountContext } from '../../Layout.tsx';
-import { unionBy } from 'lodash';
-const InfiniteScrollPage = React.lazy(() => import('@/components/InfiniteScroll'));
+import { unionBy } from 'lodash-es';
+const InfiniteScrollPage = React.lazy(
+  () => import('@/components/InfiniteScroll')
+);
 interface TweetHomePropsType {
   uid?: string;
   [key: string]: any;

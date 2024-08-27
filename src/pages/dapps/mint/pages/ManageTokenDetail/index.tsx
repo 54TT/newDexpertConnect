@@ -1,22 +1,20 @@
 import { InputNumber } from 'antd';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-const BottomButton = React.lazy(() => import('../../component/BottomButton'));
-const InfoList = React.lazy(() => import('../../component/InfoList'));
-const PageHeader = React.lazy(() => import('../../component/PageHeader'));
-const ToLaunchHeader = React.lazy(
-  () => import('../../component/ToLaunchHeader')
-);
+import { useContext, useEffect, useMemo, useState } from 'react';
+import BottomButton from '../../component/BottomButton';
+import InfoList from '../../component/InfoList';
+import PageHeader from '../../component/PageHeader';
+import ToLaunchHeader from '../../component/ToLaunchHeader';
 
 import './index.less';
 import { useParams } from 'react-router-dom';
 import Request from '@/components/axios';
-const Loading = React.lazy(() => import('@/components/allLoad/loading'));
+import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import { LaunchERC20Abi } from '@abis/LaunchERC20Abi';
 import { ethers } from 'ethers';
 import NotificationChange from '@/components/message';
-const CommonModal = React.lazy(() => import('@/components/CommonModal'));
+import CommonModal from '@/components/CommonModal';
 import { useTranslation } from 'react-i18next';
 import Button from './component/button';
 function ManageTokenDetail() {
@@ -165,9 +163,11 @@ function ManageTokenDetail() {
     isOwn,
     erc20Contract,
     isRemoveLimit,
+    setIsRemoveLimit,
     setOpenTradeModal,
     openTradeLoading,
     isOpenTrade,
+    setIsOwn,
   };
   return (
     <div className="manage-tokenBox">
@@ -193,7 +193,7 @@ function ManageTokenDetail() {
         <div>
           <InputNumber
             value={ethAmount}
-            addonAfter="ETH"
+            addonAfter={contractConfig?.tokenSymbol || 'ETH'}
             controls={false}
             stringMode={true}
             onChange={(v) => {
@@ -202,7 +202,7 @@ function ManageTokenDetail() {
           />
           <div
             style={{ color: '#fff', marginTop: '6px' }}
-          >{`ETH ${t('token.Banlance')}: ${ethBalance}`}</div>
+          >{`${contractConfig?.tokenSymbol || 'ETH'} ${t('token.Banlance')}: ${ethBalance}`}</div>
         </div>
         <BottomButton
           text={t('token.Open')}

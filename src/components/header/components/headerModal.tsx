@@ -3,7 +3,7 @@ import { useContext, useState, useEffect } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 function HeaderModal() {
@@ -68,7 +68,7 @@ function HeaderModal() {
     { trailing: false }
   );
   const connectWallet = throttle(
-     function (i: any) {
+    function (i: any) {
       handleLogin(i);
       setIsModalOpen(false);
     },

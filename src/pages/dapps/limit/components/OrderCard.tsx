@@ -130,23 +130,16 @@ export default function OrderCard({
     if(tokenRate&&order.orderPrice){
       // const orderRate=Number(Number(order.orderPrice).toFixed(6))
       // const rateNum = Number(rate.toFixed(6));
-      // console.log('---getRateRelation---');
-      // console.log(Number(tokenRate));
-      // console.log(Number(order.orderPrice))
       const result = new Decimal(tokenRate).dividedBy(new Decimal(order.orderPrice));
       if(result) setRateLoading(false)
       if(result.toNumber()>1){
         setRateRelation('incre')
-        // console.log('incre',result.toNumber()-1);
         setDiffRate(((result.toNumber()-1)*100).toFixed(2))
         // return result.toFixed(3)
       }else if(result.toNumber()<1){
         setRateRelation('decre')
-        // console.log('decre',1-result.toNumber());
         setDiffRate(((1-result.toNumber())*100).toFixed(2))
       }
-      // console.log(rateNum-orderRate);
-      // console.log(Number(tokenRate)-Number(order.orderPrice));
     }
   }
   // 获取两个token当前的汇率
@@ -167,21 +160,16 @@ export default function OrderCard({
     let amount:Decimal
     try {
       amount=await getAmountOut.apply(null,params)
+      const amountValue=new Decimal(amount)
+      setTokenRate(amountValue.toString())
     } catch (error) {
-      console.log(error);
+      return null
     }
-    const amountValue=new Decimal(amount)
-    // console.log(amountValue.toString());
-    setTokenRate(amountValue.toString())
   }
   useEffect(()=>{
-    // console.log(tokenRate);
     if(tokenRate) getRateRelation()
   },[tokenRate])
   useEffect(()=>{
-    // console.log('offerer',order.offerer);
-    // console.log(order.orderHash.length)
-    // console.log('filler',order.filler)
     getTokenRate(order.inputToken,order.inputTokenDecimals,order.outputToken,order.outputTokenDecimals)
     setDeadline(Number(order.deadline))
   },[order])

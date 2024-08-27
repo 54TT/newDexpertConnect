@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function list() {
@@ -28,7 +28,7 @@ export default function list() {
     if (
       router.pathname === '/' ||
       router.pathname === '/newpairDetails' ||
-      router.pathname === '/re-register'
+      router.pathname === '/logout'
     ) {
       if (ind === 'Market') {
         return 'rgb(134,240,151)';

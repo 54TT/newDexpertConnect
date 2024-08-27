@@ -1,10 +1,10 @@
 import { Card } from 'antd';
-import React,{ useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { setMany, simplify } from '@/../utils/change.ts';
 import newPair from '@/components/getNewPair.tsx';
 const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
 import { DownOutlined } from '@ant-design/icons';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { useLocation } from 'react-router-dom';
 const Nodata = React.lazy(() => import('@/components/Nodata.tsx'));
 import { useTranslation } from 'react-i18next';

@@ -1,14 +1,16 @@
-import React,{ useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Request from '@/components/axios.tsx';
 import cookie from 'js-cookie';
-const PostSendModal = React.lazy(() => import('@/pages/community/components/PostModal.tsx'));
+const PostSendModal = React.lazy(
+  () => import('@/pages/community/components/PostModal.tsx')
+);
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { DeleteOutlined } from '@ant-design/icons';
-import {  simplify } from '@/../utils/change.ts';
-import { throttle } from 'lodash';
+import { simplify } from '@/../utils/change.ts';
+import { throttle } from 'lodash-es';
 import { Popconfirm } from 'antd';
 import NotificationChange from '@/components/message.tsx';
 import { useTranslation } from 'react-i18next';

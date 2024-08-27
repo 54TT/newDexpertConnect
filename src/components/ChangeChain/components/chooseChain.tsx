@@ -1,7 +1,7 @@
 import { Popover } from 'antd';
 import '@/components/index.less';
 import { useEffect, useState } from 'react';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 interface ChooseChainType {
   onChange?: (v: any) => void;
   onClick?: (v: ChooseChainValueType) => void;
@@ -41,7 +41,9 @@ function ChooseChain({
   const click = throttle(
     function (i: any) {
       if (value !== i) {
-        if (i?.disabled && disabledChain) {
+        if (i.value === 'Ton' && i.chainId === '-2') {
+          window.open('https://ton-minter-f9uf.vercel.app/');
+        } else if (i?.disabled && disabledChain) {
           return;
         }
         if (

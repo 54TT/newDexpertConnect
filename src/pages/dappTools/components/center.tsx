@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import { useLocation, useParams } from 'react-router-dom';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 const LINK_CREATE = [
   'https://drive.google.com/file/d/1ED7qadkVJMKJazvnqlgVARGR4-RYMCbc/view?usp=sharing',
@@ -61,7 +61,7 @@ function Center() {
                 1500,
                 { trailing: false }
               )}
-              className='dappComCenter'
+              className="dappComCenter"
               style={{
                 width: browser ? '28%' : '32%',
                 color: ind === 2 ? 'gray' : 'rgb(220, 220, 220)',

@@ -1,11 +1,11 @@
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
-import React,{ useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { setMany, simplify } from '@/../utils/change.ts';
 const Copy = React.lazy(() => import('@/components/copy.tsx'));
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { judgeStablecoin } from '@/../utils/judgeStablecoin.ts';
 import { CountContext } from '@/Layout.tsx';
@@ -76,7 +76,7 @@ function Left({ par }: any) {
         <div>
           <span>CA:</span>
           <a
-          target='_blank'
+            target="_blank"
             href={`https://etherscan.io/address/${
               value === 0
                 ? simplify(par?.token0?.id)
@@ -84,7 +84,6 @@ function Left({ par }: any) {
                   ? simplify(par?.token1?.id)
                   : simplify(par?.token1?.id)
             }`}
-          
             style={{
               color: browser ? '#c2bebe' : 'rgb(89,175,255)',
               borderBottom: browser ? 'none' : '1px solid rgb(89,175,255)',
@@ -113,7 +112,7 @@ function Left({ par }: any) {
         <div>
           <span>Pair:</span>
           <a
-          target='_blank'
+            target="_blank"
             href={`https://etherscan.io/address/${par?.id}`}
             style={{
               color: browser ? '#c2bebe' : 'rgb(89,175,255)',

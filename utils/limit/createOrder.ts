@@ -79,16 +79,6 @@ async function buildOrder(
   // const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds
   // 订单过期时间，GMT+8,中国时间
   const deadline=Math.round(new Date().getTime()/1000) + deadlineSeconds
-  // console.log('---now time---')
-  // 获取现在的时间
-  // console.log(new Date().toUTCString())
-  // console.log(new Date((deadline-deadlineSeconds)*1000).toUTCString())
-  // console.log(new Date(new Date().getTime()))
-  // console.log('---deadline---')
-  // console.log(new Date().toUTCString())
-  // console.log(new Date(deadline*1000).toUTCString())
-  // console.log('---deadline---',deadline)
-  // console.log('=====deadlineNew=====',deadlineNew)
   const decayStartTime = Math.round(new Date().getTime() / 1000)
   const creatAddress=await orderCreator.getAddress()
   // 生成荷兰式订单，传入相关参数
@@ -101,12 +91,9 @@ async function buildOrder(
     .input({ token:inputToken,startAmount:inputAmount,endAmount:inputAmount })
     .output({token:outputToken,startAmount:outputAmount,endAmount:outputAmount,recipient:recipient})
     .build()
-    console.log("---order---")
-    console.log(order)
     const{ domain,types,values }=order.permitData()
     // @ts-ignore
     const signature=await orderCreator._signTypedData(domain,types,values)
-    console.log("signature:"+signature);
     const encodedOrder=order.serialize()
     return{
       order,
@@ -127,7 +114,6 @@ export const createOrder = async (
   // 汇率
   orderPrice:string,
 )=>{
-  console.log('---orderCreating---')
   const config = chainConfig[chainId]
   const zeroConfig=allConfig[chainId]
   const provider = config.provider
@@ -189,11 +175,6 @@ export const createOrder = async (
 
 
 
-  // console.log(inputTokenDecimals);
-  // console.log(inputTokenDecimals.toNumber());
-  // console.log(inputTokenToLowerCase==zeroAddress);
-  // console.log(Number(inputTokenDecimals));
-  
   // const inputTokenName = await inputTokenContract.name();
   // const inputTokenSymbol = await inputTokenContract.symbol();
   // const inputTokenDecimals = await inputTokenContract.decimals();
@@ -233,7 +214,6 @@ export const createOrder = async (
 
 
   // 构建荷兰式拍卖订单，并获得签名
-  console.log('---buildOrder---')
   try {
     const { order ,payload,nonce }=await buildOrder(chainId,recipient,inputAmount,outputAmount,deadlineSeconds,inputToken,outputToken,orderCreator)
   
@@ -301,7 +281,7 @@ export const createOrder = async (
   }
   return orderParams
 } catch (error) {
-    console.log(error)
+  return null
 }
   // return 'test'
 }

@@ -1,6 +1,6 @@
-import {useContext } from "react"
-import {BigNumber} from 'bignumber.js';
-import Copy from "@/components/copy";
+import { useContext } from 'react';
+import { BigNumber } from 'bignumber.js';
+import Copy from '@/components/copy';
 import { CountContext } from '@/Layout';
 import { getScanLink } from '@/utils/getScanLink';
 import { getAddressLink } from '@/utils/getAddressLink';
@@ -24,7 +24,7 @@ const DetailsWindow=({order})=>{
       let result = floatNum.toFixed(6).replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '').replace(/\.$/, '');
     return result;
     }
-  }
+  };
   // 格式化转换时间
   const timeStampForrmat = (timestamp) => {
     const date = new Date(timestamp * 1000);
@@ -125,7 +125,7 @@ const DetailsWindow=({order})=>{
                 <div>
                   <Copy
                     img={'/copy-icon.svg'}
-                    name={order.filler}
+                    name={order.offerer}
                     change={true}
                   />
                 </div>
@@ -170,9 +170,8 @@ const DetailsWindow=({order})=>{
         </div>
       </div>
     </div>
-  </>
-  )
-}
+    </>
+  );
+};
 
-
-export default DetailsWindow
+export default DetailsWindow;

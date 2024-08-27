@@ -1,5 +1,5 @@
 import './index.less';
-import React,{ useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
 const FillData = React.lazy(() => import('./components/fillData'));
@@ -14,15 +14,17 @@ const OrderDetail = React.lazy(() => import('./components/oriderDetail'));
 
 // import WalletDetail from './components/WalletDetail';
 import { ethers } from 'ethers';
-const ChooseChain = React.lazy(() => import('@/components/ChangeChain/components/chooseChain'));
+const ChooseChain = React.lazy(
+  () => import('@/components/ChangeChain/components/chooseChain')
+);
 import { swapChain } from '@utils/judgeStablecoin';
 import { config } from '@/config/config.ts';
 const AddWallet = React.lazy(() => import('./components/addWallet'));
-const Drawer = React.lazy(() => import('../drawer'));
+// const Drawer = React.lazy(() => import('../drawer'));
 
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
-import _ from 'lodash';
+
 export default function index() {
   const { t } = useTranslation();
   const { getAll } = Request();
@@ -117,7 +119,7 @@ export default function index() {
           payType: payType,
         },
         token: tokens,
-        chainId:sniperChainId
+        chainId: sniperChainId,
       });
       if (res?.status === 200) {
         setSelect('order');
@@ -140,7 +142,7 @@ export default function index() {
         url: '/api/v1/preswap/cancel',
         data: { orderId: orderPar?.orderCode },
         token,
-        chainId:sniperChainId
+        chainId: sniperChainId,
       });
       if (res?.status === 200) {
         setIsShow(false);
@@ -354,7 +356,7 @@ export default function index() {
                   : t('Slider.Confirm')
             : t('Common.Connect Wallet')}
         </div>
-        {user?.uid && <Drawer id={sniperChainId} />}
+        {/* {user?.uid && <Drawer id={sniperChainId} />} */}
       </div>
     </div>
   );

@@ -1,11 +1,7 @@
 import './index.less';
-import { useEffect } from 'react';
 import Copy from "@/components/copy";
 import {BNtoNumber} from "@utils/limit/utils"
 import { useTranslation } from 'react-i18next';
-
-
-
 
 const ListItem=({
   order,
@@ -26,14 +22,6 @@ const ListItem=({
     });
     return formatter.format(date);
   }
-
-  useEffect(()=>{
-    // console.log(order);
-    // console.log('offer',order.offerer)
-    // console.log('filler',order?.filler)
-    // console.log('filler'.order?.filler)
-  },[order])
-
 
   return (
   <div

@@ -63,18 +63,12 @@ const ExecuteWindow = ({
   // };
   // 执行限价兑换订单
   const selcetExecuteOrder=async ()=>{
-    console.log('---execute order---');
     setButtonLoading(true)
     const output=JSON.parse(order.outputs)[0]
     const web3Provider=new ethers.providers.Web3Provider(loginProvider)
-    // console.log(output);
-    
     const value: BNtype = output.token === ethers.constants.AddressZero ? output.startAmount : BNtype.from(0);
     const signer=await web3Provider.getSigner()
-
-    
     try {
-      console.log('---executing---');
       const res=await executeOrder(
         chainId,
         signer,
@@ -84,70 +78,31 @@ const ExecuteWindow = ({
         output.startAmount,
         value
       )
-      console.log(res);
       if(res){
         setButtonLoading(false)
         setShowExecuteWindow(false)
         NotificationChange('success',t('limit.executeOrderSuccess'))
       }
     } catch (error) {
-      console.log(error);
       setButtonLoading(false)
       NotificationChange('warning',t('limit.executeOrderError'))
+      return null
     }
   }
   
 
-  // 查询授权额度，获取授权
-  // const approveOrder=async (
-  //   chainId:number,
-  //   filler:Signer,
-  //   outputToken:string,
-  //   tokenAmount:BigNumber,
-  // )=>{
-  //   console.log('---approve order---')
-  //   const config=chainConfig[chainId]
-  //   const provider=config.provider
-  //   const reactorAddress = config.reactorAddress
-  //   const permit2Address = config.permit2Address
-  //   const zeroConfig=allConfig[chainId]
-  //   const outputTokenToLowerCase = outputToken.toLowerCase();
-  //   const zeroAddress=zeroConfig.zeroAddress.toLowerCase()
-  //   let outputTokenContract: Contract;
-  //   let outputPermit2Allowance: BigNumber
-  //   let outputReactorAllowance: BigNumber
-  
-  //   if(outputTokenToLowerCase!==zeroAddress){
-  //     outputTokenContract = new ethers.Contract(outputToken, ERC20ABI, provider).connect(filler);
-  //     outputPermit2Allowance = await outputTokenContract.allowance(filler.getAddress(), permit2Address);
-  //     outputReactorAllowance = await outputTokenContract.allowance(filler.getAddress(), reactorAddress);
-  //     if (outputReactorAllowance.lt(tokenAmount)) {
-  //       const tx= await outputTokenContract.approve(reactorAddress,tokenAmount);
-  //       await tx.wait()
-  //     }
-  //     if (outputPermit2Allowance.lt(tokenAmount)) {
-  //       const tx= await outputTokenContract.approve(permit2Address,tokenAmount);
-  //       await tx.wait()
-  //     }
-  //   }
-  // }
-
-
   // 获取订单用于兑换的token信息
   const getInputToken=(token,decimals)=>{
-    // console.log('selected token');
     if(token){
       const jsonString=token
       try{
         const tokenObj=JSON.parse(jsonString)
-        // console.log(tokenObj.token);
         // setInputToken(tokenObj)
         const startAmount=BigNumber(tokenObj.startAmount.hex)
         const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
-        // console.log('inputtoken startAmountNum',startAmountNum.toString());
         setTokenInputAmount(startAmountNum.toString())
       }catch(error){
-        // console.log(error);
+        return null
       }
     }
   }
@@ -156,14 +111,13 @@ const ExecuteWindow = ({
     async (token,dispatch)=>{
       const {wethAddress}=contractConfig
       if(checkConnection()&&token&&loginProvider){
-        // console.log(loginProvider)
         const injectProvider=new ethers.providers.Web3Provider(loginProvider)
         try {
           const balance=await getBalanceRpc(injectProvider,token,wethAddress)
           if(balance) setBalanceLoading(false)
         dispatch(balance)
         } catch (error) {
-          // console.log(error);
+          return null
         }
       }
     },
@@ -173,9 +127,6 @@ const ExecuteWindow = ({
   const getOutputToken=(outputToken:string,decimals:number)=>{
     const startAmount=BigNumber(JSON.parse(outputToken)[0].startAmount.hex)
     const startAmountNum=startAmount.dividedBy(new BigNumber(10).pow(decimals))
-    // console.log('outputtoken startAmountNum',startAmountNum.toString());
-    // console.log(JSON.parse(outputToken)[0].token);
-    
     setTokenOutputAmount(startAmountNum.toString())
     
   }
@@ -213,24 +164,17 @@ const ExecuteWindow = ({
     try {
       amount=await getAmountOut.apply(null,params)
     } catch (error) {
-      // console.log(error);
+      return null
     }
     const amountValue=new Decimal(amount)
-    // console.log(amountValue.toString());
     setTokenRate(amountValue.toString())
   }
-  // useEffect(()=>{
-    // console.log(silderValue);
-    // setExchangeAmount(Number(tokenInputAmount)*silderValue/100)
-    // setPayTokenAmount((Number(tokenOutputAmount)*(silderValue/100)).toString())
-  // },[silderValue])
+
   // 有市场汇率之后便于订单汇率进行比较
   useEffect(()=>{
-    // console.log(tokenRate);
     if(tokenRate) getRateRelation()
   },[tokenRate])
   useEffect(()=>{
-    // console.log(order);
     getInputToken(order.input,order.inputTokenDecimals)
     getOutputToken(order.outputs,order.outputTokenDecimals)
     getTokenRate(order.inputToken,order.inputTokenDecimals,order.outputToken,order.outputTokenDecimals)
