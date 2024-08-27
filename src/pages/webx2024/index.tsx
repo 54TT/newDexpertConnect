@@ -13,6 +13,8 @@ export default function Webx2024() {
   const [showPassModal,setShowPassModal]=useState(false)
   const [claimLoading, setClaimLoading]=useState(false)
   const [rewardModal, setRewardModal] = useState(false);
+  // 2: tokenCreationBot 3: sniperBot 4: fastTrade 
+  const [selectCard,setSelectCard]=useState(2)
   const { setIsModalOpen, loginProvider, isLogin } = useContext(CountContext);
 
   const clickGetPassCardButton = () => {
@@ -28,14 +30,16 @@ export default function Webx2024() {
   };
   // 领取passCard
   const getPassCard= async()=>{
+    console.log(selectCard)
     setClaimLoading(true)
     try {
       const token=Cookies.get('token')
       const res=await getAll({
-        method:'get',
+        method:'post',
         url:'/api/v1/passcard/giveaway',
         data:{
-          event:'webx2024'
+          event:'webx2024',
+          passcardType:selectCard,
         },
         token
       })
@@ -56,7 +60,9 @@ export default function Webx2024() {
   // useNow
   const clickUseNowButton = () => {
     console.log('clickUseNowButton');
-    history('/dapps/swap');
+    if(selectCard===2) history('/dapps/tokencreation');
+    if(selectCard===3) history('/dapps/sniping');
+    if(selectCard===4) history('/dapps/swap');
   }
   useEffect(()=>{
     console.log(loginProvider);
@@ -97,7 +103,7 @@ export default function Webx2024() {
       </div>
       {/* 领取成功modal */}
       <CommonModal
-        width={360}
+        width={320}
         open={rewardModal}
         className="webx-modal"
         title={
@@ -126,7 +132,7 @@ export default function Webx2024() {
       </CommonModal>
       {/* 连接钱包modal */}
       <CommonModal
-        width={360}
+        width={320}
         open={connectWalletModal}
         className="webx-modal"
         title={''}
@@ -155,7 +161,7 @@ export default function Webx2024() {
       </CommonModal>
       {/* 领取passCard modal */}
       <CommonModal
-        width={360}
+        width={320}
         open={showPassModal}
         className="webx-modal getPass-modal"
         title={"Select Your Gift."}
@@ -166,15 +172,17 @@ export default function Webx2024() {
         }}
       >
         <div className="getPass-modal-body">
-          <div className="getPass-modal-item">
-            <span><span style={{color:'#86f097'}}>Token Create Bot</span> Pass</span>
+          <div className={`getPass-modal-item ${selectCard === 2 ? 'getPass-modal-item-active' : ''}`}onClick={()=>setSelectCard(2)}>
+            <span>
+              <span style={{color:'#86f097'}}>Token Create Bot</span> Pass
+              </span>
             <span>x1</span>
           </div>
-          <div className="getPass-modal-item">
+          <div className={`getPass-modal-item ${selectCard === 3 ? 'getPass-modal-item-active' : ''}`} onClick={()=>setSelectCard(3)}>
             <span><span style={{color:'#86f097'}}>Sniper Bot</span> Pass</span>
             <span>x3</span>
           </div>
-          <div className="getPass-modal-item">
+          <div className={`getPass-modal-item ${selectCard === 4 ? 'getPass-modal-item-active' : ''}`} onClick={()=>setSelectCard(4)}>
             <span><span style={{color:'#86f097'}}>Fast Trade</span> Pass</span>
             <span>x15</span>
           </div>
