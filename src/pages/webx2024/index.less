@@ -8,10 +8,10 @@
     justify-content: space-between;
   }
   &-body {
-    margin: 12vh 16vw;
+    // margin: 8vh 12vw;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     &-left {
       width: 40%;
       color: #fff;
@@ -26,9 +26,15 @@
       .action-button {
         font-size: 18px;
         color: black;
-        font-weight: 600;
+        font-weight: 700;
         height: 48px;
         width: 300px;
+        cursor: pointer;
+        background: linear-gradient(to bottom right,#caf3b7,#86f097) !important;
+        z-index: 10;
+        &:hover{
+          color:#000 !important;
+        }
       }
     }
   }
@@ -57,5 +63,117 @@
   .action-button {
     width: 300px;
     height: 42px;
+    background: linear-gradient(to bottom right,#caf3b7,#86f097) !important;
+    font-weight:700;
+    &:hover{
+      color: #000 !important;
+    }
+  }
+  .complete-title{
+    font-size: 24px;
+    font-weight: 900;
+    background-image: linear-gradient(to right, #beecac, #86f097);
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+  .useNow-btn{
+    border-radius: 16px !important;
+    span{
+      font-weight: 700 !important;
+      color: #1a1a1a;
+    }
+    background: linear-gradient(to bottom right,#caf3b7,#86f097) !important;
+  }
+}
+.getPass-modal{
+  .ant-modal-content{
+    .ant-modal-header{
+      .ant-modal-title{
+        justify-content: flex-start;
+        color: #fff;
+        
+      }
+    }
+  }
+  &-body{
+    margin: 20px auto;
+    .getPass-modal-item{
+      display: flex;
+      justify-content: space-between;
+      background-color: #131313;
+      margin: 16px auto;
+      padding: 16px;
+      border-radius: 16px;
+      span{
+        color: #fff;
+        &:first-child{
+          font-weight: 700;
+        }
+        &:last-child{
+          color: rgba(134, 240, 151, 0.6);
+        }
+      }
+    }
+  }
+  .getPass-btn{
+    // font-size: 18px;
+    width: 100%;
+    border-radius: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    
+    &:hover{
+      color: #000 !important;
+    }
+  }
+}
+
+@media (max-width: 800px) {
+  .webx{
+    width: 100vw;
+    height: calc(100vh - 45px) !important;
+    box-sizing: border-box;
+    // overflow: hidden !important;
+    &-head{
+      width: 100vw;
+      margin: 0 !important;
+      height: 30px;
+      padding: 0 20px;
+      box-sizing: border-box;
+      img{
+        height: 100%;
+      }
+    }
+  }
+  .webx-city{
+    overflow: hidden;
+    img{
+      width: 100%;
+    }
+  }
+  .webx-body{
+    flex-direction: column-reverse;
+    height: 80%;
+    width: 100vw;
+    box-sizing: border-box;
+    &-left{
+      width: 70%;
+      text-align: center;
+      font-size: 16px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      div{
+        line-height: 1.2 !important;
+      }
+    }
+
+  }
+  .webx-dpasscard{
+    width: 80vw;
+    margin:0 auto;
+  }
+  .webx-tower{
+    bottom: 0;
   }
 }

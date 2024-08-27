@@ -36,6 +36,7 @@ requestA.interceptors.response.use(
     } else {
       NotificationChange('warning', e?.response?.data?.msg);
     }
+    return Promise.reject(e)
   }
 );
 const Request = () => {
