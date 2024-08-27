@@ -40,7 +40,10 @@ export default function Webx2024() {
         token
       })
       console.log(res);
-      
+      if(res.status===200){
+        setShowPassModal(false);
+        setRewardModal(true);
+      }
     } catch (error) {
       if(error?.response?.data?.msg==="you've already received the passcard"){
         setShowPassModal(false);
@@ -70,18 +73,18 @@ export default function Webx2024() {
       <div className="webx-body">
         <div className="webx-body-left">
           <div>
-            <div>Thanks to WebX 2024 Tokyo, you found your way to us!</div>
-
+            <div>Thanks to WebX 2024 Tokyo, 
+            you found your way to us! </div>
+            <br />
             <div>
-              As a special treat for connecting with us at this event, we’ve got
-              an exclusive gift just for you.
+            Here is your exclusive gift.
             </div>
           </div>
           <Button
             className="action-button"
             onClick={() => clickGetPassCardButton()}
           >
-            领取passCard
+            Free D Pass
           </Button>
         </div>
         <img src="/webx-dpass.png" className='webx-dpasscard' />
@@ -98,7 +101,7 @@ export default function Webx2024() {
         open={rewardModal}
         className="webx-modal"
         title={
-          <span className='complete-title'>Complete!</span>
+          <span className='complete-title'>Congradulations!</span>
         }
         footer={null}
         onCancel={() => setRewardModal(false)}
@@ -126,9 +129,7 @@ export default function Webx2024() {
         width={360}
         open={connectWalletModal}
         className="webx-modal"
-        title={
-          <span className='complete-title'>Connect Wallet</span>
-        }
+        title={''}
         footer={null}
         onCancel={() =>{
           setConnectWalletModal(false)
@@ -137,7 +138,7 @@ export default function Webx2024() {
       >
         <div>
           <div style={{ margin: '36px 0', color: '#fff' }}>
-            请连接您的钱包再领取
+          Connect wallet to claim.
           </div>
           <div>
             <Button
@@ -157,7 +158,7 @@ export default function Webx2024() {
         width={360}
         open={showPassModal}
         className="webx-modal getPass-modal"
-        title={"Pick the D Pass that suits you."}
+        title={"Select Your Gift."}
         footer={null}
         onCancel={() =>{
           setShowPassModal(false)
@@ -187,7 +188,7 @@ export default function Webx2024() {
             // setRewardModal(true);
           }}
         >
-          Claim
+          Comfirm
         </Button>
       </CommonModal>
     </div>
