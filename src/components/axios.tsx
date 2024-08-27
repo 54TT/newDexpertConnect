@@ -6,10 +6,7 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { ChainID_TO_ChainName, ChainId } from '@/../utils/constants.ts';
 const requestA = axios.create({
-  baseURL:
-    import.meta.env.MODE === 'development'
-      ? 'http://165.22.51.161:8081'
-      : 'https://app.dexpert.io',
+  baseURL:'http://165.22.51.161:8081',
   timeout: 20000,
 });
 requestA.interceptors.request.use(
