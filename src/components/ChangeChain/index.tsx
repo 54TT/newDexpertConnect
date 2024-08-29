@@ -28,7 +28,7 @@ function ChangeChain({
       });
       console.log('Chain added:', chainId);
     } catch (error) {
-      console.error('Error adding chain:', error);
+      return null
     }
   }
   const changeWalletChain = async (v: ChooseChainValueType) => {
@@ -50,7 +50,6 @@ function ChangeChain({
         setChainId(evmChainId);
       } catch (e) {
         if (e.code === 4902) {
-          console.error('Switch chain not supported');
           const { name, chainId, rpcUrl, tokenSymbol, decimals, scan } =
             config[evmChainId];
           const chainData = {

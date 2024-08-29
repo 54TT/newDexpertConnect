@@ -58,7 +58,7 @@ export default function acyivityList({
     }
   };
 
-  const showScore = (campaignId: string, it: any) => {
+  const showScore = (mode: string, it: any) => {
     if (params?.id === '1') {
       if (Number(it?.score)) {
         return '+' + it?.score;
@@ -75,7 +75,7 @@ export default function acyivityList({
         }
       } else {
         if (option === 'first') {
-          if (Number(campaignId) >= 4) {
+          if (Number(mode) === 1) {
             if (Number(it?.isCompleted)) {
               if (it?.operationSymbol?.includes('golden')) {
                 return t('Dpass.deadline');
@@ -145,7 +145,7 @@ export default function acyivityList({
             marginRight: '20px',
           }}
         >
-          {showScore(i?.campaign?.campaignId, it)}
+          {showScore(i?.campaign?.mode, it)}
         </p>
         {Number(it?.isCompleted) !== 3 ? (
           <div

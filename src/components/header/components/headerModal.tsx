@@ -26,9 +26,7 @@ function HeaderModal() {
   }: any = useContext(CountContext);
   const routerLocation = useLocation();
   useEffect(() => {
-    console.log(routerLocation.pathname);
     if(routerLocation.pathname === '/webx2024'){
-
     }
   }, []);
   function onAnnouncement(event?: any) {

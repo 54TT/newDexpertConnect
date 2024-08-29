@@ -59,7 +59,7 @@ function SpecialActive() {
     const extra = JSON.parse(data?.campaignHome?.campaign?.extra || '{}');
     const [key, value] = Object.entries(extra)[0] || ['', ''];
     return (
-      data?.campaignHome?.campaign?.campaignId > 4 ? value : key
+      data?.campaignHome?.campaign?.mode ==='1' ? value : key
     ) as string;
   }, [data]);
 
