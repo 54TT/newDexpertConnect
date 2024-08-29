@@ -1,4 +1,5 @@
 import Header, { I18N_Key } from './components/header/index.tsx';
+import {  signLoginPayload } from 'thirdweb/auth';
 import {
   Route,
   Routes,
@@ -31,7 +32,6 @@ import Client from '@walletconnect/sign-client';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { client as newClient } from '@/client.ts';
 import { useConnectModal } from 'thirdweb/react';
-
 import {
   DEFAULT_APP_METADATA,
   DEFAULT_PROJECT_ID,
@@ -610,7 +610,7 @@ function Layout() {
   });
   const noHeaderRoutes = ['/webx2024'];
   const { connect: newConnect, isConnecting } = useConnectModal();
-  console.log(isConnecting)
+  console.log(isConnecting);
   const newConnectWallet = async () => {
     const wallet = await newConnect({ client: newClient }); // opens the connect modal
     console.log('connected to', wallet);
@@ -623,13 +623,18 @@ function Layout() {
         // 获取noce
         const noce = await getNoce(tt?.address);
         if (noce?.data?.nonce) {
-          const sign = await tt.signMessage({ message: noce?.data?.nonce });
-          const data = {
-            signature: sign,
-            addr: tt?.address,
-            message: noce?.data?.nonce,
-          };
-          login(data, 'eth', 'more');
+          // const sign = await tt.signMessage({ message: noce?.data?.nonce });
+          const signature = await signLoginPayload({
+            payload: noce?.data?.nonce,
+            account: tt,
+          });
+          console.log(signature);
+          // const data = {
+          //   signature: sign,
+          //   addr: tt?.address,
+          //   message: noce?.data?.nonce,
+          // };
+          // login(data, 'eth', 'more');
         }
       }
     }
@@ -639,7 +644,7 @@ function Layout() {
     connect: newConnectWallet,
     tonConnect,
     clear,
-    cccccccccccccccccccccccc:connect,
+    cccccccccccccccccccccccc: connect,
     onDisconnect,
     handleLogin,
     user,
