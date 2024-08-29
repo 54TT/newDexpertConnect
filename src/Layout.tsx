@@ -29,6 +29,9 @@ import * as encoding from '@walletconnect/encoding';
 import Request from './components/axios.tsx';
 import Client from '@walletconnect/sign-client';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { client as newClient } from '@/client.ts';
+import { useConnectModal } from 'thirdweb/react';
+
 import {
   DEFAULT_APP_METADATA,
   DEFAULT_PROJECT_ID,
@@ -600,8 +603,40 @@ function Layout() {
       window.removeEventListener('resize', handleResize);
     };
   }, [router]);
+
+  const clients = new ApolloClient({
+    uri: chain[switchChain],
+    cache: new InMemoryCache(),
+  });
+  const noHeaderRoutes = ['/webx2024'];
+  const { connect: newConnect, isConnecting } = useConnectModal();
+  console.log(isConnecting)
+  const newConnectWallet = async () => {
+    const wallet = await newConnect({ client: newClient }); // opens the connect modal
+    console.log('connected to', wallet);
+    // 检测是否点击
+    if (wallet?.id) {
+      // 检测是否有address
+      const tt = await wallet.connect({ client: newClient });
+      console.log(tt);
+      if (tt?.address) {
+        // 获取noce
+        const noce = await getNoce(tt?.address);
+        if (noce?.data?.nonce) {
+          const sign = await tt.signMessage({ message: noce?.data?.nonce });
+          const data = {
+            signature: sign,
+            addr: tt?.address,
+            message: noce?.data?.nonce,
+          };
+          login(data, 'eth', 'more');
+        }
+      }
+    }
+  };
+
   const value: any = {
-    connect,
+    connect: newConnectWallet,
     tonConnect,
     clear,
     onDisconnect,
@@ -641,13 +676,6 @@ function Layout() {
     sniperChainId,
     setSniperChainId,
   };
-  const clients = new ApolloClient({
-    uri: chain[switchChain],
-    cache: new InMemoryCache(),
-  });
-
-  const noHeaderRoutes = ['/webx2024'];
-
   return (
     <ApolloProvider client={clients}>
       <Suspense
