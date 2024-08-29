@@ -12,9 +12,11 @@ import { useNavigate } from 'react-router-dom';
 import InfiniteScrollPage from '@/components/InfiniteScroll';
 const { Search } = Input;
 import { useTranslation } from 'react-i18next';
+import { BigNumber, BigNumberish, ethers } from 'ethers';
+import { TokenFactoryManagerAbi } from '@abis/TokenFactoryManagerAbi';
 function ManageTokenList() {
   const { t } = useTranslation();
-  const { chainId, browser, contractConfig } = useContext(CountContext);
+  const { chainId, browser, contractConfig, signer } = useContext(CountContext);
   const { getAll } = Request();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -56,6 +58,26 @@ function ManageTokenList() {
       setNextLoad(false);
     }
   };
+
+  const getTokenListFromManagement = async () => {
+    const { tokenFactoryManagerAddress } = contractConfig;
+    const address = await signer.getAddress();
+    const tokenListFromManageMentContract = new ethers.Contract(
+      tokenFactoryManagerAddress,
+      TokenFactoryManagerAbi,
+      signer
+    );
+    const res: BigNumber =
+      await tokenListFromManageMentContract.getTokensCount(address);
+    const total = res.toNumber();
+
+    const tokenList = await tokenListFromManageMentContract.getTokens(
+      address,
+      0,
+      total
+    );
+    console.log(tokenList);
+  };
   const changePage = () => {
     if (!isNext) {
       getTokenList(page + 1, searchPar, key);
@@ -71,6 +93,7 @@ function ManageTokenList() {
       setKey('0');
       setSearchPar('');
       setSearName('');
+      getTokenListFromManagement();
     }
   }, [chainId, contractConfig]);
   const items = (item: any) => {

@@ -545,6 +545,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       NotificationChange('error', t('Slider.err'));
       setButtonLoading(false);
       setButtonDescId('1');
+      console.error(e);
       return;
     }
     setButtonLoading(false);

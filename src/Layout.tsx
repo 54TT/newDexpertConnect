@@ -95,6 +95,7 @@ function Layout() {
     }
   }, [chainId]);
   const { open: openTonConnect } = useTonConnectModal();
+  const [signer, setSigner] = useState<ethers.providers.JsonRpcSigner>(null);
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
   useEffect(() => {
@@ -102,6 +103,20 @@ function Layout() {
       tonConnect('login');
     }
   }, [userFriendlyAddress]);
+
+  const getSigner = async () => {
+    if (loginProvider) {
+      const provider = new ethers.providers.Web3Provider(loginProvider);
+      const signer = await provider.getSigner();
+      setSigner(signer);
+    } else {
+      setSigner(null);
+    }
+  };
+
+  useEffect(() => {
+    getSigner();
+  }, [loginProvider]);
   //ton钱包连接
   const tonConnect = async (log?: any) => {
     if (log) {
@@ -515,9 +530,8 @@ function Layout() {
       const ab = await approval();
       await onSessionConnected(ab, 'yes', client);
     } catch (e) {
+      console.log(e);
       return null;
-    } finally {
-      web3Modal.closeModal();
     }
   }, [chains, client, onSessionConnected]);
   const getUserNow = () => {
@@ -609,6 +623,7 @@ function Layout() {
     user,
     setLoad,
     load,
+    signer,
     browser,
     newPairPar,
     setNewPairPar,

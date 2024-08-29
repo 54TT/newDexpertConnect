@@ -1,8 +1,8 @@
 import { useEffect, useContext, useState } from 'react';
 import Back from '../../../component/Background';
 import './index.less';
-import { toWeiWithDecimal } from '@utils/convertEthUnit';
-import { ethers } from 'ethers';
+import { ethToWei, toWeiWithDecimal } from '@utils/convertEthUnit';
+import { BigNumber, ethers } from 'ethers';
 import Request from '@/components/axios';
 import { MintContext } from '../../../index';
 import Cookies from 'js-cookie';
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import Load from '@/components/allLoad/load.tsx';
 import { useTranslation } from 'react-i18next';
 import { reportPayType } from '@/api';
+import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
 export default function resultBox({
   loading,
   result,
@@ -20,7 +21,8 @@ export default function resultBox({
   const history = useNavigate();
   const { t } = useTranslation();
   const { launchTokenPass, formData }: any = useContext(MintContext);
-  const { loginProvider, chainId, contractConfig } = useContext(CountContext);
+  const { loginProvider, chainId, contractConfig, signer } =
+    useContext(CountContext);
   const { getAll } = Request();
   const [tx, setTx] = useState('');
   const token = Cookies.get('token');
@@ -117,13 +119,48 @@ export default function resultBox({
       console.error(e);
       setResult('error');
       setLoading(false);
-      return null
+      return null;
     }
   };
-  useEffect(() => {
-    if (loading && contractConfig?.chainId === Number(chainId)) {
-      deployContract();
+
+  // 使用工厂函数部署token
+  const launchTokenByFactory = async () => {
+    try {
+      const { standardTokenFactoryAddress01 } = contractConfig;
+      const tokenFactory01 = new ethers.Contract(
+        standardTokenFactoryAddress01,
+        StandardTokenFactoryAddress01Abi,
+        signer
+      );
+
+      const { name, symbol, decimals, totalSupply, description } = formData;
+      const metadata = {
+        name,
+        symbol,
+        decimals,
+        totalSupply: BigNumber.from(totalSupply),
+        description,
+        logoLink:
+          'https://news.cnyes.com/_next/image?url=https%3A%2F%2Fimage.theblockbeats.info%2Ffile_v6%2F20240710%2F443fb94f-9e65-4fde-8baa-7488dc83767b.jpg%3Fx-oss-process%3Dimage%2Fquality%2Cq_50%2Fformat%2Cwebp&w=3840&q=75',
+        twitterLink: '',
+        telegramLink: '',
+        discordLink: '',
+        websiteLink: '',
+      };
+
+      const tx = await tokenFactory01.create(2, metadata, {
+        value: toWeiWithDecimal('0.3', 18),
+      });
+    } catch (e) {
+      console.error(e);
     }
+  };
+
+  useEffect(() => {
+    // if (loading && contractConfig?.chainId === Number(chainId)) {
+    //   deployContract();
+    // }
+    launchTokenByFactory();
   }, [loading, contractConfig, chainId]);
 
   return (
