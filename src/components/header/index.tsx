@@ -109,7 +109,7 @@ function Header({ className }) {
               key: 'sniping',
             },
             // { name: 'Buy Bot', img: '/buybotMore.png', key: 'buyBot' },
-            { name: 'Orders', img: '/limit.svg', key: 'limit' },
+            // { name: 'Orders', img: '/limit.svg', key: 'limit' },
           ].map((i: any) => {
             return (
               <p
@@ -248,7 +248,7 @@ function Header({ className }) {
 
   const translateList: any = [
     {
-      key: 'en_US', 
+      key: 'en_US',
       value: t('Translate.en_US'),
       label: 'English',
     },

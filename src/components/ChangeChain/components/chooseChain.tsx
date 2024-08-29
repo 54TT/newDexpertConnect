@@ -42,7 +42,8 @@ function ChooseChain({
     function (i: any) {
       if (value !== i) {
         if (i.value === 'Ton' && i.chainId === '-2') {
-          window.open('https://ton-minter-f9uf.vercel.app/');
+          // window.open('https://ton-minter-f9uf.vercel.app/');
+          return;
         } else if (i?.disabled && disabledChain) {
           return;
         }
