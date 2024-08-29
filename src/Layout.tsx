@@ -1,5 +1,4 @@
 import Header, { I18N_Key } from './components/header/index.tsx';
-import {  signLoginPayload } from 'thirdweb/auth';
 import {
   Route,
   Routes,
@@ -8,6 +7,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import './style/all.less';
+import { Modal } from 'antd';
 import React, {
   createContext,
   Suspense,
@@ -288,6 +288,8 @@ function Layout() {
         web3Modal.closeModal();
       }
       setLoad(false);
+      setIsModalOpenNew(false)
+      setConnectPar(null)
     }
   };
   const login = async (par: any, chain: string, name: string, i?: any) => {
@@ -610,7 +612,14 @@ function Layout() {
   });
   const noHeaderRoutes = ['/webx2024'];
   const { connect: newConnect, isConnecting } = useConnectModal();
-  console.log(isConnecting);
+  console.log(isConnecting)
+  const [isModalOpenNew, setIsModalOpenNew] = useState(false);
+  const [connectPar, setConnectPar] = useState(null);
+
+  const handleCancel = () => {
+    setIsModalOpenNew(false);
+  };
+
   const newConnectWallet = async () => {
     const wallet = await newConnect({ client: newClient }); // opens the connect modal
     console.log('connected to', wallet);
@@ -623,21 +632,26 @@ function Layout() {
         // 获取noce
         const noce = await getNoce(tt?.address);
         if (noce?.data?.nonce) {
-          // const sign = await tt.signMessage({ message: noce?.data?.nonce });
-          const signature = await signLoginPayload({
-            payload: noce?.data?.nonce,
-            account: tt,
+          setIsModalOpenNew(true) 
+          setConnectPar({
+            tt,
+            message: noce?.data?.nonce,
+            address: tt?.address,
           });
-          console.log(signature);
-          // const data = {
-          //   signature: sign,
-          //   addr: tt?.address,
-          //   message: noce?.data?.nonce,
-          // };
-          // login(data, 'eth', 'more');
         }
       }
     }
+  };
+  const lllllllll = async (connectPar: any) => {
+    const sign = await connectPar?.tt.signMessage({
+      message: connectPar?.message,
+    });
+    const data = {
+      signature: sign,
+      addr: connectPar?.address,
+      message: connectPar?.message,
+    };
+    login(data, 'eth', 'more');
   };
 
   const value: any = {
@@ -715,6 +729,23 @@ function Layout() {
           </div>
           <img src="/bodyLeft.png" alt="" className="bodyLeftImg" />
           <img src="/bodyRight.png" alt="" className="bodyRightImg" />
+
+          <Modal
+            title="Basic Modal"
+            open={isModalOpenNew}
+            footer={null}
+            onCancel={handleCancel}
+          >
+            <p
+              onClick={() => {
+                if (connectPar) {
+                  lllllllll(connectPar);
+                }
+              }}
+            >
+              aaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+          </Modal>
         </CountContext.Provider>
       </Suspense>
     </ApolloProvider>
