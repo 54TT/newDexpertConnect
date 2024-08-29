@@ -191,6 +191,7 @@ export const chainList = [
     value: 'Ton',
     icon: '/ton_symbol.svg',
     chainId: '-2',
+    disabled: true,
   },
   {
     value: 'Sepolia',
