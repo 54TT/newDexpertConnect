@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { ChainId, ID_TO_CHAIN_NAME_LOW } from '@/../utils/constants.ts';
 const requestA = axios.create({
-  baseURL:
-    import.meta.env.MODE === 'development'
-      ? 'http://165.22.51.161:8081'
-      : 'https://app.dexpert.io',
+  baseURL:'https://new-dexpert-connect.vercel.app/',
+    // import.meta.env.MODE === 'development'
+    //   ? 'http://165.22.51.161:8081'
+    //   : 'https://app.dexpert.io',
   timeout: 20000,
 });
 requestA.interceptors.request.use(
