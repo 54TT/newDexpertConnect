@@ -433,13 +433,14 @@ function Header({ className }) {
             )}
           </>
         )}
-        <Dropdown menu={{ items: translateList, onClick: onClickTranslate }}>
+        <Dropdown menu={{ items: translateList, onClick: onClickTranslate }} overlayClassName={'language-select'}>
           <div
             className="dis"
             style={{
-              alignItems: 'flex-end',
+              // alignItems: 'flex-end',
+              alignItems: 'center',
               marginRight: '6px',
-              fontSize: '12px',
+              fontSize: '14px',
             }}
             onClick={(e) => {
               e.preventDefault();
@@ -451,7 +452,7 @@ function Header({ className }) {
               style={{ cursor: 'pointer', display: 'block', width: '25px' }}
             />
             <span
-              style={{ color: '#ccc', marginLeft: '2px', marginBottom: '2px' }}
+              style={{ color: '#ccc', marginLeft: '2px', marginBottom: '0px' }}
             >
               {translateList.find((item) => item.key === languageChange).value}
             </span>

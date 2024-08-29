@@ -345,12 +345,15 @@ export default function WalletDetail({
           <div className="detail-body">
             <div className="detail-body-header">
               <p>
-                ${' '}
-                {Number(totalUSDT)
-                  ? Number(totalUSDT)
-                      .toFixed(5)
-                      .replace(/\.?0*$/, '')
-                  : '0'}
+                <span>
+                  ${' '}
+                  {Number(totalUSDT)
+                    ? Number(totalUSDT)
+                        .toFixed(5)
+                        .replace(/\.?0*$/, '')
+                    : '0'}
+                </span>
+                <span>{wallet?.balance} {contractConfig.tokenSymbol}</span>
               </p>
               <p>{wallet?.address}</p>
             </div>

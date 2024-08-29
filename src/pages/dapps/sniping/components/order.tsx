@@ -4,7 +4,7 @@ import { Modal, Dropdown, Tooltip } from 'antd';
 import cookie from 'js-cookie';
 import NotificationChange from '@/components/message';
 const LoadIng = React.lazy(() => import('@/components/allLoad/loading.tsx'));
-
+import {SyncOutlined,} from '@ant-design/icons';
 import Request from '@/components/axios.tsx';
 import { CountContext } from '@/Layout';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,7 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
   const [searchValue, setSearchValue] = useState('');
   const [isOpenDrop, setisOpenDrop] = useState(false);
   const [select, setSelect] = useState('0');
+  const [refreshDeg,setRefreshDeg]=useState(0)
   // 是否在搜索
   const [isSearch, setIsSearch] = useState(false);
   const changePage = () => {
@@ -284,6 +285,17 @@ export default function order({ setIsShow, setOrderPar, chainId }: any) {
             placeholder={t('sniping.Contract')}
           />
         </div>
+        <span 
+          style={{marginLeft:'8px',cursor:'pointer'}}
+          onClick={() => {
+            setRefreshDeg(refreshDeg+1)
+            setLoading(false)
+            setData([])
+            getList(1, '0', '');
+          }}
+        >
+          <SyncOutlined style={{color:'#fff',transform:`rotate(${refreshDeg*180}deg)`,transition:'all 1s ease-in-out'}}  />
+        </span>
         <Dropdown
           menu={{ items }}
           trigger={['click']}

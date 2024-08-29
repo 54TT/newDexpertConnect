@@ -186,7 +186,7 @@ export default function fillData({
             <div className="eth">
               <img src={useToken?.logoUrl} alt="" />
               <span>{useToken?.symbol}</span>
-              <img src="/tokenLogo.svg" alt="" />
+              {/* <img src="/tokenLogo.svg" alt="" /> */}
             </div>
           </div>
         </div>
