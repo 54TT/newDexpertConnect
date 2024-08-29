@@ -639,6 +639,7 @@ function Layout() {
     connect: newConnectWallet,
     tonConnect,
     clear,
+    cccccccccccccccccccccccc:connect,
     onDisconnect,
     handleLogin,
     user,
