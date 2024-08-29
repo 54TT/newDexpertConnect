@@ -10,6 +10,7 @@ function Swap() {
     <div
       className="dis"
       style={{ height: 'calc(100vh - 90px)', justifyContent: 'center' }}
+      // style={{margin:'0 auto'}}
     >
       <div className="dapp-sniper">
         {/*         <div className="dapp-sniper-left">

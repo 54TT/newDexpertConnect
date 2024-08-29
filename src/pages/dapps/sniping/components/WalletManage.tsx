@@ -170,7 +170,7 @@ export default function WalletManage({
             </div>
           </div>
         </div>
-        <span className="wallet-balance">{item.balance} ETH</span>
+        <span className="wallet-balance">{item.balance} {contractConfig.tokenSymbol}</span>
       </div>
     );
   };

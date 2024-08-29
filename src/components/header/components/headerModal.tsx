@@ -25,10 +25,6 @@ function HeaderModal() {
     setEnvironment,
   }: any = useContext(CountContext);
   const routerLocation = useLocation();
-  useEffect(() => {
-    if(routerLocation.pathname === '/webx2024'){
-    }
-  }, []);
   function onAnnouncement(event?: any) {
     environment.push(event?.detail);
     setEnvironment([...environment]);
