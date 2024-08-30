@@ -94,6 +94,13 @@ function HeaderModal() {
   // only wallect connect
   const newWallet=[
     {
+      name: 'MetaMask',
+      img: '/metamask.svg',
+      key: 'MetaMask',
+      value: 'io.metamask',
+      binding: 'ETH',
+    },
+    {
       name: 'WalletConnect',
       img: '/webAll.svg',
       key: 'WalletConnect',
@@ -240,7 +247,7 @@ function HeaderModal() {
                     <button
                       key={i?.key}
                       onClick={() => allConnect(i)}
-                      className={'walletButton'}
+                      className={`walletButton  ${i?.name.toLowerCase()}`}
                     >
                       <img src={i?.img} loading={'lazy'} alt="" />
                       <span>{i.name}</span>
