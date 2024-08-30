@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import './style/all.less';
 import { Modal } from 'antd';
+import { ConnectButton } from 'thirdweb/react';
 import React, {
   createContext,
   Suspense,
@@ -288,8 +289,8 @@ function Layout() {
         web3Modal.closeModal();
       }
       setLoad(false);
-      setIsModalOpenNew(false)
-      setConnectPar(null)
+      setIsModalOpenNew(false);
+      setConnectPar(null);
     }
   };
   const login = async (par: any, chain: string, name: string, i?: any) => {
@@ -612,7 +613,7 @@ function Layout() {
   });
   const noHeaderRoutes = ['/webx2024'];
   const { connect: newConnect, isConnecting } = useConnectModal();
-  console.log(isConnecting)
+  console.log(isConnecting);
   const [isModalOpenNew, setIsModalOpenNew] = useState(false);
   const [connectPar, setConnectPar] = useState(null);
 
@@ -632,12 +633,15 @@ function Layout() {
         // 获取noce
         const noce = await getNoce(tt?.address);
         if (noce?.data?.nonce) {
-          setIsModalOpenNew(true) 
-          setConnectPar({
-            tt,
+          const sign = await tt.signMessage({
             message: noce?.data?.nonce,
-            address: tt?.address,
           });
+          const data = {
+            signature: sign,
+            addr: tt?.address,
+            message: noce?.data?.nonce,
+          };
+          login(data, 'eth', 'more');
         }
       }
     }
@@ -653,7 +657,6 @@ function Layout() {
     };
     login(data, 'eth', 'more');
   };
-
   const value: any = {
     connect: newConnectWallet,
     tonConnect,
@@ -696,6 +699,7 @@ function Layout() {
     sniperChainId,
     setSniperChainId,
   };
+
   return (
     <ApolloProvider client={clients}>
       <Suspense
@@ -709,6 +713,7 @@ function Layout() {
           <Header
             className={`${noHeaderRoutes.includes(router.pathname) ? 'hide-header' : ''}`}
           />
+          <ConnectButton client={newClient} />
           <Routes>
             <Route path="/webx2024" element={<Webx2024 />} />
           </Routes>
@@ -729,7 +734,6 @@ function Layout() {
           </div>
           <img src="/bodyLeft.png" alt="" className="bodyLeftImg" />
           <img src="/bodyRight.png" alt="" className="bodyRightImg" />
-
           <Modal
             title="Basic Modal"
             open={isModalOpenNew}
