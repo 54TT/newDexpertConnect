@@ -1068,7 +1068,13 @@ body::-webkit-scrollbar-thumb {
   height: 200px;
   flex-shrink: 0;
 }
-
+@media (max-width: 768px) {
+  .headerModal{
+    .metamask{
+      display: none !important;
+    }
+  }
+}
 .headerModal {
   display: flex;
   align-items: center;
