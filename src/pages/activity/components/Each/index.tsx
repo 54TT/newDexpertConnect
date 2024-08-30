@@ -118,19 +118,21 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
-  const getT = async (id: string) => {
+  const getT = async (i: any) => {
     const token = cookie.get('token');
     try {
       const par: any = {
-        '1': '/api/v1/oauth/twitter/link',
-        '2': '/api/v1/oauth/telegram/chat/link',
-        '3': '/api/v1/oauth/discord/link',
+        'follow-dexpert-twitter': '/api/v1/oauth/twitter/link',
+        'join-dexpert-tg': '/api/v1/oauth/telegram/chat/link',
+        'join-dexpert-discord': '/api/v1/oauth/discord/link',
       };
       if (token) {
         const res = await getAll({
-          method: id === '2' ? 'post' : 'get',
-          url: par[id] ? par[id] : '/api/v1/oauth/instagram/link',
-          data: { taskId: id },
+          method: i?.operationSymbol === 'join-dexpert-tg' ? 'post' : 'get',
+          url: par[i?.operationSymbol]
+            ? par[i?.operationSymboloperation]
+            : '/api/v1/oauth/instagram/link',
+          data: { taskId: i?.taskId },
           token,
         });
         if (res?.data?.url) {
@@ -150,16 +152,20 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   const handleCancel = () => {
     setIsModalOpe(false);
   };
-
-  const verifyJointActivities = async (token: string, taskId: string) => {
+  const verifyJointActivities = async (
+    token: string,
+    taskId: string,
+    i: any
+  ) => {
     try {
       const res = await getAll({
         method: 'post',
-        url:
-          taskId === '11'
-            ? '/api/v1/campaign/yuliverse/verify'
-            : '/api/v1/campaign/petGPT/verify',
-        data: { taskId },
+        url: '/api/v1/campaign/jointly-common/verify',
+        data: {
+          taskId: taskId,
+          chainName: i?.chainName,
+          projectName: i?.projectName,
+        },
         token,
       });
       if (res?.status === 200) {
@@ -175,32 +181,22 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   };
   const claimJointActivities = async (token: string, taskId: string) => {
     try {
-      const par: any = {
-        '11': '/api/v1/campaign/yuliverse/claim',
-        '14': '/api/v1/campaign/petGPT/claim',
-        '15': '/api/v1/campaign/yuliverse/golden-pass/claim',
-        '16': '/api/v1/campaign/petGPT/golden-pass/claim',
-      };
-      if (par[taskId]) {
-        const res = await getAll({
-          method: 'post',
-          url: par[taskId],
-          data: { taskId },
-          token,
+      const res = await getAll({
+        method: 'post',
+        url: '/api/v1/campaign/jointly-common/claim',
+        data: { taskId },
+        token,
+      });
+      if (res?.status === 200) {
+        setUserPar({
+          ...user,
+          rewardPointCnt:
+            Number(user?.rewardPointCnt) + Number(res?.data?.score),
         });
-        if (res?.status === 200) {
-          if (taskId === '11' || taskId === '14') {
-            setUserPar({
-              ...user,
-              rewardPointCnt:
-                Number(user?.rewardPointCnt) + Number(res?.data?.score),
-            });
-          }
-          getParams();
-          setLoading(false);
-        } else {
-          setLoading(false);
-        }
+        getParams();
+        setLoading(false);
+      } else {
+        setLoading(false);
       }
     } catch (e) {
       setLoading(false);
@@ -273,15 +269,17 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   const param = async (it: any, i: any) => {
     const token = cookie.get('token');
     if (token) {
+      // dexpert  活动
       if (i?.mode === '2') {
         if (option === 'daily') {
           //   id为8的  是twitter
-          if (it?.taskId !== '8') {
+          if (it?.operationSymbol !== 'dexpert-twitter-quote') {
             signIn(
               token,
-              it?.taskId === '6'
+              it?.operationSymbol === 'dexpert-tg-checkin'
                 ? '/api/v1/telegram/signInChannelLink'
                 : '/api/v1/discord/signInChannelLink'
+              // dexpert-discord-checkin
             );
           } else {
             getLink(it?.taskId, token);
@@ -295,11 +293,20 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
               verify(it?.taskId);
             }
           } else {
-            getT(it?.taskId);
+            getT(it);
           }
         }
       } else {
+        // 特别活动下的
         if (option === 'daily') {
+          if (i?.operationSymbol === 'tg') {
+            verifyJointActivities
+          }
+          if (i?.operationSymbol === 'discord') {
+          }
+          if (i?.operationSymbol === 'twitter') {
+          }
+
           if (i?.mode === '1') {
             publicVerifyClaim(it, token, i, 'daily');
           } else if (i?.mode === '1') {
@@ -316,25 +323,12 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
             getLink(it?.taskId, token);
           }
         } else {
-          if (Number(i?.mode === '1')) {
-            publicVerifyClaim(it, token, i);
-          }
-          if (it?.taskId === '11') {
+          if (it?.operationSymbol === 'verify and claim') {
             if (Number(it?.isCompleted)) {
               claimJointActivities(token, it?.taskId);
             } else {
-              verifyJointActivities(token, it?.taskId);
+              verifyJointActivities(token, it?.taskId, i);
             }
-          }
-          if (it?.taskId === '14') {
-            if (Number(it?.isCompleted)) {
-              claimJointActivities(token, it?.taskId);
-            } else {
-              verifyJointActivities(token, it?.taskId);
-            }
-          }
-          if (it?.taskId === '15' || it?.taskId === '16') {
-            claimJointActivities(token, it?.taskId);
           }
         }
       }
