@@ -57,6 +57,7 @@ const Request = () => {
     name: string,
     chainId?: any
   ) => {
+    try {
     const abc = await requestA({
       method,
       params: method === 'get' ? data : method === 'delete' ? data : '',
@@ -75,7 +76,10 @@ const Request = () => {
     if (abc?.status === 200) {
       return abc;
     }
-  };
+  }catch(err){
+    return Promise.reject(err)
+  }
+};
 
   const getAll = async (name: any) => {
     const { method, url, data, token, chainId } = name as any;
