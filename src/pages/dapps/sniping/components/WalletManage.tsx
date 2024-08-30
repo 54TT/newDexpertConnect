@@ -103,6 +103,7 @@ export default function WalletManage({
     }
   };
   useEffect(() => {
+    setWalletList([])
     getWalletList(1);
     setLoading(false);
   }, [isLogin, id]);
