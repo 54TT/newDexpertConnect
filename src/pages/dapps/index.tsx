@@ -1,12 +1,12 @@
 import './in.less';
-import React,{ useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 const BuyBot = React.lazy(() => import('./buyBot'));
 
 import { CountContext } from '@/Layout';
 import { useParams, useNavigate } from 'react-router-dom';
 const Swap = React.lazy(() => import('./swap'));
 const Sniping = React.lazy(() => import('./sniping'));
-const Limit = React.lazy(() => import('./limit'));
+// const Limit = React.lazy(() => import('./limit'));
 const Mint = React.lazy(() => import('./mint'));
 
 export default function index() {
@@ -55,16 +55,16 @@ export default function index() {
     //   },
     //   key: 'buyBot',
     // },
-    {
-      imgAc: '/limitActive.svg',
-      img: '/limit.svg',
-      status: params?.id === 'limit',
-      name: 'Orders',
-      onClick: () => {
-        history('/dapps/limit');
-      },
-      key: 'limit',
-    },
+    // {
+    //   imgAc: '/limitActive.svg',
+    //   img: '/limit.svg',
+    //   status: params?.id === 'limit',
+    //   name: 'Orders',
+    //   onClick: () => {
+    //     history('/dapps/limit');
+    //   },
+    //   key: 'limit',
+    // },
     // {
     //   imgAc: '/mainActive.svg',
     //   img: '/mainMore.svg',
@@ -133,7 +133,7 @@ export default function index() {
       {params?.id === 'swap' && <Swap />}
       {params?.id === 'sniping' && <Sniping />}
       {params?.id === 'buyBot' && <BuyBot />}
-      {params?.id === 'limit' && <Limit />}
+      {/* {params?.id === 'limit' && <Limit />} */}
       {params?.id === 'tokencreation' && <Mint />}
     </div>
   );
