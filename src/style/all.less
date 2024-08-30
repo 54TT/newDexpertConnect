@@ -648,6 +648,24 @@ body::-webkit-scrollbar-thumb {
     // background: linear-gradient(to right, rgb(134, 240, 151), rgb(0, 255, 71));
     background-color: #86f097;
   }
+
+  
+}
+.language-select{
+  .ant-dropdown-menu{
+    background:#2d2d2d;
+    .ant-dropdown-menu-item{
+      &:hover{
+        background-color: #86f097;
+        span{
+          color:#1a1a1a
+        }
+      }
+      span{
+        color: rgba(255, 255, 255, 0.85);
+      }
+    }
+  }
 }
 
 .rightTweetBox {
@@ -1050,7 +1068,13 @@ body::-webkit-scrollbar-thumb {
   height: 200px;
   flex-shrink: 0;
 }
-
+@media (max-width: 768px) {
+  .headerModal{
+    .metamask{
+      display: none !important;
+    }
+  }
+}
 .headerModal {
   display: flex;
   align-items: center;

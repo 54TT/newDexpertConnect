@@ -91,6 +91,8 @@ async function buildOrder(
     .input({ token:inputToken,startAmount:inputAmount,endAmount:inputAmount })
     .output({token:outputToken,startAmount:outputAmount,endAmount:outputAmount,recipient:recipient})
     .build()
+
+    
     const{ domain,types,values }=order.permitData()
     // @ts-ignore
     const signature=await orderCreator._signTypedData(domain,types,values)

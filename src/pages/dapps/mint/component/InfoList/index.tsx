@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import Copy from '@/components/copy';
 import { CountContext } from '@/Layout';
 function InfoList({ data, className }: { data: any; className?: string }) {
+  console.log(data);
+  
   const { contractConfig } = useContext(CountContext);
   const { t } = useTranslation();
   const par: any = {

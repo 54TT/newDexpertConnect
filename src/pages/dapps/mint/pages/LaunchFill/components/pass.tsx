@@ -71,7 +71,7 @@ export default function pass() {
     <div className="passBox">
       <p className="title">{t('token.Fee')}</p>
       <p className="hint" style={{ fontSize: '15px', margin: '8px 0' }}>
-        {`${contractConfig.launchFee} ${contractConfig.tokenSymbol} ${t('token.need')}`}
+        {`${launchTokenPass==='launch'||launchTokenPass==='gloden'?'0':contractConfig.launchFee} ${contractConfig.tokenSymbol} ${t('token.need')}`}
       </p>
       {loading ? (
         <div className="passItem">
@@ -101,13 +101,13 @@ export default function pass() {
         <Loading status={'20'} browser={browser} />
       )}
       <div className="showBot">
-        <p className="hint">{t('token.Notice')}</p>
+        {/* <p className="hint">{t('token.Notice')}</p>
         <p className="hint">
           {t('token.be', {
-            value: contractConfig.launchFee,
+            value: launchTokenPass==='launch'||launchTokenPass==='gloden'?'0':contractConfig.launchFee,
             symbol: contractConfig.tokenSymbol,
           })}
-        </p>
+        </p> */}
       </div>
     </div>
   );

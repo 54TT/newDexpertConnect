@@ -25,10 +25,6 @@ function HeaderModal() {
     setEnvironment,
   }: any = useContext(CountContext);
   const routerLocation = useLocation();
-  useEffect(() => {
-    if(routerLocation.pathname === '/webx2024'){
-    }
-  }, []);
   function onAnnouncement(event?: any) {
     environment.push(event?.detail);
     setEnvironment([...environment]);
@@ -91,6 +87,13 @@ function HeaderModal() {
   );
   // only wallect connect
   const newWallet=[
+    {
+      name: 'MetaMask',
+      img: '/metamask.svg',
+      key: 'MetaMask',
+      value: 'io.metamask',
+      binding: 'ETH',
+    },
     {
       name: 'WalletConnect',
       img: '/webAll.svg',
@@ -238,7 +241,7 @@ function HeaderModal() {
                     <button
                       key={i?.key}
                       onClick={() => allConnect(i)}
-                      className={'walletButton'}
+                      className={`walletButton  ${i?.name.toLowerCase()}`}
                     >
                       <img src={i?.img} loading={'lazy'} alt="" />
                       <span>{i.name}</span>
