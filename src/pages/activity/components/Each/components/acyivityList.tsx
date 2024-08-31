@@ -153,7 +153,7 @@ export default function acyivityList({
                 if (!isVerify && !loading) {
                   param(it, i?.campaign);
                   cookie.set('taskId', it?.taskId);
-                  setSelect(it?.taskId);
+                  setSelect({taskId:it?.taskId,mode:i?.campaign?.mode});
                   setLoading(true);
                 }
               },
@@ -162,7 +162,7 @@ export default function acyivityList({
             )}
             className={'start'}
           >
-            {loading && select === it?.taskId ? (
+            {loading && select?.taskId === it?.taskId ? (
               <Load />
             ) : (
               operate(it?.isCompleted, it?.title,i)

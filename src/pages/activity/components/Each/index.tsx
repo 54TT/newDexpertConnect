@@ -1,4 +1,4 @@
-import { useLocation,  } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { CountContext } from '@/Layout.tsx';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +25,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     setIsVerify(false);
   }, [data]);
   const [selectActive, setSelectActive] = useState('');
-  const [select, setSelect] = useState('');
+  const [select, setSelect] = useState(null);
   const [isModalOpen, setIsModalOpe] = useState(false);
   const signIn = async (token: string, url: string, taskId?: string) => {
     try {
@@ -125,12 +125,11 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         'join-dexpert-tg': '/api/v1/oauth/telegram/chat/link',
         'join-dexpert-discord': '/api/v1/oauth/discord/link',
       };
+      const url = par[i?.operationSymbol];
       if (token) {
         const res = await getAll({
           method: i?.operationSymbol === 'join-dexpert-tg' ? 'post' : 'get',
-          url: par[i?.operationSymbol]
-            ? par[i?.operationSymboloperation]
-            : '/api/v1/oauth/instagram/link',
+          url,
           data: { taskId: i?.taskId },
           token,
         });
@@ -150,6 +149,8 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   };
   const handleCancel = () => {
     setIsModalOpe(false);
+    setSelect(null);
+    setLink('');
   };
   const verifyJointActivities = async (
     token: string,
@@ -299,7 +300,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         // 特别活动下的
         if (option === 'daily') {
           if (i?.operationSymbol === 'tg') {
-            verifyJointActivities
+            verifyJointActivities;
           }
           if (i?.operationSymbol === 'discord') {
           }
@@ -345,15 +346,15 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return '';
     }
   };
-  const operate = (isCompleted: string, title: string,i:any) => {
+  const operate = (isCompleted: string, title: string, i: any) => {
     if (option === 'daily') {
-      if (i?.campaign?.mode==='1') {
+      if (i?.campaign?.mode === '1') {
         return t('Market.Claim');
       } else {
         return t('Market.start');
       }
     } else if (option === 'first') {
-      if (i?.campaign?.mode==='2') {
+      if (i?.campaign?.mode === '2') {
         if (Number(isCompleted)) {
           if (Number(isCompleted) === 1) {
             return change(title);
