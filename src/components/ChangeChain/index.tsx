@@ -66,7 +66,7 @@ function ChangeChain({
           // 尝试添加链
           addChain(chainId, chainData);
         } else {
-          console.error('Error switching chain:', e);
+          return null
         }
       }
     }

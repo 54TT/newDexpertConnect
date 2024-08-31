@@ -1,4 +1,4 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation,  } from 'react-router-dom';
 import { CountContext } from '@/Layout.tsx';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     useContext(CountContext);
   const { getAll } = Request();
   const router = useLocation();
-  const params: any = useParams();
   const [loading, setLoading] = useState(false);
   const [isVerify, setIsVerify] = useState(false);
   const { t } = useTranslation();
@@ -346,15 +345,15 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return '';
     }
   };
-  const operate = (isCompleted: string, title: string) => {
+  const operate = (isCompleted: string, title: string,i:any) => {
     if (option === 'daily') {
-      if (Number(params?.id) >= 4) {
+      if (i?.campaign?.mode==='1') {
         return t('Market.Claim');
       } else {
         return t('Market.start');
       }
     } else if (option === 'first') {
-      if (params?.id === '1') {
+      if (i?.campaign?.mode==='2') {
         if (Number(isCompleted)) {
           if (Number(isCompleted) === 1) {
             return change(title);
@@ -434,7 +433,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
                         arr,
                         index,
                         setSelectActive,
-                        params,
                         option,
                         loading,
                         i,
