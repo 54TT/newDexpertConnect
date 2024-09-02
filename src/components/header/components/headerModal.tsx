@@ -10,7 +10,6 @@ import { ConnectButton, useActiveAccount } from 'thirdweb/react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { createWallet } from 'thirdweb/wallets';
-import {  createAuth } from 'thirdweb/auth';
 import { useConnectModal } from 'thirdweb/react';
 import { darkTheme } from 'thirdweb/react';
 function HeaderModal() {
@@ -34,6 +33,7 @@ function HeaderModal() {
     environment.push(event?.detail);
     setEnvironment([...environment]);
   }
+
   useEffect(() => {
     window.addEventListener('eip6963:announceProvider', onAnnouncement);
     window.dispatchEvent(new Event('eip6963:requestProvider'));
@@ -91,25 +91,29 @@ function HeaderModal() {
       e?.target?.children?.[1]?.click();
     }
   };
-  const thirdwebAuth = createAuth({
-    domain: 'http://localhost:5173',
-    client,
-    adminAccount: account,
-  });
 
   const { connect, isConnecting } = useConnectModal();
-  console.log(isConnecting)
+  console.log(isConnecting);
   const ttttttt = async () => {
-    const wallet = await connect({ client, wallets: wallets, setActive: true }); // opens the connect modal
-    console.log('connected to', wallet);
- const tt= await wallet?.connect({client,personalAccount:account})
-      const signature = await tt.signMessage({
+    const wallet = await connect({ client, wallets: wallets}); // opens the connect modal
+    console.log(wallet);
+    if(wallet?.id){
+      // const tt = await wallet?.connect({ client, personalAccount: account });
+      const ttt = await wallet?.autoConnect({ client, personalAccount: account });
+      console.log(ttt);
+      const signatures = await ttt.signMessage({
         message:
-          'Verify your account in Dexpert.io\nVerification token:\n1725007362959-BDXCFAXGXBC-mwwb5fnpth',
+          'http://localhost:5173 wants you to sign in with your Ethereum account:\n0xb34C0CFAC19819524892E09Afda7402E57CbcDA6\n\ntttttttttttttt\n\nVersion: 1\nNonce: 你好\nIssued At: 1\nExpiration Time: 1\nNot Before: 1',
       });
-    console.log(signature);
-
+      console.log(signatures);
+      // const signature = await tt.signMessage({
+      //   message:
+      //     'http://localhost:5173 wants you to sign in with your Ethereum account:\n0xb34C0CFAC19819524892E09Afda7402E57CbcDA6\n\ntttttttttttttt\n\nVersion: 1\nNonce: 你好\nIssued At: 1\nExpiration Time: 1\nNot Before: 1',
+      // });
       // console.log(signature);
+    }
+   
+    // console.log(signature);
     // const signatureResult = await signLoginPayload({
     //   account,
     //   payload: {
@@ -146,6 +150,7 @@ function HeaderModal() {
       onOk={handleCancel}
       onCancel={handleCancel}
     >
+      
       {isModalSet ? (
         <div className={'headerModalSetName'}>
           <p>{t('Common.new')}</p>
@@ -188,7 +193,6 @@ function HeaderModal() {
               auth={{
                 async doLogin(params: any) {
                   if (params?.payload) {
-                    console.log(params);
                     const data = {
                       signature: params?.signature,
                       addr: params?.payload?.address,
@@ -199,32 +203,36 @@ function HeaderModal() {
                 },
                 async doLogout() {},
                 async getLoginPayload(params) {
-                  // const data: any = await getAll({
-                  //   method: 'post',
-                  //   url: '/api/v1/token',
-                  //   data: { address },
-                  //   token: '',
-                  //   chainId: '',
-                  // });
-                  // console.log(params);
-                  // if (data?.status === 200) {
-                  //   return {
-                  //     ...params,
-                  //     // domain: window.location?.href?.toString(),
-                  //     domain: '',
-                  //     statement: '',
-                  //     version: '1',
-                  //     // nonce: data?.data?.nonce,
-                  //     nonce: 'Verify your account in Dexpert.io\nVerification token:\n1725007362959-BDXCFAXGXBC-mwwb5fnpth',
-                  //     // issued_at: dayjs().format('YYYY-MM-DD')?.toString(),
-                  //     issued_at: '',
-                  //     expiration_time: '',
-                  //     invalid_before: '',
-                  //   };
-                  // }
-                  const data = thirdwebAuth.generatePayload(params);
-                  console.log(data);
-                  return data;
+                  return {
+                    ...params,
+                    domain: 'http://localhost:5173',
+                    statement: 'tttttttttttttt',
+                    version: '1',
+                    nonce: '你好',
+                    issued_at: '1',
+                    expiration_time: '1',
+                    invalid_before: '1',
+                  };
+                  const data: any = await getAll({
+                    method: 'post',
+                    url: '/api/v1/token',
+                    data: { address },
+                    token: '',
+                    chainId: '',
+                  });
+                  if (data?.status === 200) {
+                    return {
+                      ...params,
+                      // domain: window.location?.href?.toString(),
+                      domain: '',
+                      statement: '',
+                      version: '1',
+                      nonce: data?.data?.nonce,
+                      issued_at: '',
+                      expiration_time: '',
+                      invalid_before: '',
+                    };
+                  }
                 },
                 async isLoggedIn(address: string) {
                   setAddress(address);
