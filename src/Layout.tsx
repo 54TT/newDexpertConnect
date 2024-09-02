@@ -8,7 +8,6 @@ import {
 } from 'react-router-dom';
 import './style/all.less';
 import { Modal } from 'antd';
-import { ConnectButton } from 'thirdweb/react';
 import React, {
   createContext,
   Suspense,
@@ -76,6 +75,7 @@ function Layout() {
   const [contractConfig, setContractConfig] = useState();
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
+  console.log(environment)
   const [loginProvider, setloginProvider] = useState<any>(null);
   const [sniperChainId, setSniperChainId] = useState('1');
   const [chainId, setChainId] = useState('1'); // swap 链切换
@@ -289,11 +289,13 @@ function Layout() {
         web3Modal.closeModal();
       }
       setLoad(false);
+      setIsModalOpen(false)
       setIsModalOpenNew(false);
       setConnectPar(null);
     }
   };
   const login = async (par: any, chain: string, name: string, i?: any) => {
+    console.log(par)
     try {
       const inviteCode = search.get('inviteCode')
         ? search.get('inviteCode')
@@ -396,6 +398,7 @@ function Layout() {
               method: 'personal_sign',
               params: [message, account[0]],
             });
+            console.log(sign)
             const data = { signature: sign, addr: account[0], message };
             login(data, 'eth', 'more', i);
           } else {
@@ -697,7 +700,7 @@ function Layout() {
     environment,
     setEnvironment,
     sniperChainId,
-    setSniperChainId,
+    setSniperChainId,login
   };
 
   return (
@@ -713,7 +716,6 @@ function Layout() {
           <Header
             className={`${noHeaderRoutes.includes(router.pathname) ? 'hide-header' : ''}`}
           />
-          <ConnectButton client={newClient} />
           <Routes>
             <Route path="/webx2024" element={<Webx2024 />} />
           </Routes>

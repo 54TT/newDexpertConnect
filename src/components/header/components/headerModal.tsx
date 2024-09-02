@@ -5,32 +5,31 @@ import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
 import { throttle } from 'lodash-es';
 import NotificationChange from '@/components/message';
+import { client } from '@/client.ts';
+import { ConnectButton, useActiveAccount } from 'thirdweb/react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { createWallet } from 'thirdweb/wallets';
+import {  createAuth } from 'thirdweb/auth';
+import { useConnectModal } from 'thirdweb/react';
+import { darkTheme } from 'thirdweb/react';
 function HeaderModal() {
+  const account = useActiveAccount();
   const {
     browser,
     isModalOpen,
     setIsModalOpen,
-    changeBindind,
     isModalSet,
     setIsModalSet,
-    connect,
     setLoad,
-    handleLogin,
     user,
     setUserPar,
     tonConnect,
     environment,
     setEnvironment,
+    login,
   }: any = useContext(CountContext);
   const routerLocation = useLocation();
-  useEffect(() => {
-    console.log(routerLocation.pathname);
-    if(routerLocation.pathname === '/webx2024'){
-
-    }
-  }, []);
   function onAnnouncement(event?: any) {
     environment.push(event?.detail);
     setEnvironment([...environment]);
@@ -49,6 +48,8 @@ function HeaderModal() {
     setLoad(false);
   };
   const [value, setValue] = useState('');
+  const [address, setAddress] = useState('');
+  console.log(address);
   const changeName = (e: any) => {
     setValue(e.target.value);
   };
@@ -75,128 +76,64 @@ function HeaderModal() {
     1500,
     { trailing: false }
   );
-  const connectWallet = throttle(
-    function (i: any) {
-      handleLogin(i);
-      setIsModalOpen(false);
-    },
-    1500,
-    { trailing: false }
-  );
-  const onConnect = throttle(
-    function () {
-      connect();
-      setIsModalOpen(false);
-    },
-    1500,
-    { trailing: false }
-  );
+
   // only wallect connect
-  const newWallet=[
-    {
-      name: 'WalletConnect',
-      img: '/webAll.svg',
-      key: 'WalletConnect',
-      binding: 'ETH',
-    },
-  ]
-  const wallet = [
-    {
-      name: 'MetaMask',
-      img: '/metamask.svg',
-      key: 'MetaMask',
-      value: 'io.metamask',
-      binding: 'ETH',
-    },
-    {
-      name: 'Coinbase Wallet',
-      img: '/coinbase.svg',
-      key: 'Coinbase Wallet',
-      value: 'com.coinbase.wallet',
-      binding: 'ETH',
-    },
-    {
-      name: 'OKX Wallet',
-      img: '/okx.png',
-      key: 'OKX Wallet',
-      value: 'com.okex.wallet',
-      binding: 'ETH',
-    },
-    {
-      name: 'Trust Wallet',
-      img: '/trust.png',
-      key: 'Trust Wallet',
-      value: 'com.trustwallet.app',
-      binding: 'ETH',
-    },
-    {
-      name: 'Phantom',
-      img: '/phantom.png',
-      key: 'Phantom',
-      value: 'app.phantom',
-      binding: 'ETH',
-    },
-    { name: 'Ton', img: '/ton.webp', key: 'Ton', binding: 'Ton' },
-    {
-      name: 'WalletConnect',
-      img: '/webAll.svg',
-      key: 'WalletConnect',
-      binding: 'ETH',
-    },
+  const wallets = [
+    createWallet('io.metamask'),
+    createWallet('app.phantom'),
+    createWallet('app.backpack'),
+    createWallet('com.trustwallet.app'),
+    createWallet('com.okex.wallet'),
+    createWallet('com.coinbase.wallet'),
   ];
-  const allConnect = throttle(
-    async function (i: any) {
-      if (i.key === 'WalletConnect') {
-        onConnect();
-        setLoad(true);
-        setIsModalOpen(false);
-      } else if (i.key === 'Ton') {
-        tonConnect();
-      } else {
-        //  判断浏览器是否安装了  evm链钱包
-        const data = environment.filter(
-          (item: any) =>
-            item?.info?.name === i?.key || item?.info?.rdns === i?.value
-        );
-        if (data.length > 0) {
-          //   判断是否是   phantom钱包  solana连接
-          connectWallet(data[0]);
-          setLoad(true);
-          setIsModalOpen(false);
-        } else {
-          if (i?.key === 'Phantom' || i.value === 'app.phantom') {
-            window.open(
-              'https://chromewebstore.google.com/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa?utm_source=ext_app_menu'
-            );
-          } else if (
-            i?.key === 'Coinbase Wallet' ||
-            i.value === 'com.coinbase.wallet'
-          ) {
-            window.open(
-              'https://chromewebstore.google.com/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad?utm_source=ext_app_menu'
-            );
-          } else if (
-            i?.key === 'Trust Wallet' ||
-            i.value === 'com.trustwallet.app'
-          ) {
-            window.open(
-              'https://chromewebstore.google.com/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph?utm_source=ext_app_menu'
-            );
-          } else if (i?.key === 'OKX Wallet' || i.value === 'com.okex.wallet') {
-            window.open(
-              'https://chromewebstore.google.com/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/mcohilncbfahbmgdjkbpemcciiolgcge?hl=en-US&utm_source=ext_sidebar'
-            );
-          } else if (i?.key === 'MetaMask' || i.value === 'io.metamask') {
-            window.open(
-              'https://chromewebstore.google.com/detail/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en-US&utm_source=ext_sidebar'
-            );
-          }
-        }
-      }
-    },
-    1500,
-    { trailing: false }
-  );
+  const clickConnect = async (e: any) => {
+    if (e?.target?.children) {
+      e?.target?.children?.[1]?.click();
+    }
+  };
+  const thirdwebAuth = createAuth({
+    domain: 'http://localhost:5173',
+    client,
+    adminAccount: account,
+  });
+
+  const { connect, isConnecting } = useConnectModal();
+  console.log(isConnecting)
+  const ttttttt = async () => {
+    const wallet = await connect({ client, wallets: wallets, setActive: true }); // opens the connect modal
+    console.log('connected to', wallet);
+ const tt= await wallet?.connect({client,personalAccount:account})
+      const signature = await tt.signMessage({
+        message:
+          'Verify your account in Dexpert.io\nVerification token:\n1725007362959-BDXCFAXGXBC-mwwb5fnpth',
+      });
+    console.log(signature);
+
+      // console.log(signature);
+    // const signatureResult = await signLoginPayload({
+    //   account,
+    //   payload: {
+    //     address: '0x47830e8E79ed834221ced674F7051A18d9918485',
+    //     // domain: window.location?.href?.toString(),
+    //     domain: '',
+    //     statement: '',
+    //     version: '1',
+    //     // nonce: data?.data?.nonce,
+    //     nonce:
+    //       'Verify your account in Dexpert.io\nVerification token:\n1725007362959-BDXCFAXGXBC-mwwb5fnpth',
+    //     // issued_at: dayjs().format('YYYY-MM-DD')?.toString(),
+    //     issued_at: '',
+    //     expiration_time: '',
+    //     invalid_before: '',
+    //   },
+    // });
+    // const signature = await account.signMessage({
+    //   message:
+    //     'Verify your account in Dexpert.io\nVerification token:\n1725007362959-BDXCFAXGXBC-mwwb5fnpth',
+    // });
+    // console.log(signature);
+  };
+
   return (
     <Modal
       destroyOnClose={true}
@@ -230,57 +167,79 @@ function HeaderModal() {
             style={{ width: '120px' }}
           />
           <p>{t('Common.Connect to Dexpert')}</p>
-          {
-            routerLocation.pathname === '/webx2024'?
-            (
-              newWallet.map((i: any) => {
-                return (
-                  (!changeBindind?.current ||
-                    changeBindind?.current === i?.binding) && (
-                    <button
-                      key={i?.key}
-                      onClick={() => allConnect(i)}
-                      className={'walletButton'}
-                    >
-                      <img src={i?.img} loading={'lazy'} alt="" />
-                      <span>{i.name}</span>
-                    </button>
-                  )
-                );
-              })
-            ):(
-              wallet.map((i: any) => {
-                return (
-                  (!changeBindind?.current ||
-                    changeBindind?.current === i?.binding) && (
-                    <button
-                      key={i?.key}
-                      onClick={() => allConnect(i)}
-                      className={'walletButton'}
-                    >
-                      <img src={i?.img} loading={'lazy'} alt="" />
-                      <span>{i.name}</span>
-                    </button>
-                  )
-                );
-              })
-            )
-          }
-          {/* {wallet.map((i: any) => {
-            return (
-              (!changeBindind?.current ||
-                changeBindind?.current === i?.binding) && (
-                <button
-                  key={i?.key}
-                  onClick={() => allConnect(i)}
-                  className={'walletButton'}
-                >
-                  <img src={i?.img} loading={'lazy'} alt="" />
-                  <span>{i.name}</span>
-                </button>
-              )
-            );
-          })} */}
+          {routerLocation.pathname !== '/webx2024' && (
+            <button onClick={tonConnect} className={'walletButton'}>
+              <img src={'/ton.webp'} loading={'lazy'} alt="" />
+              <span>Ton</span>
+            </button>
+          )}
+          <div className="WalletConnect" onClickCapture={clickConnect}>
+            <img src={'/webAll.svg'} loading={'lazy'} alt="" />
+            <ConnectButton
+              client={client}
+              wallets={wallets}
+              connectButton={{ label: 'WalletConnect' }}
+              theme={darkTheme({
+                colors: {
+                  primaryButtonBg: '#000000',
+                  primaryButtonText: '#ffffff',
+                },
+              })}
+              auth={{
+                async doLogin(params: any) {
+                  if (params?.payload) {
+                    console.log(params);
+                    const data = {
+                      signature: params?.signature,
+                      addr: params?.payload?.address,
+                      message: params?.payload?.nonce,
+                    };
+                    login(data, 'eth', 'more');
+                  }
+                },
+                async doLogout() {},
+                async getLoginPayload(params) {
+                  // const data: any = await getAll({
+                  //   method: 'post',
+                  //   url: '/api/v1/token',
+                  //   data: { address },
+                  //   token: '',
+                  //   chainId: '',
+                  // });
+                  // console.log(params);
+                  // if (data?.status === 200) {
+                  //   return {
+                  //     ...params,
+                  //     // domain: window.location?.href?.toString(),
+                  //     domain: '',
+                  //     statement: '',
+                  //     version: '1',
+                  //     // nonce: data?.data?.nonce,
+                  //     nonce: 'Verify your account in Dexpert.io\nVerification token:\n1725007362959-BDXCFAXGXBC-mwwb5fnpth',
+                  //     // issued_at: dayjs().format('YYYY-MM-DD')?.toString(),
+                  //     issued_at: '',
+                  //     expiration_time: '',
+                  //     invalid_before: '',
+                  //   };
+                  // }
+                  const data = thirdwebAuth.generatePayload(params);
+                  console.log(data);
+                  return data;
+                },
+                async isLoggedIn(address: string) {
+                  setAddress(address);
+                  // if (address) {
+                  //   return true;
+                  // } else {
+                  // }
+                  return false;
+                },
+              }}
+            />
+          </div>
+          <div onClick={ttttttt} style={{ height: '100px' }}>
+            ddddddddddd
+          </div>
         </div>
       )}
     </Modal>
