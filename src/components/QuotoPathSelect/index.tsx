@@ -20,7 +20,7 @@ function QuotoPathSelect({ data, onChange, chainId }) {
       {
         key: '0',
         title: <WrapTitle text="Uniswap V2" icon={'/uniswap-uni-logo.svg'} />,
-        label: <WrapTitle text="Uniswap V3" icon={'/uniswap-uni-logo.svg'} />,
+        label: <WrapTitle text="Uniswap V2" icon={'/uniswap-uni-logo.svg'} />,
       },
       {
         key: '1',

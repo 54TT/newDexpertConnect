@@ -114,7 +114,6 @@ export default function resultBox({
         setTx(deployTransaction?.hash);
       }
     } catch (e) {
-      console.error(e);
       setResult('error');
       setLoading(false);
       return null

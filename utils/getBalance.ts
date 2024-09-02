@@ -17,7 +17,6 @@ async function getBalance(address: any, id: string): Promise<any> {
     })
 
     const balances=await Promise.all(balancesPromise);
-    // console.log(balances)
     return balances;
 
 

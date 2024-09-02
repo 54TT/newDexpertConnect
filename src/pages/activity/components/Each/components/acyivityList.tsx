@@ -11,7 +11,6 @@ export default function acyivityList({
   arr,
   index,
   setSelectActive,
-  params,
   option,
   loading,
   i,
@@ -42,7 +41,7 @@ export default function acyivityList({
   };
 
   const changeTitle = (title: string, extra: any) => {
-    if (params?.id === '1') {
+    if (i?.campaign?.mode==='2') {
       return title;
     } else {
       if (extra) {
@@ -58,8 +57,8 @@ export default function acyivityList({
     }
   };
 
-  const showScore = (campaignId: string, it: any) => {
-    if (params?.id === '1') {
+  const showScore = (mode: string, it: any) => {
+    if (i?.campaign?.mode === '2') {
       if (Number(it?.score)) {
         return '+' + it?.score;
       } else {
@@ -75,7 +74,7 @@ export default function acyivityList({
         }
       } else {
         if (option === 'first') {
-          if (Number(campaignId) >= 4) {
+          if (Number(mode) === 1) {
             if (Number(it?.isCompleted)) {
               if (it?.operationSymbol?.includes('golden')) {
                 return t('Dpass.deadline');
@@ -145,7 +144,7 @@ export default function acyivityList({
             marginRight: '20px',
           }}
         >
-          {showScore(i?.campaign?.campaignId, it)}
+          {showScore(i?.campaign?.mode, it)}
         </p>
         {Number(it?.isCompleted) !== 3 ? (
           <div
@@ -154,7 +153,7 @@ export default function acyivityList({
                 if (!isVerify && !loading) {
                   param(it, i?.campaign);
                   cookie.set('taskId', it?.taskId);
-                  setSelect(it?.taskId);
+                  setSelect({taskId:it?.taskId,mode:i?.campaign?.mode});
                   setLoading(true);
                 }
               },
@@ -163,10 +162,10 @@ export default function acyivityList({
             )}
             className={'start'}
           >
-            {loading && select === it?.taskId ? (
+            {loading && select?.taskId === it?.taskId ? (
               <Load />
             ) : (
-              operate(it?.isCompleted, it?.title)
+              operate(it?.isCompleted, it?.title,i)
             )}
           </div>
         ) : (
@@ -182,14 +181,14 @@ export default function acyivityList({
         {/* 验证 */}
         {option === 'daily' &&
           Number(it?.isCompleted) !== 3 &&
-          Number(params?.id) < 4 && (
+          i?.campaign?.mode==='2' && (
             <div
               className={'verify'}
               onClick={throttle(
                 function () {
                   if (!isVerify && !loading) {
                     setIsVerify(true);
-                    if (!it?.title?.includes('Twitter') && params?.id === '1') {
+                    if (!it?.title?.includes('Twitter') && i?.campaign?.mode === '2') {
                       getParams();
                     } else {
                       verification(it?.taskId);
