@@ -6,18 +6,18 @@ export default function form({ form, formData, onFinishForm }) {
   const { t } = useTranslation();
   const [showAdv, setShowAdv] = useState(false);
 
-  const item = (name: string, staus?: string) => {
-    return (
-      <p
-        className="itemHint"
-        style={{
-          marginBottom: staus === 'last' ? '' : '15px',
-        }}
-      >
-        {name}
-      </p>
-    );
-  };
+  // const item = (name: string, staus?: string) => {
+  //   return (
+  //     <p
+  //       className="itemHint"
+  //       style={{
+  //         marginBottom: staus === 'last' ? '' : '15px',
+  //       }}
+  //     >
+  //       {name}
+  //     </p>
+  //   );
+  // };
   return (
     <>
       <div
@@ -43,7 +43,19 @@ export default function form({ form, formData, onFinishForm }) {
               },
             ]}
           >
-            <Input placeholder={t('token.token')} autoComplete={'off'} />
+            <Input placeholder={'Name'} autoComplete={'off'} />
+          </Form.Item>
+          <Form.Item
+            name="name"
+            rules={[
+              { required: true, message: t('token.input') },
+              {
+                pattern: new RegExp('^[A-Za-z][A-Za-z0-9]*$'),
+                message: t('token.nameValidMessage'),
+              },
+            ]}
+          >
+            <Input placeholder={'Name'} autoComplete={'off'} />
           </Form.Item>
           <Form.Item
             name="symbol"
@@ -71,10 +83,28 @@ export default function form({ form, formData, onFinishForm }) {
             />
           </Form.Item>
           <Form.Item
-            name="decimals"
+            name="websiteLink"
             rules={[{ required: true, message: t('token.input') }]}
           >
-            <InputNumber placeholder={t('token.decimals')} controls={false} />
+            <Input placeholder={'website'} autoComplete={'off'} />
+          </Form.Item>
+          <Form.Item
+            name="twitterLink"
+            rules={[{ required: true, message: t('token.input') }]}
+          >
+            <Input placeholder={'twitter'} autoComplete={'off'} />
+          </Form.Item>
+          <Form.Item
+            name="telegramLink"
+            rules={[{ required: true, message: t('token.input') }]}
+          >
+            <Input placeholder={'telegram'} autoComplete={'off'} />
+          </Form.Item>
+          <Form.Item
+            name="discordLink"
+            rules={[{ required: true, message: t('token.input') }]}
+          >
+            <Input placeholder={'discord'} autoComplete={'off'} />
           </Form.Item>
           <Form.Item name="description">
             <TextArea
@@ -85,94 +115,15 @@ export default function form({ form, formData, onFinishForm }) {
           </Form.Item>
           {showAdv && (
             <>
-              <Form.Item name="initialBuyTax">
+              <Form.Item
+                name="decimals"
+                rules={[{ required: true, message: t('token.input') }]}
+              >
                 <InputNumber
-                  placeholder={t('token.tax')}
+                  placeholder={t('token.decimals')}
                   controls={false}
-                  stringMode={true}
                 />
               </Form.Item>
-              {item(t('token.tax'))}
-              <Form.Item name="initialSellTax">
-                <InputNumber
-                  placeholder={t('token.sel')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.sel'))}
-              <Form.Item name="finalBuyTax">
-                <InputNumber
-                  placeholder={t('token.final')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.final'))}
-              <Form.Item name="finalSellTax">
-                <InputNumber
-                  placeholder={t('token.sela')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.sela'))}
-              <Form.Item name="reduceBuyTaxAt">
-                <InputNumber
-                  placeholder={t('token.redu')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.redu'))}
-              <Form.Item name="reduceSellTaxAt">
-                <InputNumber
-                  placeholder={t('token.reduce')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.reduce'))}
-              <Form.Item name="preventSwapBefore">
-                <InputNumber
-                  placeholder={t('token.Before')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.Before'))}
-              <Form.Item name="maxTxAmount">
-                <InputNumber
-                  placeholder={t('token.of')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.of'))}
-              <Form.Item name="maxWalletSize">
-                <InputNumber
-                  placeholder={t('token.size')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.size'))}
-              <Form.Item name="maxTaxSwap">
-                <InputNumber
-                  placeholder={t('token.taxs')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.taxs'))}
-              <Form.Item name="taxSwapThreshold">
-                <InputNumber
-                  placeholder={t('token.swap')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.swap'), 'last')}
             </>
           )}
         </Form>

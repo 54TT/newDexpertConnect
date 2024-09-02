@@ -15,18 +15,7 @@ import Result from './pages/Result';
 export const MintContext = createContext(null);
 export const initFormData: Partial<FormDataType> = {
   decimals: '18',
-  preventSwapBefore: '0',
-  maxTxAmount: '20000',
-  maxTaxSwap: '10000',
-  taxSwapThreshold: '0',
   maxWalletSize: '20000',
-  initialBuyTax: '0',
-  initialSellTax: '0',
-  finalBuyTax: '0',
-  finalSellTax: '0',
-  reduceBuyTaxAt: '0',
-  reduceSellTaxAt: '0',
-  payTokenType: '0',
 };
 function Mint() {
   const [launchTokenPass, setLaunchTokenPass] = useState('more');

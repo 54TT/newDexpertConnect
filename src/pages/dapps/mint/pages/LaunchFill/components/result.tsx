@@ -133,34 +133,35 @@ export default function resultBox({
         signer
       );
 
-      const { name, symbol, decimals, totalSupply, description } = formData;
+      const { name, symbol, decimals, totalSupply, description, ...props } =
+        formData;
       const metadata = {
         name,
         symbol,
         decimals,
         totalSupply: BigNumber.from(totalSupply),
         description,
+        ...props,
         logoLink:
           'https://news.cnyes.com/_next/image?url=https%3A%2F%2Fimage.theblockbeats.info%2Ffile_v6%2F20240710%2F443fb94f-9e65-4fde-8baa-7488dc83767b.jpg%3Fx-oss-process%3Dimage%2Fquality%2Cq_50%2Fformat%2Cwebp&w=3840&q=75',
-        twitterLink: '',
-        telegramLink: '',
-        discordLink: '',
-        websiteLink: '',
       };
-
-      const tx = await tokenFactory01.create(2, metadata, {
-        value: toWeiWithDecimal('0.3', 18),
-      });
+      console.log(metadata);
+      const tx = await tokenFactory01.create(
+        launchTokenPass === 'more' ? 0 : 2,
+        metadata,
+        {
+          value: toWeiWithDecimal('0.3', 18),
+        }
+      );
     } catch (e) {
       console.error(e);
     }
   };
 
   useEffect(() => {
-    // if (loading && contractConfig?.chainId === Number(chainId)) {
-    //   deployContract();
-    // }
-    launchTokenByFactory();
+    if (loading && contractConfig?.chainId === Number(chainId)) {
+      launchTokenByFactory();
+    }
   }, [loading, contractConfig, chainId]);
 
   return (
