@@ -179,20 +179,36 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
-  const claimJointActivities = async (token: string, taskId: string) => {
+  const claimJointActivities = async (
+    token: string,
+    taskId: string,
+    operationSymbol: string,
+    i?:any
+  ) => {
     try {
       const res = await getAll({
         method: 'post',
-        url: '/api/v1/campaign/jointly-common/claim',
-        data: { taskId },
+        url:
+          operationSymbol === 'golden pass'
+            ? '/api/v1/campaign/jointly-common/golden-pass/claim'
+            : operationSymbol === 'verify and claim'
+              ? '/api/v1/campaign/jointly-common/claim'
+              : '/api/v1/campaign/jointly-common/daily-task/claim',
+        data:
+          operationSymbol !== 'golden pass' &&
+          operationSymbol !== 'verify and claim'
+            ? {projectName:i?.projectName,taskId,chainName:i?.chainName}
+            : { taskId },
         token,
       });
       if (res?.status === 200) {
-        setUserPar({
-          ...user,
-          rewardPointCnt:
-            Number(user?.rewardPointCnt) + Number(res?.data?.score),
-        });
+        if (operationSymbol === 'verify and claim') {
+          setUserPar({
+            ...user,
+            rewardPointCnt:
+              Number(user?.rewardPointCnt) + Number(res?.data?.score),
+          });
+        }
         getParams();
         setLoading(false);
       } else {
@@ -226,60 +242,19 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     }
   };
 
-  const publicVerifyClaim = async (
-    it: any,
-    token: string,
-    i: any,
-    name?: any
-  ) => {
-    const url =
-      name === 'daily'
-        ? '/api/v1/campaign/jointly-common/daily-task/claim'
-        : it?.operationSymbol?.includes('golden')
-          ? '/api/v1/campaign/jointly-common/golden-pass/claim'
-          : Number(it?.isCompleted)
-            ? '/api/v1/campaign/jointly-common/claim'
-            : '/api/v1/campaign/jointly-common/verify';
-    const data =
-      !Number(it?.isCompleted) || name === 'daily'
-        ? {
-            taskId: it?.taskId,
-            chainName: i?.chainName,
-            projectName: i?.projectName,
-          }
-        : { taskId: it?.taskId };
-    try {
-      const res: any = await getAll({
-        method: 'post',
-        url,
-        data,
-        token,
-      });
-      if (res?.status === 200) {
-        setLoading(false);
-        getParams();
-      } else {
-        setLoading(false);
-      }
-    } catch (e) {
-      setLoading(false);
-      return null;
-    }
-  };
   const param = async (it: any, i: any) => {
     const token = cookie.get('token');
     if (token) {
       // dexpert  活动
       if (i?.mode === '2') {
         if (option === 'daily') {
-          //   id为8的  是twitter
+          //    的  是twitter
           if (it?.operationSymbol !== 'dexpert-twitter-quote') {
             signIn(
               token,
               it?.operationSymbol === 'dexpert-tg-checkin'
                 ? '/api/v1/telegram/signInChannelLink'
                 : '/api/v1/discord/signInChannelLink'
-              // dexpert-discord-checkin
             );
           } else {
             getLink(it?.taskId, token);
@@ -299,33 +274,14 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       } else {
         // 特别活动下的
         if (option === 'daily') {
-          if (i?.operationSymbol === 'tg') {
-            verifyJointActivities;
-          }
-          if (i?.operationSymbol === 'discord') {
-          }
-          if (i?.operationSymbol === 'twitter') {
-          }
-
-          if (i?.mode === '1') {
-            publicVerifyClaim(it, token, i, 'daily');
-          } else if (i?.mode === '1') {
-            signIn(
-              token,
-              it?.taskId === '17'
-                ? '/api/v1/campaign/petGPT/tg/claim'
-                : it?.taskId === '18'
-                  ? '/api/v1/campaign/petGPT/discord/claim'
-                  : '/api/v1/campaign/petGPT/twitter/claim',
-              it?.taskId
-            );
-          } else {
-            getLink(it?.taskId, token);
-          }
+          claimJointActivities(token, it?.taskId, it?.operationSymbol,i);
         } else {
-          if (it?.operationSymbol === 'verify and claim') {
+          if (
+            it?.operationSymbol === 'verify and claim' ||
+            it?.operationSymbol === 'golden pass'
+          ) {
             if (Number(it?.isCompleted)) {
-              claimJointActivities(token, it?.taskId);
+              claimJointActivities(token, it?.taskId, it?.operationSymbol);
             } else {
               verifyJointActivities(token, it?.taskId, i);
             }
