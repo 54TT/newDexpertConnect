@@ -219,6 +219,7 @@ export const ID_TO_CHAIN_NAME_LOW = {
   '169': 'manta',
   '71': 'conflux-testnet',
   '1030': 'conflux',
+  '-2': 'ton',
 };
 
 export const CHAIN_ID_TO_CHAIN_NAME = () =>
