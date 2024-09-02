@@ -182,6 +182,7 @@ function ManageTokenDetail() {
         <Loading status={'20'} browser={browser} />
       )}
       {!isLoading && <div style={{ width: '100%', height: '20px' }}></div>}
+      <p className="hint">{t('token.note')}</p>
       <Button {...buttonParams} />
       <CommonModal
         className="mint-common-modal"
@@ -212,7 +213,7 @@ function ManageTokenDetail() {
           }}
         />
       </CommonModal>
-      <p className="hint">{t('token.note')}</p>
+      {/* <p className="hint">{t('token.note')}</p> */}
     </div>
   );
 }

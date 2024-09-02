@@ -211,6 +211,8 @@ export default function WalletDetail({
           onClick={() => {
             if (item?.address !== tokenItem?.address) {
               setTokenItem(item);
+              // 切换token，活动条重置
+              setSlider(0)
             }
           }}
         >
@@ -369,7 +371,7 @@ export default function WalletDetail({
                         .replace(/\.?0*$/, '')
                     : '0'}
                 </span>
-                <span>{wallet?.balance} {contractConfig.tokenSymbol}</span>
+                {/* <span>{wallet?.balance} {contractConfig.tokenSymbol}</span> */}
               </p>
               <p>{wallet?.address}</p>
             </div>
