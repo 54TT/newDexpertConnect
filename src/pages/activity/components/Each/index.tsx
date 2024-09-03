@@ -55,19 +55,18 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
-  const follow = async (id: any) => {
+  const follow = async (operationSymbol: string,id:string) => {
     const token = cookie.get('token');
     try {
       if (token) {
-        const par: any = {
-          '1': '/api/v1/oauth/twitter/follow',
-          '2': '/api/v1/oauth/telegram/chat/follow',
-          '3': '/api/v1/oauth/discord/follow',
-          '5': '/api/v1/oauth/instagram/follow',
+        const par: any = { 
+          'dexpert-twitter-quote': '/api/v1/oauth/twitter/follow',
+          'dexpert-tg-checkin': '/api/v1/oauth/telegram/chat/follow',
+          'join-dexpert-discord': '/api/v1/oauth/discord/follow',
         };
         const res = await getAll({
-          method: id === '2' ? 'post' : 'get',
-          url: par[id],
+          method: operationSymbol === 'dexpert-tg-checkin' ? 'post' : 'get',
+          url: par[operationSymbol],
           data: { taskId: id },
           token,
         });
@@ -85,18 +84,18 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
-  const verify = async (id: string) => {
+  const verify = async (operationSymbol:string,id: string) => {
     const token = cookie.get('token');
     try {
       if (token) {
         const par: any = {
-          '1': '/api/v1/oauth/twitter/verify',
-          '2': '/api/v1/oauth/telegram/chat/verify',
-          '3': '/api/v1/oauth/discord/verify',
+          'dexpert-twitter-quote': '/api/v1/oauth/twitter/verify',
+          'dexpert-tg-checkin': '/api/v1/oauth/telegram/chat/verify',
+          'join-dexpert-discord': '/api/v1/oauth/discord/verify',
         };
         const res = await getAll({
           method: 'post',
-          url: par[id] ? par[id] : '/api/v1/oauth/instagram/verify',
+          url: par[operationSymbol] ? par[operationSymbol] : '/api/v1/oauth/instagram/verify',
           data: { taskId: id },
           token,
         });
@@ -262,10 +261,10 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         } else if (option === 'first') {
           if (Number(it?.isCompleted)) {
             if (Number(it?.isCompleted) === 1) {
-              follow(it?.taskId);
+              follow(it?.operationSymbol,it?.taskId);
             }
             if (Number(it?.isCompleted) === 2) {
-              verify(it?.taskId);
+              verify(it?.operationSymbol,it?.taskId);
             }
           } else {
             getT(it);
