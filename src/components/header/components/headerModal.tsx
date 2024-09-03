@@ -1,5 +1,5 @@
 import { Input, Modal } from 'antd';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
@@ -12,6 +12,8 @@ import { useLocation } from 'react-router-dom';
 import { createWallet } from 'thirdweb/wallets';
 import { useConnectModal } from 'thirdweb/react';
 import { darkTheme } from 'thirdweb/react';
+import { createLoginMessage } from '@utils/updateNonce';
+import dayjs from 'dayjs';
 function HeaderModal() {
   const account = useActiveAccount();
   const {
@@ -33,7 +35,7 @@ function HeaderModal() {
     environment.push(event?.detail);
     setEnvironment([...environment]);
   }
-
+  const current: any = useRef(null);
   useEffect(() => {
     window.addEventListener('eip6963:announceProvider', onAnnouncement);
     window.dispatchEvent(new Event('eip6963:requestProvider'));
@@ -94,25 +96,34 @@ function HeaderModal() {
 
   const { connect, isConnecting } = useConnectModal();
   console.log(isConnecting);
-  const ttttttt = async () => {
-    const wallet = await connect({ client, wallets: wallets}); // opens the connect modal
-    console.log(wallet);
-    if(wallet?.id){
-      // const tt = await wallet?.connect({ client, personalAccount: account });
-      const ttt = await wallet?.autoConnect({ client, personalAccount: account });
-      console.log(ttt);
-      const signatures = await ttt.signMessage({
+
+  const yyyyy = async () => {
+    const wallet = await connect({ client, wallets: wallets }); // opens the connect modal
+    if (wallet?.id) {
+      await wallet?.connect({ client, personalAccount: account });
+      const signatures = await account.signMessage({
         message:
           'http://localhost:5173 wants you to sign in with your Ethereum account:\n0xb34C0CFAC19819524892E09Afda7402E57CbcDA6\n\ntttttttttttttt\n\nVersion: 1\nNonce: 你好\nIssued At: 1\nExpiration Time: 1\nNot Before: 1',
       });
       console.log(signatures);
-      // const signature = await tt.signMessage({
-      //   message:
-      //     'http://localhost:5173 wants you to sign in with your Ethereum account:\n0xb34C0CFAC19819524892E09Afda7402E57CbcDA6\n\ntttttttttttttt\n\nVersion: 1\nNonce: 你好\nIssued At: 1\nExpiration Time: 1\nNot Before: 1',
-      // });
-      // console.log(signature);
     }
-   
+  };
+  const ttttttt = async () => {
+    const wallet = await connect({ client, wallets: wallets }); // opens the connect modal
+    console.log(wallet);
+    if (wallet?.id) {
+      const tt = await wallet?.connect({ client, personalAccount: account });
+      // const ttt = await wallet?.autoConnect({
+      //   client,
+      //   personalAccount: account,
+      // });
+      console.log(tt);
+      const signatures = await tt.signMessage({
+        message:
+          'http://localhost:5173 wants you to sign in with your Ethereum account:\n0xb34C0CFAC19819524892E09Afda7402E57CbcDA6\n\ntttttttttttttt\n\nVersion: 1\nNonce: 你好\nIssued At: 1\nExpiration Time: 1\nNot Before: 1',
+      });
+      console.log(signatures);
+    }
     // console.log(signature);
     // const signatureResult = await signLoginPayload({
     //   account,
@@ -138,6 +149,20 @@ function HeaderModal() {
     // console.log(signature);
   };
 
+  const loginTo = (params: any) => {
+    const data = {
+      signature: params?.signature,
+      addr: params?.payload?.address,
+      message: current.current,
+    };
+    login(data, 'eth', 'more');
+  };
+  const changeNoce = (name: string) => {
+    if (name) {
+      current.current = name;
+    }
+  };
+
   return (
     <Modal
       destroyOnClose={true}
@@ -150,7 +175,6 @@ function HeaderModal() {
       onOk={handleCancel}
       onCancel={handleCancel}
     >
-      
       {isModalSet ? (
         <div className={'headerModalSetName'}>
           <p>{t('Common.new')}</p>
@@ -193,26 +217,11 @@ function HeaderModal() {
               auth={{
                 async doLogin(params: any) {
                   if (params?.payload) {
-                    const data = {
-                      signature: params?.signature,
-                      addr: params?.payload?.address,
-                      message: params?.payload?.nonce,
-                    };
-                    login(data, 'eth', 'more');
+                    loginTo(params);
                   }
                 },
                 async doLogout() {},
                 async getLoginPayload(params) {
-                  return {
-                    ...params,
-                    domain: 'http://localhost:5173',
-                    statement: 'tttttttttttttt',
-                    version: '1',
-                    nonce: '你好',
-                    issued_at: '1',
-                    expiration_time: '1',
-                    invalid_before: '1',
-                  };
                   const data: any = await getAll({
                     method: 'post',
                     url: '/api/v1/token',
@@ -221,25 +230,26 @@ function HeaderModal() {
                     chainId: '',
                   });
                   if (data?.status === 200) {
-                    return {
+                    const paramsNonce: any = {
                       ...params,
-                      // domain: window.location?.href?.toString(),
-                      domain: '',
+                      domain: window.location?.href?.toString(),
                       statement: '',
                       version: '1',
                       nonce: data?.data?.nonce,
-                      issued_at: '',
-                      expiration_time: '',
-                      invalid_before: '',
+                      issued_at: dayjs().format('YYYY-MM-DD'),
+                      expiration_time: dayjs().format('YYYY-MM-DD'),
+                      invalid_before: dayjs().format('YYYY-MM-DD'),
                     };
+                    const TT = createLoginMessage(paramsNonce);
+                    console.log(TT);
+                    if (TT) {
+                      changeNoce(TT);
+                      return paramsNonce;
+                    }
                   }
                 },
                 async isLoggedIn(address: string) {
                   setAddress(address);
-                  // if (address) {
-                  //   return true;
-                  // } else {
-                  // }
                   return false;
                 },
               }}
@@ -247,6 +257,10 @@ function HeaderModal() {
           </div>
           <div onClick={ttttttt} style={{ height: '100px' }}>
             ddddddddddd
+          </div>
+
+          <div onClick={yyyyy} style={{ height: '100px', color: 'white' }}>
+            ttttttttt
           </div>
         </div>
       )}
