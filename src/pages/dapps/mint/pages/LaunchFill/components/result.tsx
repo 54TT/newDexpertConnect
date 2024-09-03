@@ -20,7 +20,7 @@ export default function resultBox({
 }: any) {
   const history = useNavigate();
   const { t } = useTranslation();
-  const { launchTokenPass, formData }: any = useContext(MintContext);
+  const { launchTokenPass, formData } = useContext(MintContext);
   const { loginProvider, chainId, contractConfig, signer } =
     useContext(CountContext);
   const { getAll } = Request();
@@ -67,7 +67,7 @@ export default function resultBox({
     1: '4', // glodenPass
     2: '1', // dpass
   };
-
+  /* 
   const deployContract = async () => {
     try {
       // const { data } = await getByteCode();
@@ -121,7 +121,7 @@ export default function resultBox({
       setLoading(false);
       return null;
     }
-  };
+  }; */
 
   // 使用工厂函数部署token
   const launchTokenByFactory = async () => {
@@ -133,28 +133,37 @@ export default function resultBox({
         signer
       );
 
-      const { name, symbol, decimals, totalSupply, description, ...props } =
-        formData;
+      const { totalSupply, fees, level, ...props } = formData;
       const metadata = {
-        name,
-        symbol,
-        decimals,
         totalSupply: BigNumber.from(totalSupply),
-        description,
         ...props,
-        logoLink:
-          'https://news.cnyes.com/_next/image?url=https%3A%2F%2Fimage.theblockbeats.info%2Ffile_v6%2F20240710%2F443fb94f-9e65-4fde-8baa-7488dc83767b.jpg%3Fx-oss-process%3Dimage%2Fquality%2Cq_50%2Fformat%2Cwebp&w=3840&q=75',
       };
-      console.log(metadata);
+
       const tx = await tokenFactory01.create(
-        launchTokenPass === 'more' ? 0 : 2,
+        launchTokenPass === 'more' ? level : 0,
         metadata,
         {
-          value: toWeiWithDecimal('0.3', 18),
+          value: launchTokenPass === 'more' ? fees : 0,
         }
       );
+      setTx(tx?.hash);
+      sendReportPayType(
+        tx.hash,
+        payTypeMap[launchTokenPass === 'more' ? 0 : 2]
+      );
+      const recipent = await tx.wait();
+
+      if (recipent.status == 1) {
+        setLoading(false);
+        setResult('success');
+      } else {
+        setLoading(false);
+        setResult('error');
+      }
     } catch (e) {
       console.error(e);
+      setResult('error');
+      setLoading(false);
     }
   };
 

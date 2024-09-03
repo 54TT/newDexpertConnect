@@ -6,13 +6,19 @@ import { CountContext } from '@/Layout';
 import Loading from '@/components/allLoad/loading.tsx';
 import { MintContext } from '../../../index';
 import { useTranslation } from 'react-i18next';
+import { ethers } from 'ethers';
+import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
+import { toEthWithDecimal } from '@utils/convertEthUnit';
 export default function pass() {
   const { t } = useTranslation();
   const { getAll } = Request();
-  const { browser, chainId, contractConfig }: any = useContext(CountContext);
-  const { launchTokenPass, setLaunchTokenPass }: any = useContext(MintContext);
+  const { browser, chainId, contractConfig, signer }: any =
+    useContext(CountContext);
+  const { launchTokenPass, setLaunchTokenPass, setFormData, formData }: any =
+    useContext(MintContext);
   const [params, setParams] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { standardTokenFactoryAddress01, tokenSymbol } = contractConfig;
   const getPass = async () => {
     const token = cookie.get('token');
     const res = await getAll({
@@ -23,13 +29,28 @@ export default function pass() {
       chainId,
     });
     if (res?.status === 200) {
-      setParams(res?.data);
+      const { data } = res;
+
+      setParams(data);
+      const tokenFactoryContract = new ethers.Contract(
+        standardTokenFactoryAddress01,
+        StandardTokenFactoryAddress01Abi,
+        signer
+      );
+      const fees = await tokenFactoryContract.fees(Number(data.level));
+      setFormData({ ...formData, fees, level: data.level });
       setLoading(true);
     } else {
       setLoading(true);
     }
   };
-  const passItem = (name: string, data: string, key: string, show: string) => {
+  const passItem = (
+    name: string,
+    data: string,
+    key: string,
+    show: string,
+    hide?: boolean
+  ) => {
     return (
       <div
         className="item"
@@ -46,7 +67,7 @@ export default function pass() {
         }}
       >
         <div>
-          {data && (
+          {!hide && (
             <div
               className="left"
               style={{
@@ -69,18 +90,20 @@ export default function pass() {
   }, [chainId, contractConfig]);
   return (
     <div className="passBox">
-      <p className="title">{t('token.Fee')}</p>
-      <p className="hint" style={{ fontSize: '15px', margin: '8px 0' }}>
+      {/* <p className="title">{t('token.Fee')}</p> */}
+      {/* <p className="hint" style={{ fontSize: '15px', margin: '8px 0' }}>
         {`${contractConfig.launchFee} ${contractConfig.tokenSymbol} ${t('token.need')}`}
-      </p>
+      </p> */}
       {loading ? (
         <div className="passItem">
           {params?.launchBotCreationCnt &&
             passItem(
               'D Pass',
-              Number(params?.launchBotCreationCnt)
-                ? params?.launchBotCreationCnt
-                : '0',
+              `Balance: ${
+                Number(params?.launchBotCreationCnt)
+                  ? params?.launchBotCreationCnt
+                  : '0'
+              }`,
               'launch',
               params?.launchBotCreationCnt
             )}
@@ -95,19 +118,25 @@ export default function pass() {
               'gloden',
               params?.stopTs
             )}
-          {passItem(t('token.Fee'), '', 'more', '1')}
+          {passItem(
+            '创建费用:',
+            `${toEthWithDecimal(formData.fees, 18)} ${tokenSymbol}`,
+            'more',
+            '1',
+            true
+          )}
         </div>
       ) : (
         <Loading status={'20'} browser={browser} />
       )}
       <div className="showBot">
-        <p className="hint">{t('token.Notice')}</p>
-        <p className="hint">
+        {/* <p className="hint">{t('token.Notice')}</p> */}
+        {/* <p className="hint">
           {t('token.be', {
             value: contractConfig.launchFee,
             symbol: contractConfig.tokenSymbol,
           })}
-        </p>
+        </p> */}
       </div>
     </div>
   );

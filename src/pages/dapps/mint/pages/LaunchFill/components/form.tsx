@@ -1,11 +1,16 @@
-import { Form, Input, InputNumber } from 'antd';
+import { Button, Form, Input, InputNumber } from 'antd';
 const { TextArea } = Input;
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import './index.less';
+import { useState } from 'react';
+import CommonModal from '@/components/CommonModal';
 export default function form({ form, formData, onFinishForm }) {
   const { t } = useTranslation();
-  const [showAdv, setShowAdv] = useState(false);
-
+  const logoLinkValue = Form.useWatch('logoLink', form);
+  const [logoLinkModal, setLogoLinkModal] = useState(false);
+  const [logoLink, setLogoLink] = useState(logoLinkValue);
+  // const [showAdv, setShowAdv] = useState(false);
   // const item = (name: string, staus?: string) => {
   //   return (
   //     <p
@@ -18,11 +23,21 @@ export default function form({ form, formData, onFinishForm }) {
   //     </p>
   //   );
   // };
+
+  const openIconModal = () => {
+    setLogoLinkModal(true);
+  };
+
+  const onConfirmIcon = () => {
+    setLogoLinkModal(false);
+    form.setFieldValue('logoLink', logoLink);
+  };
+
   return (
     <>
       <div
         className="launch-form mint-scroll scroll"
-        style={{ height: showAdv ? '380px' : '305px', overflowX: 'hidden' }}
+        style={{ height: '75%', overflowX: 'hidden' }}
       >
         <Form
           form={form}
@@ -33,45 +48,38 @@ export default function form({ form, formData, onFinishForm }) {
           wrapperCol={{ span: 24 }}
           labelAlign="right"
         >
+          <span className="launch-form-item-label">1.设置形象</span>
+          <Form.Item name="logoLink" className="launch-head-icon-item">
+            <div className="launch-form-icon" onClick={openIconModal}>
+              <img
+                src={logoLinkValue ? logoLinkValue : '/default-edit-icon.png'}
+                alt=""
+              />
+              <div className="launch-form-edit">
+                <img
+                  className="launch-form-edit-icon"
+                  src="/editable.png"
+                  alt=""
+                />
+              </div>
+            </div>
+          </Form.Item>
+          <span className="launch-form-item-label">2.代币名称</span>
+
           <Form.Item
             name="name"
-            rules={[
-              { required: true, message: t('token.input') },
-              {
-                pattern: new RegExp('^[A-Za-z][A-Za-z0-9]*$'),
-                message: t('token.nameValidMessage'),
-              },
-            ]}
+            rules={[{ required: true, message: t('token.input') }]}
           >
             <Input placeholder={'Name'} autoComplete={'off'} />
           </Form.Item>
-          <Form.Item
-            name="name"
-            rules={[
-              { required: true, message: t('token.input') },
-              {
-                pattern: new RegExp('^[A-Za-z][A-Za-z0-9]*$'),
-                message: t('token.nameValidMessage'),
-              },
-            ]}
-          >
-            <Input placeholder={'Name'} autoComplete={'off'} />
-          </Form.Item>
+          <span className="launch-form-item-label">3.代币符号</span>
           <Form.Item
             name="symbol"
-            rules={[
-              { required: true, message: t('token.input') },
-              {
-                pattern: new RegExp('^[A-Za-z][A-Za-z0-9]*$'),
-                message: t('token.nameValidMessage'),
-              },
-            ]}
+            rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input
-              placeholder={t('token.symbol') + '  ( ' + t('token.first') + ' )'}
-              autoComplete={'off'}
-            />
+            <Input placeholder={t('token.symbol')} autoComplete={'off'} />
           </Form.Item>
+          <span className="launch-form-item-label">4.总供应量</span>
           <Form.Item
             name="totalSupply"
             rules={[{ required: true, message: t('token.input') }]}
@@ -82,30 +90,20 @@ export default function form({ form, formData, onFinishForm }) {
               stringMode={true}
             />
           </Form.Item>
-          <Form.Item
-            name="websiteLink"
-            rules={[{ required: true, message: t('token.input') }]}
-          >
+          <span className="launch-form-item-label">5.社交媒体</span>
+          <Form.Item name="websiteLink">
             <Input placeholder={'website'} autoComplete={'off'} />
           </Form.Item>
-          <Form.Item
-            name="twitterLink"
-            rules={[{ required: true, message: t('token.input') }]}
-          >
+          <Form.Item name="twitterLink">
             <Input placeholder={'twitter'} autoComplete={'off'} />
           </Form.Item>
-          <Form.Item
-            name="telegramLink"
-            rules={[{ required: true, message: t('token.input') }]}
-          >
+          <Form.Item name="telegramLink">
             <Input placeholder={'telegram'} autoComplete={'off'} />
           </Form.Item>
-          <Form.Item
-            name="discordLink"
-            rules={[{ required: true, message: t('token.input') }]}
-          >
+          <Form.Item name="discordLink">
             <Input placeholder={'discord'} autoComplete={'off'} />
           </Form.Item>
+          <span className="launch-form-item-label">6.介绍</span>
           <Form.Item name="description">
             <TextArea
               placeholder={t('token.describe')}
@@ -113,35 +111,48 @@ export default function form({ form, formData, onFinishForm }) {
               style={{ minHeight: '66px' }}
             />
           </Form.Item>
-          {showAdv && (
-            <>
-              <Form.Item
-                name="decimals"
-                rules={[{ required: true, message: t('token.input') }]}
-              >
-                <InputNumber
-                  placeholder={t('token.decimals')}
-                  controls={false}
-                />
-              </Form.Item>
-            </>
-          )}
         </Form>
       </div>
-      <div className="launch-form-fix-bottom">
-        {showAdv ? (
-          <p
-            className="launch-form-show-more"
-            onClick={() => setShowAdv(false)}
+      <CommonModal
+        width={350}
+        className="icon-link-modal"
+        title={
+          <div
+            style={{ color: '#fff', textAlign: 'center', marginBottom: '24px' }}
           >
-            {t('token.hide')}
-          </p>
-        ) : (
-          <p className="launch-form-show-more" onClick={() => setShowAdv(true)}>
-            {t('token.show')}
-          </p>
-        )}
-      </div>
+            设置形象
+          </div>
+        }
+        open={logoLinkModal}
+        footer={null}
+        closeIcon={null}
+      >
+        <div>
+          <Input
+            placeholder="你的代币形象的图片URL"
+            value={logoLink}
+            onChange={(e) => setLogoLink(e.target.value)}
+          ></Input>
+        </div>
+        <div
+          style={{
+            justifyContent: 'space-evenly',
+            display: 'flex',
+            marginTop: '24px',
+          }}
+        >
+          <Button
+            className="action-button"
+            ghost
+            onClick={() => setLogoLinkModal(false)}
+          >
+            取消
+          </Button>
+          <Button className="action-button" onClick={() => onConfirmIcon()}>
+            确认
+          </Button>
+        </div>
+      </CommonModal>
     </>
   );
 }

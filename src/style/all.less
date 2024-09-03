@@ -1508,6 +1508,14 @@ span {
   &:hover {
     background-color: @button-color !important;
   }
+  &.ant-btn-background-ghost {
+    background-color: transparent !important;
+    border: 1px solid @button-color;
+    &:hover {
+      background-color: transparent !important;
+      border: 1px solid @button-color !important;
+    }
+  }
 }
 
 .common-search {

@@ -1,35 +1,58 @@
 .info-list {
-  background: #242424;
-  margin: 12px auto;
-  width: 86%;
-  position: relative;
-  border-radius: 20px;
-  padding: 6px;
+  margin: 20px;
   &-item {
+    box-sizing: content-box;
+
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
     color: rgba(255, 255, 255, 0.85);
-    font-size: 14px;
+    border-radius: 10px;
     display: flex;
-    align-items: center;
-    margin: 12px 12px 0 12px;
-    & > span:last-child {
-      word-break: break-word;
+
+    &.descript {
+      display: block;
+    }
+    &-descript {
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+    img {
+      width: 24px;
+      margin-right: 12px;
     }
   }
-  .img {
-    width: 80%;
-    position: absolute;
-    top: 0;
-    left: 0;
+  &-token {
+    background: transparent;
+    display: flex;
+    margin-bottom: 24px;
+    img {
+      width: 22%;
+      border-radius: 100%;
+      margin-right: 0;
+    }
+    &-detail {
+      margin-left: 24px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .info-list {
+        &-symbol {
+          font-size: 24px;
+          color: rgba(255, 255, 255, 1);
+        }
+        &-name {
+          font-size: 16px;
+          color: rgba(255, 255, 255, 0.85);
+        }
+        &-totalSupply {
+          color: rgba(139, 139, 139, 1);
+          font-size: 20px;
+        }
+      }
+    }
   }
-  .address{
-    color: #67C5FF;
-    position: relative;
-    z-index: 100;
-    border-bottom: 1px solid #67C5FF;
-    cursor: pointer;
-  }
-}
-.manage-token-detail-info{
-  height: 200px !important;
-  overflow: hidden !important;
 }

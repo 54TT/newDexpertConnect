@@ -11,17 +11,21 @@ export interface FormDataType {
   name: string;
   symbol: string;
   totalSupply: string;
-  decimals: string;
+  decimals: number;
   description: string;
   maxWalletSize: string;
   payTokenType: string;
   websiteLink: string;
   twitterLink: string;
+  telegramLink: string;
   logoLink: string;
   discordLink: string;
+  fees: BigNumber;
+  level: string;
 }
 import { MintContext } from '../../index';
 import { useForm } from 'antd/es/form/Form';
+import { BigNumber } from 'ethers';
 function LaunchForm({ formData, setFormData }) {
   const { t } = useTranslation();
   const { launchTokenPass }: any = useContext(MintContext);
@@ -41,9 +45,6 @@ function LaunchForm({ formData, setFormData }) {
       setFormData({
         ...formData,
         ...par,
-        buyCount: '0',
-        filename: par?.symbol?.replace(/\s*/g, ''),
-        symbol: par?.symbol?.replace(/\s*/g, ''),
       });
     }
   };

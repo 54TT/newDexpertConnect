@@ -76,3 +76,60 @@
     }
   }
 }
+
+.launch-form-icon {
+  display: flex;
+  width: 20%;
+  position: relative;
+  aspect-ratio: 1/1;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 100%;
+  }
+  .launch-form-edit {
+    position: absolute;
+    right: -2px;
+    bottom: 0;
+    background: rgba(156, 156, 156, 1);
+    border-radius: 0;
+    padding: 4px;
+    border-radius: 100%;
+    img {
+      width: 16px;
+      object-fit: scale-down;
+      border-radius: 0;
+    }
+  }
+  &:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+  }
+  transition: filter 0.3s ease-in-out;
+}
+
+.icon-link-modal {
+  input {
+    background: rgba(94, 94, 94, 0.3);
+    border: none;
+    color: white;
+    box-shadow: none;
+    outline: none;
+    box-shadow: none;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+    }
+    &:focus {
+      background: rgba(94, 94, 94, 0.3);
+      border: none;
+    }
+    &:hover {
+      background: rgba(94, 94, 94, 0.2);
+    }
+  }
+  button {
+    width: 34%;
+  }
+}

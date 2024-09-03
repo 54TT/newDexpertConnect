@@ -12,15 +12,29 @@ import ManagePairDetail from './pages/ManagePairDetail';
 import LockLpList from './pages/LockLpList';
 import Result from './pages/Result';
 
-export const MintContext = createContext(null);
+export const MintContext = createContext<{
+  formData: Partial<FormDataType>;
+  [x: string]: any;
+}>(null);
 export const initFormData: Partial<FormDataType> = {
-  decimals: '18',
-  maxWalletSize: '20000',
+  decimals: 18,
+  totalSupply: '10000000000',
+  name: '',
+  symbol: '',
+  description: '',
+  logoLink: '',
+  twitterLink: '',
+  telegramLink: '',
+  websiteLink: '',
+  discordLink: '',
 };
 function Mint() {
   const [launchTokenPass, setLaunchTokenPass] = useState('more');
   const [formData, setFormData] = useState<Partial<FormDataType>>(initFormData);
-  const minContextValue = {
+  const minContextValue: {
+    formData: Partial<FormDataType>;
+    [x: string]: any;
+  } = {
     formData,
     launchTokenPass,
     setLaunchTokenPass,
