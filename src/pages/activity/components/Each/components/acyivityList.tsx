@@ -15,7 +15,7 @@ export default function acyivityList({
   loading,
   i,
   verification,
-  // getParams,
+  getParams,
   select,
   operate,
   setSelect,
@@ -41,7 +41,7 @@ export default function acyivityList({
   };
 
   const changeTitle = (title: string, extra: any) => {
-    if (i?.campaign?.mode==='2') {
+    if (i?.campaign?.mode === '2') {
       return title;
     } else {
       if (extra) {
@@ -153,7 +153,7 @@ export default function acyivityList({
                 if (!isVerify && !loading) {
                   param(it, i?.campaign);
                   cookie.set('taskId', it?.taskId);
-                  setSelect({taskId:it?.taskId,mode:i?.campaign?.mode});
+                  setSelect({ taskId: it?.taskId, mode: i?.campaign?.mode });
                   setLoading(true);
                 }
               },
@@ -165,7 +165,7 @@ export default function acyivityList({
             {loading && select?.taskId === it?.taskId ? (
               <Load />
             ) : (
-              operate(it?.isCompleted, it?.title,i)
+              operate(it?.isCompleted, it?.title, i)
             )}
           </div>
         ) : (
@@ -181,15 +181,18 @@ export default function acyivityList({
         {/* 验证 */}
         {option === 'daily' &&
           Number(it?.isCompleted) !== 3 &&
-          i?.campaign?.mode==='2' && (
+          i?.campaign?.mode === '2' && (
             <div
               className={'verify'}
               onClick={throttle(
                 function () {
                   if (!isVerify && !loading) {
                     setIsVerify(true);
-                      // getParams();
-                      verification(it?.taskId);
+                    if (it?.operationSymbol === 'dexpert-twitter-quote') {
+                      verification(it);
+                    } else {
+                      getParams();
+                    }
                   }
                 },
                 1500,

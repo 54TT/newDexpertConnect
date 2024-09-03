@@ -216,7 +216,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
-
   const getLink = async (taskId: string, token: string) => {
     try {
       // 获取链接
@@ -328,15 +327,15 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       }
     }
   };
-  const verification = async (id: string) => {
+  const verification = async (it: any) => {
     const token = cookie.get('token');
     try {
-      if (id && token) {
+      if (it?.taskId && token) {
         let url: any = '/api/v1/airdrop/task/twitter/daily/verify';
           const res: any = await getAll({
             method: 'post',
             url,
-            data: { taskId: id },
+            data: { taskId: it?.taskId },
             token,
           });
           if (res?.data?.message === 'success' && res?.status === 200) {
@@ -351,7 +350,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
-  
   return (
     <>
       {isLogin && (
