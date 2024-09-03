@@ -60,8 +60,8 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     try {
       if (token) {
         const par: any = { 
-          'dexpert-twitter-quote': '/api/v1/oauth/twitter/follow',
-          'dexpert-tg-checkin': '/api/v1/oauth/telegram/chat/follow',
+          'follow-dexpert-twitter': '/api/v1/oauth/twitter/follow',
+          'join-dexpert-tg': '/api/v1/oauth/telegram/chat/follow',
           'join-dexpert-discord': '/api/v1/oauth/discord/follow',
         };
         const res = await getAll({
@@ -89,13 +89,13 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     try {
       if (token) {
         const par: any = {
-          'dexpert-twitter-quote': '/api/v1/oauth/twitter/verify',
-          'dexpert-tg-checkin': '/api/v1/oauth/telegram/chat/verify',
+          'follow-dexpert-twitter': '/api/v1/oauth/twitter/verify',
+          'join-dexpert-tg': '/api/v1/oauth/telegram/chat/verify',
           'join-dexpert-discord': '/api/v1/oauth/discord/verify',
         };
         const res = await getAll({
           method: 'post',
-          url: par[operationSymbol] ? par[operationSymbol] : '/api/v1/oauth/instagram/verify',
+          url: par[operationSymbol] ? par[operationSymbol] : '/api/v1/oauth/twitter/verify',
           data: { taskId: id },
           token,
         });
