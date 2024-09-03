@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom';
 import { createWallet } from 'thirdweb/wallets';
 import { useConnectModal } from 'thirdweb/react';
 import { darkTheme } from 'thirdweb/react';
-import { createLoginMessage } from '@utils/updateNonce';
+// import {signLoginPayload} from 'thirdweb/auth'
 import dayjs from 'dayjs';
 function HeaderModal() {
   const account = useActiveAccount();
@@ -157,12 +157,6 @@ function HeaderModal() {
     };
     login(data, 'eth', 'more');
   };
-  const changeNoce = (name: string) => {
-    if (name) {
-      current.current = name;
-    }
-  };
-
   return (
     <Modal
       destroyOnClose={true}
@@ -222,6 +216,7 @@ function HeaderModal() {
                 },
                 async doLogout() {},
                 async getLoginPayload(params) {
+                  console.log(params)
                   const data: any = await getAll({
                     method: 'post',
                     url: '/api/v1/token',
@@ -240,12 +235,7 @@ function HeaderModal() {
                       expiration_time: dayjs().format('YYYY-MM-DD'),
                       invalid_before: dayjs().format('YYYY-MM-DD'),
                     };
-                    const TT = createLoginMessage(paramsNonce);
-                    console.log(TT);
-                    if (TT) {
-                      changeNoce(TT);
-                      return paramsNonce;
-                    }
+                    return paramsNonce
                   }
                 },
                 async isLoggedIn(address: string) {
@@ -258,7 +248,6 @@ function HeaderModal() {
           <div onClick={ttttttt} style={{ height: '100px' }}>
             ddddddddddd
           </div>
-
           <div onClick={yyyyy} style={{ height: '100px', color: 'white' }}>
             ttttttttt
           </div>
