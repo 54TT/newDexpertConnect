@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom';
 import { CountContext } from '@/Layout.tsx';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +14,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   const { browser, languageChange, isLogin, setUserPar, user }: any =
     useContext(CountContext);
   const { getAll } = Request();
-  const router = useLocation();
   const [loading, setLoading] = useState(false);
   const [isVerify, setIsVerify] = useState(false);
   const { t } = useTranslation();
@@ -334,15 +332,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
     const token = cookie.get('token');
     try {
       if (id && token) {
-        let url: any = null;
-        if (router.pathname === '/specialActive/1') {
-          url = '/api/v1/airdrop/task/twitter/daily/verify';
-        } else {
-          if (id === '10') {
-            url = '/api/v1/airdrop/task/twitter/daily/yuliverseVerify';
-          }
-        }
-        if (url) {
+        let url: any = '/api/v1/airdrop/task/twitter/daily/verify';
           const res: any = await getAll({
             method: 'post',
             url,
@@ -354,7 +344,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
           } else if (res?.data?.code === '400') {
             setIsVerify(false);
             NotificationChange('warning', res?.data?.message);
-          }
         }
       }
     } catch (e) {
@@ -362,6 +351,7 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
+  
   return (
     <>
       {isLogin && (

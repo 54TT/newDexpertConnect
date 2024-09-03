@@ -15,7 +15,7 @@ export default function acyivityList({
   loading,
   i,
   verification,
-  getParams,
+  // getParams,
   select,
   operate,
   setSelect,
@@ -188,11 +188,8 @@ export default function acyivityList({
                 function () {
                   if (!isVerify && !loading) {
                     setIsVerify(true);
-                    if (!it?.title?.includes('Twitter') && i?.campaign?.mode === '2') {
-                      getParams();
-                    } else {
+                      // getParams();
                       verification(it?.taskId);
-                    }
                   }
                 },
                 1500,
