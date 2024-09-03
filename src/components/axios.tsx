@@ -36,7 +36,7 @@ requestA.interceptors.response.use(
     } else {
       NotificationChange('warning', e?.response?.data?.msg);
     }
-    return Promise.reject(e)
+    return Promise.reject(e);
   }
 );
 const Request = () => {
@@ -58,28 +58,30 @@ const Request = () => {
     chainId?: any
   ) => {
     try {
-    const abc = await requestA({
-      method,
-      params: method === 'get' ? data : method === 'delete' ? data : '',
-      data: method === 'get' ? '' : method === 'delete' ? undefined : data,
-      url,
-      headers: {
-        'Content-Type': name ? 'multipart/form-data' : 'application/json', // 根据需要添加其他标头
-        Authorization: token,
-        'x-chainId': chainId ? chainId : chain || '1',
-        'x-app': 'dexpert',
-        'x-chainName': chainId
-          ? ID_TO_CHAIN_NAME_LOW[chainId as ChainId]
-          : ID_TO_CHAIN_NAME_LOW[chain as ChainId] || 'eth',
-      },
-    });
-    if (abc?.status === 200) {
-      return abc;
+      const abc = await requestA({
+        method,
+        params: method === 'get' ? data : method === 'delete' ? data : '',
+        data: method === 'get' ? '' : method === 'delete' ? undefined : data,
+        url,
+        headers: {
+          'Content-Type': name ? 'multipart/form-data' : 'application/json', // 根据需要添加其他标头
+          Authorization: token,
+          'x-chainId': chainId ? chainId : chain || '1',
+          'x-app': 'dexpert',
+          'x-chainName': chainId
+            ? ID_TO_CHAIN_NAME_LOW[chainId as ChainId]
+            : ID_TO_CHAIN_NAME_LOW[chain as ChainId] || 'eth',
+        },
+      });
+      if (abc?.status === 200) {
+        return abc;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      return Promise.reject(err);
     }
-  }catch(err){
-    return Promise.reject(err)
-  }
-};
+  };
 
   const getAll = async (name: any) => {
     const { method, url, data, token, chainId } = name as any;
