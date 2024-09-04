@@ -19,11 +19,15 @@ import getBalanceRpcEther from '@utils/getBalanceRpc';
 import { toWeiWithDecimal } from '@utils/convertEthUnit';
 import { useTranslation } from 'react-i18next';
 import NotificationChange from '@/components/message';
+import PairInfo, { PairInfoPropsType } from '@/components/PairInfo';
+import { useTokenInfo } from '@/hook/useTokenInfo';
+import { InputNumber } from 'antd';
+import getBalanceRpc from '@utils/getBalanceRpc';
 function ManagePairDetail() {
   const { t } = useTranslation();
   const router = useParams();
   const history = useNavigate();
-  const { loginProvider, contractConfig, chainId, browser } =
+  const { loginProvider, contractConfig, chainId, browser,openTradeModal } =
     useContext(CountContext);
   const [tokenBalance, setTokenBalance] = useState('0');
   const [infoData, setInfoData] = useState<any>();
@@ -33,6 +37,19 @@ function ManagePairDetail() {
   //  loading
   const [loading, setLoading] = useState(false);
   const [pairContract, setPairContract] = useState<ethers.Contract>();
+  const [tokenInfo, tokenContract] = useTokenInfo(router.address);
+  const [token0balance,setToken0balance]=useState<string>('0')
+  const [token1balance,setToken1balance]=useState<string>('0')
+  const pairInfoData: PairInfoPropsType  = {
+    token0: {
+      logo: tokenInfo?.logoLink,
+      symbol: router?.t0
+    },
+    token1: {
+      logo: contractConfig?.defaultTokenIn?.logoUrl,
+      symbol: contractConfig?.defaultTokenIn?.symbol
+    }
+  }
   const getPairInfo = async () => {
     const { uncxAddress, wethAddress } = contractConfig;
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
@@ -48,7 +65,15 @@ function ManagePairDetail() {
       UniswapV2PairAbi,
       signer
     );
+    const token0balance=await getBalanceRpc(
+      web3Provider,
+      pairContract?.token0,
+      wethAddress
+    )
+    console.log(token0balance);
+    
     setPairContract(uniSwapV2Pair);
+
     const decimals = await uniSwapV2Pair.decimals();
     setTokenBalance(lpTokenBalance.toString());
     const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
@@ -186,7 +211,7 @@ function ManagePairDetail() {
   const item = (name?: string) => {
     return (
       <div style={{ color: '#fff', marginBottom: '6px' }}>
-        <p style={{ marginBottom: '5px' }}> {t('token.remove')}</p>
+        {/* <p style={{ marginBottom: '5px' }}> {t('token.remove')}</p>
         <p>
           {t('token.alls')}
           <span
@@ -197,8 +222,20 @@ function ManagePairDetail() {
             }}
           >{`${router?.t0} / ${router?.t1}`}</span>
           {t('token.pools')}
-        </p>
-        {name && <p>{t('token.Note')}</p>}
+        </p> */}
+        <PairInfo data={pairInfoData} contractAddress={router?.pair} />
+        <div className='pair-input-wrap'>
+          <span>balance:{token0balance}</span>
+          <InputNumber />
+        </div>
+        {name==='burn'&&(
+          <div className='pair-input-wrap'>
+          <span>balance:{token1balance}</span>
+          <InputNumber />
+        </div>
+        )}
+        {/* <InputNumber /> */}
+        {/* {name && <p>{t('token.Note')}</p>} */}
       </div>
     );
   };
@@ -208,17 +245,36 @@ function ManagePairDetail() {
       <ToLaunchHeader />
       <PageHeader
         className="launch-manage-token-header"
-        title={`${router?.t0} / ${router?.t1}`}
+        // title={`${router?.t0} / ${router?.t1}`}
+        title={!openTradeModal?'Trading Pair Management':`${router?.t0} / ${router?.t1}`}
       />
       {loading ? (
         <>
-          <InfoList className="manage-token-detail-info" data={data} />
+          {/* <InfoList className="manage-token-detail-info" data={data} /> */}
+          <PairInfo data={pairInfoData} contractAddress={router?.pair} />
           <div className="pair-manage-button">
             <BottomButton
               text={t('token.LockLP')}
               onClick={() => lockLpToken()}
             />
-            {['remove', 'burn'].map((item: string) => {
+            <BottomButton
+              // text={t('token.AddLQ')}
+              text={'Add Liquidity'}
+              onClick={() => {
+                setIsOpenStatus('add');
+                setOpen(true);
+              }}
+            />
+            <BottomButton
+              className='burn-lp-button'
+              text={t('token.BurnLP')}
+              onClick={() => {
+                setIsOpenStatus('burn');
+                setOpen(true);
+              }}
+              danger
+            />
+            {/* {['remove', 'burn'].map((item: string) => {
               return (
                 <BottomButton
                   key={item}
@@ -234,7 +290,7 @@ function ManagePairDetail() {
                   }}
                 />
               );
-            })}
+            })} */}
           </div>
         </>
       ) : (
@@ -243,7 +299,7 @@ function ManagePairDetail() {
       <CommonModal
         open={open}
         title={
-          isOpenStatus === 'remove' ? t('token.RemoveLP') : t('token.BurnLP')
+          isOpenStatus === 'add' ? 'Add Liquidity' : t('token.BurnLP')
         }
         footer={null}
         className="mint-common-modal"
@@ -254,8 +310,8 @@ function ManagePairDetail() {
           }
         }}
       >
-        {isOpenStatus === 'remove' && item()}
-        {isOpenStatus === 'burn' && item('have')}
+        {isOpenStatus === 'add' && item('add')}
+        {isOpenStatus === 'burn' && item('burn')}
         <p style={{ height: '20px' }}></p>
         <BottomButton
           ghost

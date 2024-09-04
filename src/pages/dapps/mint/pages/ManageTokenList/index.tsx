@@ -190,13 +190,13 @@ function ManageTokenList() {
         title={t('token.me')}
       />
       <div className="launch-manage-token-search">
-        <Search
+        {/* <Search
           className="searchBox"
           value={searName}
           onChange={changeName}
           allowClear
           onSearch={search}
-        />
+        /> */}
         <Select
           style={{ width: 120 }}
           onChange={handleChange}

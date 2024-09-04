@@ -1,9 +1,28 @@
+.pair-info-wrapper{
+  height: 30vh;
+}
 .pair-info-comp {
   display: flex;
-  height: 100%;
+  
+  width: 90%;
+  // align-items: center;
+  flex-direction: column;
+  margin: 0 auto;
 
   &-img {
     display: flex;
+    height: 42px;
+    .pairSymbol{
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      color: #aaa;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+    }
     img {
       height: 100%;
       object-fit: scale-down;
@@ -15,6 +34,26 @@
       margin-left: -10%;
       position: relative;
       z-index: 1;
+    }
+  }
+  &-header{
+    display: flex;
+    justify-content: flex-start;
+    height: 30;
+    margin: 23px 16px;
+  }
+  .pair-info{
+    &-body-title{
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 22px;
+      margin:16px 0
+    }
+    &-body-token{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #8d8d8d;
+      margin:8px 0
     }
   }
   &-pair_name {
