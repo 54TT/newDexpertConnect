@@ -1,4 +1,4 @@
-import { InputNumber } from 'antd';
+import { Button, InputNumber } from 'antd';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import BottomButton from '../../component/BottomButton';
 import InfoList from '../../component/InfoList';
@@ -11,102 +11,64 @@ import Request from '@/components/axios';
 import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
-import { LaunchERC20Abi } from '@abis/LaunchERC20Abi';
 import { ethers } from 'ethers';
 import NotificationChange from '@/components/message';
 import CommonModal from '@/components/CommonModal';
 import { useTranslation } from 'react-i18next';
-import Button from './component/button';
+import ActionButton from './component/button';
+import { useTokenInfo } from '@/hook/useTokenInfo';
+import PairInfo, { PairInfoPropsType } from '@/components/PairInfo';
+import { toEthWithDecimal } from '@utils/convertEthUnit';
 function ManageTokenDetail() {
   const { t } = useTranslation();
   const router = useParams();
-  const { chainId, loginProvider, browser, contractConfig } =
+  const { chainId, loginProvider, browser, contractConfig, signer } =
     useContext(CountContext);
-  const [tokenData, setTokenData] = useState<any>();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { getAll } = Request();
   const token = Cookies.get('token');
-  const [erc20Contract, setErc20Contract] = useState<ethers.Contract>();
   const [isVerify, setIsVerify] = useState(false);
   const [isOpenTrade, setIsOpenTrade] = useState(false);
   const [isRemoveLimit, setIsRemoveLimit] = useState(false);
   const [isOwn, setIsOwn] = useState(true);
   const [openTradeModal, setOpenTradeModal] = useState(false);
   const [ethBalance, setEthBalance] = useState('0');
-  const [ethAmount, setEthAmount] = useState(0);
+  const [ethAmount, setEthAmount] = useState('0');
+  const [tokenInfo, tokenContract] = useTokenInfo(router.address);
+  const [pairAddress, setPairAddress] = useState('');
+  const [tokenBalance, setTokenBalance] = useState('0');
   // 按钮正在执行状态
   const [openTradeLoading, setOpenTradeLoading] = useState(false);
+  const [removeOwnShipLoading, setRemoveOwnShipLoading] = useState(false);
+
+  const [removeOwnShipModal, setRemoveOwnShipModal] = useState(false);
+
 
   useEffect(() => {
-    setIsLoading(false);
-    if (
-      router?.address &&
-      loginProvider &&
-      contractConfig?.chainId === Number(chainId)
-    ) {
-      initData();
+    if (tokenInfo) {
+      setIsLoading(false);
+      initData()
     }
-  }, [chainId, router?.address, contractConfig]);
+  }, [tokenInfo, signer])
 
   const initData = async () => {
-    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-    const signer = web3Provider.getSigner();
-    const walletAddress = await signer.getAddress();
-    const tokenContract = new ethers.Contract(
-      router?.address,
-      LaunchERC20Abi,
-      signer
-    );
-    setErc20Contract(tokenContract);
-    const data = await Promise.all([
-      tokenContract.owner(),
-      tokenContract.balanceOf(walletAddress),
-      tokenContract.IsRemoveLimits(),
-      tokenContract.tradingOpen(),
-      signer.getBalance(),
-      await getAll({
-        method: 'get',
-        url: `/api/v1/launch-bot/contract/${router?.id}`,
-        data: {},
-        token,
-        chainId,
-      }),
-    ]);
-    setIsOwn(data[0] === walletAddress);
-    setIsRemoveLimit(data[2]);
-    setIsOpenTrade(data[3]);
-    const ethWei = data[4].toString();
-    if (data[5]?.data?.isVerify === '1') {
-      setIsVerify(true);
+    const {isOpenTrade, owner, pair} = tokenInfo;
+    const address: string = await signer.getAddress();
+    const ethBalance = await signer.getBalance();
+    console.log(address);
+    console.log(tokenInfo);
+    if (address.toLowerCase() === owner.toLowerCase()) {
+      setIsOwn(true);
     }
-    setEthBalance(ethers.utils.formatEther(ethWei));
-    setTokenData(data[5]?.data);
-    setIsLoading(true);
-  };
-  const tokenInfoData = useMemo(() => {
-    if (!tokenData) return [];
-    return [
-      {
-        label: 'Address',
-        value: tokenData.tokenAddress,
-      },
-      {
-        label: 'symbol',
-        value: tokenData.tokenSymbol,
-      },
-      {
-        label: 'name',
-        value: tokenData.tokenName,
-      },
-      {
-        label: 'totalSupply',
-        value: tokenData.TotalSupply,
-      },
-    ];
-  }, [tokenData]);
+    const balance = await tokenContract.balanceOf(address);
+    setEthBalance(toEthWithDecimal(ethBalance,contractConfig.decimals));
+    setTokenBalance(toEthWithDecimal(balance, tokenInfo.decimals));
+    setIsOpenTrade(isOpenTrade);
+    setPairAddress(pair);
+  }
 
   const approve = async (spender, amount) => {
-    const tx = await erc20Contract.approve(spender, amount);
+    const tx = await tokenContract.approve(spender, amount);
     const recipent = await tx.wait();
     // 1成功 2失败
     return recipent.status === 1;
@@ -115,7 +77,7 @@ function ManageTokenDetail() {
   const openTrade = async () => {
     if (!isOwn) return;
     if (isOpenTrade) return;
-    if (ethAmount === 0 || ethAmount === null) {
+    if (ethAmount === '0' || ethAmount === null) {
       return;
     }
     setOpenTradeLoading(true);
@@ -123,11 +85,11 @@ function ManageTokenDetail() {
     const signer = web3Provider.getSigner();
     const walletAddress = await signer.getAddress();
     // const decimals = await erc20Contract.decimals();
-    const tokenBalance = await erc20Contract.balanceOf(walletAddress);
-    const tt = await approve(erc20Contract.address, tokenBalance);
+    const tokenBalance = await tokenContract.balanceOf(walletAddress);
+    const tt = await approve(tokenContract.address, tokenBalance);
     try {
       if (tt) {
-        const tx = await erc20Contract.openTrading(tokenBalance, {
+        const tx = await tokenContract.openTrading(tokenBalance, {
           value: ethers.utils.parseEther(ethAmount.toString()),
         });
         setOpenTradeModal(false);
@@ -156,41 +118,86 @@ function ManageTokenDetail() {
     }
   };
 
+  const renounceOwnerShip = async () => {
+    if (!isOwn) return;
+    setRemoveOwnShipLoading(true);
+    setRemoveOwnShipModal(false);
+    try {
+      const tx = await tokenContract.renounceOwnership();
+      const recipent = await tx.wait();
+      if (recipent.status === 1) {
+        setIsOwn(false);
+        NotificationChange('success', t('token.renounceOwnership'));
+      } else {
+        NotificationChange('error', t('token.renounceOwnershipfailed'));
+      }
+    } catch (e) {
+      setRemoveOwnShipLoading(false);
+      NotificationChange('error', t('token.renounceOwnershipfailed'));
+      return null
+    }
+    setRemoveOwnShipLoading(false);
+  };
+
   const buttonParams = {
     isVerify,
     setIsVerify,
     router,
     isOwn,
-    erc20Contract,
+    tokenContract,
     isRemoveLimit,
     setIsRemoveLimit,
     setOpenTradeModal,
     openTradeLoading,
     isOpenTrade,
     setIsOwn,
+    setRemoveOwnShipModal
   };
+
+  const pairInfoData: PairInfoPropsType  = {
+    token0: {
+      logo: tokenInfo?.logoLink,
+      symbol: tokenInfo?.symbol
+    },
+    token1: {
+      logo: contractConfig?.defaultTokenIn?.logoUrl,
+      symbol: contractConfig?.defaultTokenIn?.symbol
+    }
+  }
+
   return (
     <div className="manage-tokenBox">
       <ToLaunchHeader />
       <PageHeader
         className="launch-manage-token-header"
-        title={tokenData?.tokenSymbol || '-'}
+        title={tokenInfo?.symbol || '-'}
       />
-      {isLoading ? (
-        <InfoList className="manage-token-detail-info" data={tokenInfoData} />
+      {!isLoading ? (
+        <InfoList className="manage-token-detail-info" data={tokenInfo} />
       ) : (
         <Loading status={'20'} browser={browser} />
       )}
-      {!isLoading && <div style={{ width: '100%', height: '20px' }}></div>}
-      <Button {...buttonParams} />
+      {isLoading && <div style={{ width: '100%', height: '20px' }}></div>}
+      {! isLoading && <ActionButton {...buttonParams} />}
       <CommonModal
+        width={380}
         className="mint-common-modal"
         open={openTradeModal}
         footer={null}
-        title={t('token.Open')}
+        closeIcon={null}
+        title={<div className='disCen' >Open Trade</div>}
         onCancel={() => setOpenTradeModal(false)}
       >
-        <div>
+          <PairInfo data={pairInfoData} />
+        <div className='pair-info-token'>
+          <span>{pairInfoData.token0.symbol}</span>
+          <span>{tokenBalance || '-'}</span>
+        </div>
+        <div className='pair-info-token'>
+        <span>{pairInfoData.token1.symbol}</span>
+        <span>{ethAmount || '-'}</span>
+        </div>
+        <div className='open-trade-input'>
           <InputNumber
             value={ethAmount}
             addonAfter={contractConfig?.tokenSymbol || 'ETH'}
@@ -200,19 +207,23 @@ function ManageTokenDetail() {
               setEthAmount(v);
             }}
           />
-          <div
-            style={{ color: '#fff', marginTop: '6px' }}
-          >{`${contractConfig?.tokenSymbol || 'ETH'} ${t('token.Banlance')}: ${ethBalance}`}</div>
         </div>
-        <BottomButton
-          text={t('token.Open')}
-          loading={openTradeLoading}
-          onClick={() => {
-            openTrade();
-          }}
-        />
+        <div className='open-trade-button'>
+            <Button className='action-button' ghost onClick={() => setOpenTradeModal(false)}>Cancel</Button>
+            <Button className='action-button'  onClick={() => openTrade()}>Confirm</Button>
+        </div>
       </CommonModal>
-      <p className="hint">{t('token.note')}</p>
+      <CommonModal width={380} centered={true}  className="remove-own-ship-modal" footer={null} open={removeOwnShipModal} closeIcon={null} title={<div style={{ textAlign: 'center', color: "rgba(234, 110, 110, 1)"}}>Remove Ownership</div>}>
+          <p>This action will remove your ownership for the token. This means you will not:</p>
+          <p>●Change the token logo</p>
+          <p>●Change the token's the link of social media</p>
+          <p>●Change the token's description</p>
+          <p>Please remove ownership only after the token data is finalized</p>
+          <div>
+            <Button className='action-button' ghost onClick={() => setRemoveOwnShipModal(false)}>Cancel</Button>
+            <Button className='action-button'  onClick={() => renounceOwnerShip()}>Confirm</Button>
+          </div>
+      </CommonModal>
     </div>
   );
 }

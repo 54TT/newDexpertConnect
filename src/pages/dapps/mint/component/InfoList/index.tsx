@@ -10,7 +10,6 @@ function InfoList({
   data: Partial<FormDataType>;
   className?: string;
 }) {
-  const { contractConfig } = useContext(CountContext);
   const { t } = useTranslation();
   const {
     name,

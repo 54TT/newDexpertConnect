@@ -155,8 +155,8 @@ function ManageTokenList() {
           address: item.address,
           id: item.address,
         }}
-        onClick={({ id, address, title }) =>
-          history(`/dapps/tokencreation/managePair/${id}/${address}/${title}`)
+        onClick={({ address }) =>
+          history(`/dapps/tokencreation/tokenDetail/${address}`)
         }
       />
     );

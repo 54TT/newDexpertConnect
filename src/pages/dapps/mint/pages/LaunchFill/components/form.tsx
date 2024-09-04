@@ -37,7 +37,7 @@ export default function form({ form, formData, onFinishForm }) {
     <>
       <div
         className="launch-form mint-scroll scroll"
-        style={{ height: '75%', overflowX: 'hidden' }}
+        style={{ height: '80%', overflowX: 'hidden' }}
       >
         <Form
           form={form}

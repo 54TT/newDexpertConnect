@@ -61,7 +61,7 @@ function Mint() {
                 element={<ManagePairListAndContract />}
               />
               <Route
-                path="/tokenDetail/:address/:id"
+                path="/tokenDetail/:address"
                 element={<ManageTokenDetail />}
               />
               <Route

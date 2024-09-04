@@ -19,7 +19,7 @@
     text-overflow: ellipsis;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
 
     &-symbol {
       font-size: 24px;
@@ -38,9 +38,15 @@
   }
   &-arrow {
     position: absolute;
-    right: 24px;
+    right: 12px;
     top: 0;
     bottom: 0;
     width: 32px;
+    display: flex;
+    align-items: center;
+    img {
+      width: 8px;
+
+    }
   }
 }

@@ -29,6 +29,7 @@ import * as encoding from '@walletconnect/encoding';
 import Request from './components/axios.tsx';
 import Client from '@walletconnect/sign-client';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+
 import {
   DEFAULT_APP_METADATA,
   DEFAULT_PROJECT_ID,

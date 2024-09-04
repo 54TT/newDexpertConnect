@@ -14,7 +14,7 @@ interface TokenItemPropsType {
   data: ItemDataType;
   classname?: any;
 }
-import { chainList } from '@utils/judgeStablecoin';
+
 function TokenItem({ onClick, data, classname }: TokenItemPropsType) {
   const { symbol, name, address, logo } = data;
   return (
@@ -28,11 +28,11 @@ function TokenItem({ onClick, data, classname }: TokenItemPropsType) {
         <div className="launch-token-item-detail">
           <div className="launch-token-item-detail-symbol">{symbol}</div>
           <div className="launch-token-item-detail-name">{name}</div>
-          <div className="launch-token-item-detail-address">{address}</div>
+          <div className="launch-token-item-detail-address">CA:{address}</div>
         </div>
       </div>
       <div className="launch-token-item-arrow">
-        <img src="/arrow-right.svg" alt="" />
+        <img src="/arrow-right.png" alt="" />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 .manage-token-detail-info {
   &.mint-scroll {
-    max-height: 200px;
-    overflow: hidden;
+    height: calc(100% - 360px);
+    overflow: scroll;
   }
 }
 .manage-tokenBox{
@@ -58,5 +58,59 @@
 .not-owner {
   button {
     cursor: not-allowed;
+  }
+}
+
+.token-detail-button {
+  margin: 0 20px;
+  button {
+    width: 100%;
+    height: 42px;
+    font-size: 22px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+}
+.remove-own-ship-modal {
+  p {
+    color: rgba(255, 255, 255, 0.75);
+    margin: 24px;
+  }
+  .ant-modal-body {
+    >div {
+      display: flex;
+      justify-content: center;
+    }
+    button {
+      width: 30%;
+      margin: 0 12px;
+      height: 36px;
+      border-radius: 12px;
+    }
+  }
+}
+
+.mint-common-modal  {
+  .open-trade-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+    button {
+      width: 30%;
+      margin: 0 12px;
+      height: 36px;
+      border-radius: 12px;
+    }
+  }
+  .pair-info-comp {
+    height: 54px;
+    margin-bottom: 24px;
+  }
+  .pair-info-token {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    color: rgba(139, 139, 139, 1);
+    font-size: 18px;
   }
 }
