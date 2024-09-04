@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import './index.less';
 import { useState } from 'react';
 import CommonModal from '@/components/CommonModal';
-export default function form({ form, formData, onFinishForm }) {
+export default function form({ form, formData, onFinishForm, update = false }) {
   const { t } = useTranslation();
   const logoLinkValue = Form.useWatch('logoLink', form);
   const [logoLinkModal, setLogoLinkModal] = useState(false);
@@ -70,38 +70,52 @@ export default function form({ form, formData, onFinishForm }) {
             name="name"
             rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input placeholder={'Name'} autoComplete={'off'} />
+           {!update ? <Input placeholder={'Name'} autoComplete={'off'} /> : <div>{formData.name}</div>}
           </Form.Item>
           <span className="launch-form-item-label">3.代币符号</span>
           <Form.Item
             name="symbol"
             rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input placeholder={t('token.symbol')} autoComplete={'off'} />
+          { !update ? <Input placeholder={t('token.symbol')} autoComplete={'off'} /> : <div>{formData.symbol}</div>}
           </Form.Item>
           <span className="launch-form-item-label">4.总供应量</span>
           <Form.Item
             name="totalSupply"
             rules={[{ required: true, message: t('token.input') }]}
           >
+          {  !update  ?
             <InputNumber
               placeholder={t('token.max')}
               controls={false}
               stringMode={true}
             />
+            :
+            <div>{formData.totalSupply}</div>}
           </Form.Item>
           <span className="launch-form-item-label">5.社交媒体</span>
           <Form.Item name="websiteLink">
-            <Input placeholder={'website'} autoComplete={'off'} />
+            <div className='launc-social-media'>
+              <img src="/website-launch.svg" alt="" />
+            <Input placeholder={'Website'} autoComplete={'off'} />
+            </div>
           </Form.Item>
           <Form.Item name="twitterLink">
-            <Input placeholder={'twitter'} autoComplete={'off'} />
+          <div className='launc-social-media'>
+          <img src="/twitter.svg" alt="" />
+            <Input placeholder={'Twitter'} autoComplete={'off'} />
+            </div>
           </Form.Item>
           <Form.Item name="telegramLink">
-            <Input placeholder={'telegram'} autoComplete={'off'} />
+          <div className='launc-social-media'>
+            <img src="/telegram.svg" alt="" />
+            <Input placeholder={'Telegram'} autoComplete={'off'} />
+            </div>
           </Form.Item>
           <Form.Item name="discordLink">
-            <Input placeholder={'discord'} autoComplete={'off'} />
+          <div className='launc-social-media'>
+          <img src="/discord-launch.svg" alt="" />
+            <Input placeholder={'Discord'} autoComplete={'off'} /></div>
           </Form.Item>
           <span className="launch-form-item-label">6.介绍</span>
           <Form.Item name="description">

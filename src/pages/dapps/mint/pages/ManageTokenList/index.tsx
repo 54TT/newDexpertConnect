@@ -19,16 +19,15 @@ function ManageTokenList() {
   const { chainId, browser, contractConfig, signer } = useContext(CountContext);
   const { getAll } = Request();
   const [data, setData] = useState([]);
-  const dataBackup = useRef<[]>([]);
-  const [loading, setLoading] = useState(false);
+
+  const [loading, setLoading] = useState(true);
   const [isNext, setIsNext] = useState(false);
   const [nextLoad, setNextLoad] = useState(false);
-  const [searchPar, setSearchPar] = useState('');
-  const [searName, setSearName] = useState('');
-  const [key, setKey] = useState('0');
   const [page, setPage] = useState(1);
   const history = useNavigate();
   const { tokenFactoryManagerAddress } = contractConfig || {};
+  const [total, setTotal] = useState(0);
+  const [tokenFactoryManagerContract, setTokenManageMentContract] = useState<ethers.Contract>();
 
   // const getTokenList = async (nu: number, value?: string, key?: string) => {
   //   const token = Cookies.get('token');
@@ -62,28 +61,44 @@ function ManageTokenList() {
   //   }
   // };
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
-  const getTokenListFromManagement = async () => {
+  const initData = async () => {
     setLoading(true);
     try {
       const address = await signer.getAddress();
-      const tokenListFromManageMentContract = new ethers.Contract(
+      const tokenFactoryManagerContract = new ethers.Contract(
         tokenFactoryManagerAddress,
         TokenFactoryManagerAbi,
         signer
       );
       const res: BigNumber =
-        await tokenListFromManageMentContract.getTokensCount(address);
+        await tokenFactoryManagerContract.getTokensCount(address);
       const total = res.toNumber();
+      setTotal(total);
+      setTokenManageMentContract(tokenFactoryManagerContract);
+      await getTokenList(tokenFactoryManagerContract, total);
+      setLoading(false);
+    } catch(e) {
+      setLoading(false);
+    }
 
+  }
+
+  const getTokenList = async (tokenFactoryManagerContract, total) => {
+    
+    try {
+      const address = await signer.getAddress();
+      let start = 5 * (page - 1)
+      let end = 5 * page
+      if (end > total) {
+        end = total
+      }
+      console.log(start, end, total)
       const [tokenListsAddress, tokenListsType] =
-        await tokenListFromManageMentContract.getTokens(address, 0, total);
+        await tokenFactoryManagerContract.getTokens(address, 0, total);
 
       // 不阻塞获取内容
-      tokenListsAddress.forEach(async (address) => {
+      const promiseList = tokenListsAddress.map(async (address) => {
         const tokenContract = new ethers.Contract(
           address,
           tokenFactoryERC20Abi,
@@ -112,12 +127,13 @@ function ManageTokenList() {
           symbol,
           totalSupply: totalSupply.toString(),
         };
-        dataBackup.current.push(tokenItemDataFormat);
-        setData(dataBackup.current);
+        return tokenItemDataFormat
       });
+      const tokenDataList = await Promise.all(promiseList);
+
+      setData([...data,...tokenDataList]);
     } catch (e) {
       console.error(e);
-      setLoading(false);
     }
   };
   // const changePage = () => {
@@ -140,8 +156,17 @@ function ManageTokenList() {
   // }, [chainId, contractConfig]);
 
   useEffect(() => {
-    getTokenListFromManagement();
-  }, []);
+    if (page === 1) {
+      initData()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (page !== 1) {
+      console.log(page)
+      getTokenList(tokenFactoryManagerContract, total);
+    }
+  }, [page]);
 
   const items = (item: any) => {
     return (
@@ -161,25 +186,6 @@ function ManageTokenList() {
       />
     );
   };
-  const handleChange = (value: string) => {
-    setKey(value);
-    getTokenList(1, searchPar, value);
-    setPage(1);
-    setLoading(false);
-  };
-
-  const search = (e: string) => {
-    if (searchPar !== e) {
-      setSearchPar(e);
-      getTokenList(1, e, key);
-      setPage(1);
-      setLoading(false);
-    }
-  };
-
-  const changeName = (e: any) => {
-    setSearName(e.target.value);
-  };
   return (
     <div className="launch-manage-token">
       <ToLaunchHeader />
@@ -189,7 +195,7 @@ function ManageTokenList() {
         className="launch-manage-token-header"
         title={t('token.me')}
       />
-      <div className="launch-manage-token-search">
+      {/* <div className="launch-manage-token-search">
         <Search
           className="searchBox"
           value={searName}
@@ -210,16 +216,16 @@ function ManageTokenList() {
             { value: '3', label: t('token.Renounces') },
           ]}
         />
-      </div>
+      </div> */}
       <div
         className="mint-scroll scroll"
         id="launchTokenList"
-        style={{ height: '340px', overflowX: 'hidden' }}
       >
-        {loading ? (
+        {!loading ? (
           <InfiniteScrollPage
             data={data}
-            next={() => {}}
+            total={total}
+            next={() => setPage(page + 1)}
             items={items}
             nextLoad={nextLoad}
             no={t('token.no')}

@@ -3,26 +3,17 @@ import {  useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NotificationChange from '@/components/message';
 import "../index.less"
+import PairInfo from '@/components/PairInfo';
 export default function button({
   setOpenTradeModal,
-  tokenContract,
   isOwn,
-  setIsOwn,
   isOpenTrade,
   setRemoveOwnShipModal,
-  clickToPair
+  clickToPair,
+  pairInfoData
 }) {
   const { t } = useTranslation();
   const [renounceLoading, setRenounceLoading] = useState(false);
-  const [removeLimitLoading, setRemoveLimitLoading] = useState(false);
-  const [verifyLoading, setVerifyLoading] = useState(false);
-  let timer = useRef(null);
-
-  useEffect(() => {
-    return () => {
-      clearInterval(timer.current);
-    };
-  }, []);
 
 
 
@@ -40,12 +31,12 @@ export default function button({
       >
         
       </ConfigProvider>
-      {isOwn?   <Button className='action-button'>修改表单</Button> : <></>}
+      {isOwn?   <Button className='action-button' onClick={() => history}>修改表单</Button> : <></>}
       {
-        isOpenTrade && <Button className='action-button' onClick={clickToPair}>Pair</Button>
+        isOpenTrade && <Button className='action-button flex-start-button' onClick={clickToPair}>{<PairInfo data={pairInfoData} showArrow={true} />}</Button>
       }
       { isOwn && !isOpenTrade ?  <Button className='action-button' onClick={() => setOpenTradeModal(true)}>打开交易</Button> : <></>}
-      {isOwn? <Button  danger ghost onClick={() => setRemoveOwnShipModal(true)}>放弃所有权</Button> : <></>}
+      {isOwn? <Button loading={renounceLoading}  danger ghost onClick={() => setRemoveOwnShipModal(true)}>放弃所有权</Button> : <></>}
     </div>
   );
 }

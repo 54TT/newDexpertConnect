@@ -18,7 +18,7 @@ export const MintContext = createContext<{
 }>(null);
 export const initFormData: Partial<FormDataType> = {
   decimals: 18,
-  totalSupply: '10000000000',
+  totalSupply: '',
   name: '',
   symbol: '',
   description: '',
@@ -69,6 +69,7 @@ function Mint() {
                 element={<ManagePairDetail />}
               />
               <Route path="/lockLpList/:address" element={<LockLpList />} />
+              <Route path="/edit/:address" element={<LockLpList />} />
             </Routes>
           </div>
         </MintContext.Provider>
