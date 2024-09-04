@@ -28,7 +28,7 @@ function TwitterRelease({
       <p className={'title'}> {t('Active.Step2')}</p>
       <p className={'title1'}> {t('Active.After')}</p>
       <p className={'Paste'}>{t('Active.link')} </p>
-      <input onChange={change} />
+      <input onChange={change}/>
       <img
         src="/tweet2.png"
         alt=""
