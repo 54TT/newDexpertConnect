@@ -7,6 +7,7 @@ import { throttle } from 'lodash-es';
 import NotificationChange from '@/components/message';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+
 function HeaderModal() {
   const {
     browser,
@@ -24,23 +25,21 @@ function HeaderModal() {
     environment,
     setEnvironment,
   }: any = useContext(CountContext);
-  const routerLocation = useLocation();
-  useEffect(() => {
-    console.log(routerLocation.pathname);
-    if(routerLocation.pathname === '/webx2024'){
 
-    }
-  }, []);
+  const routerLocation = useLocation();
+  
   function onAnnouncement(event?: any) {
     environment.push(event?.detail);
     setEnvironment([...environment]);
   }
+
   useEffect(() => {
     window.addEventListener('eip6963:announceProvider', onAnnouncement);
     window.dispatchEvent(new Event('eip6963:requestProvider'));
     return () =>
       window.removeEventListener('eip6963:announceProvider', onAnnouncement);
   }, []);
+
   const { t } = useTranslation();
   const { getAll } = Request();
   const handleCancel = () => {

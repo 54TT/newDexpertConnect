@@ -7,7 +7,6 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import './style/all.less';
-import { Modal } from 'antd';
 import React, {
   createContext,
   Suspense,
@@ -30,8 +29,6 @@ import * as encoding from '@walletconnect/encoding';
 import Request from './components/axios.tsx';
 import Client from '@walletconnect/sign-client';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { client as newClient } from '@/client.ts';
-import { useConnectModal } from 'thirdweb/react';
 import {
   DEFAULT_APP_METADATA,
   DEFAULT_PROJECT_ID,
@@ -75,7 +72,6 @@ function Layout() {
   const [contractConfig, setContractConfig] = useState();
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
-  console.log(environment)
   const [loginProvider, setloginProvider] = useState<any>(null);
   const [sniperChainId, setSniperChainId] = useState('1');
   const [chainId, setChainId] = useState('1'); // swap 链切换
@@ -289,13 +285,10 @@ function Layout() {
         web3Modal.closeModal();
       }
       setLoad(false);
-      setIsModalOpen(false)
-      setIsModalOpenNew(false);
-      setConnectPar(null);
+      setIsModalOpen(false);
     }
   };
   const login = async (par: any, chain: string, name: string, i?: any) => {
-    console.log(par)
     try {
       const inviteCode = search.get('inviteCode')
         ? search.get('inviteCode')
@@ -351,6 +344,7 @@ function Layout() {
             const uid = decodedToken.sub.split('-')[1];
             getUser(uid, res.data?.accessToken, name, decodedToken, i);
             localStorage.setItem('login-chain', chain === 'ton' ? '-2' : '1');
+            setIsModalOpen(false);
           }
         } else {
           setTonWallet(null);
@@ -398,7 +392,6 @@ function Layout() {
               method: 'personal_sign',
               params: [message, account[0]],
             });
-            console.log(sign)
             const data = { signature: sign, addr: account[0], message };
             login(data, 'eth', 'more', i);
           } else {
@@ -615,53 +608,8 @@ function Layout() {
     cache: new InMemoryCache(),
   });
   const noHeaderRoutes = ['/webx2024'];
-  const { connect: newConnect, isConnecting } = useConnectModal();
-  console.log(isConnecting);
-  const [isModalOpenNew, setIsModalOpenNew] = useState(false);
-  const [connectPar, setConnectPar] = useState(null);
 
-  const handleCancel = () => {
-    setIsModalOpenNew(false);
-  };
-
-  const newConnectWallet = async () => {
-    const wallet = await newConnect({ client: newClient }); // opens the connect modal
-    console.log('connected to', wallet);
-    // 检测是否点击
-    if (wallet?.id) {
-      // 检测是否有address
-      const tt = await wallet.connect({ client: newClient });
-      console.log(tt);
-      if (tt?.address) {
-        // 获取noce
-        const noce = await getNoce(tt?.address);
-        if (noce?.data?.nonce) {
-          const sign = await tt.signMessage({
-            message: noce?.data?.nonce,
-          });
-          const data = {
-            signature: sign,
-            addr: tt?.address,
-            message: noce?.data?.nonce,
-          };
-          login(data, 'eth', 'more');
-        }
-      }
-    }
-  };
-  const lllllllll = async (connectPar: any) => {
-    const sign = await connectPar?.tt.signMessage({
-      message: connectPar?.message,
-    });
-    const data = {
-      signature: sign,
-      addr: connectPar?.address,
-      message: connectPar?.message,
-    };
-    login(data, 'eth', 'more');
-  };
   const value: any = {
-    connect: newConnectWallet,
     tonConnect,
     clear,
     cccccccccccccccccccccccc: connect,
@@ -700,7 +648,8 @@ function Layout() {
     environment,
     setEnvironment,
     sniperChainId,
-    setSniperChainId,login
+    setSniperChainId,
+    login,
   };
 
   return (
@@ -736,22 +685,6 @@ function Layout() {
           </div>
           <img src="/bodyLeft.png" alt="" className="bodyLeftImg" />
           <img src="/bodyRight.png" alt="" className="bodyRightImg" />
-          <Modal
-            title="Basic Modal"
-            open={isModalOpenNew}
-            footer={null}
-            onCancel={handleCancel}
-          >
-            <p
-              onClick={() => {
-                if (connectPar) {
-                  lllllllll(connectPar);
-                }
-              }}
-            >
-              aaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            </p>
-          </Modal>
         </CountContext.Provider>
       </Suspense>
     </ApolloProvider>
