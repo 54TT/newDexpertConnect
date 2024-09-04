@@ -9,7 +9,8 @@ export default function button({
   isOwn,
   setIsOwn,
   isOpenTrade,
-  setRemoveOwnShipModal
+  setRemoveOwnShipModal,
+  clickToPair
 }) {
   const { t } = useTranslation();
   const [renounceLoading, setRenounceLoading] = useState(false);
@@ -41,7 +42,7 @@ export default function button({
       </ConfigProvider>
       {isOwn?   <Button className='action-button'>修改表单</Button> : <></>}
       {
-        isOpenTrade && <Button className='action-button'>Pair</Button>
+        isOpenTrade && <Button className='action-button' onClick={clickToPair}>Pair</Button>
       }
       { isOwn && !isOpenTrade ?  <Button className='action-button' onClick={() => setOpenTradeModal(true)}>打开交易</Button> : <></>}
       {isOwn? <Button  danger ghost onClick={() => setRemoveOwnShipModal(true)}>放弃所有权</Button> : <></>}

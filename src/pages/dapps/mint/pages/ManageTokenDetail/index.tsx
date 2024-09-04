@@ -6,7 +6,7 @@ import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 
 import './index.less';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Request from '@/components/axios';
 import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
@@ -42,6 +42,7 @@ function ManageTokenDetail() {
   const [removeOwnShipLoading, setRemoveOwnShipLoading] = useState(false);
 
   const [removeOwnShipModal, setRemoveOwnShipModal] = useState(false);
+  const history = useNavigate();
 
 
   useEffect(() => {
@@ -81,29 +82,16 @@ function ManageTokenDetail() {
       return;
     }
     setOpenTradeLoading(true);
-    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-    const signer = web3Provider.getSigner();
     const walletAddress = await signer.getAddress();
     // const decimals = await erc20Contract.decimals();
     const tokenBalance = await tokenContract.balanceOf(walletAddress);
     const tt = await approve(tokenContract.address, tokenBalance);
     try {
       if (tt) {
-        const tx = await tokenContract.openTrading(tokenBalance, {
+        const tx = await tokenContract.openTrading(contractConfig.uniswapV2RouterAddress,tokenBalance, {
           value: ethers.utils.parseEther(ethAmount.toString()),
         });
         setOpenTradeModal(false);
-        await getAll({
-          method: 'post',
-          url: '/api/v1/launch-bot/tx/status/check',
-          data: {
-            tx: tx.hash,
-            txType: '7',
-            txTableId: router?.id,
-          },
-          token,
-          chainId,
-        });
         const recipent = await tx.wait();
         if (recipent.status === 1) {
           setOpenTradeLoading(false);
@@ -178,7 +166,7 @@ function ManageTokenDetail() {
         <Loading status={'20'} browser={browser} />
       )}
       {isLoading && <div style={{ width: '100%', height: '20px' }}></div>}
-      {! isLoading && <ActionButton {...buttonParams} />}
+      {! isLoading && <ActionButton {...buttonParams} clickToPair={() => history(`/dapps/tokencreation/pairDetail/${pairAddress}/${tokenInfo.symbol}/${contractConfig.tokenSymbol}`)} />}
       <CommonModal
         width={380}
         className="mint-common-modal"
@@ -198,9 +186,16 @@ function ManageTokenDetail() {
         <span>{ethAmount || '-'}</span>
         </div>
         <div className='open-trade-input'>
+          <div style={{ textAlign: 'end', marginBottom: "12px", fontSize: "18px", color: "rgba(139, 139, 139, 1)"
+ }}>
+            Balance: {ethBalance}
+          </div>
           <InputNumber
             value={ethAmount}
-            addonAfter={contractConfig?.tokenSymbol || 'ETH'}
+            addonAfter={<div>
+              <span>{contractConfig?.tokenSymbol || 'ETH'}</span>
+              <Button className='action-button' ghost onClick={() => setEthAmount(ethBalance)} >Max</Button>
+            </div>}
             controls={false}
             stringMode={true}
             onChange={(v) => {

@@ -88,9 +88,8 @@ display: none;
 }
 
 .mint-common-modal {
-  max-width: 400px !important;
-  min-width: 350px !important;
-  width: 96vw !important;
+  width: 380px !important;
+
   .ant-modal-title {
     color: #fff;
   }
@@ -98,13 +97,13 @@ display: none;
     width: 100%;
     background-color: transparent;
     border: 1px solid rgba(134, 240, 151, 1);
+    padding: 4px;
     box-shadow: none;
     border-right: none;
     input {
       color: #fff;
     }
     &.ant-input-number-focused {
-      border: 1px solid rgba(134, 240, 151, 1);
       box-shadow: none;
       border-right: none;
     }
@@ -113,6 +112,13 @@ display: none;
     border: 1px solid rgba(134, 240, 151, 1);
     color: #fff;
     border-left: none;
+    
+    button {
+      width: 52px;
+      height: 28px;
+      margin-left: 12px !important;
+      border-radius: 14px;
+    }
   }
   .ant-btn {
     margin-top: 12px;
