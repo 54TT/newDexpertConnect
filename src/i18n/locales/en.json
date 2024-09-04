@@ -480,7 +480,7 @@
     "pools": "pool",
     "al": "You are about to burn LP tokens",
     "Note": "Note: Burning LP tokens will permanently remove your share from the liquidity pool. ",
-    "Creation": "Token Creation",
+    "Creation": "Launch",
     "loSu": "Successfully Lock LP",
     "unLoSu": "Successfully Unlock LP",
     "removeLimits": "Successfully remove Limits",
