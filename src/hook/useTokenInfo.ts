@@ -1,6 +1,7 @@
 import { CountContext } from '@/Layout';
 import { FormDataType } from '@/pages/dapps/mint/pages/LaunchFill';
 import { tokenFactoryERC20Abi } from '@abis/tokenFactoryERC20Abi';
+import { toEthWithDecimal } from '@utils/convertEthUnit';
 import { ethers } from 'ethers';
 import { useContext, useEffect, useState } from 'react';
 export function useTokenInfo(address: string): [Partial<FormDataType>, ethers.Contract] {
@@ -44,7 +45,7 @@ export function useTokenInfo(address: string): [Partial<FormDataType>, ethers.Co
       owner,
       pair,
       isOpenTrade,
-      totalSupply: totalSupply.toString(),
+      totalSupply: toEthWithDecimal(totalSupply, decimals),
     };
     setTokenContract(tokenContract)
     setTokenInfo(tokenItemDataFormat);

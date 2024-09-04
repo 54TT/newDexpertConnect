@@ -1,7 +1,5 @@
 import './index.less';
-import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CountContext } from '@/Layout';
 import { FormDataType } from '../../pages/LaunchFill';
 function InfoList({
   data,
@@ -34,23 +32,24 @@ function InfoList({
       </div>
       <div className="info-list-item">
         <img src="/website-launch.svg" alt="" />
-        <div>{websiteLink}</div>
+        <div><span>{websiteLink}</span></div>
       </div>
       <div className="info-list-item">
         <img src="/telegrams.svg" alt="" />
-        <div>{telegramLink}</div>
+        <div><span>{telegramLink}</span></div>
+
       </div>
       <div className="info-list-item">
         <img src="/twitter.svg" alt="" />
-        <div>{twitterLink}</div>
+        <div><span>{twitterLink}</span></div>
       </div>
       <div className="info-list-item">
         <img src="/discord-launch.svg" alt="" />
-        <div>{discordLink}</div>
+        <div><span>{discordLink}</span></div>
       </div>
       <div className="info-list-item descript">
-        <div className="info-list-item-descript">Describe</div>
-        <div>{description}</div>
+        <div className="info-list-item-descript">Description</div>
+        <div style={{ overflowWrap: "break-word" }}>{description}</div>
       </div>
     </div>
   );

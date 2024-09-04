@@ -127,6 +127,17 @@ function ManageTokenDetail() {
     setRemoveOwnShipLoading(false);
   };
 
+  const pairInfoData: PairInfoPropsType  = {
+    token0: {
+      logo: tokenInfo?.logoLink,
+      symbol: tokenInfo?.symbol
+    },
+    token1: {
+      logo: contractConfig?.defaultTokenIn?.logoUrl,
+      symbol: contractConfig?.defaultTokenIn?.symbol
+    }
+  }
+
   const buttonParams = {
     isVerify,
     setIsVerify,
@@ -139,19 +150,11 @@ function ManageTokenDetail() {
     openTradeLoading,
     isOpenTrade,
     setIsOwn,
-    setRemoveOwnShipModal
+    setRemoveOwnShipModal,
+    pairInfoData
   };
 
-  const pairInfoData: PairInfoPropsType  = {
-    token0: {
-      logo: tokenInfo?.logoLink,
-      symbol: tokenInfo?.symbol
-    },
-    token1: {
-      logo: contractConfig?.defaultTokenIn?.logoUrl,
-      symbol: contractConfig?.defaultTokenIn?.symbol
-    }
-  }
+
 
   return (
     <div className="manage-tokenBox">
