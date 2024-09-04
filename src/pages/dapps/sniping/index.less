@@ -38,6 +38,10 @@
         font-size: 18px;
         font-weight: bold;
         text-align: center;
+        transition: all .2s;
+        &:hover{
+          color:#86f097 !important;
+        }
       }
     }
   }
@@ -155,9 +159,11 @@
       }
       .eth {
         background-color: rgb(30, 30, 30);
-        padding: 4px;
+        // background-color: #444;
+        padding: 4px 6px;
         border-radius: 30px;
         display: flex;
+        cursor: default;
         span {
           color: white;
         }
@@ -171,7 +177,7 @@
         img:last-child {
           width: 13px;
         }
-        cursor: pointer;
+        // cursor: pointer;
         align-items: center;
       }
     }

@@ -56,7 +56,6 @@ export default function OrderCard({
     const permit2Contract = new ethers.Contract(permit2Address, Permit2ABI, provider);
 
 
-
     const { wordPos, bitPos }: any = bitmapPositions(BNtype.from(order.nonce));
     const mask = 1 << bitPos;
     const res= await permit2Contract.connect(signer).invalidateUnorderedNonces(wordPos, mask);

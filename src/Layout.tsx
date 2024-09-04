@@ -207,12 +207,11 @@ function Layout() {
     changeConfig(Number(targetChainId).toString());
   };
 
-  const onAccountsChanged = (account) => {
-    if (account.length > 0 && account?.[0] !== loginProvider?.selectAddress) {
+  const onAccountsChanged =async (account) => {
+    if (account.length > 0 ) {
       handleLogin({ provider: loginProvider });
     }
   };
-
   useEffect(() => {
     if (isLogin && loginProvider) {
       let changeChainId = '1';
@@ -233,7 +232,7 @@ function Layout() {
         });
       } catch (e) {
         // 如果用户拒绝切换链或不支持此方法
-        console.error(e);
+        return null
       }
     }
     return () => {

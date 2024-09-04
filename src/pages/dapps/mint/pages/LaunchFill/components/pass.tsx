@@ -133,7 +133,7 @@ export default function pass() {
         {/* <p className="hint">{t('token.Notice')}</p> */}
         {/* <p className="hint">
           {t('token.be', {
-            value: contractConfig.launchFee,
+            value: launchTokenPass==='launch'||launchTokenPass==='gloden'?'0':contractConfig.launchFee,
             symbol: contractConfig.tokenSymbol,
           })}
         </p> */}

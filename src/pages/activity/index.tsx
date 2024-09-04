@@ -77,7 +77,7 @@ function Index() {
         <div className={'activityBox'} style={{ overflow: 'hidden' }}>
           <p
             className="topTitle"
-            style={{ margin: browser ? ' 3% 0 2%' : '50px 0 20px' }}
+            style={{ margin: browser ? '3% 0 2%' : '50px 0 20px' }}
           >
             <span style={{ color: 'rgb(134,240,151)' }}>
               {t('Active.task')}

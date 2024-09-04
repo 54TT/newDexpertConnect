@@ -2,9 +2,30 @@
 @desc-font-color: #8c8c8c;
 @button-color: #86f097;
 .dapp-sniper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  height: 100% !important;
+  // height: max-content;
+  overflow-y: auto;
+  overflow-x: hidden;
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.01);
+    border-radius: 10px;
+    background-color: @theme-card-color;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 10px;
+    background-color: @theme-card-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    width: 8px;
+    border-radius: 10px;
+    background-color: @buy-color-light;
+  }
   > div {
     color: #fff !important;
     font-size: 14px;
@@ -14,6 +35,9 @@
     min-width: 500px;
     height: 500px;
     margin-right: 40px;
+  }
+  &-right {
+    margin: 0 4px;
   }
 }
 

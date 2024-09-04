@@ -1,23 +1,48 @@
 import axios from 'axios';
+import { config } from '@/config/config.ts';
+import {ethers} from 'ethers';
 async function getBalance(address: any, id: string): Promise<any> {
+  let contractConfig = config[id];
+  const provider=new ethers.providers.JsonRpcProvider(contractConfig.rpcUrl);
+  
   const isBat = Array.isArray(address);
   // 批量
   if (isBat) {
-    const response = await axios.get(
-      id === '1'
-        ? 'https://api.etherscan.io/api'
-        : 'https://api-sepolia.etherscan.io/api',
-      {
-        params: {
-          module: 'account',
-          action: 'balancemulti',
-          apikey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
-          address: address.join(','),
-          tag: 'latest',
-        },
+    const balancesPromise=address.map(async (address)=>{
+      const balance=await provider.getBalance(address);
+      return{
+        account:address,
+        balance:balance.toString()
       }
-    );
-    return response.data.result;
+    })
+
+    const balances=await Promise.all(balancesPromise);
+    return balances;
+
+
+
+    // const response = await axios.get(
+    //   contractConfig.verificationURL,
+    //   // id === '1'
+    //   //  // ? 'https://api.etherscan.io/api'
+    //   //   : 'https://api-sepolia.etherscan.io/api',
+    //   {
+    //     params: {
+    //       module: 'account',
+    //       action: 'balancemulti',
+    //       // apikey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
+    //       apikey: contractConfig.verificationApiKey,
+    //       address: address.join(','),
+    //       tag: 'latest',
+    //     },
+    //   }
+    // ); 
+    // console.log(response.data.result);
+    
+    // return response.data.result;
+
+
+
     // const banlaceMap = result.reduce((prev: any, next: any) => {
     //   const balance =
     //     next.balance === '0' ? '0' : (next.balance / 10 ** 18).toFixed(3);
@@ -27,13 +52,17 @@ async function getBalance(address: any, id: string): Promise<any> {
     // return banlaceMap;
   } else {
     // 单条
-    const response = await axios.get(      id === '1'
-      ? 'https://api.etherscan.io/api'
-      : 'https://api-sepolia.etherscan.io/api', {
-      params: {
+    const response = await axios.get(      
+      contractConfig.verificationURL,
+      // id === '1'
+      // //   ? 'https://api.etherscan.io/api'
+      //   : 'https://api-sepolia.etherscan.io/api', 
+        {
+        params: {
         module: 'account',
         action: 'balancemulti',
-        apikey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
+        // apikey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
+        apikey: contractConfig.verificationApiKey,
         address,
         tag: 'latest',
       },

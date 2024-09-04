@@ -442,10 +442,10 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     ].filter((item) => item !== null);
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
-        (tokenIn.contractAddress === ethAddress ||
-          tokenIn.contractAddress === wethAddress) &&
-        (tokenOut.contractAddress === ethAddress ||
-          tokenOut.contractAddress === wethAddress)
+        (tokenIn.contractAddress.toLowerCase() === ethAddress.toLowerCase() ||
+          tokenIn.contractAddress.toLowerCase() === wethAddress.toLowerCase()) &&
+        (tokenOut.contractAddress.toLowerCase() === ethAddress.toLowerCase() ||
+          tokenOut.contractAddress.toLowerCase() === wethAddress.toLowerCase())
       ) {
         return await getSwapEthAndWeth.apply(null, [
           chainId,

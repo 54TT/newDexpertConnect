@@ -40,32 +40,44 @@ export default function WalletDetail({
   const [load, setLoad] = useState(false);
   const { getAll } = Request();
   const getWalletDetail = async (page: number) => {
-    const token = cookie.get('token');
-    const res = await getAll({
-      method: 'post',
-      url: '/api/v1/wallet/assets',
-      data: {
-        walletId: wallet?.walletId,
-        page,
-        pageSize: 10,
-      },
-      token,
-      chainId,
-    });
-    if (res?.status === 200) {
-      if (page === 1) {
-        setTokenList(res?.data?.walletAssets);
-      } else {
+
+    try{
+      const token = cookie.get('token');
+      const res = await getAll({
+        method: 'post',
+        url: '/api/v1/wallet/assets',
+        data: {
+          walletId: wallet?.walletId,
+          page,
+          pageSize: 10,
+        },
+        token,
+        chainId,
+      });
+      if (res?.status === 200) {
+        if (page === 1) {
+          setTokenList(res?.data?.walletAssets);
+        } else {
+        }
+        if (res?.data?.walletAssets?.length !== 10) {
+          setStatus(true);
+        }
+        setLoading(true);
+        setIsLoad(true);
+      }else {
+        setLoading(true);
+        setIsLoad(true);
       }
-      if (res?.data?.walletAssets?.length !== 10) {
-        setStatus(true);
-      }
+    }catch(e){
       setLoading(true);
       setIsLoad(true);
+      setTokenList([])
     }
+    
   };
   const getWalletTotal = async () => {
-    const token = cookie.get('token');
+    try{
+      const token = cookie.get('token');
     const res = await getAll({
       method: 'post',
       url: '/api/v1/wallet/assets/total',
@@ -78,6 +90,10 @@ export default function WalletDetail({
     if (res?.status === 200) {
       setTotalUSDT(res?.data?.totalUSDT);
     }
+    }catch(e){
+      setTotalUSDT(0);
+    }
+    
   };
   // 获取默认数据
   useEffect(() => {
@@ -195,6 +211,8 @@ export default function WalletDetail({
           onClick={() => {
             if (item?.address !== tokenItem?.address) {
               setTokenItem(item);
+              // 切换token，活动条重置
+              setSlider(0)
             }
           }}
         >
@@ -345,12 +363,15 @@ export default function WalletDetail({
           <div className="detail-body">
             <div className="detail-body-header">
               <p>
-                ${' '}
-                {Number(totalUSDT)
-                  ? Number(totalUSDT)
-                      .toFixed(5)
-                      .replace(/\.?0*$/, '')
-                  : '0'}
+                <span>
+                  ${' '}
+                  {Number(totalUSDT)
+                    ? Number(totalUSDT)
+                        .toFixed(5)
+                        .replace(/\.?0*$/, '')
+                    : '0'}
+                </span>
+                {/* <span>{wallet?.balance} {contractConfig.tokenSymbol}</span> */}
               </p>
               <p>{wallet?.address}</p>
             </div>

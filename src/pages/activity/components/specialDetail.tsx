@@ -2,13 +2,13 @@ import './index.less';
 import Task from './eventsList';
 import { useTranslation } from 'react-i18next';
 import cookie from 'js-cookie';
-import React,{ useEffect, useState, useContext, useMemo } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Statistic } from 'antd';
-import { CountContext } from "@/Layout.tsx";
+import { CountContext } from '@/Layout.tsx';
 const Loading = React.lazy(() => import('@/components/allLoad/loading.tsx'));
-import Request from "@/components/axios.tsx";
-import { setMany } from '@/../utils/change.ts'
+import Request from '@/components/axios.tsx';
+import { setMany } from '@/../utils/change.ts';
 const { Countdown } = Statistic;
 function SpecialActive() {
   const { getAll } = Request();
@@ -58,9 +58,7 @@ function SpecialActive() {
   const extraText: string = useMemo(() => {
     const extra = JSON.parse(data?.campaignHome?.campaign?.extra || '{}');
     const [key, value] = Object.entries(extra)[0] || ['', ''];
-    return (
-      data?.campaignHome?.campaign?.campaignId > 4 ? value : key
-    ) as string;
+    return (data?.campaignHome?.campaign?.mode === '1' ? value : key) as string;
   }, [data]);
 
   return (
@@ -127,7 +125,7 @@ function SpecialActive() {
               params={['first', 'daily']}
               data={data}
             />
-            {params?.id !== '1' && (
+            {data?.campaignHomeCN?.campaign?.mode !== '2' && (
               <div className="bot">
                 <p>{t('Active.Earn')}</p>
                 <p>

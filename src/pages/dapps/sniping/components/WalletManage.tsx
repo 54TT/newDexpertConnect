@@ -103,6 +103,7 @@ export default function WalletManage({
     }
   };
   useEffect(() => {
+    setWalletList([])
     getWalletList(1);
     setLoading(false);
   }, [isLogin, id]);
@@ -170,7 +171,7 @@ export default function WalletManage({
             </div>
           </div>
         </div>
-        <span className="wallet-balance">{item.balance} ETH</span>
+        <span className="wallet-balance">{item.balance} {contractConfig.tokenSymbol}</span>
       </div>
     );
   };
