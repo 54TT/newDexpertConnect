@@ -1,5 +1,5 @@
 import { Button, InputNumber } from 'antd';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BottomButton from '../../component/BottomButton';
 import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
@@ -44,16 +44,15 @@ function ManageTokenDetail() {
   const [removeOwnShipModal, setRemoveOwnShipModal] = useState(false);
   const history = useNavigate();
 
-
   useEffect(() => {
     if (tokenInfo) {
       setIsLoading(false);
-      initData()
+      initData();
     }
-  }, [tokenInfo, signer])
+  }, [tokenInfo, signer]);
 
   const initData = async () => {
-    const {isOpenTrade, owner, pair} = tokenInfo;
+    const { isOpenTrade, owner, pair } = tokenInfo;
     const address: string = await signer.getAddress();
     const ethBalance = await signer.getBalance();
     console.log(address);
@@ -62,11 +61,11 @@ function ManageTokenDetail() {
       setIsOwn(true);
     }
     const balance = await tokenContract.balanceOf(address);
-    setEthBalance(toEthWithDecimal(ethBalance,contractConfig.decimals));
+    setEthBalance(toEthWithDecimal(ethBalance, contractConfig.decimals));
     setTokenBalance(toEthWithDecimal(balance, tokenInfo.decimals));
     setIsOpenTrade(isOpenTrade);
     setPairAddress(pair);
-  }
+  };
 
   const approve = async (spender, amount) => {
     const tx = await tokenContract.approve(spender, amount);
@@ -88,9 +87,13 @@ function ManageTokenDetail() {
     const tt = await approve(tokenContract.address, tokenBalance);
     try {
       if (tt) {
-        const tx = await tokenContract.openTrading(contractConfig.uniswapV2RouterAddress,tokenBalance, {
-          value: ethers.utils.parseEther(ethAmount.toString()),
-        });
+        const tx = await tokenContract.openTrading(
+          contractConfig.uniswapV2RouterAddress,
+          tokenBalance,
+          {
+            value: ethers.utils.parseEther(ethAmount.toString()),
+          }
+        );
         setOpenTradeModal(false);
         const recipent = await tx.wait();
         if (recipent.status === 1) {
@@ -122,21 +125,21 @@ function ManageTokenDetail() {
     } catch (e) {
       setRemoveOwnShipLoading(false);
       NotificationChange('error', t('token.renounceOwnershipfailed'));
-      return null
+      return null;
     }
     setRemoveOwnShipLoading(false);
   };
 
-  const pairInfoData: PairInfoPropsType  = {
+  const pairInfoData: PairInfoPropsType = {
     token0: {
       logo: tokenInfo?.logoLink,
-      symbol: tokenInfo?.symbol
+      symbol: tokenInfo?.symbol,
     },
     token1: {
       logo: contractConfig?.defaultTokenIn?.logoUrl,
-      symbol: contractConfig?.defaultTokenIn?.symbol
-    }
-  }
+      symbol: contractConfig?.defaultTokenIn?.symbol,
+    },
+  };
 
   const buttonParams = {
     isVerify,
@@ -151,10 +154,8 @@ function ManageTokenDetail() {
     isOpenTrade,
     setIsOwn,
     setRemoveOwnShipModal,
-    pairInfoData
+    pairInfoData,
   };
-
-
 
   return (
     <div className="manage-tokenBox">
@@ -169,36 +170,59 @@ function ManageTokenDetail() {
         <Loading status={'20'} browser={browser} />
       )}
       {isLoading && <div style={{ width: '100%', height: '20px' }}></div>}
-      {! isLoading && <ActionButton {...buttonParams} clickToPair={() => history(`/dapps/tokencreation/pairDetail/${pairAddress}/${tokenInfo.symbol}/${contractConfig.tokenSymbol}`)} />}
+      {!isLoading && (
+        <ActionButton
+          {...buttonParams}
+          clickToPair={() =>
+            history(
+              `/dapps/tokencreation/pairDetail/${pairAddress}/${tokenInfo.symbol}/${contractConfig.tokenSymbol}`
+            )
+          }
+        />
+      )}
       <CommonModal
         width={380}
         className="mint-common-modal"
         open={openTradeModal}
         footer={null}
         closeIcon={null}
-        title={<div className='disCen' >Open Trade</div>}
+        title={<div className="disCen">Open Trade</div>}
         onCancel={() => setOpenTradeModal(false)}
       >
-          <PairInfo data={pairInfoData} />
-        <div className='pair-info-token'>
+        <PairInfo data={pairInfoData} />
+        <div className="pair-info-token">
           <span>{pairInfoData.token0.symbol}</span>
           <span>{tokenBalance || '-'}</span>
         </div>
-        <div className='pair-info-token'>
-        <span>{pairInfoData.token1.symbol}</span>
-        <span>{ethAmount || '-'}</span>
+        <div className="pair-info-token">
+          <span>{pairInfoData.token1.symbol}</span>
+          <span>{ethAmount || '-'}</span>
         </div>
-        <div className='open-trade-input'>
-          <div style={{ textAlign: 'end', marginBottom: "12px", fontSize: "18px", color: "rgba(139, 139, 139, 1)"
-}}>
+        <div className="open-trade-input">
+          <div
+            style={{
+              textAlign: 'end',
+              marginBottom: '12px',
+              fontSize: '18px',
+              color: 'rgba(139, 139, 139, 1)',
+            }}
+          >
             Balance: {ethBalance}
           </div>
           <InputNumber
             value={ethAmount}
-            addonAfter={<div>
-              <span>{contractConfig?.tokenSymbol || 'ETH'}</span>
-              <Button className='action-button' ghost onClick={() => setEthAmount(ethBalance)} >Max</Button>
-            </div>}
+            addonAfter={
+              <div>
+                <span>{contractConfig?.tokenSymbol || 'ETH'}</span>
+                <Button
+                  className="action-button"
+                  ghost
+                  onClick={() => setEthAmount(ethBalance)}
+                >
+                  Max
+                </Button>
+              </div>
+            }
             controls={false}
             stringMode={true}
             onChange={(v) => {
@@ -206,21 +230,52 @@ function ManageTokenDetail() {
             }}
           />
         </div>
-        <div className='open-trade-button'>
-            <Button className='action-button' ghost onClick={() => setOpenTradeModal(false)}>Cancel</Button>
-            <Button className='action-button'  onClick={() => openTrade()}>Confirm</Button>
+        <div className="open-trade-button">
+          <Button
+            className="action-button"
+            ghost
+            onClick={() => setOpenTradeModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button className="action-button" onClick={() => openTrade()}>
+            Confirm
+          </Button>
         </div>
       </CommonModal>
-      <CommonModal width={380} centered={true}  className="remove-own-ship-modal" footer={null} open={removeOwnShipModal} closeIcon={null} title={<div style={{ textAlign: 'center', color: "rgba(234, 110, 110, 1)"}}>Remove Ownership</div>}>
-          <p>This action will remove your ownership for the token. This means you will not:</p>
-          <p>●Change the token logo</p>
-          <p>●Change the token's the link of social media</p>
-          <p>●Change the token's description</p>
-          <p>Please remove ownership only after the token data is finalized</p>
-          <div>
-            <Button className='action-button' ghost onClick={() => setRemoveOwnShipModal(false)}>Cancel</Button>
-            <Button className='action-button'  onClick={() => renounceOwnerShip()}>Confirm</Button>
+      <CommonModal
+        width={380}
+        centered={true}
+        className="remove-own-ship-modal"
+        footer={null}
+        open={removeOwnShipModal}
+        closeIcon={null}
+        title={
+          <div style={{ textAlign: 'center', color: 'rgba(234, 110, 110, 1)' }}>
+            Remove Ownership
           </div>
+        }
+      >
+        <p>
+          This action will remove your ownership for the token. This means you
+          will not:
+        </p>
+        <p>●Change the token logo</p>
+        <p>●Change the token's the link of social media</p>
+        <p>●Change the token's description</p>
+        <p>Please remove ownership only after the token data is finalized</p>
+        <div>
+          <Button
+            className="action-button"
+            ghost
+            onClick={() => setRemoveOwnShipModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button className="action-button" onClick={() => renounceOwnerShip()}>
+            Confirm
+          </Button>
+        </div>
       </CommonModal>
     </div>
   );

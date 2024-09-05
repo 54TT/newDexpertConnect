@@ -4,7 +4,9 @@ import { tokenFactoryERC20Abi } from '@abis/tokenFactoryERC20Abi';
 import { toEthWithDecimal } from '@utils/convertEthUnit';
 import { ethers } from 'ethers';
 import { useContext, useEffect, useState } from 'react';
-export function useTokenInfo(address: string): [Partial<FormDataType>, ethers.Contract] {
+export function useTokenInfo(
+  address: string
+): [Partial<FormDataType>, ethers.Contract, Function] {
   const [tokenInfo, setTokenInfo] = useState<Partial<FormDataType>>();
   const [tokenContract, setTokenContract] = useState<ethers.Contract>();
   const { signer } = useContext(CountContext);
@@ -47,16 +49,19 @@ export function useTokenInfo(address: string): [Partial<FormDataType>, ethers.Co
       isOpenTrade,
       totalSupply: toEthWithDecimal(totalSupply, decimals),
     };
-    setTokenContract(tokenContract)
+    setTokenContract(tokenContract);
     setTokenInfo(tokenItemDataFormat);
-  }
+  };
 
   useEffect(() => {
     if (address && signer) {
       getTokenInfo();
     }
-  }, [address, signer])
+  }, [address, signer]);
 
-  return [tokenInfo, tokenContract]
+  const reload = () => {
+    getTokenInfo();
+  };
 
+  return [tokenInfo, tokenContract, reload];
 }
