@@ -4,9 +4,11 @@ import BottomButton from '../../component/BottomButton';
 import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
-
+import { client } from '@/client';
 import './index.less';
 import { useParams } from 'react-router-dom';
+// useActiveWalletChain,
+import { useActiveAccount } from 'thirdweb/react';
 import Request from '@/components/axios';
 import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
@@ -16,7 +18,15 @@ import { ethers } from 'ethers';
 import NotificationChange from '@/components/message';
 import CommonModal from '@/components/CommonModal';
 import { useTranslation } from 'react-i18next';
+import { getContract } from 'thirdweb';
+import { sepolia } from 'thirdweb/chains';
 import Button from './component/button';
+import { prepareContractCall } from 'thirdweb';
+import { toWei } from 'thirdweb/utils';
+// import { signTransaction } from 'thirdweb';
+// import { simulateTransaction } from 'thirdweb';
+import { sendAndConfirmTransaction } from 'thirdweb';
+
 function ManageTokenDetail() {
   const { t } = useTranslation();
   const router = useParams();
@@ -34,9 +44,9 @@ function ManageTokenDetail() {
   const [openTradeModal, setOpenTradeModal] = useState(false);
   const [ethBalance, setEthBalance] = useState('0');
   const [ethAmount, setEthAmount] = useState(0);
+  const activeAccount = useActiveAccount();
   // 按钮正在执行状态
   const [openTradeLoading, setOpenTradeLoading] = useState(false);
-
   useEffect(() => {
     setIsLoading(false);
     if (
@@ -46,42 +56,72 @@ function ManageTokenDetail() {
     ) {
       initData();
     }
+    initData();
   }, [chainId, router?.address, contractConfig]);
 
   const initData = async () => {
-    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-    const signer = web3Provider.getSigner();
-    const walletAddress = await signer.getAddress();
-    const tokenContract = new ethers.Contract(
-      router?.address,
-      LaunchERC20Abi,
-      signer
-    );
-    setErc20Contract(tokenContract);
-    const data = await Promise.all([
-      tokenContract.owner(),
-      tokenContract.balanceOf(walletAddress),
-      tokenContract.IsRemoveLimits(),
-      tokenContract.tradingOpen(),
-      signer.getBalance(),
-      await getAll({
-        method: 'get',
-        url: `/api/v1/launch-bot/contract/${router?.id}`,
-        data: {},
-        token,
-        chainId,
-      }),
-    ]);
-    setIsOwn(data[0] === walletAddress);
-    setIsRemoveLimit(data[2]);
-    setIsOpenTrade(data[3]);
-    const ethWei = data[4].toString();
-    if (data[5]?.data?.isVerify === '1') {
-      setIsVerify(true);
-    }
-    setEthBalance(ethers.utils.formatEther(ethWei));
-    setTokenData(data[5]?.data);
+    // const web3Provider = new ethers.providers.Web3Provider(loginProvider);
+    // const signer = web3Provider.getSigner();
+    // const walletAddress = await signer.getAddress();
+    // const tokenContract = new ethers.Contract(
+    //   router?.address,
+    //   LaunchERC20Abi,
+    //   signer
+    // );
+    const contract = getContract({
+      client,
+      chain: sepolia,
+      address: '0x5e001b8cC4fbf35BF13763BaCE330367D688E1ff',
+      abi: LaunchERC20Abi as any,
+    });
+
+    const tx: any = prepareContractCall({
+      contract,
+      method: 'transferFrom',
+      params: [
+        '0x5e001b8cC4fbf35BF13763BaCE330367D688E1ff',
+        '0xb34C0CFAC19819524892E09Afda7402E57CbcDA6',
+        1,
+      ],
+      value: toWei('0.01'),
+    });
+    const transactionReceipt = await sendAndConfirmTransaction({
+      account: activeAccount,
+      transaction: tx,
+    });
+    console.log(transactionReceipt);
+    // const result = await simulateTransaction({
+    //   transaction: tx,
+    // });
+    // console.log(result);
+    // setErc20Contract(tokenContract);
+    // const data = await Promise.all([
+    //   tokenContract.owner(),
+    //   tokenContract.balanceOf(walletAddress),
+    //   tokenContract.IsRemoveLimits(),
+    //   tokenContract.tradingOpen(),
+    //   signer.getBalance(),
+    //   await getAll({
+    //     method: 'get',
+    //     url: `/api/v1/launch-bot/contract/${router?.id}`,
+    //     data: {},
+    //     token,
+    //     chainId,
+    //   }),
+    // ]);
+    // setIsOwn(data[0] === walletAddress);
+    // setIsRemoveLimit(data[2]);
+    // setIsOpenTrade(data[3]);
+    // const ethWei = data[4].toString();
+    // if (data[5]?.data?.isVerify === '1') {
+    //   setIsVerify(true);
+    // }
+    // setEthBalance(ethers.utils.formatEther(ethWei));
+    // setTokenData(data[5]?.data);
     setIsLoading(true);
+    setTokenData(null);
+    setErc20Contract(null);
+    setEthBalance('0');
   };
   const tokenInfoData = useMemo(() => {
     if (!tokenData) return [];
@@ -182,7 +222,6 @@ function ManageTokenDetail() {
         <Loading status={'20'} browser={browser} />
       )}
       {!isLoading && <div style={{ width: '100%', height: '20px' }}></div>}
-      <p className="hint">{t('token.note')}</p>
       <Button {...buttonParams} />
       <CommonModal
         className="mint-common-modal"
@@ -213,7 +252,7 @@ function ManageTokenDetail() {
           }}
         />
       </CommonModal>
-      {/* <p className="hint">{t('token.note')}</p> */}
+      <p className="hint">{t('token.note')}</p>
     </div>
   );
 }

@@ -2,20 +2,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
-
 import TokenItem from '../../component/TokenItem';
 import { CountContext } from '@/Layout';
 import './index.less';
 import InfiniteScrollPage from '@/components/InfiniteScroll';
 import Loading from '@/components/allLoad/loading';
 import { useTranslation } from 'react-i18next';
-import { ethers } from 'ethers';
-import getPairByV2Factory from '@utils/getPairByV2Factory';
+// import { ethers } from 'ethers';
+// import getPairByV2Factory from '@utils/getPairByV2Factory';
 function ManagePairListAndContract() {
   const { t } = useTranslation();
   const router = useParams();
-  const { chainId, browser, contractConfig, loginProvider } =
-    useContext(CountContext);
+  // loginProvider
+  const { chainId, browser, contractConfig } = useContext(CountContext);
   // const { getAll } = Request();
   const history = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -24,31 +23,36 @@ function ManagePairListAndContract() {
   const [page, setPage] = useState(1);
   // const token = Cookies.get('token');
   const [data, setData] = useState([]);
+  console.log(data);
   const getTokenPairList = async () => {
-    const { uniswapV2FactoryAddress, wethAddress } = contractConfig;
-    const provider = new ethers.providers.Web3Provider(loginProvider);
-    const signer = await provider.getSigner();
-
-    const pairAddress = await getPairByV2Factory({
-      factoryAddress: uniswapV2FactoryAddress,
-      token0: router?.address,
-      token1: wethAddress,
-      signer,
-    });
-
+    // const { uniswapV2FactoryAddress, wethAddress } = contractConfig;
+    // const provider = new ethers.providers.Web3Provider(loginProvider);
+    // const signer = await provider.getSigner();
+    // const pairAddress = await getPairByV2Factory({
+    //   factoryAddress: uniswapV2FactoryAddress,
+    //   token0: router?.address,
+    //   token1: wethAddress,
+    //   signer,
+    // });
+    const pairAddress = 0;
+    console.log(111111111111111111111111)
     if (pairAddress) {
-      setData([
-        {
-          pairAddress,
-          token0: router.name,
-          token1: 'W' + contractConfig.tokenSymbol,
-        },
-      ]);
+      setData([]);
+      // setData([
+      //   {
+      //     pairAddress,
+      //     token0: router.name,
+      //     token1: 'W' + contractConfig.tokenSymbol,
+      //   },
+      // ]);
+    console.log(2222222222222222222)
       setLoading(true);
     } else {
       setLoading(true);
+    console.log(33333333333333)
     }
   };
+  console.log(loading)
   const changePage = () => {
     if (!isNext) {
       getTokenPairList();
@@ -59,8 +63,10 @@ function ManagePairListAndContract() {
   useEffect(() => {
     if (router?.id && contractConfig?.chainId === Number(chainId)) {
       getTokenPairList();
-      setLoading(false);
+      setLoading(true);
     }
+    getTokenPairList();
+    setLoading(true);
   }, [contractConfig, chainId]);
   const items = (item: any) => {
     return (

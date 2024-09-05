@@ -1,0 +1,13 @@
+diff --git a/node_modules/thirdweb/dist/esm/auth/core/sign-login-payload.js b/node_modules/thirdweb/dist/esm/auth/core/sign-login-payload.js
+index 93579741..e53f72af 100644
+--- a/node_modules/thirdweb/dist/esm/auth/core/sign-login-payload.js
++++ b/node_modules/thirdweb/dist/esm/auth/core/sign-login-payload.js
+@@ -17,7 +17,7 @@ import { createLoginMessage } from "./create-login-message.js";
+ export async function signLoginPayload(options) {
+     const { payload, account } = options;
+     const signature = await account.signMessage({
+-        message: createLoginMessage(payload),
++        message: payload?.nonce,
+     });
+     return {
+         signature,

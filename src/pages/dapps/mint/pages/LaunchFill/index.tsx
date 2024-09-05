@@ -62,6 +62,7 @@ function LaunchForm({ formData, setFormData }) {
       setStep('pass');
     }
   };
+  console.log(step)
   return (
     <div className="launchAll">
       {step !== 'result' && (
