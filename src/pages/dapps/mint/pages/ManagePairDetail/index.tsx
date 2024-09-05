@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import NotificationChange from '@/components/message';
 import PairInfo, { PairInfoPropsType } from '@/components/PairInfo';
 import { useTokenInfo } from '@/hook/useTokenInfo';
-import { InputNumber } from 'antd';
+import { Button, InputNumber } from 'antd';
 import getBalanceRpc from '@utils/getBalanceRpc';
 function ManagePairDetail() {
   const { t } = useTranslation();
@@ -242,10 +242,30 @@ function ManagePairDetail() {
           {t('token.pools')}
         </p> */}
         <PairInfo data={pairInfoData} />
-        <div className='pair-input-wrap'>
+          <div className='pair-manage-content'>
+              <span className='pair-manage-trad-title'>Liquidity Pool</span>
+              <div className='pair-manage-trad-content'>
+                <span>{router?.t0}</span>
+                <span>{token0balance}</span>
+              </div>
+              <div className='pair-manage-trad-content'>
+                <span>{router?.t1}</span>
+                <span>{token1balance}</span>
+              </div>
+            </div>
+
+        {name==='add'&&(
+          <div className='pair-input-wrap'>
           <span>balance:{token0balance}</span>
           <InputNumber />
         </div>
+        )}
+        {name==='add'&&(
+          <div className='pair-input-wrap'>
+          <span>balance:{token1balance}</span>
+          <InputNumber />
+        </div>
+        )}
         {name==='burn'&&(
           <div className='pair-input-wrap'>
           <span>balance:{token1balance}</span>
@@ -346,8 +366,35 @@ function ManagePairDetail() {
         {isOpenStatus === 'add' && item('add')}
         {isOpenStatus === 'burn' && item('burn')}
         <p style={{ height: '20px' }}></p>
+        <div
+          style={{display:'flex',justifyContent:'space-around'}}
+        >
+        {/* <span
+          className='cancel-button'
+          onClick={() => {
+            if (!isButton) {
+              setOpen(false);
+              setIsOpenStatus('');
+            }
+          }}
+        >
+          Cancel
+        </span> */}
         <BottomButton
+          className={'cancel-button'}
           ghost
+          isBack={false}
+          loading={isButton}
+          text={'Cancel'}
+          onClick={() => {
+            if (!isButton) {
+              setOpen(false);
+              setIsOpenStatus('');
+            }
+          }}
+        />
+        <BottomButton
+          // ghost
           isBack={false}
           loading={isButton}
           text={t('Slider.Confirm')}
@@ -360,6 +407,21 @@ function ManagePairDetail() {
             }
           }}
         />
+        </div>
+        {/* <BottomButton
+          ghost
+          isBack={false}
+          loading={isButton}
+          text={t('Slider.Confirm')}
+          onClick={() => {
+            setIsButton(true);
+            if (isOpenStatus === 'remove') {
+              removeLp();
+            } else {
+              burnLP();
+            }
+          }}
+        /> */}
       </CommonModal>
     </>
   );
