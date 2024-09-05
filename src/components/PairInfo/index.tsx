@@ -1,8 +1,4 @@
 import './index.less';
-import { useContext, useEffect, useState } from 'react';
-import { CountContext } from '@/Layout';
-import { ethers } from 'ethers';
-import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
 type PairInfoTokenType = {
   logo: string;
   symbol: string;

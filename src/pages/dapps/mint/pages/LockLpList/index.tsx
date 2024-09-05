@@ -10,7 +10,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
 import BottomButton from '../../component/BottomButton';
 import CommonModal from '@/components/CommonModal';
-import { DatePicker, Slider } from 'antd';
+import { Button, DatePicker, Slider } from 'antd';
 import type { SliderSingleProps } from 'antd';
 import './index.less';
 import getBalanceRpcEther from '@utils/getBalanceRpc';
@@ -22,6 +22,8 @@ import { useNavigate } from 'react-router-dom';
 import Decimal from 'decimal.js';
 import Loading from '@/components/allLoad/loading';
 import Nodata from '@/components/Nodata';
+import BottomActionButton from '@/components/BottomActionButton';
+import InputNumberWithString from '@/components/InputNumberWithString';
 function LockLpList() {
   const { t } = useTranslation();
   const { contractConfig, loginProvider, chainId, browser } =
@@ -182,7 +184,7 @@ function LockLpList() {
         title={t('token.Unon')}
       />
       <div
-        style={{ maxHeight: '330px', overflow: 'overlay', overflowX: 'hidden' }}
+        style={{ height: '80%', overflow: 'overlay', overflowX: 'scroll' }}
         className="mint-scroll"
       >
         {isLoading ? (
@@ -240,7 +242,10 @@ function LockLpList() {
         className="mint-common-modal"
         open={openModal}
         footer={null}
-        title=""
+        closeIcon={null}
+        title={
+          <div style={{ textAlign: 'center', color: '#fff' }}>锁定流动性</div>
+        }
         onCancel={() => {
           if (!lockLoing) {
             setOpenModal(false);
@@ -248,49 +253,25 @@ function LockLpList() {
         }}
       >
         <>
-          <div className="locklp-list-title">{t('token.Lock')}</div>
-          <div className="SliderBox">
-            <Slider
-              className="ampuntSlider"
-              marks={marks}
-              value={slider}
-              styles={{
-                track: { backgroundColor: 'rgb(134,240,151)' },
-                rail: { backgroundColor: 'rgb(67,67,67)' },
-                handle: { backgroundColor: 'transparent' },
-              }}
-              onChange={changeSlider}
-            />
-            <p>{slider}%</p>
+          <div className="locklp-list-title">
+            <span>{'锁定数量'}:</span>
+            <span> 0 LP</span>
           </div>
-          <div className="butt">
-            {[20, 40, 60, 80, 100].map((item: number) => {
-              return (
-                <p
-                  style={{
-                    border:
-                      slider === item
-                        ? '1px solid rgb(134,240,151)'
-                        : '1px solid white',
-                    color: slider === item ? 'rgb(134,240,151)' : 'white',
-                  }}
-                  onClick={() => {
-                    if (!lockLoing) {
-                      setSlider(item);
-                    }
-                  }}
-                  key={item}
-                >
-                  {item}%
-                </p>
-              );
-            })}
+          <div>
+            <InputNumberWithString
+              onChange={() => {}}
+              value={'1'}
+              balance={lpTokenBalance}
+              clickMax={() => {}}
+            ></InputNumberWithString>
           </div>
-          <div className="locklp-list-balance">
-            {t('token.Balance')}: {lpTokenBalance}
-          </div>
+          <div className="SliderBox"></div>
+          <div className="locklp-list-balance"></div>
         </>
-        <div className="date">{t('token.unti')}</div>
+        <div className="locklp-list-date">
+          <span>{t('token.unti')} :</span>
+          <span>2020/4/20</span>
+        </div>
         <DatePicker
           value={lockDate}
           showHour
@@ -304,7 +285,7 @@ function LockLpList() {
             }
           }}
         />
-        <BottomButton
+        {/* <BottomButton
           text={t('Slider.Confirm')}
           loading={lockLoing === 'confirm'}
           onClick={() => {
@@ -313,6 +294,12 @@ function LockLpList() {
               lockLp();
             }
           }}
+        /> */}
+        <BottomActionButton
+          okText={'确认'}
+          cancelText={'取消'}
+          onOk={() => {}}
+          onCancel={() => {}}
         />
       </CommonModal>
     </div>

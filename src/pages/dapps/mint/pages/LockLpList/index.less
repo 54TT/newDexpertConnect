@@ -1,16 +1,17 @@
 .mint-common-modal {
   .locklp-list-title {
-    font-size: 20px;
-    color: rgb(255, 255, 255);
-    margin-top: 20px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+
+    margin: 20px 0;
   }
   .locklp-list-balance {
     margin-top: 4px;
     color: rgba(255, 255, 255, 0.55);
   }
-  .date {
-    font-size: 20px;
-    color: white;
+  .locklp-list-date {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
     margin-top: 24px;
     margin-bottom: 8px;
   }
@@ -125,27 +126,26 @@
       }
 
       .ant-picker-time-panel {
-        .ant-picker-header{
-          .ant-picker-header-view{
+        .ant-picker-header {
+          .ant-picker-header-view {
             color: rgba(134, 240, 151, 0.8);
           }
         }
         .ant-picker-content {
           .ant-picker-time-panel-column {
-            scrollbar-color:rgba(134,240,151,0.5) transparent; 
+            scrollbar-color: rgba(134, 240, 151, 0.5) transparent;
             .ant-picker-time-panel-cell {
               .ant-picker-time-panel-cell-inner {
                 color: rgba(255, 255, 255, 0.85);
               }
             }
-           .ant-picker-time-panel-cell-selected{
-            .ant-picker-time-panel-cell-inner{
-              background-color: rgb(134, 240, 151);
-              color: black;
+            .ant-picker-time-panel-cell-selected {
+              .ant-picker-time-panel-cell-inner {
+                background-color: rgb(134, 240, 151);
+                color: black;
+              }
             }
-           }
           }
-       
         }
       }
     }
@@ -170,6 +170,7 @@
 }
 
 .locklpBox {
+  height: 100%;
   .itemLP {
     background-color: #242424;
     border-radius: 18px;
@@ -193,5 +194,8 @@
       margin: 10px 0 24px;
       color: white;
     }
+  }
+  .mint-bottom-button {
+    margin-top: 12px;
   }
 }
