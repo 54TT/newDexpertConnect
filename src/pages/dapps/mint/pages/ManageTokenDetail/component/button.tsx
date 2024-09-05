@@ -33,7 +33,9 @@ export default function button({
       </ConfigProvider>
       {isOwn?   <Button className='action-button' onClick={() => history}>修改表单</Button> : <></>}
       {
-        isOpenTrade && <Button className='action-button flex-start-button' onClick={clickToPair}>{<PairInfo data={pairInfoData} showArrow={true} />}</Button>
+        isOpenTrade && <Button className='action-button flex-start-button' onClick={clickToPair}>
+          {<PairInfo data={pairInfoData} showArrow={true} />}
+          </Button>
       }
       { isOwn && !isOpenTrade ?  <Button className='action-button' onClick={() => setOpenTradeModal(true)}>打开交易</Button> : <></>}
       {isOwn? <Button loading={renounceLoading}  danger ghost onClick={() => setRemoveOwnShipModal(true)}>放弃所有权</Button> : <></>}

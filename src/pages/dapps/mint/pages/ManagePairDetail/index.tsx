@@ -71,6 +71,8 @@ function ManagePairDetail() {
       wethAddress
     )
     console.log(token0balance);
+    const reserves=await uniSwapV2Pair?.getReserves();
+    console.log(reserves);
     
     setPairContract(uniSwapV2Pair);
 
@@ -223,7 +225,7 @@ function ManagePairDetail() {
           >{`${router?.t0} / ${router?.t1}`}</span>
           {t('token.pools')}
         </p> */}
-        <PairInfo data={pairInfoData} contractAddress={router?.pair} />
+        <PairInfo data={pairInfoData} />
         <div className='pair-input-wrap'>
           <span>balance:{token0balance}</span>
           <InputNumber />
@@ -251,7 +253,22 @@ function ManagePairDetail() {
       {loading ? (
         <>
           {/* <InfoList className="manage-token-detail-info" data={data} /> */}
-          <PairInfo data={pairInfoData} contractAddress={router?.pair} />
+          <div className="pair-manage-trad">
+            <div className='pair-manage-header'>
+              <PairInfo data={pairInfoData}  />
+            </div>
+            <div className='pair-manage-content'>
+              <span className='pair-manage-trad-title'>Liquidity Pool Reserves</span>
+              <div className='pair-manage-trad-content'>
+                <span>{router?.t0}</span>
+                <span></span>
+              </div>
+              <div className='pair-manage-trad-content'>
+                <span>{router?.t1}</span>
+                <span></span>
+              </div>
+            </div>
+          </div>
           <div className="pair-manage-button">
             <BottomButton
               text={t('token.LockLP')}

@@ -16,18 +16,21 @@ function PairInfo({ data, showArrow = false }: { data: PairInfoPropsType, showAr
       <img src={token0.logo || '/default-edit-icon.png'} alt="" />
       <img src={token1.logo} alt="" />
     </div>
-    <div className='pair-info-body'>
+    <div>
+    <span>{token0.symbol}</span>/<span>{token1.symbol}</span>
+    </div>
+    {/* <div className='pair-info-body'>
       <div className='pair-info-body-title'>Liquidity Pool Reserves</div>
       <div className='pair-info-body-token'>
         <span>{token0.symbol}</span>
-        {/* <span>{token0Reserve}</span> */}
+        <span>{token0Reserve}</span>
       </div>
       <div className='pair-info-body-token'>
-        {/* <span>{token1.symbol}</span> */}
+        <span>{token1.symbol}</span>
         <span>WETH</span>
-        {/* <span>{token1Reserve}</span> */}
+        <span>{token1Reserve}</span>
       </div>
-    </div>
+    </div> */}
     {
       showArrow ? <div className='arrow-right-button'>
       <img  src="/arrow-right-black.svg" alt="" />

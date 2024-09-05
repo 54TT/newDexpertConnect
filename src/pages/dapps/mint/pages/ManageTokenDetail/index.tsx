@@ -190,7 +190,7 @@ function ManageTokenDetail() {
         </div>
         <div className='open-trade-input'>
           <div style={{ textAlign: 'end', marginBottom: "12px", fontSize: "18px", color: "rgba(139, 139, 139, 1)"
- }}>
+}}>
             Balance: {ethBalance}
           </div>
           <InputNumber
