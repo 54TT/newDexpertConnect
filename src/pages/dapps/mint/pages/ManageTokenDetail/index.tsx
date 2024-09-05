@@ -1,15 +1,12 @@
 import { Button, InputNumber } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import BottomButton from '../../component/BottomButton';
 import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 
 import './index.less';
 import { useNavigate, useParams } from 'react-router-dom';
-import Request from '@/components/axios';
 import Loading from '@/components/allLoad/loading';
-import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
 import { ethers } from 'ethers';
 import NotificationChange from '@/components/message';
@@ -22,11 +19,8 @@ import { toEthWithDecimal } from '@utils/convertEthUnit';
 function ManageTokenDetail() {
   const { t } = useTranslation();
   const router = useParams();
-  const { chainId, loginProvider, browser, contractConfig, signer } =
-    useContext(CountContext);
+  const { browser, contractConfig, signer } = useContext(CountContext);
   const [isLoading, setIsLoading] = useState(true);
-  const { getAll } = Request();
-  const token = Cookies.get('token');
   const [isVerify, setIsVerify] = useState(false);
   const [isOpenTrade, setIsOpenTrade] = useState(false);
   const [isRemoveLimit, setIsRemoveLimit] = useState(false);
@@ -34,7 +28,7 @@ function ManageTokenDetail() {
   const [openTradeModal, setOpenTradeModal] = useState(false);
   const [ethBalance, setEthBalance] = useState('0');
   const [ethAmount, setEthAmount] = useState('0');
-  const [tokenInfo, tokenContract] = useTokenInfo(router.address);
+  const [tokenInfo, tokenContract, reset] = useTokenInfo(router.address);
   const [pairAddress, setPairAddress] = useState('');
   const [tokenBalance, setTokenBalance] = useState('0');
   // 按钮正在执行状态
@@ -46,7 +40,6 @@ function ManageTokenDetail() {
 
   useEffect(() => {
     if (tokenInfo) {
-      setIsLoading(false);
       initData();
     }
   }, [tokenInfo, signer]);
@@ -59,12 +52,15 @@ function ManageTokenDetail() {
     console.log(tokenInfo);
     if (address.toLowerCase() === owner.toLowerCase()) {
       setIsOwn(true);
+    } else {
+      setIsOwn(false);
     }
     const balance = await tokenContract.balanceOf(address);
     setEthBalance(toEthWithDecimal(ethBalance, contractConfig.decimals));
     setTokenBalance(toEthWithDecimal(balance, tokenInfo.decimals));
     setIsOpenTrade(isOpenTrade);
     setPairAddress(pair);
+    setIsLoading(false);
   };
 
   const approve = async (spender, amount) => {
@@ -94,11 +90,13 @@ function ManageTokenDetail() {
             value: ethers.utils.parseEther(ethAmount.toString()),
           }
         );
-        setOpenTradeModal(false);
+
         const recipent = await tx.wait();
         if (recipent.status === 1) {
+          await reset();
           setOpenTradeLoading(false);
           setIsOpenTrade(true);
+          setOpenTradeModal(false);
         }
         setOpenTradeLoading(false);
       }
@@ -118,6 +116,7 @@ function ManageTokenDetail() {
       const recipent = await tx.wait();
       if (recipent.status === 1) {
         setIsOwn(false);
+        setRemoveOwnShipLoading(false);
         NotificationChange('success', t('token.renounceOwnership'));
       } else {
         NotificationChange('error', t('token.renounceOwnershipfailed'));
@@ -127,7 +126,6 @@ function ManageTokenDetail() {
       NotificationChange('error', t('token.renounceOwnershipfailed'));
       return null;
     }
-    setRemoveOwnShipLoading(false);
   };
 
   const pairInfoData: PairInfoPropsType = {
@@ -155,6 +153,7 @@ function ManageTokenDetail() {
     setIsOwn,
     setRemoveOwnShipModal,
     pairInfoData,
+    removeOwnShipLoading,
   };
 
   return (
@@ -238,7 +237,11 @@ function ManageTokenDetail() {
           >
             Cancel
           </Button>
-          <Button className="action-button" onClick={() => openTrade()}>
+          <Button
+            className="action-button"
+            loading={openTradeLoading}
+            onClick={() => openTrade()}
+          >
             Confirm
           </Button>
         </div>

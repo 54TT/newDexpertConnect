@@ -5,13 +5,14 @@ export default function BottomActionButton({
   onCancel,
   okText,
   cancelText,
+  loading = false,
 }) {
   return (
     <div className="bottom-action-button">
       <Button className="action-button" ghost onClick={onCancel}>
         {cancelText}
       </Button>
-      <Button className="action-button" onClick={onOk}>
+      <Button className="action-button" loading={loading} onClick={onOk}>
         {okText}
       </Button>
     </div>

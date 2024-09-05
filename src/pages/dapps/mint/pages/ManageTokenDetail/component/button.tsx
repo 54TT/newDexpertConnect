@@ -12,11 +12,11 @@ export default function button({
   setRemoveOwnShipModal,
   clickToPair,
   pairInfoData,
+  removeOwnShipLoading,
   router,
 }) {
   const { t } = useTranslation();
-  const [renounceLoading, setRenounceLoading] = useState(false);
-  const history = useNavigate();
+
   return (
     <div className="token-detail-button">
       <ConfigProvider
@@ -59,7 +59,7 @@ export default function button({
       )}
       {isOwn ? (
         <Button
-          loading={renounceLoading}
+          loading={removeOwnShipLoading}
           danger
           ghost
           onClick={() => setRemoveOwnShipModal(true)}

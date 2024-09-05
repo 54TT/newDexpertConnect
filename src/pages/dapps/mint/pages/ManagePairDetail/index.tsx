@@ -52,6 +52,10 @@ function ManagePairDetail() {
   const [WETHAmount, setWETHAmount]=useState('')
   const [erc20Amount, setErc20Amount]=useState('')
   const [burnAmount, setBurnAmount]=useState('')
+  // 按钮状态
+  const [approveLoading, setApproveLoading]=useState(false)
+  const [burnLoading, setBurnLoading]=useState(false)
+  
   const pairInfoData: PairInfoPropsType  = {
     token0: {
       logo: tokenInfo?.logoLink,
@@ -520,7 +524,8 @@ function ManagePairDetail() {
           className={'confirm-button'}
           isBack={false}
           loading={isButton}
-          text={isOpenStatus}
+          text={approveLoading?
+                'Approving':isOpenStatus}
           onClick={() => {
             
             if (isOpenStatus === 'Add'&& erc20Amount &&WETHAmount) {
