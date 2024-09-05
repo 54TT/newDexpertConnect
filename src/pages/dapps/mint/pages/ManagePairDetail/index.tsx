@@ -30,7 +30,7 @@ function ManagePairDetail() {
   const { t } = useTranslation();
   const router = useParams();
   const history = useNavigate();
-  const { loginProvider, contractConfig, chainId, browser,openTradeModal } =
+  const { loginProvider, contractConfig, chainId, browser,openTradeModal,signer } =
     useContext(CountContext);
   const [tokenBalance, setTokenBalance] = useState('0');
   const [infoData, setInfoData] = useState<any>();
@@ -44,9 +44,14 @@ function ManagePairDetail() {
   // 池子token余额
   const [resever0balance,setResever0balance]=useState<string>('0')
   const [resever1balance,setResever1balance]=useState<string>('0')
-  // 用户token余额,token0 WETH,token1 用户
+  // 用户对应token余额,
   const [tokenWETH,setTokenWETH]=useState<string>('0')
   const [erc20Token,setErc20Token]=useState<string>('0')
+  const [erc20TokenAddress,setErc20TokenAddress]=useState<string>('')
+  // modal输入框数据
+  const [WETHAmount, setWETHAmount]=useState('')
+  const [erc20Amount, setErc20Amount]=useState('')
+  const [burnAmount, setBurnAmount]=useState('')
   const pairInfoData: PairInfoPropsType  = {
     token0: {
       logo: tokenInfo?.logoLink,
@@ -67,13 +72,15 @@ function ManagePairDetail() {
       router?.pair,
       wethAddress
     );
+    console.log(lpTokenBalance.toString());
+    
     const uniSwapV2Pair = new ethers.Contract(
       router?.pair,
       UniswapV2PairAbi,
       signer
     );
     setPairContract(uniSwapV2Pair);
-    
+    console.log(uniSwapV2Pair)
     
     const reserves=await uniSwapV2Pair?.getReserves();
     console.log(reserves);
@@ -108,12 +115,13 @@ function ManagePairDetail() {
     }
     if(token0address?.toLowerCase()=== wethAddress?.toLowerCase()){
       console.log('token0address is WETH')
-
+      setErc20TokenAddress(token1address)
       setTokenWETH(formatDecimalString(ethers.utils.formatEther(token0balance)))
       setErc20Token(formatDecimalString(ethers.utils.formatEther(token1balance)))
 
     }else if(token1address?.toLowerCase()=== wethAddress?.toLowerCase()){
       console.log('token1address is WETH')
+      setErc20TokenAddress(token0address)
       setTokenWETH(formatDecimalString(ethers.utils.formatEther(token1balance)))
       setErc20Token(formatDecimalString(ethers.utils.formatEther(token0balance)))
     }
@@ -178,11 +186,12 @@ function ManagePairDetail() {
       getPairInfo();
     }
   }, [loginProvider, chainId, contractConfig, router?.pair]);
+  // 烧流动性
   const burnLP = async () => {
     try {
       const tx = await pairContract.transfer(
         zeroAddress,
-        BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
+        BigNumber.from(toWeiWithDecimal(burnAmount, 18))
       );
       const data = await tx.wait();
       if (data.status === 1) {
@@ -201,6 +210,75 @@ function ManagePairDetail() {
     }
   };
 
+  // 查询额度，获取授权
+  const Allowance = async () => {
+    const erc20TokenContract= new ethers.Contract(
+      erc20TokenAddress,
+      ERC20Abi,
+      signer
+    )
+    const address = await signer.getAddress();
+    const ecr20Allowance = await erc20TokenContract.allowance(
+      address,
+      contractConfig?.uniswapV2RouterAddress,
+    );
+    console.log('ecr20Allowance', ecr20Allowance.toString());
+    if(ecr20Allowance.lt(BigNumber.from(toWeiWithDecimal(erc20Amount, 18)))){
+      const approveTx= await erc20TokenContract.approve(contractConfig?.uniswapV2RouterAddress, BigNumber.from(toWeiWithDecimal(erc20Amount, 18)));
+      const tx= await approveTx.wait();
+      if(tx?.status===1){
+        return true;
+      }
+    }
+    if(ecr20Allowance.gte(BigNumber.from(toWeiWithDecimal(erc20Amount, 18)))) return true;
+
+    
+  };
+  // 增加流动性
+  const addLp = async () => {
+    console.log('addLp');
+    console.log('erc20Amount',erc20Amount)
+    console.log('WETHAmount',WETHAmount)
+    const isAllowance=await Allowance()
+    console.log('isAllowance', isAllowance)
+
+    if(isAllowance){
+    try {
+      const web3Provider = new ethers.providers.Web3Provider(loginProvider);
+      const signer = await web3Provider.getSigner();
+      const v2RouterContract = new ethers.Contract(
+        contractConfig?.uniswapV2RouterAddress,
+        UniswapV2RouterAbi,
+        signer
+      );
+      const walletAddress = await signer.getAddress();
+      console.log('walletAddress',walletAddress)
+      console.log('erc20TokenAddress',erc20TokenAddress)
+      console.log(router?.pair)
+
+
+      const addLqTx= await v2RouterContract.addLiquidityETH(
+        erc20TokenAddress,
+        BigNumber.from(toWeiWithDecimal(erc20Amount, 18)),
+        0,
+        0,
+        router?.pair,
+        Math.floor(Date.now() / 1000) + 60 *10,
+        {gasLimit:3000000,value:BigNumber.from(toWeiWithDecimal(WETHAmount, 18))}
+      )
+      const tx = await addLqTx.wait()
+      if(tx?.status===1){
+        NotificationChange('success', 'Add Liquidity Success')
+        await getPairInfo()
+      }
+      console.log(tx);
+      setIsButton(false)
+    } catch (error) {
+      setIsButton(false)
+      console.log(error)
+    }
+  }
+  };
   const removeLp = async () => {
     try {
       const web3Provider = new ethers.providers.Web3Provider(loginProvider);
@@ -277,28 +355,47 @@ function ManagePairDetail() {
                 <span>{resever1balance}</span>
               </div>
             </div>
-
+        {/* erc20Token */}
         {name==='Add'&&(
-          <div className='pair-input-wrap'>
-          <span className='pair-token-balance'>Balance:{erc20Token}</span>
-          <InputNumber />
-        </div>
+          <InputNumberWithString 
+            value={erc20Amount}
+            onChange={(value)=>{
+              setErc20Amount(value)
+            }}
+            balance={erc20Token}
+            clickMax={()=>{
+              setErc20Amount(erc20Token)
+            }}
+            addonUnit = {router?.t0}
+          />
         )}
         {name==='Add'&&(
           // WETH
-          <div className='pair-input-wrap'>
-          <span className='pair-token-balance'>Balance:{tokenWETH}</span>
-          <InputNumber />
-        </div>
+          <InputNumberWithString 
+            value={WETHAmount}
+            onChange={(value)=>{
+              setWETHAmount(value)
+            }}
+            balance={tokenWETH}
+            clickMax={()=>{
+              setWETHAmount(tokenWETH)
+            }}
+            addonUnit = {'ETH'}
+          />
         )}
         {name==='Burn'&&(
-          <div className='pair-input-wrap'>
-          <span>Balance:{resever0balance}</span>
-          <InputNumber />
-        </div>
+          <InputNumberWithString 
+          value={burnAmount}
+          onChange={(value)=>{
+            setBurnAmount(value)
+          }}
+          balance={tokenBalance}
+          clickMax={()=>{
+            setBurnAmount(tokenBalance)
+          }}
+          addonUnit = {'LP'}
+        />
         )}
-        {/* <InputNumber /> */}
-        {/* {name && <p>{t('token.Note')}</p>} */}
       </div>
     );
   };
@@ -425,11 +522,13 @@ function ManagePairDetail() {
           loading={isButton}
           text={isOpenStatus}
           onClick={() => {
-            setIsButton(true);
-            if (isOpenStatus === 'Add') {
+            
+            if (isOpenStatus === 'Add'&& erc20Amount &&WETHAmount) {
               // removeLp();
-              console.log('AddLQ')
-            } else if(isOpenStatus==='Burn'){
+              addLp()
+              setIsButton(true);
+            } else if(isOpenStatus==='Burn' && burnAmount){
+              setIsButton(true);
               burnLP();
             }
           }}
