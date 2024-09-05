@@ -1,10 +1,12 @@
 import { Button, InputNumber, InputProps } from 'antd';
 import './index.less';
+import { valueType } from 'antd/es/statistic/utils';
 interface InputWithBigNumberProps extends Omit<InputProps, 'onChange'> {
   onChange: (v: string) => void;
   balance: string;
   clickMax: () => void;
   addonUnit?: string;
+  value: valueType;
 }
 function InputNumberWithString({
   value,

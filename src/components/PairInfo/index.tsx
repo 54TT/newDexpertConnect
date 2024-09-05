@@ -20,7 +20,7 @@ function PairInfo({
         <img src={token1.logo} alt="" />
       </div>
       <div className="dis">
-        <span>{token0.symbol}</span>/<span>{token1.symbol}</span>
+        <span>{token0.symbol}</span> <span>/</span> <span>{token1.symbol}</span>
       </div>
       {/* <div className='pair-info-body'>
       <div className='pair-info-body-title'>Liquidity Pool Reserves</div>
