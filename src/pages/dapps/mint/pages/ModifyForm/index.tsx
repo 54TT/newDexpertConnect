@@ -5,11 +5,12 @@ import { useParams } from 'react-router-dom';
 import EditForm from '../LaunchFill/components/form';
 import { useForm } from 'antd/es/form/Form';
 import PageHeader from '../../component/PageHeader';
-import { Loading } from 'antd-mobile';
+
 import './index.less';
 import { Button } from 'antd';
 import BottomButton from '../../component/BottomButton';
 import NotificationChange from '@/components/message';
+import Loading from '@/components/allLoad/loading';
 
 function ModifyForm() {
   const { address } = useParams();

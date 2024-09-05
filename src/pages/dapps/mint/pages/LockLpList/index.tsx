@@ -10,8 +10,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
 import BottomButton from '../../component/BottomButton';
 import CommonModal from '@/components/CommonModal';
-import { DatePicker, Slider } from 'antd';
-import type { SliderSingleProps } from 'antd';
+import { DatePicker } from 'antd';
 import './index.less';
 import getBalanceRpcEther from '@utils/getBalanceRpc';
 import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
@@ -19,9 +18,10 @@ import { zeroAddress } from '@utils/constants';
 import approve from '@utils/approve';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import Decimal from 'decimal.js';
 import Loading from '@/components/allLoad/loading';
 import Nodata from '@/components/Nodata';
+import BottomActionButton from '@/components/BottomActionButton';
+import InputNumberWithString from '@/components/InputNumberWithString';
 function LockLpList() {
   const { t } = useTranslation();
   const { contractConfig, loginProvider, chainId, browser } =
@@ -36,9 +36,10 @@ function LockLpList() {
   const [lpTokenBalance, setLpTokenBalance] = useState('0');
   const [lockDate, setLockDate] = useState<Dayjs>(null);
   // lock   loading
-  const [lockLoing, setLockLoing] = useState('');
+  const [lockLoading, setLockLoading] = useState('');
   const [uncxContract, setUncxContract] = useState<ethers.Contract>();
   const [slider, setSlider] = useState(0);
+  const [lockAmount, setLockAmount] = useState('0');
   const getLockList = async () => {
     const { uncxAddress, wethAddress } = contractConfig;
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
@@ -96,17 +97,18 @@ function LockLpList() {
       const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
       const fee = (await uncxContract.gFees()).ethFee;
       const decimals = await pairContract.decimals();
-      const lockAmount = toWeiWithDecimal(
-        new Decimal(lpTokenBalance).mul(slider).div(100).toString(),
-        decimals
-      );
+      const lockAmountWitDecimal = toWeiWithDecimal(lockAmount, decimals);
       const unlockDate = lockDate.unix();
-      const isShow = await approve(pairContract, uncxAddress, lockAmount);
+      const isShow = await approve(
+        pairContract,
+        uncxAddress,
+        lockAmountWitDecimal
+      );
       if (isShow) {
         try {
           const tx = await uncxContract.lockLPToken(
             router?.address,
-            lockAmount,
+            lockAmountWitDecimal,
             unlockDate,
             zeroAddress,
             true,
@@ -126,10 +128,10 @@ function LockLpList() {
       }
       getLockList();
       setLockDate(null);
-      setSlider(0);
-      setLockLoing('');
+      setLockLoading('');
     } catch (e) {
-      setLockLoing('');
+      setLockLoading('');
+      console.error(e);
     }
   };
   useEffect(() => {
@@ -152,26 +154,11 @@ function LockLpList() {
       const recipent = await data.wait();
       if (recipent.status === 1) {
         history('/dapps/tokencreation/result/' + data?.hash + '/unlock');
-        setLockLoing('');
+        setLockLoading('');
       }
     } catch (e) {
       NotificationChange('error', 'pair.unlockfail');
-      setLockLoing('');
-    }
-  };
-
-  const marks: SliderSingleProps['marks'] = {
-    0: '0%',
-    20: '20%',
-    40: '40%',
-    60: '60%',
-    80: '80%',
-    100: '100%',
-  };
-
-  const changeSlider = (e: number) => {
-    if (!lockLoing) {
-      setSlider(e);
+      setLockLoading('');
     }
   };
   return (
@@ -182,7 +169,7 @@ function LockLpList() {
         title={t('token.Unon')}
       />
       <div
-        style={{ maxHeight: '330px', overflow: 'overlay', overflowX: 'hidden' }}
+        style={{ height: '80%', overflow: 'overlay', overflowX: 'scroll' }}
         className="mint-scroll"
       >
         {isLoading ? (
@@ -203,7 +190,7 @@ function LockLpList() {
                 </div>
                 <BottomButton
                   text={t('token.Unlock')}
-                  loading={item?.lockId?.toString() === lockLoing}
+                  loading={item?.lockId?.toString() === lockLoading}
                   isBack={dayjs(
                     dayjs.unix(Number(item?.unlockDate?.toString()))
                   ).isAfter(dayjs())}
@@ -213,7 +200,7 @@ function LockLpList() {
                         dayjs.unix(Number(item?.unlockDate?.toString()))
                       ).isAfter(dayjs())
                     ) {
-                      setLockLoing(item?.lockId?.toString());
+                      setLockLoading(item?.lockId?.toString());
                       withdraw(index, item.lockId, item.lockAmount);
                     }
                   }}
@@ -231,7 +218,7 @@ function LockLpList() {
         text={t('token.LockLP')}
         bottom
         onClick={() => {
-          if (!lockLoing) {
+          if (!lockLoading) {
             setOpenModal(true);
           }
         }}
@@ -240,57 +227,39 @@ function LockLpList() {
         className="mint-common-modal"
         open={openModal}
         footer={null}
-        title=""
+        closeIcon={null}
+        title={
+          <div style={{ textAlign: 'center', color: '#fff' }}>锁定流动性</div>
+        }
         onCancel={() => {
-          if (!lockLoing) {
+          if (!lockLoading) {
             setOpenModal(false);
           }
         }}
       >
         <>
-          <div className="locklp-list-title">{t('token.Lock')}</div>
-          <div className="SliderBox">
-            <Slider
-              className="ampuntSlider"
-              marks={marks}
-              value={slider}
-              styles={{
-                track: { backgroundColor: 'rgb(134,240,151)' },
-                rail: { backgroundColor: 'rgb(67,67,67)' },
-                handle: { backgroundColor: 'transparent' },
+          <div className="locklp-list-title">
+            <span>{'锁定数量'}: </span>
+            <span> {lockAmount || '-'} LP</span>
+          </div>
+          <div>
+            <InputNumberWithString
+              onChange={(v) => {
+                setLockAmount(v);
               }}
-              onChange={changeSlider}
-            />
-            <p>{slider}%</p>
+              value={lockAmount}
+              addonUnit="LP"
+              balance={lpTokenBalance}
+              clickMax={() => {}}
+            ></InputNumberWithString>
           </div>
-          <div className="butt">
-            {[20, 40, 60, 80, 100].map((item: number) => {
-              return (
-                <p
-                  style={{
-                    border:
-                      slider === item
-                        ? '1px solid rgb(134,240,151)'
-                        : '1px solid white',
-                    color: slider === item ? 'rgb(134,240,151)' : 'white',
-                  }}
-                  onClick={() => {
-                    if (!lockLoing) {
-                      setSlider(item);
-                    }
-                  }}
-                  key={item}
-                >
-                  {item}%
-                </p>
-              );
-            })}
-          </div>
-          <div className="locklp-list-balance">
-            {t('token.Balance')}: {lpTokenBalance}
-          </div>
+          <div className="SliderBox"></div>
+          <div className="locklp-list-balance"></div>
         </>
-        <div className="date">{t('token.unti')}</div>
+        <div className="locklp-list-date">
+          <span>解锁日期 : </span>
+          <span>{lockDate ? lockDate.format('YYYY-MM-DD HH:mm') : ''}</span>
+        </div>
         <DatePicker
           value={lockDate}
           showHour
@@ -299,19 +268,30 @@ function LockLpList() {
           showMinute
           showTime
           onChange={(date: Dayjs) => {
-            if (!lockLoing) {
+            if (!lockLoading) {
               setLockDate(date);
             }
           }}
         />
-        <BottomButton
+        {/* <BottomButton
           text={t('Slider.Confirm')}
-          loading={lockLoing === 'confirm'}
+          loading={lockLoading === 'confirm'}
           onClick={() => {
             if (slider && lockDate && router?.address) {
-              setLockLoing('confirm');
+              setLockLoading('confirm');
               lockLp();
             }
+          }}
+        /> */}
+        <BottomActionButton
+          okText={'确认'}
+          cancelText={'取消'}
+          loading={lockLoading}
+          onOk={() => {
+            lockLp();
+          }}
+          onCancel={() => {
+            setOpenModal(false);
           }}
         />
       </CommonModal>

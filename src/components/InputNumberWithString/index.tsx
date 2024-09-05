@@ -1,30 +1,45 @@
-import { Input, InputProps } from 'antd';
-import { ChangeEvent, useState } from 'react';
-
+import { Button, InputNumber, InputProps } from 'antd';
+import './index.less';
 interface InputWithBigNumberProps extends Omit<InputProps, 'onChange'> {
   onChange: (v: string) => void;
+  balance: string;
+  clickMax: () => void;
+  addonUnit?: string;
 }
-function InputNumberWithString({ value, onChange }: InputWithBigNumberProps) {
-  // 判断数字的正则
-  const validNumberRegex = /^(0$|^[1-9]\d*$|^\d*\.\d*[1-9]\d*$)/;
-  const [showValue, setShowValue] = useState<any>(value);
-
-  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    if (value === '0') onChange(value);
-    if (validNumberRegex.test(event.target.value)) {
-      onChange(value);
-    }
-    setShowValue(value);
-  };
+function InputNumberWithString({
+  value,
+  onChange,
+  balance,
+  clickMax,
+  addonUnit = '',
+}: InputWithBigNumberProps) {
   return (
-    <Input
-      value={showValue}
-      autoComplete={'off'}
-      allowClear
-      onChange={(v) => handleOnChange(v)}
-      onBlur={() => setShowValue(value)}
-    />
+    <div className="input-number-string">
+      <div
+        style={{
+          textAlign: 'end',
+          marginBottom: '12px',
+          fontSize: '14px',
+          color: 'rgba(139, 139, 139, 1)',
+        }}
+      >
+        Balance: {balance}
+      </div>
+      <InputNumber
+        value={value}
+        addonAfter={
+          <div>
+            <span>{addonUnit}</span>
+            <Button className="action-button" ghost onClick={clickMax}>
+              Max
+            </Button>
+          </div>
+        }
+        controls={false}
+        stringMode={true}
+        onChange={onChange}
+      />
+    </div>
   );
 }
 
