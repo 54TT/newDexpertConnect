@@ -83,13 +83,13 @@ function Oauth() {
         const dexpert = data.filter((i) => i?.campaign?.mode === '2');
         if (dexpert?.length > 0) {
           if (denied) {
-            history('/specialActive/' + dexpert[0]?.campaignId);
+            history('/specialActive/' + dexpert[0]?.campaign?.campaignId);
           } else if (error_description && error) {
-            history('/specialActive/' + dexpert[0]?.campaignId);
+            history('/specialActive/' + dexpert[0]?.campaign?.campaignId);
           } else if (oauth_token && verifier) {
-            claim(oauth_token, verifier, dexpert[0]?.campaignId);
+            claim(oauth_token, verifier, dexpert[0]?.campaign?.campaignId);
           } else if (code) {
-            claim(code, '', dexpert[0]?.campaignId);
+            claim(code, '', dexpert[0]?.campaign?.campaignId);
           } else {
             const at = window.location.href;
             if (
@@ -98,7 +98,7 @@ function Oauth() {
               at.includes('telegram')
             ) {
               const abc = at.split('#tgAuthResult=');
-              claim(abc[1], '', dexpert[0]?.campaignId);
+              claim(abc[1], '', dexpert[0]?.campaign?.campaignId);
             }
           }
         }
