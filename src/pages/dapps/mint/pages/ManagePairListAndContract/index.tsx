@@ -28,7 +28,6 @@ function ManagePairListAndContract() {
     const { uniswapV2FactoryAddress, wethAddress } = contractConfig;
     const provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await provider.getSigner();
-
     const pairAddress = await getPairByV2Factory({
       factoryAddress: uniswapV2FactoryAddress,
       token0: router?.address,

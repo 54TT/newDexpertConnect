@@ -10,7 +10,6 @@ import './style/all.less';
 import React, {
   createContext,
   Suspense,
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -20,26 +19,17 @@ import {
   useTonAddress,
   useTonConnectModal,
 } from '@tonconnect/ui-react';
-import { getAppMetadata, getSdkError } from '@walletconnect/utils';
 import 'swiper/css';
 import 'swiper/css/bundle';
-import { Web3Modal } from '@web3modal/standalone';
 import cookie from 'js-cookie';
-import * as encoding from '@walletconnect/encoding';
 import Request from './components/axios.tsx';
-import Client from '@walletconnect/sign-client';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import {
-  DEFAULT_APP_METADATA,
-  DEFAULT_PROJECT_ID,
-  getOptionalNamespaces,
-  getRequiredNamespaces,
-} from '../utils/default';
 import NotificationChange from './components/message';
 import { useTranslation } from 'react-i18next';
 import Loading from './components/allLoad/loading.tsx';
 import { chain } from '../utils/judgeStablecoin.ts';
 import { config } from './config/config.ts';
+import { client as newClient } from '@/client.ts';
 import { ethers } from 'ethers';
 import Decimal from 'decimal.js';
 const Dpass = React.lazy(() => import('./pages/dpass/index.tsx'));
@@ -49,6 +39,14 @@ const ActivePerson = React.lazy(
 const NewpairDetails = React.lazy(
   () => import('./pages/newpairDetails/index.tsx')
 );
+import {
+  useActiveWalletConnectionStatus,
+  useActiveWallet,
+  useAutoConnect,
+  useDisconnect,
+  useActiveWalletChain,
+  // useSwitchActiveWalletChain,
+} from 'thirdweb/react';
 import Index from './pages/index/index.tsx';
 import Webx2024 from './pages/webx2024/index.tsx';
 const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
@@ -59,22 +57,25 @@ const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
   () => import('./pages/activity/components/specialDetail.tsx')
 );
-const web3Modal = new Web3Modal({
-  projectId: DEFAULT_PROJECT_ID,
-  themeMode: 'dark',
-  walletConnectVersion: 1,
-});
+import { injectedProvider } from 'thirdweb/wallets';
 export const CountContext = createContext(null);
 Decimal.set({ toExpPos: 24, precision: 24 });
 function Layout() {
+  //    自动连接
+  useAutoConnect({
+    client: newClient,
+  });
+
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
   //  检测  evm环境  钱包
   const [environment, setEnvironment] = useState<any>([]);
   const [loginProvider, setloginProvider] = useState<any>(null);
+  console.log(loginProvider)
   const [sniperChainId, setSniperChainId] = useState('1');
   const [chainId, setChainId] = useState('1'); // swap 链切换
+  const [user, setUserPar] = useState<any>(null);
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
     setContractConfig(newConfig);
@@ -82,18 +83,50 @@ function Layout() {
     //@ts-ignore
     setProvider(rpcProvider);
   };
-  const walletRdns = cookie.get('walletRdns');
+  // 连接状态
+  const useActiveWalletConnectionStatu = useActiveWalletConnectionStatus();
+  // 连接的账号和监听账号
+  const walletConnect = useActiveWallet();
+  console.log(walletConnect);
+  // 连接的chain
+  const activeChain = useActiveWalletChain();
+  // 切换链
+  // const useSwitchChain = useSwitchActiveWalletChain();
+  // 退出连接
+  const { disconnect: walletConnectDisconnect } = useDisconnect();
+  // 获取 app 钱包的详情
+  // const { data: walletInfo } = useWalletInfo(walletConnect?.id);
+  const changeAll = async () => {
+    const metamaskProvider = injectedProvider(walletConnect?.id);
+    console.log(walletConnect)
+    console.log(metamaskProvider)
+    setloginProvider(metamaskProvider);
+    changeConfig(activeChain?.id?.toString());
+    setChainId(activeChain?.id?.toString());
+  };
   useEffect(() => {
-    if (walletRdns && environment.length > 0) {
-      changeInfoRdns(walletRdns);
+    // 判断  user是否存在，   在连接账号
+    if (user?.uid && useActiveWalletConnectionStatu === 'connected') {
+      changeAll();
     }
-  }, [environment, walletRdns]);
+  }, [user, useActiveWalletConnectionStatu]);
   useEffect(() => {
-    //   默认执行
-    if (!walletRdns) {
-      changeConfig(chainId);
-    }
-  }, [chainId]);
+    //  监听账户变更事件
+    walletConnect?.subscribe('accountChanged', async (account) => {
+      console.log(account);
+      // const ttt = account.signMessage({message:"你好"})
+      // console.log(ttt)
+    });
+    // 监听 chain变更事件
+    walletConnect?.subscribe('chainChanged', (chain) => {
+      console.log(chain);
+      // try{
+      // useSwitchChain(chain)
+      // }catch(e){
+      //   console.log('22222222222222222222555555555555')
+      // }
+    });
+  }, [walletConnect]);
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -115,7 +148,7 @@ function Layout() {
         address: userFriendlyAddress,
         timestamp: proof?.timestamp,
       };
-      login(par, 'ton', '');
+      login(par, 'ton');
     } else {
       //  获取 授权的message
       const noce: any = await getNoce('', '-2');
@@ -148,11 +181,6 @@ function Layout() {
   const { t } = useTranslation();
   const { getAll } = Request();
   const history = useNavigate();
-  const [chains, setChains] = useState<any>([]);
-  const [client, setClient] = useState<any>(null);
-  const [session, setSession] = useState<any>(null);
-  const prevRelayerValue = useRef<any>();
-  const [user, setUserPar] = useState<any>(null);
   const [bindingAddress, setBindingAddress] = useState<any>([]);
   const [isLogin, setIsLogin] = useState(false);
   const [load, setLoad] = useState<boolean>(false);
@@ -170,67 +198,51 @@ function Layout() {
   });
   // copy
   const [isCopy, setIsCopy] = useState(false);
-  const createClient = async () => {
-    try {
-      const _client: any = await Client.init({
-        relayUrl: 'wss://relay.walletconnect.com',
-        projectId: DEFAULT_PROJECT_ID,
-        metadata: {
-          ...(getAppMetadata() || DEFAULT_APP_METADATA),
-          url: getAppMetadata().url,
-        },
-      });
-      setClient(_client);
-    } catch (err) {
-      return null;
-    }
-  };
+  // const onChainChange = (targetChainId) => {
+  //   setChainId(Number(targetChainId).toString());
+  //   changeConfig(Number(targetChainId).toString());
+  // };
 
-  const onChainChange = (targetChainId) => {
-    setChainId(Number(targetChainId).toString());
-    changeConfig(Number(targetChainId).toString());
-  };
+  // const onAccountsChanged = (account) => {
+  //   if (account.length > 0 && account?.[0] !== loginProvider?.selectAddress) {
+  //     handleLogin({ provider: loginProvider });
+  //   }
+  // };
 
-  const onAccountsChanged = (account) => {
-    if (account.length > 0 && account?.[0] !== loginProvider?.selectAddress) {
-      handleLogin({ provider: loginProvider });
-    }
-  };
-
-  useEffect(() => {
-    if (isLogin && loginProvider) {
-      let changeChainId = '1';
-      if (Object.keys(config).includes(chainId)) {
-        changeChainId = chainId;
-      }
-      try {
-        // @ts-ignore
-        loginProvider?.on('chainChanged', onChainChange);
-        loginProvider?.on('accountsChanged', onAccountsChanged);
-        loginProvider?.request({
-          method: 'wallet_switchEthereumChain',
-          params: [
-            {
-              chainId: `0x${Number(changeChainId).toString(16)}`,
-            },
-          ],
-        });
-      } catch (e) {
-        // 如果用户拒绝切换链或不支持此方法
-        console.error(e);
-      }
-    }
-    return () => {
-      // @ts-ignore
-      (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
-    };
-  }, [isLogin, loginProvider, chainId]);
+  // useEffect(() => {
+  //   if (isLogin && loginProvider) {
+  //     let changeChainId = '1';
+  //     if (Object.keys(config).includes(chainId)) {
+  //       changeChainId = chainId;
+  //     }
+  //     try {
+  //       // @ts-ignore
+  //       loginProvider?.on('chainChanged', onChainChange);
+  //       loginProvider?.on('accountsChanged', onAccountsChanged);
+  //       loginProvider?.request({
+  //         method: 'wallet_switchEthereumChain',
+  //         params: [
+  //           {
+  //             chainId: `0x${Number(changeChainId).toString(16)}`,
+  //           },
+  //         ],
+  //       });
+  //     } catch (e) {
+  //       // 如果用户拒绝切换链或不支持此方法
+  //       console.error(e);
+  //     }
+  //   }
+  //   return () => {
+  //     // @ts-ignore
+  //     (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
+  //   };
+  // }, [isLogin, loginProvider, chainId]);
   const clear = async () => {
     history('/logout');
     setloginProvider(null);
+    walletConnectDisconnect(walletConnect);
     setChainId('1');
     cookie.remove('token');
-    cookie.remove('walletRdns');
     cookie.remove('currentAddress');
     changeBindind.current = '';
     cookie.remove('jwt');
@@ -249,13 +261,7 @@ function Layout() {
     setIsLogin(false);
     setBindingAddress(null);
   };
-  const getUser = async (
-    id: string,
-    token: string,
-    name: string,
-    jwt: any,
-    i?: any
-  ) => {
+  const getUser = async (id: string, token: string, jwt: any) => {
     const data: any = await getAll({
       method: 'get',
       url: '/api/v1/userinfo/' + id,
@@ -270,10 +276,6 @@ function Layout() {
       setUserPar(user);
       setIsLogin(true);
       cookie.set('token', token);
-      if (i?.info?.rdns) {
-        cookie.set('walletRdns', i?.info?.rdns);
-        changeInfoRdns(i?.info?.rdns);
-      }
       if (jwt) {
         cookie.set('jwt', JSON.stringify(jwt));
       }
@@ -281,14 +283,11 @@ function Layout() {
         setIsModalSet(true);
         setIsModalOpen(true);
       }
-      if (name === 'modal') {
-        web3Modal.closeModal();
-      }
       setLoad(false);
       setIsModalOpen(false);
     }
   };
-  const login = async (par: any, chain: string, name: string, i?: any) => {
+  const login = async (par: any, chain: string) => {
     try {
       const inviteCode = search.get('inviteCode')
         ? search.get('inviteCode')
@@ -342,7 +341,7 @@ function Layout() {
           cookie.set('currentAddress', par?.address ? par?.address : par?.addr);
           if (decodedToken && decodedToken?.uid) {
             const uid = decodedToken.sub.split('-')[1];
-            getUser(uid, res.data?.accessToken, name, decodedToken, i);
+            getUser(uid, res.data?.accessToken, decodedToken);
             localStorage.setItem('login-chain', chain === 'ton' ? '-2' : '1');
             setIsModalOpen(false);
           }
@@ -356,26 +355,6 @@ function Layout() {
     }
   };
 
-  const changeInfoRdns = (name: string) => {
-    const provider = environment.filter((i: any) => i?.info?.rdns === name);
-    if (provider.length > 0) {
-      setCurrentSwapChain(provider);
-    }
-  };
-
-  const setCurrentSwapChain = async (provider) => {
-    const walletChainIdHex = await provider[0]?.provider.request({
-      method: 'eth_chainId',
-    });
-    const walletChainId = Number(walletChainIdHex).toString(10);
-    let supprotChainId = '1';
-    if (Object.keys(config).includes(walletChainId)) {
-      supprotChainId = walletChainId;
-    }
-    setChainId(supprotChainId);
-    changeConfig(supprotChainId);
-    setloginProvider(provider[0]?.provider);
-  };
   const handleLogin = async (i: any) => {
     try {
       const account = await i?.provider?.request({
@@ -393,7 +372,7 @@ function Layout() {
               params: [message, account[0]],
             });
             const data = { signature: sign, addr: account[0], message };
-            login(data, 'eth', 'more', i);
+            login(data, 'eth');
           } else {
             setLoad(false);
           }
@@ -410,50 +389,6 @@ function Layout() {
       return null;
     }
   };
-  // 登录
-  const loginMore = async (
-    chainId: any,
-    address: string,
-    client: any,
-    session: any,
-    toName: string
-  ) => {
-    try {
-      const hexMsg = encoding.utf8ToHex(toName, true);
-      const params = [hexMsg, address];
-      const signature = await client.request({
-        topic: session?.topic,
-        chainId,
-        request: {
-          method: 'personal_sign',
-          params,
-        },
-      });
-      const data = { signature, addr: address, message: toName };
-      login(data, 'eth', 'modal');
-    } catch (e) {
-      return null;
-    }
-  };
-  const onDisconnect = async () => {
-    try {
-      await disconnect();
-    } catch (error) {
-      return null;
-    }
-  };
-  // 退出
-  const reset = () => {
-    setSession(undefined);
-    setChains([]);
-  };
-  const disconnect = useCallback(async () => {
-    await client.disconnect({
-      topic: session.topic,
-      reason: getSdkError('USER_DISCONNECTED'),
-    });
-    reset();
-  }, [client, session]);
   const getNoce = async (address: string, chainId?: any) => {
     const noce: any = await getAll({
       method: 'post',
@@ -464,64 +399,7 @@ function Layout() {
     });
     return noce;
   };
-  const getBlockchainActions = async (
-    acount: any,
-    client: any,
-    session: any
-  ) => {
-    try {
-      const [namespace, reference, address] = acount[0].split(':');
-      const chainId = `${namespace}:${reference}`;
-      const token: any = await getNoce(address);
-      if (token && token?.data && token?.status === 200) {
-        await loginMore(chainId, address, client, session, token?.data?.nonce);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      return null;
-    }
-  };
-  // 钱包连接
-  const onSessionConnected = useCallback(
-    async (_session: any, name: any, client: any) => {
-      try {
-        const allNamespaceAccounts = Object.values(_session.namespaces)
-          .map((namespace: any) => namespace.accounts)
-          .flat();
-        // await getAccountBalances(allNamespaceAccounts);   获取balance
-        setSession(_session);
-        if (name) {
-          await getBlockchainActions(allNamespaceAccounts, client, _session);
-        }
-      } catch (e) {
-        return null;
-      }
-    },
-    []
-  );
-  const connect = useCallback(async () => {
-    try {
-      const requiredNamespaces = getRequiredNamespaces(['eip155:1']);
-      const optionalNamespaces = getOptionalNamespaces(['eip155:1']);
-      const { uri, approval } = await client.connect({
-        requiredNamespaces,
-        optionalNamespaces,
-      });
-      if (uri) {
-        const standaloneChains = Object.values(requiredNamespaces)
-          .map((namespace) => namespace.chains)
-          .flat();
-        await web3Modal.openModal({ uri, standaloneChains });
-      }
-      const ab = await approval();
-      await onSessionConnected(ab, 'yes', client);
-    } catch (e) {
-      return null;
-    } finally {
-      web3Modal.closeModal();
-    }
-  }, [chains, client, onSessionConnected]);
+
   const getUserNow = () => {
     const jwt = cookie.get('jwt');
     const token = cookie.get('token');
@@ -529,30 +407,10 @@ function Layout() {
       const jwtPar = JSON.parse(jwt);
       if (jwtPar?.uid) {
         const uid = jwtPar.sub.split('-')[1];
-        getUser(uid, token, '', jwtPar);
+        getUser(uid, token, jwtPar);
       }
     }
   };
-  // 监测钱包切换
-  // if ((window as any).ethereum) {
-  //     (window as any).ethereum.on('accountsChanged', function (accounts: any) {
-  //         // setNewAccount(accounts[0])
-  //     })
-  // }
-  // // 监测链切换
-  // (window as any).ethereum.on('networkChanged', function (networkIDstring: any) {
-  // })
-  useEffect(() => {
-    if (!client) {
-      createClient();
-    } else if (
-      prevRelayerValue.current &&
-      prevRelayerValue.current !== 'wss://relay.walletconnect.com'
-    ) {
-      client.core.relayer.restartTransport('wss://relay.walletconnect.com');
-      prevRelayerValue.current = 'wss://relay.walletconnect.com';
-    }
-  }, [createClient, client]);
   const changeBody = () => {
     const body = document.getElementsByTagName('body')[0];
     if (window && window?.innerWidth) {
@@ -612,8 +470,6 @@ function Layout() {
   const value: any = {
     tonConnect,
     clear,
-    cccccccccccccccccccccccc: connect,
-    onDisconnect,
     handleLogin,
     user,
     setLoad,

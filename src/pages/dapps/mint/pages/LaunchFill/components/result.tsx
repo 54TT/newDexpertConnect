@@ -11,6 +11,9 @@ import { useNavigate } from 'react-router-dom';
 import Load from '@/components/allLoad/load.tsx';
 import { useTranslation } from 'react-i18next';
 import { reportPayType } from '@/api';
+import { injectedProvider } from 'thirdweb/wallets';
+import { useActiveWallet } from 'thirdweb/react';
+
 export default function resultBox({
   loading,
   result,
@@ -58,13 +61,14 @@ export default function resultBox({
       },
     });
   };
-
   // dpass类型
   const payTypeMap = {
     0: '0', // pay fee
     1: '4', // glodenPass
     2: '1', // dpass
   };
+
+  const walletConnect = useActiveWallet();
 
   const deployContract = async () => {
     try {
@@ -116,14 +120,74 @@ export default function resultBox({
     } catch (e) {
       setResult('error');
       setLoading(false);
-      return null
+      return null;
     }
   };
+  
+  const newDeployContract = async () => {
+    try {
+      const metamaskProvider:any = injectedProvider(walletConnect?.id);
+      const { decimals, launchFee } = contractConfig;
+      // const ethersProvider = new ethers.providers.Web3Provider(loginProvider);
+      const ethersProvider = new ethers.providers.Web3Provider(
+        metamaskProvider
+      );
+      const data: any = await Promise.all([
+        getByteCode(),
+        ethersProvider.getSigner(),
+      ]);
+      const { bytecode, metadataJson, contractId } = data?.[0]?.data;
+      const abi = JSON.parse(metadataJson).output.abi;
+      const contractFactory = new ethers.ContractFactory(
+        abi,
+        bytecode,
+        data?.[1]
+      );
+
+      // 先默认使用手续费版本
+      // launchTokenPass, setLaunchTokenPass   pass或者收费   launchTokenPass
+      const { deployTransaction, address } = await contractFactory.deploy(
+        launchTokenPass === 'more' ? 0 : 2,
+        {
+          value:
+            launchTokenPass === 'more'
+              ? toWeiWithDecimal(launchFee, decimals)
+              : 0,
+        }
+      );
+
+      sendReportPayType(
+        deployTransaction.hash,
+        payTypeMap[launchTokenPass === 'more' ? 0 : 2]
+      );
+      reportDeploy({
+        contractAddress: address,
+        contractId,
+        deployTx: deployTransaction.hash,
+      });
+      if (deployTransaction?.hash) {
+        const tx = await deployTransaction.wait();
+        if (tx?.transactionHash === deployTransaction?.hash) {
+          setLoading(false);
+          setResult('success');
+        }
+        setTx(deployTransaction?.hash);
+      }
+    } catch (e) {
+      setResult('error');
+      setLoading(false);
+      return null;
+    }
+  };
+
   useEffect(() => {
     if (loading && contractConfig?.chainId === Number(chainId)) {
-      deployContract();
+      // deployContract();
     }
-  }, [loading, contractConfig, chainId]);
+    if (walletConnect?.id) {
+      newDeployContract();
+    }
+  }, [loading, contractConfig, chainId, walletConnect]);
 
   return (
     <div className="resultBox">
