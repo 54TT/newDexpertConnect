@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom';
 import { CountContext } from '@/Layout.tsx';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +14,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
   const { browser, languageChange, isLogin, setUserPar, user }: any =
     useContext(CountContext);
   const { getAll } = Request();
-  const router = useLocation();
   const [loading, setLoading] = useState(false);
   const [isVerify, setIsVerify] = useState(false);
   const { t } = useTranslation();
@@ -55,19 +53,18 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
-  const follow = async (id: any) => {
+  const follow = async (operationSymbol: string,id:string) => {
     const token = cookie.get('token');
     try {
       if (token) {
-        const par: any = {
-          '1': '/api/v1/oauth/twitter/follow',
-          '2': '/api/v1/oauth/telegram/chat/follow',
-          '3': '/api/v1/oauth/discord/follow',
-          '5': '/api/v1/oauth/instagram/follow',
+        const par: any = { 
+          'follow-dexpert-twitter': '/api/v1/oauth/twitter/follow',
+          'join-dexpert-tg': '/api/v1/oauth/telegram/chat/follow',
+          'join-dexpert-discord': '/api/v1/oauth/discord/follow',
         };
         const res = await getAll({
-          method: id === '2' ? 'post' : 'get',
-          url: par[id],
+          method: operationSymbol === 'dexpert-tg-checkin' ? 'post' : 'get',
+          url: par[operationSymbol],
           data: { taskId: id },
           token,
         });
@@ -85,18 +82,18 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
-  const verify = async (id: string) => {
+  const verify = async (operationSymbol:string,id: string) => {
     const token = cookie.get('token');
     try {
       if (token) {
         const par: any = {
-          '1': '/api/v1/oauth/twitter/verify',
-          '2': '/api/v1/oauth/telegram/chat/verify',
-          '3': '/api/v1/oauth/discord/verify',
+          'follow-dexpert-twitter': '/api/v1/oauth/twitter/verify',
+          'join-dexpert-tg': '/api/v1/oauth/telegram/chat/verify',
+          'join-dexpert-discord': '/api/v1/oauth/discord/verify',
         };
         const res = await getAll({
           method: 'post',
-          url: par[id] ? par[id] : '/api/v1/oauth/instagram/verify',
+          url: par[operationSymbol] ? par[operationSymbol] : '/api/v1/oauth/twitter/verify',
           data: { taskId: id },
           token,
         });
@@ -219,7 +216,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       return null;
     }
   };
-
   const getLink = async (taskId: string, token: string) => {
     try {
       // 获取链接
@@ -262,10 +258,10 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
         } else if (option === 'first') {
           if (Number(it?.isCompleted)) {
             if (Number(it?.isCompleted) === 1) {
-              follow(it?.taskId);
+              follow(it?.operationSymbol,it?.taskId);
             }
             if (Number(it?.isCompleted) === 2) {
-              verify(it?.taskId);
+              verify(it?.operationSymbol,it?.taskId);
             }
           } else {
             getT(it);
@@ -331,23 +327,15 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
       }
     }
   };
-  const verification = async (id: string) => {
+  const verification = async (it: any) => {
     const token = cookie.get('token');
     try {
-      if (id && token) {
-        let url: any = null;
-        if (router.pathname === '/specialActive/1') {
-          url = '/api/v1/airdrop/task/twitter/daily/verify';
-        } else {
-          if (id === '10') {
-            url = '/api/v1/airdrop/task/twitter/daily/yuliverseVerify';
-          }
-        }
-        if (url) {
+      if (it?.taskId && token) {
+        let url: any = '/api/v1/airdrop/task/twitter/daily/verify';
           const res: any = await getAll({
             method: 'post',
             url,
-            data: { taskId: id },
+            data: { taskId: it?.taskId },
             token,
           });
           if (res?.data?.message === 'success' && res?.status === 200) {
@@ -355,7 +343,6 @@ function EachActivity({ option, rankList, isRankList, data, getParams }: any) {
           } else if (res?.data?.code === '400') {
             setIsVerify(false);
             NotificationChange('warning', res?.data?.message);
-          }
         }
       }
     } catch (e) {

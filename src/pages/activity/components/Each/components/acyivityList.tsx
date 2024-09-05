@@ -188,10 +188,10 @@ export default function acyivityList({
                 function () {
                   if (!isVerify && !loading) {
                     setIsVerify(true);
-                    if (!it?.title?.includes('Twitter') && i?.campaign?.mode === '2') {
+                    if(it?.operationSymbol==='dexpert-twitter-quote'){
+                      verification(it);
+                    }else{
                       getParams();
-                    } else {
-                      verification(it?.taskId);
                     }
                   }
                 },
