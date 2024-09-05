@@ -181,8 +181,9 @@ export default function resultBox({
   };
 
   useEffect(() => {
-    if (loading && contractConfig?.chainId === Number(chainId)) {
-      // deployContract();
+    // if (loading && contractConfig?.chainId === Number(chainId)) {
+    if (0) {
+      deployContract();
     }
     if (walletConnect?.id) {
       newDeployContract();
