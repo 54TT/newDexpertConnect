@@ -51,7 +51,7 @@ function LaunchHome() {
         }}
       >
         <img src="/clickHi.svg" alt="" />
-        <span>{t('token.me')}</span>
+        <span className={'launch-home-manage_token-span'}>{t('token.me')}</span>
       </div>
     </>
   );

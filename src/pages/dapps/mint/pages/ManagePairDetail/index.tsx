@@ -40,12 +40,11 @@ function ManagePairDetail() {
   //  loading
   const [loading, setLoading] = useState(false);
   const [pairContract, setPairContract] = useState<ethers.Contract>();
-  const [tokenInfo, tokenContract] = useTokenInfo(router.address);
   // 池子token余额
   const [resever0balance,setResever0balance]=useState<string>('0')
   const [resever1balance,setResever1balance]=useState<string>('0')
   // 用户对应token余额,
-  const [tokenWETH,setTokenWETH]=useState<string>('0')
+  const [tokenETH,setTokenETH]=useState<string>('0')
   const [erc20Token,setErc20Token]=useState<string>('0')
   const [erc20TokenAddress,setErc20TokenAddress]=useState<string>('')
   // modal输入框数据
@@ -55,7 +54,7 @@ function ManagePairDetail() {
   // 按钮状态
   const [approveLoading, setApproveLoading]=useState(false)
   const [burnLoading, setBurnLoading]=useState(false)
-  
+  const [tokenInfo] = useTokenInfo(erc20TokenAddress);
   const pairInfoData: PairInfoPropsType  = {
     token0: {
       logo: tokenInfo?.logoLink,
@@ -120,13 +119,13 @@ function ManagePairDetail() {
     if(token0address?.toLowerCase()=== wethAddress?.toLowerCase()){
       console.log('token0address is WETH')
       setErc20TokenAddress(token1address)
-      setTokenWETH(formatDecimalString(ethers.utils.formatEther(token0balance)))
+      setTokenETH(formatDecimalString(ethers.utils.formatEther(await signer.getBalance())))
       setErc20Token(formatDecimalString(ethers.utils.formatEther(token1balance)))
 
     }else if(token1address?.toLowerCase()=== wethAddress?.toLowerCase()){
       console.log('token1address is WETH')
       setErc20TokenAddress(token0address)
-      setTokenWETH(formatDecimalString(ethers.utils.formatEther(token1balance)))
+      setTokenETH(formatDecimalString(ethers.utils.formatEther(await signer.getBalance())))
       setErc20Token(formatDecimalString(ethers.utils.formatEther(token0balance)))
     }
 
@@ -182,7 +181,16 @@ function ManagePairDetail() {
   
     // 如果字符串以 . 结尾，也移除 .
     formattedStr = formattedStr.replace(/\.$/, '');
-  
+    // 分离整数部分和小数部分
+    const parts = formattedStr.split('.');
+    let integerPart = parts[0];
+    let decimalPart = parts[1] || '';
+
+    // 对整数部分进行每三位加逗号的格式化
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // 重新组合整数部分和小数部分
+    formattedStr = `${integerPart}${decimalPart ? '.' + decimalPart : ''}`;
     return formattedStr;
   }
   useEffect(() => {
@@ -195,21 +203,25 @@ function ManagePairDetail() {
     try {
       const tx = await pairContract.transfer(
         zeroAddress,
-        BigNumber.from(toWeiWithDecimal(burnAmount, 18))
+        BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
       );
+      setBurnLoading(true)
       const data = await tx.wait();
       if (data.status === 1) {
         if (tx?.hash && data) {
           history('/dapps/tokencreation/result/' + tx?.hash + '/burnLP');
         }
+        setBurnLoading(false)
       } else {
         NotificationChange('error', 'pair.burnfail');
+        setBurnLoading(false)
       }
       setIsOpenStatus('');
       setOpen(false);
       setIsButton(false);
     } catch (e) {
       setIsButton(false);
+      setBurnLoading(false)
       NotificationChange('error', 'pair.burnfail');
     }
   };
@@ -228,10 +240,17 @@ function ManagePairDetail() {
     );
     console.log('ecr20Allowance', ecr20Allowance.toString());
     if(ecr20Allowance.lt(BigNumber.from(toWeiWithDecimal(erc20Amount, 18)))){
+      setApproveLoading(true)
       const approveTx= await erc20TokenContract.approve(contractConfig?.uniswapV2RouterAddress, BigNumber.from(toWeiWithDecimal(erc20Amount, 18)));
       const tx= await approveTx.wait();
       if(tx?.status===1){
+        setApproveLoading(false)
         return true;
+      }else{
+        NotificationChange('error', 'Approve failed')
+        setApproveLoading(false)
+        setIsButton(false)
+        return false;
       }
     }
     if(ecr20Allowance.gte(BigNumber.from(toWeiWithDecimal(erc20Amount, 18)))) return true;
@@ -248,6 +267,7 @@ function ManagePairDetail() {
 
     if(isAllowance){
     try {
+      setApproveLoading(false)
       const web3Provider = new ethers.providers.Web3Provider(loginProvider);
       const signer = await web3Provider.getSigner();
       const v2RouterContract = new ethers.Contract(
@@ -273,14 +293,21 @@ function ManagePairDetail() {
       const tx = await addLqTx.wait()
       if(tx?.status===1){
         NotificationChange('success', 'Add Liquidity Success')
+        setErc20Amount('')
+        setWETHAmount('')
         await getPairInfo()
       }
       console.log(tx);
+      setApproveLoading(false)
       setIsButton(false)
     } catch (error) {
+      setApproveLoading(false)
       setIsButton(false)
       console.log(error)
     }
+  }else{
+    setApproveLoading(false)
+    setIsButton(false)
   }
   };
   const removeLp = async () => {
@@ -348,7 +375,7 @@ function ManagePairDetail() {
     return (
       <div style={{ color: '#fff', marginBottom: '6px' }}>
         <PairInfo data={pairInfoData} />
-          <div className='pair-manage-content'>
+          {/* <div className='pair-manage-content'>
               <span className='pair-manage-trad-title'>Liquidity Pool</span>
               <div className='pair-manage-trad-content'>
                 <span>{router?.t0}</span>
@@ -358,7 +385,7 @@ function ManagePairDetail() {
                 <span>{router?.t1}</span>
                 <span>{resever1balance}</span>
               </div>
-            </div>
+            </div> */}
         {/* erc20Token */}
         {name==='Add'&&(
           <InputNumberWithString 
@@ -373,32 +400,37 @@ function ManagePairDetail() {
             addonUnit = {router?.t0}
           />
         )}
+        {/* {name==='Add'&&<p style={{height:'12px'}}></p>} */}
         {name==='Add'&&(
+
           // WETH
           <InputNumberWithString 
             value={WETHAmount}
             onChange={(value)=>{
               setWETHAmount(value)
             }}
-            balance={tokenWETH}
+            balance={tokenETH}
             clickMax={()=>{
-              setWETHAmount(tokenWETH)
+              setWETHAmount(tokenETH)
             }}
             addonUnit = {'ETH'}
           />
         )}
         {name==='Burn'&&(
-          <InputNumberWithString 
-          value={burnAmount}
-          onChange={(value)=>{
-            setBurnAmount(value)
-          }}
-          balance={tokenBalance}
-          clickMax={()=>{
-            setBurnAmount(tokenBalance)
-          }}
-          addonUnit = {'LP'}
-        />
+          <p>
+            Once a token is burned, it becomes permanently inaccessible, thereby enhancing the token's credibility
+          </p>
+          // <InputNumberWithString 
+          // value={burnAmount}
+          // onChange={(value)=>{
+          //   setBurnAmount(value)
+          // }}
+          // balance={tokenBalance}
+          // clickMax={()=>{
+          //   setBurnAmount(tokenBalance)
+          // }}
+          // addonUnit = {'LP'}
+        // />
         )}
       </div>
     );
@@ -430,20 +462,34 @@ function ManagePairDetail() {
                 <span>{resever1balance}</span>
               </div>
             </div>
+            <div className='pair-manage-content' style={{margin:'32px auto'}}>
+              <span className='pair-manage-trad-title'>Liquidity Lock / Burn</span>
+              <div className='pair-manage-trad-content'>
+                <span>WETH</span>
+                <span>-</span>
+              </div>
+              <div className='pair-manage-trad-content'>
+                <span>Maturity Date</span>
+                <span>-</span>
+              </div>
+            </div>
           </div>
           <div className="pair-manage-button">
             <BottomButton
               text={t('token.LockLP')}
-              onClick={() => lockLpToken()}
+              onClick={() => {
+                setIsOpenStatus('Lock');
+                setOpen(true);
+              }}
             />
-            <BottomButton
+            {/* <BottomButton
               // text={t('token.AddLQ')}
               text={'Add Liquidity'}
               onClick={() => {
                 setIsOpenStatus('Add');
                 setOpen(true);
               }}
-            />
+            /> */}
             <BottomButton
               className='burn-lp-button'
               text={t('token.BurnLP')}
@@ -478,7 +524,7 @@ function ManagePairDetail() {
       <CommonModal
         open={open}
         title={
-          isOpenStatus === 'add' ? 'Add Liquidity' : t('token.BurnLP')
+          isOpenStatus === 'Add' ? 'Add Liquidity' : t('token.BurnLP')
         }
         footer={null}
         className="mint-common-modal pari-LP-modal"
@@ -491,7 +537,7 @@ function ManagePairDetail() {
       >
         {isOpenStatus === 'Add' && item('Add')}
         {isOpenStatus === 'Burn' && item('Burn')}
-        <p style={{ height: '20px' }}></p>
+        {/* <p style={{ height: '20px' }}></p> */}
         <div
           style={{display:'flex',justifyContent:'space-around'}}
         >
@@ -525,14 +571,15 @@ function ManagePairDetail() {
           isBack={false}
           loading={isButton}
           text={approveLoading?
-                'Approving':isOpenStatus}
+                'Approving':burnLoading?
+                  'burning':isOpenStatus}
           onClick={() => {
             
             if (isOpenStatus === 'Add'&& erc20Amount &&WETHAmount) {
               // removeLp();
-              addLp()
               setIsButton(true);
-            } else if(isOpenStatus==='Burn' && burnAmount){
+              addLp()
+            } else if(isOpenStatus==='Burn'){
               setIsButton(true);
               burnLP();
             }

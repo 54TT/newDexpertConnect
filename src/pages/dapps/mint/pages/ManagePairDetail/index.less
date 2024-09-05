@@ -10,7 +10,7 @@
   }
 }
 .pair-manage-trad{
-  height: 30vh;
+  height: auto;
   width:80%;
   margin: 40px auto;
   .pair-info-comp{
@@ -24,10 +24,10 @@
   height: 56px;
 }
 .pair-manage-content{
-  margin: 42px 0;
+  margin: 32px 0 0;
   .pair-manage-trad-title{
     color: rgba(255,255,255,0.85);
-    font-size: 22px;
+    font-size: 18px;
   }
   .pair-manage-trad-content{
     width: 100%;
@@ -51,16 +51,34 @@
   border-radius: 16px;
   box-sizing: border-box;
   overflow: hidden;
+  .ant-modal-content{
+    background-color: #242424 !important;
+  }
+  .ant-modal-header{
+    background-color: transparent !important;
+  }
   .ant-modal-title{
     text-align: center;
+    font-size: 22px;
   }
   .pair-info-comp{
+    justify-content: center;
+    margin-top: 24px;
     .dis span{
       color:#fff ;
       font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
   }
-
+  .ant-modal-body{
+    p{
+      font-size: 18px;
+      color: rgba(255,255,255,0.85);
+      margin: 0 auto;
+      width: 90%;
+    }
+  }
 }
 .pair-token-balance{
   font-size: 16px;

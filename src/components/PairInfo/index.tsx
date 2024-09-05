@@ -11,9 +11,9 @@ function PairInfo({ data, showArrow = false, }: { data: PairInfoPropsType, showA
     <div className="pair-info-comp">
       <div className="pair-info-comp-img">
         <img src={token0.logo || '/default-edit-icon.png'} alt="" />
-        <img style={{zIndex:'10'}} src={token1.logo} alt="" />
+        {/* <img style={{zIndex:'10'}} src={token1.logo} alt="" /> */}
       </div>
-      <div className="dis">
+      <div className="dis" style={{marginLeft:'16px'}}>
         <span>{token0.symbol}</span> <span>/</span> <span>{token1.symbol}</span>
       </div>
 
