@@ -59,8 +59,8 @@ export function useTokenInfo(
     }
   }, [address, signer]);
 
-  const reload = () => {
-    getTokenInfo();
+  const reload = async () => {
+    await getTokenInfo();
   };
 
   return [tokenInfo, tokenContract, reload];

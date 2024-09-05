@@ -38,8 +38,8 @@ function LockLpList() {
   // lock   loading
   const [lockLoading, setLockLoading] = useState('');
   const [uncxContract, setUncxContract] = useState<ethers.Contract>();
-  const [slider, setSlider] = useState(0);
   const [lockAmount, setLockAmount] = useState('0');
+  const [locking, setLocking] = useState(false);
   const getLockList = async () => {
     const { uncxAddress, wethAddress } = contractConfig;
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
@@ -85,6 +85,7 @@ function LockLpList() {
   };
   const lockLp = async () => {
     try {
+      setLocking(true);
       const { uncxAddress } = contractConfig;
       const web3Provider = new ethers.providers.Web3Provider(loginProvider);
       const signer = await web3Provider.getSigner();
@@ -131,6 +132,7 @@ function LockLpList() {
       setLockLoading('');
     } catch (e) {
       setLockLoading('');
+      setLocking(false);
       console.error(e);
     }
   };
@@ -153,8 +155,9 @@ function LockLpList() {
       );
       const recipent = await data.wait();
       if (recipent.status === 1) {
-        history('/dapps/tokencreation/result/' + data?.hash + '/unlock');
+        setOpenModal(false);
         setLockLoading('');
+        history('/dapps/tokencreation/result/' + data?.hash + '/unlock');
       }
     } catch (e) {
       NotificationChange('error', 'pair.unlockfail');
@@ -250,7 +253,9 @@ function LockLpList() {
               value={lockAmount}
               addonUnit="LP"
               balance={lpTokenBalance}
-              clickMax={() => {}}
+              clickMax={() => {
+                setLockAmount(lpTokenBalance);
+              }}
             ></InputNumberWithString>
           </div>
           <div className="SliderBox"></div>
@@ -286,7 +291,7 @@ function LockLpList() {
         <BottomActionButton
           okText={'确认'}
           cancelText={'取消'}
-          loading={lockLoading}
+          loading={locking}
           onOk={() => {
             lockLp();
           }}
