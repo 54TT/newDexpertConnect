@@ -21,8 +21,10 @@ import { useTranslation } from 'react-i18next';
 import NotificationChange from '@/components/message';
 import PairInfo, { PairInfoPropsType } from '@/components/PairInfo';
 import { useTokenInfo } from '@/hook/useTokenInfo';
-import { Button, InputNumber } from 'antd';
+import { InputNumber } from 'antd';
 import getBalanceRpc from '@utils/getBalanceRpc';
+import { ERC20Abi } from '@abis/ERC20Abi';
+
 function ManagePairDetail() {
   const { t } = useTranslation();
   const router = useParams();
@@ -38,6 +40,10 @@ function ManagePairDetail() {
   const [loading, setLoading] = useState(false);
   const [pairContract, setPairContract] = useState<ethers.Contract>();
   const [tokenInfo, tokenContract] = useTokenInfo(router.address);
+  // 池子token余额
+  const [resever0balance,setResever0balance]=useState<string>('0')
+  const [resever1balance,setResever1balance]=useState<string>('0')
+  // 用户token余额,token0 WETH,token1 用户
   const [token0balance,setToken0balance]=useState<string>('0')
   const [token1balance,setToken1balance]=useState<string>('0')
   const pairInfoData: PairInfoPropsType  = {
@@ -65,12 +71,9 @@ function ManagePairDetail() {
       UniswapV2PairAbi,
       signer
     );
-    const token0balance=await getBalanceRpc(
-      web3Provider,
-      pairContract?.token0,
-      wethAddress
-    )
-    console.log(token0balance);
+    setPairContract(uniSwapV2Pair);
+    
+    
     const reserves=await uniSwapV2Pair?.getReserves();
     console.log(reserves);
     console.log(reserves._reserve0);
@@ -78,19 +81,40 @@ function ManagePairDetail() {
     // console.log(await uniSwapV2Pair?.token0())
     const token0address=await uniSwapV2Pair?.token0()
     const token1address=await uniSwapV2Pair?.token1()
+    console.log(token0address)
+    console.log(token1address)
+    const token0Contract= new ethers.Contract(
+      token0address,
+      ERC20Abi,
+      signer
+    )
+    const token1Contract= new ethers.Contract(
+      token1address,
+      ERC20Abi,
+      signer
+    )
+    const token0balance=await token0Contract.balanceOf(signer.getAddress())
+    const token1balance=await token1Contract.balanceOf(signer.getAddress())
+    console.log(ethers.utils.formatEther(token0balance));
+    console.log(ethers.utils.formatEther(token1balance));
+    
     if(token0address?.toLowerCase() < token1address?.toLowerCase()){
-      setToken0balance(ethers.utils.formatEther(reserves._reserve0))
-      setToken1balance(ethers.utils.formatEther(reserves._reserve1))
+      setResever0balance(ethers.utils.formatEther(reserves._reserve0))
+      setResever1balance(ethers.utils.formatEther(reserves._reserve1))
     }else{
-      setToken1balance(ethers.utils.formatEther(reserves._reserve0))
-      setToken0balance(ethers.utils.formatEther(reserves._reserve1))
+      setResever1balance(ethers.utils.formatEther(reserves._reserve0))
+      setResever0balance(ethers.utils.formatEther(reserves._reserve1))
     }
     if(token0address?.toLowerCase()=== wethAddress?.toLowerCase()){
       console.log('token0address is WETH')
+      setToken0balance(ethers.utils.formatEther(token0balance))
+      setToken1balance(ethers.utils.formatEther(token1balance))
+
     }else if(token1address?.toLowerCase()=== wethAddress?.toLowerCase()){
       console.log('token1address is WETH')
+      setToken0balance(ethers.utils.formatEther(token1balance))
+      setToken1balance(ethers.utils.formatEther(token0balance))
     }
-    setPairContract(uniSwapV2Pair);
 
     const decimals = await uniSwapV2Pair.decimals();
     setTokenBalance(lpTokenBalance.toString());
@@ -229,46 +253,35 @@ function ManagePairDetail() {
   const item = (name?: string) => {
     return (
       <div style={{ color: '#fff', marginBottom: '6px' }}>
-        {/* <p style={{ marginBottom: '5px' }}> {t('token.remove')}</p>
-        <p>
-          {t('token.alls')}
-          <span
-            style={{
-              fontWeight: 'bold',
-              color: 'rgba(255,255,255,0.55)',
-              margin: '0 5px',
-            }}
-          >{`${router?.t0} / ${router?.t1}`}</span>
-          {t('token.pools')}
-        </p> */}
         <PairInfo data={pairInfoData} />
           <div className='pair-manage-content'>
               <span className='pair-manage-trad-title'>Liquidity Pool</span>
               <div className='pair-manage-trad-content'>
                 <span>{router?.t0}</span>
-                <span>{token0balance}</span>
+                <span>{resever0balance}</span>
               </div>
               <div className='pair-manage-trad-content'>
                 <span>{router?.t1}</span>
-                <span>{token1balance}</span>
+                <span>{resever1balance}</span>
               </div>
             </div>
 
-        {name==='add'&&(
+        {name==='Add'&&(
           <div className='pair-input-wrap'>
-          <span>balance:{token0balance}</span>
+          <span className='pair-token-balance'>Balance:{token1balance}</span>
           <InputNumber />
         </div>
         )}
-        {name==='add'&&(
+        {name==='Add'&&(
+          // WETH
           <div className='pair-input-wrap'>
-          <span>balance:{token1balance}</span>
+          <span className='pair-token-balance'>Balance:{token0balance}</span>
           <InputNumber />
         </div>
         )}
-        {name==='burn'&&(
+        {name==='Burn'&&(
           <div className='pair-input-wrap'>
-          <span>balance:{token1balance}</span>
+          <span>Balance:{resever0balance}</span>
           <InputNumber />
         </div>
         )}
@@ -297,11 +310,11 @@ function ManagePairDetail() {
               <span className='pair-manage-trad-title'>Liquidity Pool Reserves</span>
               <div className='pair-manage-trad-content'>
                 <span>{router?.t0}</span>
-                <span>{token0balance}</span>
+                <span>{resever0balance}</span>
               </div>
               <div className='pair-manage-trad-content'>
                 <span>{router?.t1}</span>
-                <span>{token1balance}</span>
+                <span>{resever1balance}</span>
               </div>
             </div>
           </div>
@@ -314,7 +327,7 @@ function ManagePairDetail() {
               // text={t('token.AddLQ')}
               text={'Add Liquidity'}
               onClick={() => {
-                setIsOpenStatus('add');
+                setIsOpenStatus('Add');
                 setOpen(true);
               }}
             />
@@ -322,7 +335,7 @@ function ManagePairDetail() {
               className='burn-lp-button'
               text={t('token.BurnLP')}
               onClick={() => {
-                setIsOpenStatus('burn');
+                setIsOpenStatus('Burn');
                 setOpen(true);
               }}
               danger
@@ -355,7 +368,7 @@ function ManagePairDetail() {
           isOpenStatus === 'add' ? 'Add Liquidity' : t('token.BurnLP')
         }
         footer={null}
-        className="mint-common-modal"
+        className="mint-common-modal pari-LP-modal"
         onCancel={() => {
           if (!isButton) {
             setOpen(false);
@@ -363,8 +376,8 @@ function ManagePairDetail() {
           }
         }}
       >
-        {isOpenStatus === 'add' && item('add')}
-        {isOpenStatus === 'burn' && item('burn')}
+        {isOpenStatus === 'Add' && item('Add')}
+        {isOpenStatus === 'Burn' && item('Burn')}
         <p style={{ height: '20px' }}></p>
         <div
           style={{display:'flex',justifyContent:'space-around'}}
@@ -384,7 +397,7 @@ function ManagePairDetail() {
           className={'cancel-button'}
           ghost
           isBack={false}
-          loading={isButton}
+          // loading={isButton}
           text={'Cancel'}
           onClick={() => {
             if (!isButton) {
@@ -395,14 +408,16 @@ function ManagePairDetail() {
         />
         <BottomButton
           // ghost
+          className={'confirm-button'}
           isBack={false}
           loading={isButton}
-          text={t('Slider.Confirm')}
+          text={isOpenStatus}
           onClick={() => {
             setIsButton(true);
-            if (isOpenStatus === 'remove') {
-              removeLp();
-            } else {
+            if (isOpenStatus === 'Add') {
+              // removeLp();
+              console.log('AddLQ')
+            } else if(isOpenStatus==='Burn'){
               burnLP();
             }
           }}

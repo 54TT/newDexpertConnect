@@ -6,9 +6,9 @@ type PairInfoTokenType = {
 }
 
 export type PairInfoPropsType = Record<'token0' | 'token1', PairInfoTokenType >
-function PairInfo({ data, showArrow = false }: { data: PairInfoPropsType, showArrow?: boolean }) {
+function PairInfo({ data, showArrow = false, }: { data: PairInfoPropsType, showArrow?: boolean  }) {
   const { token0, token1 } = data;
-  return <div className="pair-info-comp">
+  return <div className={`pair-info-comp`}>
     <div className="pair-info-comp-img">
       <img src={token0.logo || '/default-edit-icon.png'} alt="" />
       <img src={token1.logo} alt="" />
