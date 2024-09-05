@@ -73,7 +73,23 @@ function ManagePairDetail() {
     console.log(token0balance);
     const reserves=await uniSwapV2Pair?.getReserves();
     console.log(reserves);
-    
+    console.log(reserves._reserve0);
+    console.log(reserves._reserve1);
+    // console.log(await uniSwapV2Pair?.token0())
+    const token0address=await uniSwapV2Pair?.token0()
+    const token1address=await uniSwapV2Pair?.token1()
+    if(token0address?.toLowerCase() < token1address?.toLowerCase()){
+      setToken0balance(ethers.utils.formatEther(reserves._reserve0))
+      setToken1balance(ethers.utils.formatEther(reserves._reserve1))
+    }else{
+      setToken1balance(ethers.utils.formatEther(reserves._reserve0))
+      setToken0balance(ethers.utils.formatEther(reserves._reserve1))
+    }
+    if(token0address?.toLowerCase()=== wethAddress?.toLowerCase()){
+      console.log('token0address is WETH')
+    }else if(token1address?.toLowerCase()=== wethAddress?.toLowerCase()){
+      console.log('token1address is WETH')
+    }
     setPairContract(uniSwapV2Pair);
 
     const decimals = await uniSwapV2Pair.decimals();
@@ -261,11 +277,11 @@ function ManagePairDetail() {
               <span className='pair-manage-trad-title'>Liquidity Pool Reserves</span>
               <div className='pair-manage-trad-content'>
                 <span>{router?.t0}</span>
-                <span></span>
+                <span>{token0balance}</span>
               </div>
               <div className='pair-manage-trad-content'>
                 <span>{router?.t1}</span>
-                <span></span>
+                <span>{token1balance}</span>
               </div>
             </div>
           </div>

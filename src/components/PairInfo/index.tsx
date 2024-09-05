@@ -1,8 +1,5 @@
 import './index.less';
-import { useContext,useEffect,useState } from 'react';
-import { CountContext } from '@/Layout';
-import { ethers } from 'ethers';
-import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
+
 type PairInfoTokenType = {
   logo: string;
   symbol: string;
@@ -16,7 +13,7 @@ function PairInfo({ data, showArrow = false }: { data: PairInfoPropsType, showAr
       <img src={token0.logo || '/default-edit-icon.png'} alt="" />
       <img src={token1.logo} alt="" />
     </div>
-    <div>
+    <div className='token-pair-symbol'>
     <span>{token0.symbol}</span>/<span>{token1.symbol}</span>
     </div>
     {/* <div className='pair-info-body'>
