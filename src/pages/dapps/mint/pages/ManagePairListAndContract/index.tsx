@@ -15,8 +15,7 @@ function ManagePairListAndContract() {
   const { t } = useTranslation();
   const router = useParams();
   // loginProvider
-  const { chainId, browser, contractConfig,  } =
-    useContext(CountContext);
+  const { chainId, browser, contractConfig } = useContext(CountContext);
   // const { getAll } = Request();
   const history = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -25,7 +24,7 @@ function ManagePairListAndContract() {
   const [page, setPage] = useState(1);
   // const token = Cookies.get('token');
   const [data, setData] = useState([]);
-  console.log(data)
+  console.log(data);
   const getTokenPairList = async () => {
     // const { uniswapV2FactoryAddress, wethAddress } = contractConfig;
     // const provider = new ethers.providers.Web3Provider(loginProvider);
@@ -36,9 +35,9 @@ function ManagePairListAndContract() {
     //   token1: wethAddress,
     //   signer,
     // });
-    const pairAddress= 0
+    const pairAddress = 0;
     if (pairAddress) {
-      setData([])
+      setData([]);
       // setData([
       //   {
       //     pairAddress,
@@ -63,6 +62,8 @@ function ManagePairListAndContract() {
       getTokenPairList();
       setLoading(false);
     }
+    getTokenPairList();
+    setLoading(false);
   }, [contractConfig, chainId]);
   const items = (item: any) => {
     return (
