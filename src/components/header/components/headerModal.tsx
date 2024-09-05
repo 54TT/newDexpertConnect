@@ -1,12 +1,12 @@
 import { Input, Modal } from 'antd';
-import { useContext, useState, useEffect,  } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
 import { throttle } from 'lodash-es';
 import NotificationChange from '@/components/message';
 import { client } from '@/client.ts';
-import { ConnectButton,  } from 'thirdweb/react';
+import { ConnectButton } from 'thirdweb/react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { createWallet } from 'thirdweb/wallets';
@@ -91,7 +91,7 @@ function HeaderModal() {
     const data = {
       signature: params?.signature,
       addr: params?.payload?.address,
-      message: params?.payload?.nonce
+      message: params?.payload?.nonce,
     };
     login(data, 'eth', 'more');
   };

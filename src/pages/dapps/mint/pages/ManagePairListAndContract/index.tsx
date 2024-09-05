@@ -36,6 +36,7 @@ function ManagePairListAndContract() {
     //   signer,
     // });
     const pairAddress = 0;
+    console.log(111111111111111111111111)
     if (pairAddress) {
       setData([]);
       // setData([
@@ -45,11 +46,14 @@ function ManagePairListAndContract() {
       //     token1: 'W' + contractConfig.tokenSymbol,
       //   },
       // ]);
+    console.log(2222222222222222222)
       setLoading(true);
     } else {
       setLoading(true);
+    console.log(33333333333333)
     }
   };
+  console.log(loading)
   const changePage = () => {
     if (!isNext) {
       getTokenPairList();
@@ -60,10 +64,10 @@ function ManagePairListAndContract() {
   useEffect(() => {
     if (router?.id && contractConfig?.chainId === Number(chainId)) {
       getTokenPairList();
-      setLoading(false);
+      setLoading(true);
     }
     getTokenPairList();
-    setLoading(false);
+    setLoading(true);
   }, [contractConfig, chainId]);
   const items = (item: any) => {
     return (

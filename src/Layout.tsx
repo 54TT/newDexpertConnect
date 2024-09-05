@@ -65,7 +65,6 @@ function Layout() {
   useAutoConnect({
     client: newClient,
   });
-
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
