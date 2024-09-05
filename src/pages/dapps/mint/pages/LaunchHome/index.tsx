@@ -8,6 +8,7 @@ import ChangeChain from '@/components/ChangeChain';
 import { useTranslation } from 'react-i18next';
 import Effects from '../../component/Effects';
 import { CountContext } from '@/Layout';
+import { Button } from 'antd';
 function LaunchHome() {
   const history = useNavigate();
   const { t } = useTranslation();
@@ -21,11 +22,10 @@ function LaunchHome() {
       <div className="launch-home">
         <div className="launch-home-top">
           <Effects />
-          <div className="launch-home-top-icon">
-            <img src="/launchTop.svg" alt="" />
-          </div>
-          <div
-            className="launch-home-button"
+         
+          <Button
+            className="launch-home-button action-button"
+            ghost
             onClick={() => {
               if (user?.uid) {
                 history('/dapps/tokencreation/fillIn');
@@ -35,6 +35,9 @@ function LaunchHome() {
             }}
           >
             {user?.uid ? t('token.Creation') : t('Common.Connect Wallet')}
+          </Button>
+          <div className="launch-home-top-icon">
+            <img src="/launchTop.svg" alt="" />
           </div>
           <ChangeChain hideChain={true} disabledChain={true} />
         </div>
