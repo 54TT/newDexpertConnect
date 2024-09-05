@@ -9,12 +9,13 @@ import './index.less';
 import InfiniteScrollPage from '@/components/InfiniteScroll';
 import Loading from '@/components/allLoad/loading';
 import { useTranslation } from 'react-i18next';
-import { ethers } from 'ethers';
-import getPairByV2Factory from '@utils/getPairByV2Factory';
+// import { ethers } from 'ethers';
+// import getPairByV2Factory from '@utils/getPairByV2Factory';
 function ManagePairListAndContract() {
   const { t } = useTranslation();
   const router = useParams();
-  const { chainId, browser, contractConfig, loginProvider } =
+  // loginProvider
+  const { chainId, browser, contractConfig,  } =
     useContext(CountContext);
   // const { getAll } = Request();
   const history = useNavigate();
@@ -24,25 +25,27 @@ function ManagePairListAndContract() {
   const [page, setPage] = useState(1);
   // const token = Cookies.get('token');
   const [data, setData] = useState([]);
+  console.log(data)
   const getTokenPairList = async () => {
-    const { uniswapV2FactoryAddress, wethAddress } = contractConfig;
-    const provider = new ethers.providers.Web3Provider(loginProvider);
-    const signer = await provider.getSigner();
-    const pairAddress = await getPairByV2Factory({
-      factoryAddress: uniswapV2FactoryAddress,
-      token0: router?.address,
-      token1: wethAddress,
-      signer,
-    });
-
+    // const { uniswapV2FactoryAddress, wethAddress } = contractConfig;
+    // const provider = new ethers.providers.Web3Provider(loginProvider);
+    // const signer = await provider.getSigner();
+    // const pairAddress = await getPairByV2Factory({
+    //   factoryAddress: uniswapV2FactoryAddress,
+    //   token0: router?.address,
+    //   token1: wethAddress,
+    //   signer,
+    // });
+    const pairAddress= 0
     if (pairAddress) {
-      setData([
-        {
-          pairAddress,
-          token0: router.name,
-          token1: 'W' + contractConfig.tokenSymbol,
-        },
-      ]);
+      setData([])
+      // setData([
+      //   {
+      //     pairAddress,
+      //     token0: router.name,
+      //     token1: 'W' + contractConfig.tokenSymbol,
+      //   },
+      // ]);
       setLoading(true);
     } else {
       setLoading(true);
