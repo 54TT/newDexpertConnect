@@ -24,6 +24,7 @@ import { useTokenInfo } from '@/hook/useTokenInfo';
 import { InputNumber } from 'antd';
 import getBalanceRpc from '@utils/getBalanceRpc';
 import { ERC20Abi } from '@abis/ERC20Abi';
+import InputNumberWithString from '@/components/InputNumberWithString';
 
 function ManagePairDetail() {
   const { t } = useTranslation();
@@ -44,8 +45,8 @@ function ManagePairDetail() {
   const [resever0balance,setResever0balance]=useState<string>('0')
   const [resever1balance,setResever1balance]=useState<string>('0')
   // 用户token余额,token0 WETH,token1 用户
-  const [token0balance,setToken0balance]=useState<string>('0')
-  const [token1balance,setToken1balance]=useState<string>('0')
+  const [tokenWETH,setTokenWETH]=useState<string>('0')
+  const [erc20Token,setErc20Token]=useState<string>('0')
   const pairInfoData: PairInfoPropsType  = {
     token0: {
       logo: tokenInfo?.logoLink,
@@ -99,21 +100,22 @@ function ManagePairDetail() {
     console.log(ethers.utils.formatEther(token1balance));
     
     if(token0address?.toLowerCase() < token1address?.toLowerCase()){
-      setResever0balance(ethers.utils.formatEther(reserves._reserve0))
-      setResever1balance(ethers.utils.formatEther(reserves._reserve1))
+      setResever0balance(formatDecimalString(ethers.utils.formatEther(reserves._reserve0)))
+      setResever1balance(formatDecimalString(ethers.utils.formatEther(reserves._reserve1)))
     }else{
-      setResever1balance(ethers.utils.formatEther(reserves._reserve0))
-      setResever0balance(ethers.utils.formatEther(reserves._reserve1))
+      setResever1balance(formatDecimalString(ethers.utils.formatEther(reserves._reserve0)))
+      setResever0balance(formatDecimalString(ethers.utils.formatEther(reserves._reserve1)))
     }
     if(token0address?.toLowerCase()=== wethAddress?.toLowerCase()){
       console.log('token0address is WETH')
-      setToken0balance(ethers.utils.formatEther(token0balance))
-      setToken1balance(ethers.utils.formatEther(token1balance))
+
+      setTokenWETH(formatDecimalString(ethers.utils.formatEther(token0balance)))
+      setErc20Token(formatDecimalString(ethers.utils.formatEther(token1balance)))
 
     }else if(token1address?.toLowerCase()=== wethAddress?.toLowerCase()){
       console.log('token1address is WETH')
-      setToken0balance(ethers.utils.formatEther(token1balance))
-      setToken1balance(ethers.utils.formatEther(token0balance))
+      setTokenWETH(formatDecimalString(ethers.utils.formatEther(token1balance)))
+      setErc20Token(formatDecimalString(ethers.utils.formatEther(token0balance)))
     }
 
     const decimals = await uniSwapV2Pair.decimals();
@@ -161,6 +163,16 @@ function ManagePairDetail() {
     setInfoData(infoData);
     setLoading(true);
   };
+  // 格式化
+  function formatDecimalString(str) {
+    // 移除末尾的 .0
+    let formattedStr = str.replace(/\.0+$/, '');
+  
+    // 如果字符串以 . 结尾，也移除 .
+    formattedStr = formattedStr.replace(/\.$/, '');
+  
+    return formattedStr;
+  }
   useEffect(() => {
     if (Number(chainId) === contractConfig?.chainId && router?.pair) {
       getPairInfo();
@@ -268,14 +280,14 @@ function ManagePairDetail() {
 
         {name==='Add'&&(
           <div className='pair-input-wrap'>
-          <span className='pair-token-balance'>Balance:{token1balance}</span>
+          <span className='pair-token-balance'>Balance:{erc20Token}</span>
           <InputNumber />
         </div>
         )}
         {name==='Add'&&(
           // WETH
           <div className='pair-input-wrap'>
-          <span className='pair-token-balance'>Balance:{token0balance}</span>
+          <span className='pair-token-balance'>Balance:{tokenWETH}</span>
           <InputNumber />
         </div>
         )}

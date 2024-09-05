@@ -1,24 +1,24 @@
 import { Button, ConfigProvider } from 'antd';
-import {  useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NotificationChange from '@/components/message';
-import "../index.less"
+import '../index.less';
 import PairInfo from '@/components/PairInfo';
+import { useNavigate } from 'react-router-dom';
 export default function button({
   setOpenTradeModal,
   isOwn,
   isOpenTrade,
   setRemoveOwnShipModal,
   clickToPair,
-  pairInfoData
+  pairInfoData,
+  router,
 }) {
   const { t } = useTranslation();
   const [renounceLoading, setRenounceLoading] = useState(false);
-
-
-
+  const history = useNavigate();
   return (
-    <div className='token-detail-button'>
+    <div className="token-detail-button">
       <ConfigProvider
         theme={{
           components: {
@@ -28,17 +28,47 @@ export default function button({
             },
           },
         }}
-      >
-        
-      </ConfigProvider>
-      {isOwn?   <Button className='action-button' onClick={() => history}>修改表单</Button> : <></>}
-      {
-        isOpenTrade && <Button className='action-button flex-start-button' onClick={clickToPair}>
+      ></ConfigProvider>
+      {/* {isOwn ? (
+        <Button
+          className="action-button"
+          onClick={() => history(`/dapps/tokencreation/edit/${router.address}`)}
+        >
+          修改表单
+        </Button>
+      ) : (
+        <></>
+      )} */}
+      {isOpenTrade && (
+        <Button
+          className="action-button flex-start-button"
+          onClick={clickToPair}
+        >
           {<PairInfo data={pairInfoData} showArrow={true} />}
-          </Button>
-      }
-      { isOwn && !isOpenTrade ?  <Button className='action-button' onClick={() => setOpenTradeModal(true)}>打开交易</Button> : <></>}
-      {isOwn? <Button loading={renounceLoading}  danger ghost onClick={() => setRemoveOwnShipModal(true)}>放弃所有权</Button> : <></>}
+        </Button>
+      )}
+      {isOwn && !isOpenTrade ? (
+        <Button
+          className="action-button"
+          onClick={() => setOpenTradeModal(true)}
+        >
+          打开交易
+        </Button>
+      ) : (
+        <></>
+      )}
+      {isOwn ? (
+        <Button
+          loading={renounceLoading}
+          danger
+          ghost
+          onClick={() => setRemoveOwnShipModal(true)}
+        >
+          放弃所有权
+        </Button>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

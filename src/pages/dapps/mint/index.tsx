@@ -11,6 +11,7 @@ import ManageTokenDetail from './pages/ManageTokenDetail';
 import ManagePairDetail from './pages/ManagePairDetail';
 import LockLpList from './pages/LockLpList';
 import Result from './pages/Result';
+import ModifyForm from './pages/ModifyForm/index.tsx';
 
 export const MintContext = createContext<{
   formData: Partial<FormDataType>;
@@ -69,7 +70,7 @@ function Mint() {
                 element={<ManagePairDetail />}
               />
               <Route path="/lockLpList/:address" element={<LockLpList />} />
-              <Route path="/edit/:address" element={<LockLpList />} />
+              <Route path="/edit/:address" element={<ModifyForm />} />
             </Routes>
           </div>
         </MintContext.Provider>
