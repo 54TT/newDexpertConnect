@@ -22,7 +22,6 @@ function LaunchHome() {
       <div className="launch-home">
         <div className="launch-home-top">
           <Effects />
-         
           <Button
             className="launch-home-button action-button"
             ghost

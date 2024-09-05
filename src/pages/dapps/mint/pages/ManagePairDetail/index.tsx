@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import NotificationChange from '@/components/message';
 import PairInfo, { PairInfoPropsType } from '@/components/PairInfo';
 import { useTokenInfo } from '@/hook/useTokenInfo';
-import { InputNumber } from 'antd';
+import { Button, InputNumber } from 'antd';
 import getBalanceRpc from '@utils/getBalanceRpc';
 function ManagePairDetail() {
   const { t } = useTranslation();
@@ -73,7 +73,23 @@ function ManagePairDetail() {
     console.log(token0balance);
     const reserves=await uniSwapV2Pair?.getReserves();
     console.log(reserves);
-    
+    console.log(reserves._reserve0);
+    console.log(reserves._reserve1);
+    // console.log(await uniSwapV2Pair?.token0())
+    const token0address=await uniSwapV2Pair?.token0()
+    const token1address=await uniSwapV2Pair?.token1()
+    if(token0address?.toLowerCase() < token1address?.toLowerCase()){
+      setToken0balance(ethers.utils.formatEther(reserves._reserve0))
+      setToken1balance(ethers.utils.formatEther(reserves._reserve1))
+    }else{
+      setToken1balance(ethers.utils.formatEther(reserves._reserve0))
+      setToken0balance(ethers.utils.formatEther(reserves._reserve1))
+    }
+    if(token0address?.toLowerCase()=== wethAddress?.toLowerCase()){
+      console.log('token0address is WETH')
+    }else if(token1address?.toLowerCase()=== wethAddress?.toLowerCase()){
+      console.log('token1address is WETH')
+    }
     setPairContract(uniSwapV2Pair);
 
     const decimals = await uniSwapV2Pair.decimals();
@@ -226,10 +242,30 @@ function ManagePairDetail() {
           {t('token.pools')}
         </p> */}
         <PairInfo data={pairInfoData} />
-        <div className='pair-input-wrap'>
+          <div className='pair-manage-content'>
+              <span className='pair-manage-trad-title'>Liquidity Pool</span>
+              <div className='pair-manage-trad-content'>
+                <span>{router?.t0}</span>
+                <span>{token0balance}</span>
+              </div>
+              <div className='pair-manage-trad-content'>
+                <span>{router?.t1}</span>
+                <span>{token1balance}</span>
+              </div>
+            </div>
+
+        {name==='add'&&(
+          <div className='pair-input-wrap'>
           <span>balance:{token0balance}</span>
           <InputNumber />
         </div>
+        )}
+        {name==='add'&&(
+          <div className='pair-input-wrap'>
+          <span>balance:{token1balance}</span>
+          <InputNumber />
+        </div>
+        )}
         {name==='burn'&&(
           <div className='pair-input-wrap'>
           <span>balance:{token1balance}</span>
@@ -261,11 +297,11 @@ function ManagePairDetail() {
               <span className='pair-manage-trad-title'>Liquidity Pool Reserves</span>
               <div className='pair-manage-trad-content'>
                 <span>{router?.t0}</span>
-                <span></span>
+                <span>{token0balance}</span>
               </div>
               <div className='pair-manage-trad-content'>
                 <span>{router?.t1}</span>
-                <span></span>
+                <span>{token1balance}</span>
               </div>
             </div>
           </div>
@@ -330,8 +366,35 @@ function ManagePairDetail() {
         {isOpenStatus === 'add' && item('add')}
         {isOpenStatus === 'burn' && item('burn')}
         <p style={{ height: '20px' }}></p>
+        <div
+          style={{display:'flex',justifyContent:'space-around'}}
+        >
+        {/* <span
+          className='cancel-button'
+          onClick={() => {
+            if (!isButton) {
+              setOpen(false);
+              setIsOpenStatus('');
+            }
+          }}
+        >
+          Cancel
+        </span> */}
         <BottomButton
+          className={'cancel-button'}
           ghost
+          isBack={false}
+          loading={isButton}
+          text={'Cancel'}
+          onClick={() => {
+            if (!isButton) {
+              setOpen(false);
+              setIsOpenStatus('');
+            }
+          }}
+        />
+        <BottomButton
+          // ghost
           isBack={false}
           loading={isButton}
           text={t('Slider.Confirm')}
@@ -344,6 +407,21 @@ function ManagePairDetail() {
             }
           }}
         />
+        </div>
+        {/* <BottomButton
+          ghost
+          isBack={false}
+          loading={isButton}
+          text={t('Slider.Confirm')}
+          onClick={() => {
+            setIsButton(true);
+            if (isOpenStatus === 'remove') {
+              removeLp();
+            } else {
+              burnLP();
+            }
+          }}
+        /> */}
       </CommonModal>
     </>
   );
