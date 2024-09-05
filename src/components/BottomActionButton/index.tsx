@@ -8,10 +8,10 @@ export default function BottomActionButton({
 }) {
   return (
     <div className="bottom-action-button">
-      <Button className="action-button" ghost onClick={onOk}>
+      <Button className="action-button" ghost onClick={onCancel}>
         {cancelText}
       </Button>
-      <Button className="action-button" onClick={onCancel}>
+      <Button className="action-button" onClick={onOk}>
         {okText}
       </Button>
     </div>

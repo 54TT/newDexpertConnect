@@ -19,7 +19,7 @@ function InputNumberWithString({
         style={{
           textAlign: 'end',
           marginBottom: '12px',
-          fontSize: '18px',
+          fontSize: '14px',
           color: 'rgba(139, 139, 139, 1)',
         }}
       >
