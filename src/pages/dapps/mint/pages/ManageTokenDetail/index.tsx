@@ -7,8 +7,7 @@ import ToLaunchHeader from '../../component/ToLaunchHeader';
 import { client } from '@/client';
 import './index.less';
 import { useParams } from 'react-router-dom';
-// useActiveWalletChain,
-import { useActiveAccount } from 'thirdweb/react';
+import { useActiveAccount, useActiveWalletChain } from 'thirdweb/react';
 import Request from '@/components/axios';
 import Loading from '@/components/allLoad/loading';
 import Cookies from 'js-cookie';
@@ -16,17 +15,14 @@ import { CountContext } from '@/Layout';
 import { LaunchERC20Abi } from '@abis/LaunchERC20Abi';
 import { ethers } from 'ethers';
 import NotificationChange from '@/components/message';
+import Decimal from 'decimal.js';
 import CommonModal from '@/components/CommonModal';
 import { useTranslation } from 'react-i18next';
 import { getContract } from 'thirdweb';
-import { sepolia } from 'thirdweb/chains';
 import Button from './component/button';
-import { prepareContractCall } from 'thirdweb';
-import { toWei } from 'thirdweb/utils';
 // import { signTransaction } from 'thirdweb';
-// import { simulateTransaction } from 'thirdweb';
-import { sendAndConfirmTransaction } from 'thirdweb';
-
+import { sendAndConfirmTransaction,prepareContractCall, toWei  } from 'thirdweb';
+import { useReadContract } from 'thirdweb/react';
 function ManageTokenDetail() {
   const { t } = useTranslation();
   const router = useParams();
@@ -45,8 +41,27 @@ function ManageTokenDetail() {
   const [ethBalance, setEthBalance] = useState('0');
   const [ethAmount, setEthAmount] = useState(0);
   const activeAccount = useActiveAccount();
+  const activeChain = useActiveWalletChain();
+  const contract = getContract({
+    client,
+    chain: activeChain,
+    address: router?.address,
+    abi: LaunchERC20Abi as any,
+  });
   // 按钮正在执行状态
   const [openTradeLoading, setOpenTradeLoading] = useState(false);
+  // 获取balance
+  const { data: balanceOf, isLoading: isBalanceOf } = useReadContract({
+    contract,
+    method: 'balanceOf',
+    params: [activeAccount?.address],
+  });
+  // 获取decimals
+  const { data: decimalsOf, isLoading: isDecimals } = useReadContract({
+    contract,
+    method: 'decimals',
+    params: [],
+  });
   useEffect(() => {
     setIsLoading(false);
     if (
@@ -58,70 +73,40 @@ function ManageTokenDetail() {
     }
     initData();
   }, [chainId, router?.address, contractConfig]);
-
   const initData = async () => {
-    // const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-    // const signer = web3Provider.getSigner();
-    // const walletAddress = await signer.getAddress();
-    // const tokenContract = new ethers.Contract(
-    //   router?.address,
-    //   LaunchERC20Abi,
-    //   signer
-    // );
-    const contract = getContract({
-      client,
-      chain: sepolia,
-      address: '0x5e001b8cC4fbf35BF13763BaCE330367D688E1ff',
-      abi: LaunchERC20Abi as any,
-    });
-
-    const tx: any = prepareContractCall({
-      contract,
-      method: 'transferFrom',
-      params: [
-        '0x5e001b8cC4fbf35BF13763BaCE330367D688E1ff',
-        '0xb34C0CFAC19819524892E09Afda7402E57CbcDA6',
-        1,
-      ],
-      value: toWei('0.01'),
-    });
-    const transactionReceipt = await sendAndConfirmTransaction({
-      account: activeAccount,
-      transaction: tx,
-    });
-    console.log(transactionReceipt);
-    // const result = await simulateTransaction({
-    //   transaction: tx,
-    // });
-    // console.log(result);
-    // setErc20Contract(tokenContract);
-    // const data = await Promise.all([
-    //   tokenContract.owner(),
-    //   tokenContract.balanceOf(walletAddress),
-    //   tokenContract.IsRemoveLimits(),
-    //   tokenContract.tradingOpen(),
-    //   signer.getBalance(),
-    //   await getAll({
-    //     method: 'get',
-    //     url: `/api/v1/launch-bot/contract/${router?.id}`,
-    //     data: {},
-    //     token,
-    //     chainId,
-    //   }),
-    // ]);
-    // setIsOwn(data[0] === walletAddress);
-    // setIsRemoveLimit(data[2]);
-    // setIsOpenTrade(data[3]);
-    // const ethWei = data[4].toString();
-    // if (data[5]?.data?.isVerify === '1') {
-    //   setIsVerify(true);
-    // }
-    // setEthBalance(ethers.utils.formatEther(ethWei));
-    // setTokenData(data[5]?.data);
+    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
+    const signer = web3Provider.getSigner();
+    const walletAddress = await signer.getAddress();
+    const tokenContract = new ethers.Contract(
+      router?.address,
+      LaunchERC20Abi,
+      signer
+    );
+    setErc20Contract(tokenContract);
+    const data = await Promise.all([
+      tokenContract.owner(),
+      tokenContract.balanceOf(walletAddress),
+      tokenContract.IsRemoveLimits(),
+      tokenContract.tradingOpen(),
+      signer.getBalance(),
+      await getAll({
+        method: 'get',
+        url: `/api/v1/launch-bot/contract/${router?.id}`,
+        data: {},
+        token,
+        chainId,
+      }),
+    ]);
+    setIsOwn(data[0] === walletAddress);
+    setIsRemoveLimit(data[2]);
+    setIsOpenTrade(data[3]);
+    const ethWei = data[4].toString();
+    if (data[5]?.data?.isVerify === '1') {
+      setIsVerify(true);
+    }
+    setEthBalance(ethers.utils.formatEther(ethWei));
+    setTokenData(data[5]?.data);
     setIsLoading(true);
-    setTokenData(null);
-    setErc20Contract(null);
-    setEthBalance('0');
   };
   const tokenInfoData = useMemo(() => {
     if (!tokenData) return [];
@@ -164,38 +149,72 @@ function ManageTokenDetail() {
     const walletAddress = await signer.getAddress();
     // const decimals = await erc20Contract.decimals();
     const tokenBalance = await erc20Contract.balanceOf(walletAddress);
-    const tt = await approve(erc20Contract.address, tokenBalance);
+    const ttt = new Decimal(balanceOf?.toString()).div(
+      new Decimal(10).pow(decimalsOf?.toString())
+    );
     try {
-      if (tt) {
-        const tx = await erc20Contract.openTrading(tokenBalance, {
-          value: ethers.utils.parseEther(ethAmount.toString()),
+      if (!isBalanceOf && !isDecimals) {
+        // 授权
+        const tx: any = prepareContractCall({
+          contract,
+          method: 'approve',
+          params: [router?.address, toWei(ttt?.toString())],
         });
-        setOpenTradeModal(false);
-        await getAll({
-          method: 'post',
-          url: '/api/v1/launch-bot/tx/status/check',
-          data: {
-            tx: tx.hash,
-            txType: '7',
-            txTableId: router?.id,
-          },
-          token,
-          chainId,
+        const transactionReceipt = await sendAndConfirmTransaction({
+          account: activeAccount,
+          transaction: tx,
         });
-        const recipent = await tx.wait();
-        if (recipent.status === 1) {
-          setOpenTradeLoading(false);
-          setIsOpenTrade(true);
+        if (transactionReceipt?.status === 'success') {
+          // opentrad
+          const openTradingTx: any = prepareContractCall({
+            contract,
+            method: 'openTrading',
+            params: [Number(ttt?.toString())],
+            value: toWei(ethAmount.toString()),
+          });
+          const openTradingts = await sendAndConfirmTransaction({
+            account: activeAccount,
+            transaction: openTradingTx,
+          });
+          console.log(openTradingts);
         }
-        setOpenTradeLoading(false);
       }
+      // const tt = await approve(erc20Contract.address, tokenBalance);
+      // try {
+      //   if (tt) {
+      //     const tx = await erc20Contract.openTrading(tokenBalance, {
+      //       value: ethers.utils.parseEther(ethAmount.toString()),
+      //     });
+      //     setOpenTradeModal(false);
+      //     await getAll({
+      //       method: 'post',
+      //       url: '/api/v1/launch-bot/tx/status/check',
+      //       data: {
+      //         tx: tx.hash,
+      //         txType: '7',
+      //         txTableId: router?.id,
+      //       },
+      //       token,
+      //       chainId,
+      //     });
+      //     const recipent = await tx.wait();
+      //     if (recipent.status === 1) {
+      //       setOpenTradeLoading(false);
+      //       setIsOpenTrade(true);
+      //     }
+      //     setOpenTradeLoading(false);
+      //   }
+      // } catch (e) {
+      //   setOpenTradeLoading(false);
+      //   NotificationChange('warning', t('Dapps.Insufficient Fund'));
+      //   return null;
+      // }
     } catch (e) {
       setOpenTradeLoading(false);
       NotificationChange('warning', t('Dapps.Insufficient Fund'));
       return null;
     }
   };
-
   const buttonParams = {
     isVerify,
     setIsVerify,

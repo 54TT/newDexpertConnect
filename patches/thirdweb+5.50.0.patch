@@ -11,3 +11,29 @@ index 93579741..e53f72af 100644
      });
      return {
          signature,
+diff --git a/node_modules/thirdweb/dist/esm/react/core/hooks/auth/useSiweAuth.js b/node_modules/thirdweb/dist/esm/react/core/hooks/auth/useSiweAuth.js
+index 74d3ca86..8b3416f4 100644
+--- a/node_modules/thirdweb/dist/esm/react/core/hooks/auth/useSiweAuth.js
++++ b/node_modules/thirdweb/dist/esm/react/core/hooks/auth/useSiweAuth.js
+@@ -43,9 +43,6 @@ export function useSiweAuth(activeWallet, activeAccount, authOptions) {
+                 // we lazy-load this because it's only needed when logging in
+                 import("../../../../auth/core/sign-login-payload.js"),
+             ]);
+-            if (payload.chain_id) {
+-                await activeWallet.switchChain(getCachedChain(Number(payload.chain_id)));
+-            }
+             const signedPayload = await signLoginPayload({
+                 payload,
+                 account: activeAccount,
+diff --git a/node_modules/thirdweb/src/react/core/hooks/auth/useSiweAuth.ts b/node_modules/thirdweb/src/react/core/hooks/auth/useSiweAuth.ts
+index 1419b5af..203ba7b8 100644
+--- a/node_modules/thirdweb/src/react/core/hooks/auth/useSiweAuth.ts
++++ b/node_modules/thirdweb/src/react/core/hooks/auth/useSiweAuth.ts
+@@ -95,7 +95,6 @@ export function useSiweAuth(
+         // we lazy-load this because it's only needed when logging in
+         import("../../../../auth/core/sign-login-payload.js"),
+       ]);
+-
+       if (payload.chain_id) {
+         await activeWallet.switchChain(
+           getCachedChain(Number(payload.chain_id)),

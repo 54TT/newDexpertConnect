@@ -1,5 +1,5 @@
 import { Input, Modal } from 'antd';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState,  } from 'react';
 import { CountContext } from '@/Layout.tsx';
 import cookie from 'js-cookie';
 import Request from '@/components/axios.tsx';
@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { createWallet } from 'thirdweb/wallets';
 import { darkTheme } from 'thirdweb/react';
+
 function HeaderModal() {
   const {
     browser,
@@ -22,21 +23,9 @@ function HeaderModal() {
     user,
     setUserPar,
     tonConnect,
-    environment,
-    setEnvironment,
     login,
   }: any = useContext(CountContext);
   const routerLocation = useLocation();
-  function onAnnouncement(event?: any) {
-    environment.push(event?.detail);
-    setEnvironment([...environment]);
-  }
-  useEffect(() => {
-    window.addEventListener('eip6963:announceProvider', onAnnouncement);
-    window.dispatchEvent(new Event('eip6963:requestProvider'));
-    return () =>
-      window.removeEventListener('eip6963:announceProvider', onAnnouncement);
-  }, []);
   const { t } = useTranslation();
   const { getAll } = Request();
   const handleCancel = () => {
@@ -86,7 +75,6 @@ function HeaderModal() {
       e?.target?.children?.[1]?.click();
     }
   };
-
   const loginTo = (params: any) => {
     const data = {
       signature: params?.signature,

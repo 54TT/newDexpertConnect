@@ -37,7 +37,6 @@ function Mint() {
     setLaunchTokenPass,
     setFormData,
   };
-
   return (
     <div className="dis mint" style={{ justifyContent: 'center' }}>
       <div className="mint-box">

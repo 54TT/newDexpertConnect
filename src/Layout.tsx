@@ -47,6 +47,7 @@ import {
   useActiveWalletChain,
   // useSwitchActiveWalletChain,
 } from 'thirdweb/react';
+import { sepolia } from 'thirdweb/chains';
 import Index from './pages/index/index.tsx';
 import Webx2024 from './pages/webx2024/index.tsx';
 const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
@@ -68,10 +69,7 @@ function Layout() {
   const changeBindind = useRef<any>();
   const [provider, setProvider] = useState();
   const [contractConfig, setContractConfig] = useState();
-  //  检测  evm环境  钱包
-  const [environment, setEnvironment] = useState<any>([]);
   const [loginProvider, setloginProvider] = useState<any>(null);
-  console.log(loginProvider)
   const [sniperChainId, setSniperChainId] = useState('1');
   const [chainId, setChainId] = useState('1'); // swap 链切换
   const [user, setUserPar] = useState<any>(null);
@@ -86,7 +84,6 @@ function Layout() {
   const useActiveWalletConnectionStatu = useActiveWalletConnectionStatus();
   // 连接的账号和监听账号
   const walletConnect = useActiveWallet();
-  console.log(walletConnect);
   // 连接的chain
   const activeChain = useActiveWalletChain();
   // 切换链
@@ -97,8 +94,6 @@ function Layout() {
   // const { data: walletInfo } = useWalletInfo(walletConnect?.id);
   const changeAll = async () => {
     const metamaskProvider = injectedProvider(walletConnect?.id);
-    console.log(walletConnect)
-    console.log(metamaskProvider)
     setloginProvider(metamaskProvider);
     changeConfig(activeChain?.id?.toString());
     setChainId(activeChain?.id?.toString());
@@ -112,13 +107,13 @@ function Layout() {
   useEffect(() => {
     //  监听账户变更事件
     walletConnect?.subscribe('accountChanged', async (account) => {
-      console.log(account);
+      // console.log(account);
       // const ttt = account.signMessage({message:"你好"})
       // console.log(ttt)
     });
     // 监听 chain变更事件
     walletConnect?.subscribe('chainChanged', (chain) => {
-      console.log(chain);
+      // console.log(chain);
       // try{
       // useSwitchChain(chain)
       // }catch(e){
@@ -126,6 +121,8 @@ function Layout() {
       // }
     });
   }, [walletConnect]);
+
+  
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -150,7 +147,13 @@ function Layout() {
       login(par, 'ton');
     } else {
       //  获取 授权的message
-      const noce: any = await getNoce('', '-2');
+      const noce: any = await getAll({
+        method: 'post',
+        url: '/api/v1/token',
+        data: { address:'' },
+        token: '',
+        chainId:'-2',
+      });
       if (noce?.data?.nonce) {
         tonConnectUI.setConnectRequestParameters({
           state: 'ready',
@@ -197,45 +200,6 @@ function Layout() {
   });
   // copy
   const [isCopy, setIsCopy] = useState(false);
-  // const onChainChange = (targetChainId) => {
-  //   setChainId(Number(targetChainId).toString());
-  //   changeConfig(Number(targetChainId).toString());
-  // };
-
-  // const onAccountsChanged = (account) => {
-  //   if (account.length > 0 && account?.[0] !== loginProvider?.selectAddress) {
-  //     handleLogin({ provider: loginProvider });
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (isLogin && loginProvider) {
-  //     let changeChainId = '1';
-  //     if (Object.keys(config).includes(chainId)) {
-  //       changeChainId = chainId;
-  //     }
-  //     try {
-  //       // @ts-ignore
-  //       loginProvider?.on('chainChanged', onChainChange);
-  //       loginProvider?.on('accountsChanged', onAccountsChanged);
-  //       loginProvider?.request({
-  //         method: 'wallet_switchEthereumChain',
-  //         params: [
-  //           {
-  //             chainId: `0x${Number(changeChainId).toString(16)}`,
-  //           },
-  //         ],
-  //       });
-  //     } catch (e) {
-  //       // 如果用户拒绝切换链或不支持此方法
-  //       console.error(e);
-  //     }
-  //   }
-  //   return () => {
-  //     // @ts-ignore
-  //     (loginProvider as any)?.removeListener?.('chainChanged', onChainChange);
-  //   };
-  // }, [isLogin, loginProvider, chainId]);
   const clear = async () => {
     history('/logout');
     setloginProvider(null);
@@ -354,51 +318,6 @@ function Layout() {
     }
   };
 
-  const handleLogin = async (i: any) => {
-    try {
-      const account = await i?.provider?.request({
-        method: 'eth_requestAccounts',
-      });
-      // 判断是否有账号
-      if (account.length > 0) {
-        try {
-          const token: any = await getNoce(account[0]);
-          if (token?.data && token?.status === 200) {
-            // 签名消息
-            const message = token?.data?.nonce;
-            const sign = await i?.provider?.request({
-              method: 'personal_sign',
-              params: [message, account[0]],
-            });
-            const data = { signature: sign, addr: account[0], message };
-            login(data, 'eth');
-          } else {
-            setLoad(false);
-          }
-        } catch (err) {
-          setLoad(false);
-          return null;
-        }
-      } else {
-        NotificationChange('warning', t('Market.log'));
-        setLoad(false);
-      }
-    } catch (err) {
-      setLoad(false);
-      return null;
-    }
-  };
-  const getNoce = async (address: string, chainId?: any) => {
-    const noce: any = await getAll({
-      method: 'post',
-      url: '/api/v1/token',
-      data: { address },
-      token: '',
-      chainId,
-    });
-    return noce;
-  };
-
   const getUserNow = () => {
     const jwt = cookie.get('jwt');
     const token = cookie.get('token');
@@ -454,22 +373,18 @@ function Layout() {
     // 添加事件监听器
     window.addEventListener('resize', handleResize);
     // 在组件卸载时移除事件监听器
-
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, [router]);
-
   const clients = new ApolloClient({
     uri: chain[switchChain],
     cache: new InMemoryCache(),
   });
   const noHeaderRoutes = ['/webx2024'];
-
   const value: any = {
     tonConnect,
     clear,
-    handleLogin,
     user,
     setLoad,
     load,
@@ -500,13 +415,10 @@ function Layout() {
     transactionFee,
     setTransactionFee,
     loginProvider,
-    environment,
-    setEnvironment,
     sniperChainId,
     setSniperChainId,
     login,
   };
-
   return (
     <ApolloProvider client={clients}>
       <Suspense
