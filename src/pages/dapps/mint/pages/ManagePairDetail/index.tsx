@@ -68,8 +68,8 @@ function ManagePairDetail() {
       symbol: router?.t0,
     },
     token1: {
-      logo: contractConfig?.defaultTokenIn?.logoUrl,
-      symbol: contractConfig?.defaultTokenIn?.symbol,
+      logo: contractConfig?.wethLogo,
+      symbol: contractConfig?.tokenSymbol,
     },
   };
   const getPairInfo = async () => {

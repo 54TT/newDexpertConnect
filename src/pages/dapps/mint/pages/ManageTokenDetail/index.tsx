@@ -142,7 +142,7 @@ function ManageTokenDetail() {
       symbol: tokenInfo?.symbol,
     },
     token1: {
-      logo: contractConfig?.defaultTokenIn?.logoUrl,
+      logo: contractConfig?.wethLogo,
       symbol: contractConfig?.tokenSymbol,
     },
   };
