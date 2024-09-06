@@ -90,14 +90,14 @@ function ManageTokenDetail() {
             value: ethers.utils.parseEther(ethAmount.toString()),
           }
         );
-
-        const recipent = await tx.wait();
-        if (recipent.status === 1) {
-          await reset();
-          setOpenTradeLoading(false);
-          setIsOpenTrade(true);
-          setOpenTradeModal(false);
-        }
+        history(`/dapps/tokencreation/results/opentrade?tx=${tx?.hash}&status=pending`)
+        // const recipent = await tx.wait();
+        // if (recipent.status === 1) {
+        //   await reset();
+        //   setOpenTradeLoading(false);
+        //   setIsOpenTrade(true);
+        //   setOpenTradeModal(false);
+        // }
         setOpenTradeLoading(false);
       }
     } catch (e) {
@@ -113,14 +113,15 @@ function ManageTokenDetail() {
     setRemoveOwnShipModal(false);
     try {
       const tx = await tokenContract.renounceOwnership();
-      const recipent = await tx.wait();
-      if (recipent.status === 1) {
-        setIsOwn(false);
-        setRemoveOwnShipLoading(false);
-        NotificationChange('success', t('token.renounceOwnership'));
-      } else {
-        NotificationChange('error', t('token.renounceOwnershipfailed'));
-      }
+      history(`/dapps/tokencreation/results/renounce?tx=${tx?.hash}&status=pending`)
+      // const recipent = await tx.wait();
+      // if (recipent.status === 1) {
+      //   setIsOwn(false);
+      //   setRemoveOwnShipLoading(false);
+      //   NotificationChange('success', t('token.renounceOwnership'));
+      // } else {
+      //   NotificationChange('error', t('token.renounceOwnershipfailed'));
+      // }
     } catch (e) {
       setRemoveOwnShipLoading(false);
       NotificationChange('error', t('token.renounceOwnershipfailed'));
@@ -189,9 +190,12 @@ function ManageTokenDetail() {
         onCancel={() => setOpenTradeModal(false)}
       >
         <PairInfo data={pairInfoData} />
-        <div className="pair-info-token">
+        <div className="pair-info-token" style={{marginBottom:'0'}}>
           <span>{pairInfoData.token0.symbol}</span>
           <span>{tokenBalance || '-'}</span>
+        </div>
+        <div style={{ display: 'flex',justifyContent:'center' }}>
+          <img style={{width:'28px'}} src="/pair-arrow.svg" alt="" />
         </div>
         <div className="pair-info-token">
           <span>{pairInfoData.token1.symbol}</span>
@@ -214,7 +218,7 @@ function ManageTokenDetail() {
               <div>
                 <span>{contractConfig?.tokenSymbol || 'ETH'}</span>
                 <Button
-                  className="action-button"
+                  className="action-button piar-input-button"
                   ghost
                   onClick={() => setEthAmount(ethBalance)}
                 >
@@ -231,14 +235,14 @@ function ManageTokenDetail() {
         </div>
         <div className="open-trade-button">
           <Button
-            className="action-button"
+            className="action-button cancel-button"
             ghost
             onClick={() => setOpenTradeModal(false)}
           >
             Cancel
           </Button>
           <Button
-            className="action-button"
+            className="action-button confirm-button"
             loading={openTradeLoading}
             onClick={() => openTrade()}
           >

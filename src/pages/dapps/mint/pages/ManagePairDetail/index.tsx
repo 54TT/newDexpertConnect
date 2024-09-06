@@ -208,7 +208,7 @@ function ManagePairDetail() {
       setBurnLoading(true)
       console.log(tx);
       
-      history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`)
+      history(`/dapps/tokencreation/results/burnliquidity?tx=${tx?.hash}&status=pending`)
       // const data = await tx.wait();
       // if (data.status === 1) {
       //   if (tx?.hash && data) {

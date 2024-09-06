@@ -5,6 +5,7 @@ import { CountContext } from '@/Layout';
 import { useNavigate,useParams,useLocation   } from 'react-router-dom';
 import Load from '@/components/allLoad/load.tsx';
 import { useTranslation } from 'react-i18next';
+import NotificationChange from '@/components/message';
 
 export default function resultBox() {
   const history = useNavigate();
@@ -21,8 +22,7 @@ export default function resultBox() {
   const [result, setResult]=useState('loading');
   const [fromCom,setFromCom]=useState(from);
   // const [receipt,setReceipt]=useState(null);
-
-  // 从URL拿信息
+    // 从URL拿信息
   const getResultInfo = async () => {
     console.log('getResultInfo');
     setFromCom(from)
@@ -34,58 +34,7 @@ export default function resultBox() {
       console.log('get recipent');
       setTx(tx);
       setResult('loading')
-      console.log(tx);
-
-      // const checkReceipt = async () => {
-      //   try {
-      //     const receipt = await provider.getTransactionReceipt(tx);
-      //     // setReceipt(receipt);
-      //     if (receipt) {
-      //       console.log('Transaction Receipt:', receipt);
-      //       if (receipt.status === 1) {
-      //         console.log('Transaction was successful.');
-      //         history(`/dapps/tokencreation/results/${from}?tx=${tx}&status=success`)
-      //         // setResult('success');
-      //       } else if(receipt.status === 0) {
-      //         console.log('Transaction failed.');
-      //         history(`/dapps/tokencreation/results/${from}?tx=${tx}&status=fail`)
-      //         // setResult('fail');
-      //       }
-      //     }
-      //   } catch (error) {
-      //     console.error('Failed to get transaction receipt:', error);
-      //   }
-      // };
-      // const intervalId = setInterval(checkReceipt, 5000); // 每5秒检查一次
-      // return () => clearInterval(intervalId);
-
-
-      // const receipt=await provider.getTransactionReceipt(tx);
-      // console.log(receipt);
-      
-      // if(receipt && receipt.status===1){
-      //   console.log(from,'to success page');
-      //   history(`/dapps/tokencreation/results/${from}?tx=${tx}&status=success`)
-      //   setResult('success');
-      // }else if(receipt && receipt.status===0){
-      //   console.log(from,'to fail page');
-      //   history(`/dapps/tokencreation/results/${from}?tx=${tx}&status=fail`)
-      //   setResult('fail');
-      // }
     }
-    // if(status==='pending'){
-    //   setResult('loading');
-    //   setLoading(true)
-    // }
-    // if(status==='success'){
-    //   setLoading(false);
-    //   setResult('success');
-    // }else if(status==='fail'){
-    //   setLoading(false);
-    //   setResult('error');
-    // }else{
-    //   setLoading(true);
-    // }
   }
   // 获取交易状态
   useEffect(() => {
@@ -101,18 +50,18 @@ export default function resultBox() {
       const checkReceipt = async () => {
         try {
           const receipt = await provider.getTransactionReceipt(tx);
-          // setReceipt(receipt);
+          console.log(receipt);
           if (receipt) {
             console.log('Transaction Receipt:', receipt);
             if (receipt.status === 1) {
               console.log('Transaction was successful.');
               history(`/dapps/tokencreation/results/${from}?tx=${tx}&status=success`)
-              // setStatus('success');
             } else if(receipt.status === 0){
               console.log('Transaction failed.');
               history(`/dapps/tokencreation/results/${from}?tx=${tx}&status=fail`)
-              // setStatus('fail');
             }
+          }else{
+            NotificationChange('error', 'Failed to get transaction receipt', 'Please check your network connection and try again.');
           }
         } catch (error) {
           console.error('Failed to get transaction receipt:', error);
@@ -146,6 +95,36 @@ export default function resultBox() {
     }
   }, [loading, contractConfig, chainId]);
 
+  // 标题
+  const ResultsMessage = ({ result, fromCom }) => {
+    const messages = {
+      loading: {
+        launch: 'Deploying...',
+        lockliquidity: 'Locking Liquidity...',
+        burnliquidity: 'Burning Liquidity...',
+        opentrade: 'Initial Dex Offering (IDO)...',
+        renounce:'Renounce Ownership'
+      },
+      success: {
+        launch: 'Deployment Successful',
+        lockliquidity: 'Lock Liquidity Successful',
+        burnliquidity: 'Burn Liquidity Successful',
+        opentrade: 'IDO Launched',
+        renounce:'Ownership Is Renounced'
+      },
+      error: {
+        launch: 'Deployment Failed',
+        lockliquidity: 'Lock Liquidity Failed',
+        burnliquidity: 'Burn Liquidity Failed',
+        opentrade: 'IDO Launched Unsuccessful',
+        renounce:'Renounce Ownership'
+      },
+    };
+  
+    const message = messages[result]?.[fromCom] || 'Unknown Status';
+    return <p className="back-title">{message}</p>;
+  };
+
   useEffect(() => {
     getResultInfo();
   }, [tx])
@@ -155,13 +134,7 @@ export default function resultBox() {
       {result === 'success'&&<img src="/result-success-icon.svg" className='res-icon' />}
       {result === 'error'&&<img src="/result-fail-icon.svg" className='res-icon' />}
       <div className="back">
-        <p className='back-title'>
-          {result === 'loading'&& fromCom==='launch'&& 'Deploying...'}
-          {result === 'error'&& fromCom==='launch'&& 'Deployment Failed'}
-          {result === 'success'&& fromCom==='launch'&& 'Deployment Successful'}
-          {fromCom === 'lockliquidity'&& 'Lock Liquidity'}
-          {fromCom === 'burnliquidity'&& 'Burn Liquidity'}
-        </p>
+        <ResultsMessage result={result} fromCom={fromCom} />
         {result==='loading'&&(
           <p style={{textAlign:'center',color:'#fff',marginBottom:'24px'}}>This may take a few minutes</p>
         )}
@@ -235,10 +208,11 @@ export default function resultBox() {
               }
             }}
           >
-            <p>
+            {/* <p>
               <img src="/ethLogo.svg" alt="" />
-            </p>
-            <span>{t('token.go')}</span>
+            </p> */}
+            {/* <span>{t('token.go')}</span> */}
+            <span>View on Blockchain</span>
           </div>
         }
       </div>
