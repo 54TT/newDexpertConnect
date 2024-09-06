@@ -33,7 +33,7 @@ function LaunchHome() {
               }
             }}
           >
-            {user?.uid ? t('token.Creation') : t('Common.Connect Wallet')}
+            {user?.uid ? t('mint.launch') : t('mint.Connect')}
           </Button>
           <div className="launch-home-top-icon">
             <img src="/launchTop.svg" alt="" />
@@ -51,7 +51,7 @@ function LaunchHome() {
         }}
       >
         <img src="/clickHi.svg" alt="" />
-        <span className={'launch-home-manage_token-span'}>{t('token.me')}</span>
+        <span className={'launch-home-manage_token-span'}>{t('mint.Token')}</span>
       </div>
     </>
   );
