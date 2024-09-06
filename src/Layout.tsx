@@ -117,7 +117,7 @@ function Layout() {
 
   useEffect(() => {
     getSigner();
-  }, [loginProvider]);
+  }, [loginProvider, chainId]);
   //ton钱包连接
   const tonConnect = async (log?: any) => {
     if (log) {
@@ -207,8 +207,8 @@ function Layout() {
     changeConfig(Number(targetChainId).toString());
   };
 
-  const onAccountsChanged =async (account) => {
-    if (account.length > 0 ) {
+  const onAccountsChanged = async (account) => {
+    if (account.length > 0) {
       handleLogin({ provider: loginProvider });
     }
   };
@@ -232,7 +232,7 @@ function Layout() {
         });
       } catch (e) {
         // 如果用户拒绝切换链或不支持此方法
-        return null
+        return null;
       }
     }
     return () => {

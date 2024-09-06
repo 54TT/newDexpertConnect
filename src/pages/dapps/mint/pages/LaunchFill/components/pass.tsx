@@ -31,7 +31,6 @@ export default function CommonPass() {
     });
     if (res?.status === 200) {
       const { data } = res;
-
       setParams(data);
       const tokenFactoryContract = new ethers.Contract(
         standardTokenFactoryAddress01,
@@ -122,7 +121,7 @@ export default function CommonPass() {
               params?.stopTs
             )}
           {passItem(
-            t("mint.Fee"),
+            t('mint.Fee'),
             `${toEthWithDecimal(formData.fees, 18)} ${tokenSymbol}`,
             'more',
             '1',
