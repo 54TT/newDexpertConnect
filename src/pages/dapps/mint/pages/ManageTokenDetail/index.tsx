@@ -21,7 +21,11 @@ import { useTranslation } from 'react-i18next';
 import { getContract } from 'thirdweb';
 import Button from './component/button';
 // import { signTransaction } from 'thirdweb';
-import { sendAndConfirmTransaction,prepareContractCall, toWei  } from 'thirdweb';
+import {
+  sendAndConfirmTransaction,
+  prepareContractCall,
+  toWei,
+} from 'thirdweb';
 import { useReadContract } from 'thirdweb/react';
 function ManageTokenDetail() {
   const { t } = useTranslation();
@@ -64,13 +68,13 @@ function ManageTokenDetail() {
   });
   useEffect(() => {
     setIsLoading(false);
-    if (
-      router?.address &&
-      loginProvider &&
-      contractConfig?.chainId === Number(chainId)
-    ) {
-      initData();
-    }
+    // if (
+    //   router?.address &&
+    //   loginProvider &&
+    //   contractConfig?.chainId === Number(chainId)
+    // ) {
+    //   initData();
+    // }
     initData();
   }, [chainId, router?.address, contractConfig]);
   const initData = async () => {
@@ -130,12 +134,12 @@ function ManageTokenDetail() {
     ];
   }, [tokenData]);
 
-  const approve = async (spender, amount) => {
-    const tx = await erc20Contract.approve(spender, amount);
-    const recipent = await tx.wait();
-    // 1成功 2失败
-    return recipent.status === 1;
-  };
+  // const approve = async (spender, amount) => {
+  //   const tx = await erc20Contract.approve(spender, amount);
+  //   const recipent = await tx.wait();
+  //   // 1成功 2失败
+  //   return recipent.status === 1;
+  // };
 
   const openTrade = async () => {
     if (!isOwn) return;
@@ -144,11 +148,11 @@ function ManageTokenDetail() {
       return;
     }
     setOpenTradeLoading(true);
-    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-    const signer = web3Provider.getSigner();
-    const walletAddress = await signer.getAddress();
+    // const web3Provider = new ethers.providers.Web3Provider(loginProvider);
+    // const signer = web3Provider.getSigner();
+    // const walletAddress = await signer.getAddress();
     // const decimals = await erc20Contract.decimals();
-    const tokenBalance = await erc20Contract.balanceOf(walletAddress);
+    // const tokenBalance = await erc20Contract.balanceOf(walletAddress);
     const ttt = new Decimal(balanceOf?.toString()).div(
       new Decimal(10).pow(decimalsOf?.toString())
     );
