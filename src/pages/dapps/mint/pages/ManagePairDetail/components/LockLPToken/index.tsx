@@ -10,11 +10,12 @@ import approve from '@utils/approve';
 import { zeroAddress } from '@utils/constants';
 import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
 import getBalanceRpcEther from '@utils/getBalanceRpc';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import './index.less';
+import dayjs, { ManipulateType } from 'dayjs';
 
 const LockDateMap = {
   '1d': '1D',
@@ -36,25 +37,25 @@ function LockLpButton({ pairInfo }) {
   const [lockDate, setLockDate] = useState<'1d' | '7d' | '1M' | '3M'>('1d');
   const router = useParams();
   const history = useNavigate();
+  const [buttonState, setButtonState] = useState<
+    'lock' | 'locking' | 'canUnlock'
+  >('lock'); // lock: 可以锁定    locking: 正在锁定，未到期  canunlock: 锁定，但是到期可解锁
+  const [lockInfo, setLockInfo] = useState();
 
   const getLockList = async () => {
     setButtonLoading(true);
     const { uncxAddress } = contractConfig;
     const walletAddress = await signer.getAddress();
-    const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
-    setUncxContract(uncxContract);
-    const lockNum = await uncxContract.getUserNumLocksForToken(
-      walletAddress,
-      router?.pair
-    );
+
     const pairContract = new ethers.Contract(
       router?.pair,
       UniswapV2PairAbi,
       signer
     );
-    const lpTokenBalance = pairContract.balanceOf(walletAddress);
+    const lpTokenBalance = await pairContract.balanceOf(walletAddress);
+    console.log(lpTokenBalance);
     setLpTokenBalance(lpTokenBalance.toString());
-    const getUncxLockList = async () => {
+    /*     const getUncxLockList = async () => {
       const promiseList = [];
       for (let i = 0; i <= lockNum - 1; i++) {
         promiseList.push(
@@ -66,28 +67,45 @@ function LockLpButton({ pairInfo }) {
         );
       }
       return Promise.all(promiseList);
-    };
+    }; */
 
-    const lockList = await getUncxLockList();
-    const data = lockList.map((item) => {
-      const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
-        item;
-      return {
-        remark: toEthWithDecimal(lockAmount, 18),
-        unlockDate,
-        lockAmount,
-        lockDate,
-        initialAmount,
-        lockId,
-        owner,
-      };
-    });
+    const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
+    setUncxContract(uncxContract);
+    const lockNum: BigNumber = await uncxContract.getUserNumLocksForToken(
+      walletAddress,
+      router?.pair
+    );
+    if (lockNum.eq(0)) {
+      setButtonLoading(false);
+    }
+    const lockList = await uncxContract.getUserLockForTokenAtIndex(
+      walletAddress,
+      router?.pair,
+      lockNum.sub(1)
+    );
+    const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
+      lockList;
+
+    // lockList.map((item) => {
+    //   const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
+    //     item;
+    //   return {
+    //     remark: toEthWithDecimal(lockAmount, 18),
+    //     unlockDate,
+    //     lockAmount,
+    //     lockDate,
+    //     initialAmount,
+    //     lockId,
+    //     owner,
+    //   };
+    // });
+    console.log(lockList);
     setButtonLoading(false);
   };
 
   const lockLp = async () => {
     try {
-      setButtonLoading(true);
+      setLocking(true);
       const { uncxAddress } = contractConfig;
       const walletAddress = await signer.getAddress();
       const pairContract = new ethers.Contract(
@@ -98,18 +116,21 @@ function LockLpButton({ pairInfo }) {
       const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
       const fee = (await uncxContract.gFees()).ethFee;
       const decimals = await pairContract.decimals();
-      const lockAmountWitDecimal = toWeiWithDecimal(lpTokenBalance, decimals);
-
-      const unlockDate = lockDate.unix();
+      const lockAmountWitDecimal = lpTokenBalance;
+      const [addCount, uint] = [lockDate.slice(0, -1), lockDate.slice(-1)];
+      const unlockDate = dayjs()
+        .add(Number(addCount), uint as ManipulateType)
+        .unix();
       const isShow = await approve(
         pairContract,
         uncxAddress,
         lockAmountWitDecimal
       );
+      console.log(isShow);
       if (isShow) {
         try {
           const tx = await uncxContract.lockLPToken(
-            router?.address,
+            router?.pair,
             lockAmountWitDecimal,
             unlockDate,
             zeroAddress,
@@ -124,15 +145,16 @@ function LockLpButton({ pairInfo }) {
             history('/dapps/tokencreation/result/' + tx?.hash + '/lock');
           }
         } catch (e) {
+          console.log(e);
           NotificationChange('warning', t('Dapps.Insufficient Fund'));
           return null;
         }
       }
       getLockList();
-      setLockDate(null);
-      setButtonLoading(false);
+      setLockDate('1d');
+      setLocking(false);
     } catch (e) {
-      setButtonLoading(false);
+      setLocking(false);
       console.error(e);
     }
   };
@@ -161,10 +183,13 @@ function LockLpButton({ pairInfo }) {
         <p className="lock-lp-modal-content">
           Select the lock-up period of liquidity pool
         </p>
-        <div>
-          {Object.keys(LockDateMap).map((key) => {
+        <div className="lock-lp-modal-date">
+          {Object.keys(LockDateMap).map((key: any) => {
             return (
-              <div>
+              <div
+                className={lockDate === key ? 'is-select-date' : ''}
+                onClick={() => setLockDate(key as '1d' | '7d' | '1M' | '3M')}
+              >
                 <span>{LockDateMap[key]}</span>
               </div>
             );
@@ -173,9 +198,16 @@ function LockLpButton({ pairInfo }) {
         <BottomActionButton
           okText="确认"
           cancelText={'取消'}
-          onOk={() => {}}
-          onCancel={() => {}}
+          onOk={() => {
+            lockLp();
+          }}
+          onCancel={() => {
+            setOpenModal(false);
+          }}
         />
+        <p className="lock-lp-modal-tips">
+          Lock-up liquidity pool can enhance the credibility of token
+        </p>
       </CommonModal>
       <CommonModal
         closeIcon={null}

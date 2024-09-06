@@ -261,7 +261,7 @@ export const config: Record<ChainIdList, any> = {
     wethAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     wethUsdtPairAddress: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
     wethDecimal: 18,
-    decimals: 8,
+    decimals: 18,
     usdtAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
     usdtDecimal: 6,
     ethAddress: '0x0000000000000000000000000000000000000000',
