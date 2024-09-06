@@ -16,6 +16,13 @@
   position: relative;
   width: 100%;
   height: 100%;
+  .res-icon{
+    position: absolute;
+    top: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20%;
+  }
   .mint-bottom-button {
     position: absolute;
   }
@@ -27,6 +34,23 @@
     background-color: #2d2d2d;
     border-radius: 48px 48px 0 0;
     left: 0;
+    &-title{
+      text-align: center;
+      margin: 24px 0;
+      font-size: 22px;
+      font-weight: 700;
+      color:#fff;
+    }
+    &-to{
+      // width: 300px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      display: inline-block;
+      padding: 12px 24px;
+      border: 2px solid #86f097;
+      border-radius: 13px;
+      cursor:pointer;
+    }
     .with {
       margin: 24px 0;
       font-size: 24px;

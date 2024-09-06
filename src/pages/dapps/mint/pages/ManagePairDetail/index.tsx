@@ -219,17 +219,20 @@ function ManagePairDetail() {
         zeroAddress,
         BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
       );
-      setBurnLoading(true);
-      const data = await tx.wait();
-      if (data.status === 1) {
-        if (tx?.hash && data) {
-          history('/dapps/tokencreation/result/' + tx?.hash + '/burnLP');
-        }
-        setBurnLoading(false);
-      } else {
-        NotificationChange('error', 'pair.burnfail');
-        setBurnLoading(false);
-      }
+      setBurnLoading(true)
+      console.log(tx);
+      
+      history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`)
+      // const data = await tx.wait();
+      // if (data.status === 1) {
+      //   if (tx?.hash && data) {
+      //     history('/dapps/tokencreation/result/' + tx?.hash + '/burnLP');
+      //   }
+      //   setBurnLoading(false)
+      // } else {
+      //   NotificationChange('error', 'pair.burnfail');
+      //   setBurnLoading(false)
+      // }
       setIsOpenStatus('');
       setOpen(false);
       setIsButton(false);
@@ -483,18 +486,13 @@ function ManagePairDetail() {
                 <span>{resever1balance}</span>
               </div>
             </div>
-            <div
-              className="pair-manage-content"
-              style={{ margin: '32px auto' }}
-            >
-              <span className="pair-manage-trad-title">
-                Liquidity Lock / Burn
-              </span>
-              <div className="pair-manage-trad-content">
+            <div className='pair-manage-content' style={{margin:'32px auto'}}>
+              <span className='pair-manage-trad-title'>Liquidity Lock / Burn</span>
+              {/* <div className='pair-manage-trad-content'>
                 <span>WETH</span>
                 <span>-</span>
-              </div>
-              <div className="pair-manage-trad-content">
+              </div> */}
+              <div className='pair-manage-trad-content'>
                 <span>Maturity Date</span>
                 <span>-</span>
               </div>
