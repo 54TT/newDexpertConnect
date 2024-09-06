@@ -49,12 +49,7 @@ function Mint() {
           <div className="mint-content">
             <Routes>
               <Route path="/" element={<LaunchHome />} />
-              <Route
-                path="/fillIn"
-                element={
-                  <LaunchFill  />
-                }
-              />
+              <Route path="/fillIn" element={<LaunchFill />} />
               <Route path="/manageToken" element={<ManageTokenList />} />
               <Route path="/result/:id/:status" element={<Result />} />
               <Route

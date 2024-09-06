@@ -4,8 +4,14 @@ type PairInfoTokenType = {
   symbol: string;
 };
 
-export type PairInfoPropsType = Record<'token0' | 'token1', PairInfoTokenType >
-function PairInfo({ data, showArrow = false, }: { data: PairInfoPropsType, showArrow?: boolean  }) {
+export type PairInfoPropsType = Record<'token0' | 'token1', PairInfoTokenType>;
+function PairInfo({
+  data,
+  showArrow = false,
+}: {
+  data: PairInfoPropsType;
+  showArrow?: boolean;
+}) {
   const { token0, token1 } = data;
   return (
     <div className="pair-info-comp">
@@ -13,8 +19,9 @@ function PairInfo({ data, showArrow = false, }: { data: PairInfoPropsType, showA
         <img src={token0.logo || '/default-edit-icon.png'} alt="" />
         {/* <img style={{zIndex:'10'}} src={token1.logo} alt="" /> */}
       </div>
-      <div className="dis" style={{marginLeft:'16px'}}>
-        <span>{token0.symbol}</span> <span>/</span> <span>{token1.symbol}</span>
+      <div className="dis" style={{ marginLeft: '16px' }}>
+        <span>{token0.symbol}</span> <span>/</span>{' '}
+        <span>{`W${token1.symbol}`}</span>
       </div>
 
       {showArrow ? (
@@ -25,8 +32,8 @@ function PairInfo({ data, showArrow = false, }: { data: PairInfoPropsType, showA
         <></>
       )}
     </div>
-  // </div>
-  )
+    // </div>
+  );
 }
 
 export default PairInfo;
