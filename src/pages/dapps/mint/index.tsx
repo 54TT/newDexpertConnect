@@ -11,7 +11,9 @@ import ManageTokenDetail from './pages/ManageTokenDetail';
 import ManagePairDetail from './pages/ManagePairDetail';
 import LockLpList from './pages/LockLpList';
 import Result from './pages/Result';
+import NewResult from './pages/NewResult';
 import ModifyForm from './pages/ModifyForm/index.tsx';
+
 
 export const MintContext = createContext<{
   formData: Partial<FormDataType>;
@@ -71,6 +73,8 @@ function Mint() {
               />
               <Route path="/lockLpList/:address" element={<LockLpList />} />
               <Route path="/edit/:address" element={<ModifyForm />} />
+              {/* 签名后跳转的result页面，需要带tx */}
+              <Route path="/results/:from" element={<NewResult />} />
             </Routes>
           </div>
         </MintContext.Provider>

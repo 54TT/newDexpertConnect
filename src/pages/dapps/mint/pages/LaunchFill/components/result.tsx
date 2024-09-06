@@ -7,7 +7,7 @@ import Request from '@/components/axios';
 import { MintContext } from '../../../index';
 import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useParams  } from 'react-router-dom';
 import Load from '@/components/allLoad/load.tsx';
 import { useTranslation } from 'react-i18next';
 import { reportPayType } from '@/api';
@@ -17,7 +17,12 @@ export default function resultBox({
   result,
   setResult,
   setLoading,
-}: any) {
+}: {
+  loading?: boolean;
+  result?: string;
+  setResult?: any;
+  setLoading?: any;
+}) {
   const history = useNavigate();
   const { t } = useTranslation();
   const { launchTokenPass, formData } = useContext(MintContext);
@@ -121,6 +126,26 @@ export default function resultBox({
       return null;
     }
   }; */
+  // 从URL拿信息
+  const getResultInfo = async () => {
+    const {from} = useParams();
+    const searchParams = new URLSearchParams(window.location.search);
+    const tx = searchParams.get('tx');
+    const status = searchParams.get('status');
+    console.log(from);
+    console.log(tx);
+    console.log(status)
+    if(status==='pending') setResult('loding');
+    if(status==='success'){
+      setLoading(false);
+      setResult('success');
+    }else if(status==='fail'){
+      setLoading(false);
+      setResult('error');
+    }else{
+      setLoading(true);
+    }
+  }
 
   // 使用工厂函数部署token
   const launchTokenByFactory = async () => {
@@ -168,10 +193,12 @@ export default function resultBox({
 
   useEffect(() => {
     if (loading && contractConfig?.chainId === Number(chainId)) {
-      launchTokenByFactory();
+      // launchTokenByFactory();
     }
   }, [loading, contractConfig, chainId]);
-
+  useEffect(() => {
+    getResultInfo();
+  }, [])
   return (
     <div className="resultBox">
       <div className="back">
@@ -185,20 +212,26 @@ export default function resultBox({
                 : ''}
           {result === 'loading' && <Load />}
         </div>
-        <p
-          onClick={() => {
-            if (result !== 'loading') {
-              history('/dapps/tokencreation');
-            }
-          }}
-          className="backTo"
-          style={{
-            backgroundColor:
-              result === 'loading' ? '#434343' : 'rgb(134,240,151)',
-          }}
-        >
-          {t('token.Back')}
-        </p>
+        {loading?(
+          <p style={{textAlign:'center',color:'#fff'}}>This may take a few minutes</p>
+        ):(
+          <p
+            onClick={() => {
+              if (result !== 'loading') {
+                history('/dapps/tokencreation/manageToken');
+              }
+            }}
+            className="backTo"
+            style={{
+              backgroundColor:
+                result === 'loading' ? '#434343' : 'rgb(134,240,151)',
+            }}
+          >
+            {/* {t('token.Back')} */}
+            Token Management
+          </p>
+        )
+        }
         <div
           className="goEth"
           onClick={() => {
