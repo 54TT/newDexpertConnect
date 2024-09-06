@@ -268,6 +268,7 @@ export const config: Record<ChainIdList, any> = {
     zeroAddress: '0x0000000000000000000000000000000000000000',
     uniswapV3FeeAmounts: [500, 3000, 10000],
     tokenSymbol: 'BTC',
+    wethLogo: '/wbtc.png',
     quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
     scan: 'https://testnet.btrscan.com/tx/',
     tokenScan: 'https://testnet.btrscan.com//token/',

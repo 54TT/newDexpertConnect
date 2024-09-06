@@ -143,7 +143,7 @@ function ManageTokenDetail() {
     },
     token1: {
       logo: contractConfig?.defaultTokenIn?.logoUrl,
-      symbol: contractConfig?.defaultTokenIn?.symbol,
+      symbol: contractConfig?.tokenSymbol,
     },
   };
 
@@ -193,7 +193,7 @@ function ManageTokenDetail() {
         open={openTradeModal}
         footer={null}
         closeIcon={null}
-        title={<div className="disCen">Open Trade</div>}
+        title={<div className="disCen">{t('mint.Open')}</div>}
         onCancel={() => setOpenTradeModal(false)}
       >
         <PairInfo data={pairInfoData} />

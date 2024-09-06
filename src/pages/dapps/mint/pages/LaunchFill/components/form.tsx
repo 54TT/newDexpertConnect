@@ -143,7 +143,9 @@ export default function form({ form, formData, onFinishForm, update = false }) {
           <Form.Item name="discordLink">
             <DiscordInput />
           </Form.Item>
-          <span className="launch-form-item-label">6.介绍</span>
+          <span className="launch-form-item-label">
+            6.{t('mint.Description')}
+          </span>
           <Form.Item name="description">
             <TextArea
               placeholder={t('mint.about')}
@@ -160,7 +162,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
           <div
             style={{ color: '#fff', textAlign: 'center', marginBottom: '24px' }}
           >
-            {t("mint.Logo")}
+            {t('mint.Logo')}
           </div>
         }
         open={logoLinkModal}
@@ -169,7 +171,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
       >
         <div>
           <Input
-            placeholder={t("mint.The")}
+            placeholder={t('mint.The')}
             value={logoLink}
             onChange={(e) => setLogoLink(e.target.value)}
           ></Input>
@@ -186,10 +188,10 @@ export default function form({ form, formData, onFinishForm, update = false }) {
             ghost
             onClick={() => setLogoLinkModal(false)}
           >
-            {t("mint.Cancel")}
+            {t('mint.Cancel')}
           </Button>
           <Button className="action-button" onClick={() => onConfirmIcon()}>
-          {t("mint.Confirm")}
+            {t('mint.Confirm')}
           </Button>
         </div>
       </CommonModal>
