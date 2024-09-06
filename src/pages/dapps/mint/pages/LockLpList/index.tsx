@@ -49,25 +49,7 @@ function LockLpList() {
       getLockList();
     }
   }, [chainId, loginProvider, contractConfig, router?.address]);
-  const withdraw = async (index, lockId, amount) => {
-    try {
-      const data = await uncxContract.withdraw(
-        router?.address,
-        index,
-        lockId,
-        amount
-      );
-      const recipent = await data.wait();
-      if (recipent.status === 1) {
-        setOpenModal(false);
-        setLockLoading('');
-        history('/dapps/tokencreation/result/' + data?.hash + '/unlock');
-      }
-    } catch (e) {
-      NotificationChange('error', 'pair.unlockfail');
-      setLockLoading('');
-    }
-  };
+
   return (
     <div className="locklpBox">
       <ToLaunchHeader />

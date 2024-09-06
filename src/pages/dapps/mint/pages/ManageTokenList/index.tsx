@@ -157,7 +157,7 @@ function ManageTokenList() {
     if (page === 1) {
       initData();
     }
-  }, []);
+  }, [signer]);
 
   useEffect(() => {
     if (page !== 1) {

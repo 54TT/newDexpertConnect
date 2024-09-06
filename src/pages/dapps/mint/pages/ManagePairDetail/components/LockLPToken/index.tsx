@@ -24,7 +24,7 @@ const LockDateMap = {
   '3M': '3M',
 };
 
-function LockLpButton({ pairInfo }) {
+function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
   const { t } = useTranslation();
   const [openLockModal, setOpenModal] = useState(false);
   const [openUnLockModal, setOpenUnLockModal] = useState(false);
@@ -33,14 +33,13 @@ function LockLpButton({ pairInfo }) {
   const { contractConfig, signer } = useContext(CountContext);
   const [uncxContract, setUncxContract] = useState<ethers.Contract>();
   const [lpTokenBalance, setLpTokenBalance] = useState('0');
-  const [locking, setLocking] = useState(false);
+  const [lockLoading, setLockLoading] = useState(false);
   const [lockDate, setLockDate] = useState<'1d' | '7d' | '1M' | '3M'>('1d');
   const router = useParams();
   const history = useNavigate();
   const [buttonState, setButtonState] = useState<
     'lock' | 'locking' | 'canUnlock'
   >('lock'); // lock: 可以锁定    locking: 正在锁定，未到期  canunlock: 锁定，但是到期可解锁
-  const [lockInfo, setLockInfo] = useState();
 
   const getLockList = async () => {
     setButtonLoading(true);
@@ -75,8 +74,10 @@ function LockLpButton({ pairInfo }) {
       walletAddress,
       router?.pair
     );
+    console.log('lockNum: ', lockNum);
     if (lockNum.eq(0)) {
       setButtonLoading(false);
+      setButtonState('lock');
     }
     const lockList = await uncxContract.getUserLockForTokenAtIndex(
       walletAddress,
@@ -99,13 +100,19 @@ function LockLpButton({ pairInfo }) {
     //     owner,
     //   };
     // });
-    console.log(lockList);
+    console.log(unlockDate);
+    if (dayjs(unlockDate).isBefore(dayjs())) {
+      setButtonState('canUnlock');
+    } else {
+      setButtonState('locking');
+    }
+    setLockLpData({ unlockDate, lockId, owner, lockDate });
     setButtonLoading(false);
   };
 
   const lockLp = async () => {
     try {
-      setLocking(true);
+      setLockLoading(true);
       const { uncxAddress } = contractConfig;
       const walletAddress = await signer.getAddress();
       const pairContract = new ethers.Contract(
@@ -126,7 +133,6 @@ function LockLpButton({ pairInfo }) {
         uncxAddress,
         lockAmountWitDecimal
       );
-      console.log(isShow);
       if (isShow) {
         try {
           const tx = await uncxContract.lockLPToken(
@@ -152,10 +158,23 @@ function LockLpButton({ pairInfo }) {
       }
       getLockList();
       setLockDate('1d');
-      setLocking(false);
+      setLockLoading(false);
     } catch (e) {
-      setLocking(false);
+      setLockLoading(false);
       console.error(e);
+    }
+  };
+
+  const withdraw = async (lockId, amount) => {
+    try {
+      const data = await uncxContract.withdraw(router?.pair, 0, lockId, amount);
+      const recipent = await data.wait();
+      if (recipent.status === 1) {
+        setOpenUnLockModal(false);
+        history('/dapps/tokencreation/result/' + data?.hash + '/unlock');
+      }
+    } catch (e) {
+      NotificationChange('error', 'pair.unlockfail');
     }
   };
 
@@ -167,9 +186,19 @@ function LockLpButton({ pairInfo }) {
     <div className="lock-lp-button">
       <BottomButton
         loading={buttonLoading}
-        text={t('token.LockLP')}
+        text={buttonState === 'lock' ? t('token.LockLP') : 'Unlock Liquidity'}
         onClick={() => {
-          setOpenModal(true);
+          switch (buttonState) {
+            case 'canUnlock':
+              setOpenUnLockModal(true);
+              break;
+            case 'lock':
+              setOpenModal(true);
+              break;
+            case 'locking':
+              setOpenInfoModal(true);
+              break;
+          }
         }}
       />
       <CommonModal
@@ -197,6 +226,7 @@ function LockLpButton({ pairInfo }) {
         </div>
         <BottomActionButton
           okText="确认"
+          loading={lockLoading}
           cancelText={'取消'}
           onOk={() => {
             lockLp();
@@ -218,10 +248,14 @@ function LockLpButton({ pairInfo }) {
       >
         <PairInfo data={pairInfo} />
         <BottomActionButton
-          okText="确认"
+          okText="解锁"
           cancelText={'取消'}
-          onOk={() => {}}
-          onCancel={() => {}}
+          onOk={() => {
+            withdraw(lockLpData.lockId, lockLpData.lockAmount);
+          }}
+          onCancel={() => {
+            setOpenUnLockModal(false);
+          }}
         />
       </CommonModal>
       <CommonModal
@@ -232,10 +266,23 @@ function LockLpButton({ pairInfo }) {
         footer={null}
       >
         <PairInfo data={pairInfo} />
+        <div className="lock-lp-modal-content">
+          <p>Maturity Date</p>
+          <p style={{ color: 'rgba(139, 139, 139, 1)' }}>
+            {' '}
+            {lockLpData?.unlockDate
+              ? dayjs
+                  .unix(lockLpData.unlockDate.toString())
+                  .format('YYYY-MM-DD HH:mm')
+              : '-'}
+          </p>
+          <p>Unlock period not reached.</p>
+        </div>
         <BottomActionButton
           okText="确认"
-          cancelText={'取消'}
-          onOk={() => {}}
+          onOk={() => {
+            setOpenInfoModal(false);
+          }}
           onCancel={() => {}}
         />
       </CommonModal>
