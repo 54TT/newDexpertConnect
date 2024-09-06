@@ -47,7 +47,6 @@ import {
   useActiveWalletChain,
   // useSwitchActiveWalletChain,
 } from 'thirdweb/react';
-import { sepolia } from 'thirdweb/chains';
 import Index from './pages/index/index.tsx';
 import Webx2024 from './pages/webx2024/index.tsx';
 const Dapp = React.lazy(() => import('./pages/dapps/index.tsx'));
@@ -107,13 +106,13 @@ function Layout() {
   useEffect(() => {
     //  监听账户变更事件
     walletConnect?.subscribe('accountChanged', async (account) => {
-      // console.log(account);
+      console.log(account);
       // const ttt = account.signMessage({message:"你好"})
       // console.log(ttt)
     });
     // 监听 chain变更事件
     walletConnect?.subscribe('chainChanged', (chain) => {
-      // console.log(chain);
+      console.log(chain);
       // try{
       // useSwitchChain(chain)
       // }catch(e){
