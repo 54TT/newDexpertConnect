@@ -8,8 +8,8 @@ import { UncxAbi } from '@abis/UncxAbi';
 import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
 import approve from '@utils/approve';
 import { zeroAddress } from '@utils/constants';
-import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
-import getBalanceRpcEther from '@utils/getBalanceRpc';
+// import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
+// import getBalanceRpcEther from '@utils/getBalanceRpc';
 import { BigNumber, ethers } from 'ethers';
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -84,8 +84,7 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
       router?.pair,
       lockNum.sub(1)
     );
-    const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
-      lockList;
+    const [lockDate, , , unlockDate, lockId, owner] = lockList;
 
     // lockList.map((item) => {
     //   const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
@@ -122,7 +121,7 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
       );
       const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
       const fee = (await uncxContract.gFees()).ethFee;
-      const decimals = await pairContract.decimals();
+      // const decimals = await pairContract.decimals();
       const lockAmountWitDecimal = lpTokenBalance;
       const [addCount, uint] = [lockDate.slice(0, -1), lockDate.slice(-1)];
       const unlockDate = dayjs()

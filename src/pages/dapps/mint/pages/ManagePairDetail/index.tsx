@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BottomButton from '../../component/BottomButton';
-import InfoList from '../../component/InfoList';
+// import InfoList from '../../component/InfoList';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
@@ -21,8 +21,8 @@ import { useTranslation } from 'react-i18next';
 import NotificationChange from '@/components/message';
 import PairInfo, { PairInfoPropsType } from '@/components/PairInfo';
 import { useTokenInfo } from '@/hook/useTokenInfo';
-import { InputNumber } from 'antd';
-import getBalanceRpc from '@utils/getBalanceRpc';
+// import { InputNumber } from 'antd';
+// import getBalanceRpc from '@utils/getBalanceRpc';
 import { ERC20Abi } from '@abis/ERC20Abi';
 import InputNumberWithString from '@/components/InputNumberWithString';
 import LockLpButton from './components/LockLPToken';
@@ -40,8 +40,8 @@ function ManagePairDetail() {
     signer,
   } = useContext(CountContext);
   const [tokenBalance, setTokenBalance] = useState('0');
-  const [infoData, setInfoData] = useState<any>();
-  const [lockLpData, setLockLpData] = useState();
+  const [, setInfoData] = useState<any>();
+  const [lockLpData, setLockLpData] = useState(null);
   const [open, setOpen] = useState(false);
   const [isOpenStatus, setIsOpenStatus] = useState('');
   const [isButton, setIsButton] = useState(false);
@@ -333,7 +333,7 @@ function ManagePairDetail() {
       setIsButton(false);
     }
   };
-  const removeLp = async () => {
+  /* const removeLp = async () => {
     try {
       const web3Provider = new ethers.providers.Web3Provider(loginProvider);
       const signer = await web3Provider.getSigner();
@@ -384,12 +384,12 @@ function ManagePairDetail() {
       setIsButton(false);
       return null;
     }
-  };
+  }; */
 
-  const data = useMemo(
+  /*   const data = useMemo(
     () => Object?.keys?.(infoData || {})?.map?.((key) => infoData[key]) ?? [],
     [infoData]
-  );
+  ); */
 
   const item = (name?: string) => {
     return (

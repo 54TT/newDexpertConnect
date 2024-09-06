@@ -1,6 +1,6 @@
 import axios from 'axios';
 import cookie from 'js-cookie';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import NotificationChange from './message';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';

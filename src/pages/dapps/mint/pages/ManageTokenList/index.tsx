@@ -1,28 +1,28 @@
-import { Input, Select } from 'antd';
-import { useContext, useEffect, useRef, useState } from 'react';
+// import { Input, Select } from 'antd';
+import { useContext, useEffect, useState } from 'react';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
 import Loading from '@/components/allLoad/loading';
-import Request from '@/components/axios';
+// import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
 import TokenItem from '../../component/TokenItem';
 import { useNavigate } from 'react-router-dom';
 import InfiniteScrollPage from '@/components/InfiniteScroll';
-const { Search } = Input;
+// const { Search } = Input;
 import { useTranslation } from 'react-i18next';
 import { BigNumber, ethers } from 'ethers';
 import { TokenFactoryManagerAbi } from '@abis/TokenFactoryManagerAbi';
 import { tokenFactoryERC20Abi } from '@abis/tokenFactoryERC20Abi';
 function ManageTokenList() {
   const { t } = useTranslation();
-  const { chainId, browser, contractConfig, signer } = useContext(CountContext);
-  const { getAll } = Request();
+  const { browser, contractConfig, signer } = useContext(CountContext);
+  // const { getAll } = Request();
   const [data, setData] = useState([]);
 
   const [loading, setLoading] = useState(true);
-  const [isNext, setIsNext] = useState(false);
-  const [nextLoad, setNextLoad] = useState(false);
+  // const [isNext, setIsNext] = useState(false);
+  const [nextLoad] = useState(false);
   const [page, setPage] = useState(1);
   const history = useNavigate();
   const { tokenFactoryManagerAddress } = contractConfig || {};
@@ -92,8 +92,11 @@ function ManageTokenList() {
         end = total;
       }
       console.log(start, end, total);
-      const [tokenListsAddress, tokenListsType] =
-        await tokenFactoryManagerContract.getTokens(address, 0, total);
+      const [tokenListsAddress] = await tokenFactoryManagerContract.getTokens(
+        address,
+        0,
+        total
+      );
 
       // 不阻塞获取内容
       const promiseList = tokenListsAddress.map(async (address) => {

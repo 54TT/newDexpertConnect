@@ -4,7 +4,7 @@ import PageHeader from '../../component/PageHeader';
 import BottomButton from '../../component/BottomButton';
 import FormD from './components/form';
 import Pass from './components/pass';
-import Result from './components/result';
+// import Result from './components/result';
 import Confirm from './components/confirm';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -36,17 +36,16 @@ import { BigNumber } from 'ethers';
 function LaunchForm() {
   const { t } = useTranslation();
   const history = useNavigate();
-  const {  chainId, contractConfig, signer } =
-    useContext(CountContext);
+  const { chainId, contractConfig, signer } = useContext(CountContext);
   const { getAll } = Request();
   const token = Cookies.get('token');
   // const { launchTokenPass }: any = useContext(MintContext);
   const { launchTokenPass, formData, setFormData }: any =
     useContext(MintContext);
-  const [loading, setLoading] = useState(false);
-  const [createLoading,setCreateLoading]=useState(false)
-  const [result, setResult] = useState('loading');
-  const [tx, setTx] = useState('');
+  const [, setLoading] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [, setResult] = useState('loading');
+  const [, setTx] = useState('');
   const [form] = useForm();
   // form-----填写表单    pass-----选择pass卡  confirm---创建token确认页面  result---loading和结果页面
   const [step, setStep] = useState('form');
@@ -91,7 +90,7 @@ function LaunchForm() {
         signer
       );
       console.log(1);
-      
+
       const { totalSupply, fees, level, ...props } = formData;
       const metadata = {
         totalSupply: BigNumber.from(totalSupply),
@@ -106,11 +105,13 @@ function LaunchForm() {
         }
       );
       console.log(tx);
-      
+
       setLoading(true);
-      console.log('tx hash', tx?.hash)
-      setStep('result')
-      history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`)
+      console.log('tx hash', tx?.hash);
+      setStep('result');
+      history(
+        `/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`
+      );
       setTx(tx?.hash);
       sendReportPayType(
         tx.hash,
@@ -133,7 +134,7 @@ function LaunchForm() {
       console.error(e);
       setResult('error');
       setLoading(false);
-      setCreateLoading(false)
+      setCreateLoading(false);
     }
   };
 
@@ -150,7 +151,7 @@ function LaunchForm() {
         <PageHeader
           className="launch-form-header"
           arrow={true}
-          title={step ==='confirm'?t('mint.Information'):t('mint.launch')}
+          title={step === 'confirm' ? t('mint.Information') : t('mint.launch')}
           // desc={step === 'confirm' ? t('Slider.Confirm') : t('token.fill')}
           disabled={step === 'confirm'}
           name={step === 'form' ? '' : change}
@@ -160,16 +161,15 @@ function LaunchForm() {
         <Pass />
       ) : step === 'confirm' ? (
         <Confirm />
-      ) : 
-      // step === 'result' ? (
-      //   <Result
-      //     loading={loading}
-      //     result={result}
-      //     setResult={setResult}
-      //     setLoading={setLoading}
-      //   />
-      // ) :
-      (
+      ) : (
+        // step === 'result' ? (
+        //   <Result
+        //     loading={loading}
+        //     result={result}
+        //     setResult={setResult}
+        //     setLoading={setLoading}
+        //   />
+        // ) :
         <FormD form={form} formData={formData} onFinishForm={onFinishForm} />
       )}
       {step !== 'result' && (
@@ -189,8 +189,8 @@ function LaunchForm() {
               // setLoading(true);
               // setStep('result');
               launchTokenByFactory();
-              setCreateLoading(true)
-              setResult('loading')
+              setCreateLoading(true);
+              setResult('loading');
             }
           }}
         />

@@ -1,5 +1,5 @@
 import './index.less';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { FormDataType } from '../../pages/LaunchFill';
 function InfoList({
   data,
@@ -8,7 +8,7 @@ function InfoList({
   data: Partial<FormDataType>;
   className?: string;
 }) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const {
     name,
     symbol,
@@ -32,24 +32,31 @@ function InfoList({
       </div>
       <div className="info-list-item">
         <img src="/website-launch.svg" alt="" />
-        <div><span>{websiteLink}</span></div>
+        <div>
+          <span>{websiteLink}</span>
+        </div>
       </div>
       <div className="info-list-item">
         <img src="/telegrams.svg" alt="" />
-        <div><span>{telegramLink}</span></div>
-
+        <div>
+          <span>{telegramLink}</span>
+        </div>
       </div>
       <div className="info-list-item">
         <img src="/twitter.svg" alt="" />
-        <div><span>{twitterLink}</span></div>
+        <div>
+          <span>{twitterLink}</span>
+        </div>
       </div>
       <div className="info-list-item">
         <img src="/discord-launch.svg" alt="" />
-        <div><span>{discordLink}</span></div>
+        <div>
+          <span>{discordLink}</span>
+        </div>
       </div>
       <div className="info-list-item descript">
         <div className="info-list-item-descript">Description</div>
-        <div style={{ overflowWrap: "break-word" }}>{description}</div>
+        <div style={{ overflowWrap: 'break-word' }}>{description}</div>
       </div>
     </div>
   );

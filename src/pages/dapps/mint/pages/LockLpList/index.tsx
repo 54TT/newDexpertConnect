@@ -3,21 +3,21 @@ import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import { CountContext } from '@/Layout';
 import { useParams } from 'react-router-dom';
-import { ethers } from 'ethers';
-import { UncxAbi } from '@abis/UncxAbi';
-import NotificationChange from '@/components/message';
+// import { ethers } from 'ethers';
+// import { UncxAbi } from '@abis/UncxAbi';
+// import NotificationChange from '@/components/message';
 import dayjs, { Dayjs } from 'dayjs';
-import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
+// import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
 import BottomButton from '../../component/BottomButton';
 import CommonModal from '@/components/CommonModal';
 import { DatePicker } from 'antd';
 import './index.less';
-import getBalanceRpcEther from '@utils/getBalanceRpc';
-import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
-import { zeroAddress } from '@utils/constants';
-import approve from '@utils/approve';
+// import getBalanceRpcEther from '@utils/getBalanceRpc';
+// import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
+// import { zeroAddress } from '@utils/constants';
+// import approve from '@utils/approve';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import Loading from '@/components/allLoad/loading';
 import Nodata from '@/components/Nodata';
 import BottomActionButton from '@/components/BottomActionButton';
@@ -26,27 +26,27 @@ function LockLpList() {
   const { t } = useTranslation();
   const { contractConfig, loginProvider, chainId, browser } =
     useContext(CountContext);
-  const history = useNavigate();
+  // const history = useNavigate();
   const router = useParams();
   // pair展示
-  const [infoData, setInfoData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [infoData] = useState([]);
+  const [isLoading] = useState(false);
   // 锁定流动性弹窗相关参数
   const [openModal, setOpenModal] = useState(false);
-  const [lpTokenBalance, setLpTokenBalance] = useState('0');
+  const [lpTokenBalance] = useState('0');
   const [lockDate, setLockDate] = useState<Dayjs>(null);
   // lock   loading
   const [lockLoading, setLockLoading] = useState('');
-  const [uncxContract, setUncxContract] = useState<ethers.Contract>();
+  // const [uncxContract, setUncxContract] = useState<ethers.Contract>();
   const [lockAmount, setLockAmount] = useState('0');
-  const [locking, setLocking] = useState(false);
+  const [locking] = useState(false);
   useEffect(() => {
     if (
       loginProvider &&
       contractConfig?.chainId === Number(chainId) &&
       router?.address
     ) {
-      getLockList();
+      // getLockList();
     }
   }, [chainId, loginProvider, contractConfig, router?.address]);
 
@@ -63,7 +63,7 @@ function LockLpList() {
       >
         {isLoading ? (
           infoData.length > 0 ? (
-            infoData?.map?.((item, index) => (
+            infoData?.map?.((item) => (
               <div className="itemLP" key={item?.lockId?.toString()}>
                 <div className="it item">
                   <p>{t('token.unti')}</p>
@@ -90,7 +90,7 @@ function LockLpList() {
                       ).isAfter(dayjs())
                     ) {
                       setLockLoading(item?.lockId?.toString());
-                      withdraw(index, item.lockId, item.lockAmount);
+                      // withdraw(index, item.lockId, item.lockAmount);
                     }
                   }}
                 />
@@ -179,7 +179,7 @@ function LockLpList() {
           cancelText={'取消'}
           loading={locking}
           onOk={() => {
-            lockLp();
+            // lockLp();
           }}
           onCancel={() => {
             setOpenModal(false);

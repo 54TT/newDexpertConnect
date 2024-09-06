@@ -7,7 +7,7 @@ import { useForm } from 'antd/es/form/Form';
 import PageHeader from '../../component/PageHeader';
 
 import './index.less';
-import { Button } from 'antd';
+// import { Button } from 'antd';
 import BottomButton from '../../component/BottomButton';
 import NotificationChange from '@/components/message';
 import Loading from '@/components/allLoad/loading';
@@ -24,7 +24,7 @@ function ModifyForm() {
   const { launchTokenPass, formData } = useContext(MintContext);
   const [form] = useForm();
   const [editLoading, setEditLoading] = useState(false);
-  const { totalSupply, fees, level } = formData || {};
+  const { fees, level } = formData || {};
   const { standardTokenFactoryAddress01 } = contractConfig || {};
   const [updateData, setUpdateData] = useState();
 

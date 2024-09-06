@@ -1,11 +1,10 @@
-import { useNavigate } from 'react-router-dom';
 import './index.less';
-import { useTranslation } from 'react-i18next';
-import Effects from   '../Effects'
+
+// import Effects from   '../Effects'
 function ToLaunchHeader() {
-const { t } = useTranslation();
-  const history = useNavigate();
-  
+  // const { t } = useTranslation();
+  // const history = useNavigate();
+
   return (
     // <div className="top-launch-header">
     //  <Effects />

@@ -28,7 +28,7 @@ function ManageTokenDetail() {
   const [openTradeModal, setOpenTradeModal] = useState(false);
   const [ethBalance, setEthBalance] = useState('0');
   const [ethAmount, setEthAmount] = useState('0');
-  const [tokenInfo, tokenContract, reset] = useTokenInfo(router.address);
+  const [tokenInfo, tokenContract] = useTokenInfo(router.address);
   const [pairAddress, setPairAddress] = useState('');
   const [tokenBalance, setTokenBalance] = useState('0');
   // 按钮正在执行状态
@@ -45,6 +45,7 @@ function ManageTokenDetail() {
   }, [tokenInfo, signer]);
 
   const initData = async () => {
+    // @ts-ignore
     const { isOpenTrade, owner, pair } = tokenInfo;
 
     const address: string = await signer.getAddress();
@@ -91,7 +92,9 @@ function ManageTokenDetail() {
             value: ethers.utils.parseEther(ethAmount.toString()),
           }
         );
-        history(`/dapps/tokencreation/results/opentrade?tx=${tx?.hash}&status=pending`)
+        history(
+          `/dapps/tokencreation/results/opentrade?tx=${tx?.hash}&status=pending`
+        );
         // const recipent = await tx.wait();
         // if (recipent.status === 1) {
         //   await reset();
@@ -115,7 +118,9 @@ function ManageTokenDetail() {
     setRemoveOwnShipModal(false);
     try {
       const tx = await tokenContract.renounceOwnership();
-      history(`/dapps/tokencreation/results/renounce?tx=${tx?.hash}&status=pending`)
+      history(
+        `/dapps/tokencreation/results/renounce?tx=${tx?.hash}&status=pending`
+      );
       // const recipent = await tx.wait();
       // if (recipent.status === 1) {
       //   setIsOwn(false);
@@ -164,7 +169,7 @@ function ManageTokenDetail() {
       <ToLaunchHeader />
       <PageHeader
         className="launch-manage-token-header"
-        title={t("mint.Management")}
+        title={t('mint.Management')}
       />
       {!isLoading ? (
         <InfoList className="manage-token-detail-info" data={tokenInfo} />
@@ -192,12 +197,12 @@ function ManageTokenDetail() {
         onCancel={() => setOpenTradeModal(false)}
       >
         <PairInfo data={pairInfoData} />
-        <div className="pair-info-token" style={{marginBottom:'0'}}>
+        <div className="pair-info-token" style={{ marginBottom: '0' }}>
           <span>{pairInfoData.token0.symbol}</span>
           <span>{tokenBalance || '-'}</span>
         </div>
-        <div style={{ display: 'flex',justifyContent:'center' }}>
-          <img style={{width:'28px'}} src="/pair-arrow.svg" alt="" />
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <img style={{ width: '28px' }} src="/pair-arrow.svg" alt="" />
         </div>
         <div className="pair-info-token">
           <span>{pairInfoData.token1.symbol}</span>

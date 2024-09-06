@@ -1,7 +1,7 @@
 import { Button, ConfigProvider } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+// import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import NotificationChange from '@/components/message';
+// import NotificationChange from '@/components/message';
 import '../index.less';
 import PairInfo from '@/components/PairInfo';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +34,7 @@ export default function button({
           className="action-button"
           onClick={() => history(`/dapps/tokencreation/edit/${router.address}`)}
         >
-          {t("mint.Amend")}
+          {t('mint.Amend')}
         </Button>
       ) : (
         <></>
@@ -52,7 +52,7 @@ export default function button({
           className="action-button"
           onClick={() => setOpenTradeModal(true)}
         >
-          {t("mint.Open")}
+          {t('mint.Open')}
         </Button>
       ) : (
         <></>
@@ -64,7 +64,7 @@ export default function button({
           ghost
           onClick={() => setRemoveOwnShipModal(true)}
         >
-          {t("mint.Renounce")}
+          {t('mint.Renounce')}
         </Button>
       ) : (
         <></>
