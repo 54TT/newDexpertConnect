@@ -26,9 +26,10 @@ export interface FormDataType {
 import { MintContext } from '../../index';
 import { useForm } from 'antd/es/form/Form';
 import { BigNumber } from 'ethers';
-function LaunchForm({ formData, setFormData }) {
+function LaunchForm() {
   const { t } = useTranslation();
-  const { launchTokenPass }: any = useContext(MintContext);
+  const { launchTokenPass, formData, setFormData }: any =
+    useContext(MintContext);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState('loading');
   const [form] = useForm();

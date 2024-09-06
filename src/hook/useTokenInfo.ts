@@ -24,7 +24,7 @@ export function useTokenInfo(
       telegramLink,
       discordLink,
       websiteLink,
-    } = await tokenContract.tokenInfo();
+    } = await tokenContract.tokenMetaData();
     const name = await tokenContract.name();
     const totalSupply = await tokenContract.totalSupply();
     const symbol = await tokenContract.symbol();

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { ethers } from 'ethers';
 import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
 import { toEthWithDecimal } from '@utils/convertEthUnit';
-export default function pass() {
+export default function CommonPass() {
   const { t } = useTranslation();
   const { getAll } = Request();
   const { browser, chainId, contractConfig, signer }: any =
@@ -17,9 +17,10 @@ export default function pass() {
   const { launchTokenPass, setLaunchTokenPass, setFormData, formData }: any =
     useContext(MintContext);
   const [params, setParams] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { standardTokenFactoryAddress01, tokenSymbol } = contractConfig;
   const getPass = async () => {
+    setLoading(true);
     const token = cookie.get('token');
     const res = await getAll({
       method: 'get',
@@ -38,10 +39,11 @@ export default function pass() {
         signer
       );
       const fees = await tokenFactoryContract.fees(Number(data.level));
+      console.log(fees);
       setFormData({ ...formData, fees, level: data.level });
-      setLoading(true);
+      setLoading(false);
     } else {
-      setLoading(true);
+      setLoading(false);
     }
   };
   const passItem = (
@@ -62,6 +64,7 @@ export default function pass() {
         }}
         onClick={() => {
           if (Number(show)) {
+            console.log(key);
             setLaunchTokenPass(key);
           }
         }}
@@ -94,7 +97,7 @@ export default function pass() {
       {/* <p className="hint" style={{ fontSize: '15px', margin: '8px 0' }}>
         {`${contractConfig.launchFee} ${contractConfig.tokenSymbol} ${t('token.need')}`}
       </p> */}
-      {loading ? (
+      {!loading ? (
         <div className="passItem">
           {params?.launchBotCreationCnt &&
             passItem(

@@ -52,7 +52,7 @@ function Mint() {
               <Route
                 path="/fillIn"
                 element={
-                  <LaunchFill formData={formData} setFormData={setFormData} />
+                  <LaunchFill  />
                 }
               />
               <Route path="/manageToken" element={<ManageTokenList />} />

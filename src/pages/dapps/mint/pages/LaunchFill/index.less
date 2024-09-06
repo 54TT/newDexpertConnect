@@ -173,3 +173,82 @@
     margin-left: 12px;
   }
 }
+
+.passBox {
+  width: 85%;
+  margin: 10px auto 0;
+  .showBot {
+    width: 100%;
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    .hint {
+      width: 85%;
+      margin: 0 auto;
+    }
+  }
+  .passItem {
+    & > div {
+      background-color: rgba(94, 94, 94, 0.3);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      justify-content: space-between;
+      padding: 16px 24px;
+    }
+
+    & > .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+      & > div {
+        display: flex;
+        align-items: center;
+        .left {
+          width: 40px;
+          height: 40px;
+          box-sizing: border-box;
+          background-color: red;
+          border-radius: 50%;
+          position: relative;
+          img {
+            position: absolute;
+            width: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-40%, -50%);
+          }
+        }
+        & > p {
+          margin-left: 10px;
+          font-size: 16px;
+          color: white;
+        }
+      }
+      & > p {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.55);
+      }
+    }
+    .more {
+      & > p:first-child {
+        color: white;
+        font-size: 16px;
+      }
+    }
+  }
+  .hint {
+    color: rgba(255, 255, 255, 0.55);
+    text-align: center;
+  }
+
+  .title {
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 20px;
+    text-align: center;
+  }
+}
