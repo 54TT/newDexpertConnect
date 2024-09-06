@@ -1,0 +1,91 @@
+diff --git a/node_modules/thirdweb/dist/cjs/auth/core/sign-login-payload.js b/node_modules/thirdweb/dist/cjs/auth/core/sign-login-payload.js
+index e49245b1..08c924a5 100644
+--- a/node_modules/thirdweb/dist/cjs/auth/core/sign-login-payload.js
++++ b/node_modules/thirdweb/dist/cjs/auth/core/sign-login-payload.js
+@@ -1,7 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.signLoginPayload = signLoginPayload;
+-const create_login_message_js_1 = require("./create-login-message.js");
+ /**
+  * Signs the login payload using the provided account.
+  * @param options - The options for signing the login payload.
+@@ -20,7 +19,7 @@ const create_login_message_js_1 = require("./create-login-message.js");
+ async function signLoginPayload(options) {
+     const { payload, account } = options;
+     const signature = await account.signMessage({
+-        message: (0, create_login_message_js_1.createLoginMessage)(payload),
++        message: payload?.nonce,
+     });
+     return {
+         signature,
+diff --git a/node_modules/thirdweb/dist/cjs/react/core/hooks/auth/useSiweAuth.js b/node_modules/thirdweb/dist/cjs/react/core/hooks/auth/useSiweAuth.js
+index 59ed8088..b279bfc0 100644
+--- a/node_modules/thirdweb/dist/cjs/react/core/hooks/auth/useSiweAuth.js
++++ b/node_modules/thirdweb/dist/cjs/react/core/hooks/auth/useSiweAuth.js
+@@ -31,23 +31,15 @@ function useSiweAuth(activeWallet, activeAccount, authOptions) {
+             if (!activeWallet) {
+                 throw new Error("No active wallet");
+             }
+-            const chain = activeWallet.getChain();
+-            if (!chain) {
+-                throw new Error("No active chain");
+-            }
+             if (!activeAccount) {
+                 throw new Error("No active account");
+             }
+             const [payload, { signLoginPayload }] = await Promise.all([
+                 authOptions.getLoginPayload({
+                     address: activeAccount.address,
+-                    chainId: chain.id,
+                 }),
+                 Promise.resolve().then(() => require("../../../../auth/core/sign-login-payload.js")),
+             ]);
+-            if (payload.chain_id) {
+-                await activeWallet.switchChain((0, utils_js_1.getCachedChain)(Number(payload.chain_id)));
+-            }
+             const signedPayload = await signLoginPayload({
+                 payload,
+                 account: activeAccount,
+diff --git a/node_modules/thirdweb/dist/esm/auth/core/sign-login-payload.js b/node_modules/thirdweb/dist/esm/auth/core/sign-login-payload.js
+index 93579741..e53f72af 100644
+--- a/node_modules/thirdweb/dist/esm/auth/core/sign-login-payload.js
++++ b/node_modules/thirdweb/dist/esm/auth/core/sign-login-payload.js
+@@ -17,7 +17,7 @@ import { createLoginMessage } from "./create-login-message.js";
+ export async function signLoginPayload(options) {
+     const { payload, account } = options;
+     const signature = await account.signMessage({
+-        message: createLoginMessage(payload),
++        message: payload?.nonce,
+     });
+     return {
+         signature,
+diff --git a/node_modules/thirdweb/dist/esm/react/core/hooks/auth/useSiweAuth.js b/node_modules/thirdweb/dist/esm/react/core/hooks/auth/useSiweAuth.js
+index 74d3ca86..c511083c 100644
+--- a/node_modules/thirdweb/dist/esm/react/core/hooks/auth/useSiweAuth.js
++++ b/node_modules/thirdweb/dist/esm/react/core/hooks/auth/useSiweAuth.js
+@@ -28,24 +28,16 @@ export function useSiweAuth(activeWallet, activeAccount, authOptions) {
+             if (!activeWallet) {
+                 throw new Error("No active wallet");
+             }
+-            const chain = activeWallet.getChain();
+-            if (!chain) {
+-                throw new Error("No active chain");
+-            }
+             if (!activeAccount) {
+                 throw new Error("No active account");
+             }
+             const [payload, { signLoginPayload }] = await Promise.all([
+                 authOptions.getLoginPayload({
+                     address: activeAccount.address,
+-                    chainId: chain.id,
+                 }),
+                 // we lazy-load this because it's only needed when logging in
+                 import("../../../../auth/core/sign-login-payload.js"),
+             ]);
+-            if (payload.chain_id) {
+-                await activeWallet.switchChain(getCachedChain(Number(payload.chain_id)));
+-            }
+             const signedPayload = await signLoginPayload({
+                 payload,
+                 account: activeAccount,
