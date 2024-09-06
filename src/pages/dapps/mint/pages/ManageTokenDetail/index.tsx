@@ -46,6 +46,7 @@ function ManageTokenDetail() {
 
   const initData = async () => {
     const { isOpenTrade, owner, pair } = tokenInfo;
+
     const address: string = await signer.getAddress();
     const ethBalance = await signer.getBalance();
     console.log(address);

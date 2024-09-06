@@ -41,6 +41,7 @@ function ManagePairDetail() {
   } = useContext(CountContext);
   const [tokenBalance, setTokenBalance] = useState('0');
   const [infoData, setInfoData] = useState<any>();
+  const [lockLpData, setLockLpData] = useState();
   const [open, setOpen] = useState(false);
   const [isOpenStatus, setIsOpenStatus] = useState('');
   const [isButton, setIsButton] = useState(false);
@@ -57,7 +58,6 @@ function ManagePairDetail() {
   // modal输入框数据
   const [WETHAmount, setWETHAmount] = useState('');
   const [erc20Amount, setErc20Amount] = useState('');
-  const [burnAmount, setBurnAmount] = useState('');
   // 按钮状态
   const [approveLoading, setApproveLoading] = useState(false);
   const [burnLoading, setBurnLoading] = useState(false);
@@ -219,10 +219,12 @@ function ManagePairDetail() {
         zeroAddress,
         BigNumber.from(toWeiWithDecimal(tokenBalance, 18))
       );
-      setBurnLoading(true)
+      setBurnLoading(true);
       console.log(tx);
-      
-      history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`)
+
+      history(
+        `/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`
+      );
       // const data = await tx.wait();
       // if (data.status === 1) {
       //   if (tx?.hash && data) {
@@ -486,15 +488,26 @@ function ManagePairDetail() {
                 <span>{resever1balance}</span>
               </div>
             </div>
-            <div className='pair-manage-content' style={{margin:'32px auto'}}>
-              <span className='pair-manage-trad-title'>Liquidity Lock / Burn</span>
+            <div
+              className="pair-manage-content"
+              style={{ margin: '32px auto' }}
+            >
+              <span className="pair-manage-trad-title">
+                Liquidity Lock / Burn
+              </span>
               {/* <div className='pair-manage-trad-content'>
                 <span>WETH</span>
                 <span>-</span>
               </div> */}
-              <div className='pair-manage-trad-content'>
+              <div className="pair-manage-trad-content">
                 <span>Maturity Date</span>
-                <span>-</span>
+                <span>
+                  {lockLpData?.unlockDate
+                    ? dayjs
+                        .unix(lockLpData.unlockDate.toString())
+                        .format('YYYY-MM-DD HH:mm')
+                    : '-'}
+                </span>
               </div>
             </div>
           </div>
@@ -515,7 +528,11 @@ function ManagePairDetail() {
                 setOpen(true);
               }}
             /> */}
-            <LockLpButton pairInfo={pairInfoData} />
+            <LockLpButton
+              pairInfo={pairInfoData}
+              lockLpData={lockLpData}
+              setLockLpData={setLockLpData}
+            />
             <BottomButton
               className="burn-lp-button"
               text={t('token.BurnLP')}
