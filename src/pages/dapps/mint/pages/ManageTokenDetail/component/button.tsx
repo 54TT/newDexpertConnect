@@ -16,7 +16,7 @@ export default function button({
   router,
 }) {
   const { t } = useTranslation();
-
+  const history = useNavigate();
   return (
     <div className="token-detail-button">
       <ConfigProvider
@@ -29,7 +29,7 @@ export default function button({
           },
         }}
       ></ConfigProvider>
-      {/* {isOwn ? (
+      {isOwn ? (
         <Button
           className="action-button"
           onClick={() => history(`/dapps/tokencreation/edit/${router.address}`)}
@@ -38,7 +38,7 @@ export default function button({
         </Button>
       ) : (
         <></>
-      )} */}
+      )}
       {isOpenTrade && (
         <Button
           className="action-button flex-start-button"

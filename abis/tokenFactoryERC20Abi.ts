@@ -1,5 +1,6 @@
 export const tokenFactoryERC20Abi = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
+  { inputs: [], name: 'OnlyAllowedFactory', type: 'error' },
   {
     anonymous: false,
     inputs: [
@@ -55,6 +56,31 @@ export const tokenFactoryERC20Abi = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'uniswapV2Router',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'tokenAmount',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'ethAmount',
+        type: 'uint256',
+      },
+    ],
+    name: 'TradingOpened',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
       { indexed: true, internalType: 'address', name: 'from', type: 'address' },
       { indexed: true, internalType: 'address', name: 'to', type: 'address' },
       {
@@ -65,27 +91,6 @@ export const tokenFactoryERC20Abi = [
       },
     ],
     name: 'Transfer',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        components: [
-          { internalType: 'string', name: 'description', type: 'string' },
-          { internalType: 'string', name: 'logoLink', type: 'string' },
-          { internalType: 'string', name: 'twitterLink', type: 'string' },
-          { internalType: 'string', name: 'telegramLink', type: 'string' },
-          { internalType: 'string', name: 'discordLink', type: 'string' },
-          { internalType: 'string', name: 'websiteLink', type: 'string' },
-        ],
-        indexed: false,
-        internalType: 'struct TokenInfo',
-        name: 'tokenInfo',
-        type: 'tuple',
-      },
-    ],
-    name: 'UpdateTokenInfo',
     type: 'event',
   },
   {
@@ -152,6 +157,7 @@ export const tokenFactoryERC20Abi = [
   {
     inputs: [
       { internalType: 'address', name: 'owner_', type: 'address' },
+      { internalType: 'address', name: 'factory', type: 'address' },
       {
         components: [
           { internalType: 'string', name: 'name', type: 'string' },
@@ -165,8 +171,8 @@ export const tokenFactoryERC20Abi = [
           { internalType: 'string', name: 'discordLink', type: 'string' },
           { internalType: 'string', name: 'websiteLink', type: 'string' },
         ],
-        internalType: 'struct TokenMetadata',
-        name: 'tokenMetadata',
+        internalType: 'struct TokenInitializeParams',
+        name: 'tokenInitializeParams',
         type: 'tuple',
       },
     ],
@@ -222,7 +228,7 @@ export const tokenFactoryERC20Abi = [
   },
   {
     inputs: [],
-    name: 'tokenInfo',
+    name: 'tokenMetaData',
     outputs: [
       { internalType: 'string', name: 'description', type: 'string' },
       { internalType: 'string', name: 'logoLink', type: 'string' },
@@ -287,8 +293,8 @@ export const tokenFactoryERC20Abi = [
           { internalType: 'string', name: 'discordLink', type: 'string' },
           { internalType: 'string', name: 'websiteLink', type: 'string' },
         ],
-        internalType: 'struct TokenInfo',
-        name: 'tokenInfoUpdate',
+        internalType: 'struct TokenMetadata',
+        name: 'tokenMetaData_',
         type: 'tuple',
       },
     ],

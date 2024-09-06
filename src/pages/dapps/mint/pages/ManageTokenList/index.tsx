@@ -27,7 +27,8 @@ function ManageTokenList() {
   const history = useNavigate();
   const { tokenFactoryManagerAddress } = contractConfig || {};
   const [total, setTotal] = useState(0);
-  const [tokenFactoryManagerContract, setTokenManageMentContract] = useState<ethers.Contract>();
+  const [tokenFactoryManagerContract, setTokenManageMentContract] =
+    useState<ethers.Contract>();
 
   // const getTokenList = async (nu: number, value?: string, key?: string) => {
   //   const token = Cookies.get('token');
@@ -61,7 +62,6 @@ function ManageTokenList() {
   //   }
   // };
 
-
   const initData = async () => {
     setLoading(true);
     try {
@@ -78,22 +78,20 @@ function ManageTokenList() {
       setTokenManageMentContract(tokenFactoryManagerContract);
       await getTokenList(tokenFactoryManagerContract, total);
       setLoading(false);
-    } catch(e) {
+    } catch (e) {
       setLoading(false);
     }
-
-  }
+  };
 
   const getTokenList = async (tokenFactoryManagerContract, total) => {
-    
     try {
       const address = await signer.getAddress();
-      let start = 5 * (page - 1)
-      let end = 5 * page
+      let start = 5 * (page - 1);
+      let end = 5 * page;
       if (end > total) {
-        end = total
+        end = total;
       }
-      console.log(start, end, total)
+      console.log(start, end, total);
       const [tokenListsAddress, tokenListsType] =
         await tokenFactoryManagerContract.getTokens(address, 0, total);
 
@@ -111,7 +109,7 @@ function ManageTokenList() {
           telegramLink,
           discordLink,
           websiteLink,
-        } = await tokenContract.tokenInfo();
+        } = await tokenContract.tokenMetaData();
         const name = await tokenContract.name();
         const totalSupply = await tokenContract.totalSupply();
         const symbol = await tokenContract.symbol();
@@ -127,11 +125,11 @@ function ManageTokenList() {
           symbol,
           totalSupply: totalSupply.toString(),
         };
-        return tokenItemDataFormat
+        return tokenItemDataFormat;
       });
       const tokenDataList = await Promise.all(promiseList);
 
-      setData([...data,...tokenDataList]);
+      setData([...data, ...tokenDataList]);
     } catch (e) {
       console.error(e);
     }
@@ -157,13 +155,13 @@ function ManageTokenList() {
 
   useEffect(() => {
     if (page === 1) {
-      initData()
+      initData();
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (page !== 1) {
-      console.log(page)
+      console.log(page);
       getTokenList(tokenFactoryManagerContract, total);
     }
   }, [page]);
@@ -219,10 +217,7 @@ function ManageTokenList() {
           ]}
         /> */}
       </div>
-      <div
-        className="mint-scroll scroll"
-        id="launchTokenList"
-      >
+      <div className="mint-scroll scroll" id="launchTokenList">
         {!loading ? (
           <InfiniteScrollPage
             data={data}

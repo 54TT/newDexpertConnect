@@ -14,7 +14,9 @@ function PairInfo({ data, showArrow = false, }: { data: PairInfoPropsType, showA
         {/* <img style={{zIndex:'10'}} src={token1.logo} alt="" /> */}
       </div>
       <div className="dis" style={{marginLeft:'16px'}}>
-        <span>{token0.symbol}</span> <span>/</span> <span>{token1.symbol}</span>
+        <span>{token0.symbol}</span>
+        <span style={{letterSpacing:'4px'}}>/</span>
+        <span>{token1.symbol}</span>
       </div>
 
       {showArrow ? (

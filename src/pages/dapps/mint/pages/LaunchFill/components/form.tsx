@@ -33,6 +33,34 @@ export default function form({ form, formData, onFinishForm, update = false }) {
     form.setFieldValue('logoLink', logoLink);
   };
 
+  const WebSiteInput = (props) => (
+    <div className="launc-social-media">
+      <img src="/website-launch.svg" alt="" />
+      <Input placeholder={'Website'} autoComplete={'off'} {...props} />
+    </div>
+  );
+
+  const TWitterInput = (props) => (
+    <div className="launc-social-media">
+      <img src="/twitter.svg" alt="" />
+      <Input placeholder={'Twitter'} autoComplete={'off'} {...props} />
+    </div>
+  );
+
+  const TgInput = (props) => (
+    <div className="launc-social-media">
+      <img src="/telegram.svg" alt="" />
+      <Input placeholder={'Telegram'} autoComplete={'off'} {...props} />
+    </div>
+  );
+
+  const DiscordInput = (props) => (
+    <div className="launc-social-media">
+      <img src="/discord-launch.svg" alt="" />
+      <Input placeholder={'Discord'} autoComplete={'off'} {...props} />
+    </div>
+  );
+
   return (
     <>
       <div
@@ -104,28 +132,16 @@ export default function form({ form, formData, onFinishForm, update = false }) {
           </Form.Item>
           <span className="launch-form-item-label">5.社交媒体</span>
           <Form.Item name="websiteLink">
-            <div className="launc-social-media">
-              <img src="/website-launch.svg" alt="" />
-              <Input placeholder={'Website'} autoComplete={'off'} />
-            </div>
+            <WebSiteInput />
           </Form.Item>
           <Form.Item name="twitterLink">
-            <div className="launc-social-media">
-              <img src="/twitter.svg" alt="" />
-              <Input placeholder={'Twitter'} autoComplete={'off'} />
-            </div>
+            <TWitterInput />
           </Form.Item>
           <Form.Item name="telegramLink">
-            <div className="launc-social-media">
-              <img src="/telegram.svg" alt="" />
-              <Input placeholder={'Telegram'} autoComplete={'off'} />
-            </div>
+            <TgInput />
           </Form.Item>
           <Form.Item name="discordLink">
-            <div className="launc-social-media">
-              <img src="/discord-launch.svg" alt="" />
-              <Input placeholder={'Discord'} autoComplete={'off'} />
-            </div>
+            <DiscordInput />
           </Form.Item>
           <span className="launch-form-item-label">6.介绍</span>
           <Form.Item name="description">

@@ -33,14 +33,16 @@ export interface FormDataType {
 import { MintContext } from '../../index';
 import { useForm } from 'antd/es/form/Form';
 import { BigNumber } from 'ethers';
-function LaunchForm({ formData, setFormData }) {
+function LaunchForm() {
   const { t } = useTranslation();
   const history = useNavigate();
   const {  chainId, contractConfig, signer } =
     useContext(CountContext);
   const { getAll } = Request();
   const token = Cookies.get('token');
-  const { launchTokenPass }: any = useContext(MintContext);
+  // const { launchTokenPass }: any = useContext(MintContext);
+  const { launchTokenPass, formData, setFormData }: any =
+    useContext(MintContext);
   const [loading, setLoading] = useState(false);
   const [createLoading,setCreateLoading]=useState(false)
   const [result, setResult] = useState('loading');
@@ -114,19 +116,19 @@ function LaunchForm({ formData, setFormData }) {
         tx.hash,
         payTypeMap[launchTokenPass === 'more' ? 0 : 2]
       );
-      const recipent = await tx.wait();
-      console.log('recipent', recipent);
-      if (recipent.status == 1) {
-        setLoading(false);
-        setResult('success');
-        history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=success`)
-        setCreateLoading(false)
-      } else {
-        setLoading(false);
-        setResult('error');
-        history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=error`)
-        setCreateLoading(false)
-      }
+      // const recipent = await tx.wait();
+      // console.log('recipent', recipent);
+      // if (recipent.status == 1) {
+      //   setLoading(false);
+      //   setResult('success');
+      //   history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=success`)
+      //   setCreateLoading(false)
+      // } else {
+      //   setLoading(false);
+      //   setResult('error');
+      //   history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=error`)
+      //   setCreateLoading(false)
+      // }
     } catch (e) {
       console.error(e);
       setResult('error');
