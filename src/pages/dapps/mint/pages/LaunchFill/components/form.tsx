@@ -76,7 +76,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
           wrapperCol={{ span: 24 }}
           labelAlign="right"
         >
-          <span className="launch-form-item-label">1.设置形象</span>
+          <span className="launch-form-item-label">1.{t('mint.Logo')}</span>
           <Form.Item name="logoLink" className="launch-head-icon-item">
             <div className="launch-form-icon" onClick={openIconModal}>
               <img
@@ -92,7 +92,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
               </div>
             </div>
           </Form.Item>
-          <span className="launch-form-item-label">2.代币名称</span>
+          <span className="launch-form-item-label">2.{t('mint.Name')}</span>
 
           <Form.Item
             name="name"
@@ -104,7 +104,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
               <div>{formData.name}</div>
             )}
           </Form.Item>
-          <span className="launch-form-item-label">3.代币符号</span>
+          <span className="launch-form-item-label">3.{t('mint.Symbol')}</span>
           <Form.Item
             name="symbol"
             rules={[{ required: true, message: t('token.input') }]}
@@ -115,7 +115,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
               <div>{formData.symbol}</div>
             )}
           </Form.Item>
-          <span className="launch-form-item-label">4.总供应量</span>
+          <span className="launch-form-item-label">4.{t('mint.Supply')}</span>
           <Form.Item
             name="totalSupply"
             rules={[{ required: true, message: t('token.input') }]}
@@ -130,7 +130,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
               <div>{formData.totalSupply}</div>
             )}
           </Form.Item>
-          <span className="launch-form-item-label">5.社交媒体</span>
+          <span className="launch-form-item-label">5.{t('mint.Media')}</span>
           <Form.Item name="websiteLink">
             <WebSiteInput />
           </Form.Item>
