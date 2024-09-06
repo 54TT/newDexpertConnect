@@ -191,7 +191,7 @@ function ManageTokenList() {
         disabled={false}
         name={'tokenList'}
         className="launch-manage-token-header"
-        title={t('token.me')}
+        title={t('mint.Management')}
       />
       <div className="launch-manage-token-search">
         {/* <Search

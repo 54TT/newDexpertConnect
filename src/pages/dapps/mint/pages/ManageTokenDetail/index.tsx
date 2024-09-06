@@ -163,7 +163,7 @@ function ManageTokenDetail() {
       <ToLaunchHeader />
       <PageHeader
         className="launch-manage-token-header"
-        title={tokenInfo?.symbol || '-'}
+        title={t("mint.Management")}
       />
       {!isLoading ? (
         <InfoList className="manage-token-detail-info" data={tokenInfo} />

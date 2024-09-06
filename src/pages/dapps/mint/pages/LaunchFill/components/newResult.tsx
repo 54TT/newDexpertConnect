@@ -61,7 +61,7 @@ export default function resultBox() {
               history(`/dapps/tokencreation/results/${from}?tx=${tx}&status=fail`)
             }
           }else{
-            NotificationChange('error', 'Failed to get transaction receipt', 'Please check your network connection and try again.');
+            // NotificationChange('error', 'Failed to get transaction receipt', 'Please check your network connection and try again.');
           }
         } catch (error) {
           console.error('Failed to get transaction receipt:', error);
@@ -99,21 +99,21 @@ export default function resultBox() {
   const ResultsMessage = ({ result, fromCom }) => {
     const messages = {
       loading: {
-        launch: 'Deploying...',
+        launch: t('mint.Deploying'),
         lockliquidity: 'Locking Liquidity...',
         burnliquidity: 'Burning Liquidity...',
         opentrade: 'Initial Dex Offering (IDO)...',
         renounce:'Renounce Ownership'
       },
       success: {
-        launch: 'Deployment Successful',
+        launch: t('mint.Successful'),
         lockliquidity: 'Lock Liquidity Successful',
         burnliquidity: 'Burn Liquidity Successful',
         opentrade: 'IDO Launched',
-        renounce:'Ownership Is Renounced'
+        renounce:t('mint.Ownership'),
       },
       error: {
-        launch: 'Deployment Failed',
+        launch: t('mint.Deployment'),
         lockliquidity: 'Lock Liquidity Failed',
         burnliquidity: 'Burn Liquidity Failed',
         opentrade: 'IDO Launched Unsuccessful',
@@ -136,10 +136,10 @@ export default function resultBox() {
       <div className="back">
         <ResultsMessage result={result} fromCom={fromCom} />
         {result==='loading'&&(
-          <p style={{textAlign:'center',color:'#fff',marginBottom:'24px'}}>This may take a few minutes</p>
+          <p style={{textAlign:'center',color:'#fff',marginBottom:'24px'}}>{t("mint.This")}</p>
         )}
         {result==='error'&&(
-          <p style={{textAlign:'center',color:'#fff'}}>Sorry, there was an issue</p>
+          <p style={{textAlign:'center',color:'#fff'}}>{t("mint.Sorry")}</p>
         )}
 
         {/* burn or lock lq */}
@@ -156,7 +156,7 @@ export default function resultBox() {
                 history('/dapps/tokencreation/manageToken');
               }}
             >
-              {result==='success'?'Token Management':'Return to Token Management'}
+              {result==='success'?t('mint.Management'):t('mint.Management')}
             </span>
           </div>
         )}
@@ -176,7 +176,7 @@ export default function resultBox() {
               history('/dapps/tokencreation/manageToken');
             }}
           >
-            Token Management
+            {t("mint.Management")}
           </span>
         </div>
         )}
@@ -193,7 +193,7 @@ export default function resultBox() {
                 history('/dapps/tokencreation');
                 }}
               >
-              Return to Main Page
+              {t("mint.Return")}
             </span>
           </div>
         )}
@@ -212,7 +212,7 @@ export default function resultBox() {
               <img src="/ethLogo.svg" alt="" />
             </p> */}
             {/* <span>{t('token.go')}</span> */}
-            <span>View on Blockchain</span>
+            <span>{t("mint.View")}</span>
           </div>
         }
       </div>

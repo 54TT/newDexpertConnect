@@ -102,7 +102,7 @@ export default function CommonPass() {
           {params?.launchBotCreationCnt &&
             passItem(
               'D Pass',
-              `Balance: ${
+              `${t('mint.Balance')}: ${
                 Number(params?.launchBotCreationCnt)
                   ? params?.launchBotCreationCnt
                   : '0'
@@ -122,7 +122,7 @@ export default function CommonPass() {
               params?.stopTs
             )}
           {passItem(
-            '创建费用:',
+            t("mint.Fee"),
             `${toEthWithDecimal(formData.fees, 18)} ${tokenSymbol}`,
             'more',
             '1',

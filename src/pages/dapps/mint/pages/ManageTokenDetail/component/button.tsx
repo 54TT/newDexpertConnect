@@ -34,7 +34,7 @@ export default function button({
           className="action-button"
           onClick={() => history(`/dapps/tokencreation/edit/${router.address}`)}
         >
-          修改表单
+          {t("mint.Amend")}
         </Button>
       ) : (
         <></>
@@ -52,7 +52,7 @@ export default function button({
           className="action-button"
           onClick={() => setOpenTradeModal(true)}
         >
-          打开交易
+          {t("mint.Open")}
         </Button>
       ) : (
         <></>
@@ -64,7 +64,7 @@ export default function button({
           ghost
           onClick={() => setRemoveOwnShipModal(true)}
         >
-          放弃所有权
+          {t("mint.Renounce")}
         </Button>
       ) : (
         <></>

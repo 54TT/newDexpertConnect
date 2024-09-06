@@ -150,7 +150,7 @@ function LaunchForm() {
         <PageHeader
           className="launch-form-header"
           arrow={true}
-          title={t('token.Creation')}
+          title={step ==='confirm'?t('mint.Information'):t('mint.launch')}
           // desc={step === 'confirm' ? t('Slider.Confirm') : t('token.fill')}
           disabled={step === 'confirm'}
           name={step === 'form' ? '' : change}
@@ -176,7 +176,7 @@ function LaunchForm() {
         <BottomButton
           bottom={true}
           loading={createLoading}
-          text={t('token.create')}
+          text={t('mint.Creation')}
           onClick={() => {
             if (step === 'form') {
               form.submit();

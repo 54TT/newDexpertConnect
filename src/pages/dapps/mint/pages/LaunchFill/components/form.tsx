@@ -36,28 +36,28 @@ export default function form({ form, formData, onFinishForm, update = false }) {
   const WebSiteInput = (props) => (
     <div className="launc-social-media">
       <img src="/website-launch.svg" alt="" />
-      <Input placeholder={'Website'} autoComplete={'off'} {...props} />
+      <Input placeholder={t('mint.Web')} autoComplete={'off'} {...props} />
     </div>
   );
 
   const TWitterInput = (props) => (
     <div className="launc-social-media">
       <img src="/twitter.svg" alt="" />
-      <Input placeholder={'Twitter'} autoComplete={'off'} {...props} />
+      <Input placeholder={t('mint.x')} autoComplete={'off'} {...props} />
     </div>
   );
 
   const TgInput = (props) => (
     <div className="launc-social-media">
       <img src="/telegram.svg" alt="" />
-      <Input placeholder={'Telegram'} autoComplete={'off'} {...props} />
+      <Input placeholder={t('mint.Telegram')} autoComplete={'off'} {...props} />
     </div>
   );
 
   const DiscordInput = (props) => (
     <div className="launc-social-media">
       <img src="/discord-launch.svg" alt="" />
-      <Input placeholder={'Discord'} autoComplete={'off'} {...props} />
+      <Input placeholder={t('mint.Discord')} autoComplete={'off'} {...props} />
     </div>
   );
 
@@ -99,7 +99,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
             rules={[{ required: true, message: t('token.input') }]}
           >
             {!update ? (
-              <Input placeholder={'Name'} autoComplete={'off'} />
+              <Input placeholder={t('mint.Pepecoin')} autoComplete={'off'} />
             ) : (
               <div>{formData.name}</div>
             )}
@@ -110,7 +110,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
             rules={[{ required: true, message: t('token.input') }]}
           >
             {!update ? (
-              <Input placeholder={t('token.symbol')} autoComplete={'off'} />
+              <Input placeholder={t('mint.Example')} autoComplete={'off'} />
             ) : (
               <div>{formData.symbol}</div>
             )}
@@ -122,7 +122,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
           >
             {!update ? (
               <InputNumber
-                placeholder={t('token.max')}
+                placeholder={t('mint.total')}
                 controls={false}
                 stringMode={true}
               />
@@ -146,7 +146,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
           <span className="launch-form-item-label">6.介绍</span>
           <Form.Item name="description">
             <TextArea
-              placeholder={t('token.describe')}
+              placeholder={t('mint.about')}
               autoSize
               style={{ minHeight: '66px' }}
             />
@@ -160,7 +160,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
           <div
             style={{ color: '#fff', textAlign: 'center', marginBottom: '24px' }}
           >
-            设置形象
+            {t("mint.Logo")}
           </div>
         }
         open={logoLinkModal}
@@ -169,7 +169,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
       >
         <div>
           <Input
-            placeholder="你的代币形象的图片URL"
+            placeholder={t("mint.The")}
             value={logoLink}
             onChange={(e) => setLogoLink(e.target.value)}
           ></Input>
@@ -186,10 +186,10 @@ export default function form({ form, formData, onFinishForm, update = false }) {
             ghost
             onClick={() => setLogoLinkModal(false)}
           >
-            取消
+            {t("mint.Cancel")}
           </Button>
           <Button className="action-button" onClick={() => onConfirmIcon()}>
-            确认
+          {t("mint.Confirm")}
           </Button>
         </div>
       </CommonModal>
