@@ -90,7 +90,7 @@ export default function CommonPass() {
     if (Number(chainId) === contractConfig?.chainId) {
       getPass();
     }
-  }, [chainId, contractConfig]);
+  }, [chainId, contractConfig, signer]);
   return (
     <div className="passBox">
       {/* <p className="title">{t('token.Fee')}</p> */}
