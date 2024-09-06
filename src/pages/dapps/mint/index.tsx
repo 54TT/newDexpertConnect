@@ -3,7 +3,6 @@ import { FormDataType } from './pages/LaunchFill/index.tsx';
 import LaunchFill from './pages/LaunchFill/index.tsx';
 import { Route, Routes } from 'react-router-dom';
 import LaunchHome from './pages/LaunchHome/index.tsx';
-
 import { useState, createContext } from 'react';
 import ManageTokenList from './pages/ManageTokenList';
 import ManagePairListAndContract from './pages/ManagePairListAndContract';
@@ -13,7 +12,6 @@ import LockLpList from './pages/LockLpList';
 import Result from './pages/Result';
 import NewResult from './pages/NewResult';
 import ModifyForm from './pages/ModifyForm/index.tsx';
-
 
 export const MintContext = createContext<{
   formData: Partial<FormDataType>;
@@ -51,12 +49,7 @@ function Mint() {
           <div className="mint-content">
             <Routes>
               <Route path="/" element={<LaunchHome />} />
-              <Route
-                path="/fillIn"
-                element={
-                  <LaunchFill  />
-                }
-              />
+              <Route path="/fillIn" element={<LaunchFill />} />
               <Route path="/manageToken" element={<ManageTokenList />} />
               <Route path="/result/:id/:status" element={<Result />} />
               <Route

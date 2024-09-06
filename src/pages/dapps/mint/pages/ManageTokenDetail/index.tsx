@@ -102,6 +102,7 @@ function ManageTokenDetail() {
       }
     } catch (e) {
       setOpenTradeLoading(false);
+      console.error(e);
       NotificationChange('warning', t('Dapps.Insufficient Fund'));
       return null;
     }

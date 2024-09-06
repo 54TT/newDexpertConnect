@@ -169,7 +169,7 @@ function ManageTokenList() {
   const items = (item: any) => {
     return (
       <TokenItem
-        key={item.contractId}
+        key={item.address}
         classname={'display'}
         data={{
           logo: item.logoLink,
