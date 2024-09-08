@@ -301,7 +301,7 @@ export const config: Record<ChainIdList, any> = {
     uniswapV2FactoryAddress: '0x1037E9078df7ab09B9AF78B15D5E7aaD7C1AfDd0',
     uniswapV3FactoryAddress: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
     permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
-    uncxAddress: '0x9d56d4a323cD8de983706DE8847d7525c49CcEa0',
+    uncxAddress: '0x8E5C368667308Da4D2B3763f7bB70afB8ccbF1FF',
     standardTokenAddress01: '0x79B861477012D127a9DE00CA8f0ceD28212aa954',
     tokenFactoryManagerAddress: '0xAB255ECA00D1816f35FED0cdebeA5A4C26C7C311',
     standardTokenFactoryAddress01: '0x6f6f088bA7409E14f60aFA92D3Bee56a7BAd446B',
