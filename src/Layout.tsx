@@ -45,7 +45,7 @@ import {
   useAutoConnect,
   useDisconnect,
   useActiveWalletChain,
-  // useSwitchActiveWalletChain,
+  useSwitchActiveWalletChain,
 } from 'thirdweb/react';
 import Index from './pages/index/index.tsx';
 import Webx2024 from './pages/webx2024/index.tsx';
@@ -87,7 +87,7 @@ function Layout() {
   // 连接的chain
   const activeChain = useActiveWalletChain();
   // 切换链
-  // const useSwitchChain = useSwitchActiveWalletChain();
+  const useSwitchChain = useSwitchActiveWalletChain();
   // 退出连接
   const { disconnect: walletConnectDisconnect } = useDisconnect();
   // 获取 app 钱包的详情
@@ -113,16 +113,15 @@ function Layout() {
     });
     // 监听 chain变更事件
     walletConnect?.subscribe('chainChanged', (chain) => {
-      console.log(chain);
-      // try{
-      // useSwitchChain(chain)
-      // }catch(e){
-      //   console.log('22222222222222222222555555555555')
-      // }
+      // console.log(chain);
+      try {
+        useSwitchChain(chain);
+      } catch (e) {
+        return null;
+      }
     });
   }, [walletConnect]);
 
-  
   const { open: openTonConnect } = useTonConnectModal();
   const [tonWallet, setTonWallet] = useState<any>(null);
   const userFriendlyAddress = useTonAddress();
@@ -150,9 +149,9 @@ function Layout() {
       const noce: any = await getAll({
         method: 'post',
         url: '/api/v1/token',
-        data: { address:'' },
+        data: { address: '' },
         token: '',
-        chainId:'-2',
+        chainId: '-2',
       });
       if (noce?.data?.nonce) {
         tonConnectUI.setConnectRequestParameters({
