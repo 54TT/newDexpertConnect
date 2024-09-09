@@ -9,7 +9,6 @@ import ManagePairListAndContract from './pages/ManagePairListAndContract';
 import ManageTokenDetail from './pages/ManageTokenDetail';
 import ManagePairDetail from './pages/ManagePairDetail';
 import LockLpList from './pages/LockLpList';
-import Result from './pages/Result';
 import NewResult from './pages/NewResult';
 import ModifyForm from './pages/ModifyForm/index.tsx';
 
@@ -50,7 +49,6 @@ function Mint() {
               <Route path="/" element={<LaunchHome />} />
               <Route path="/fillIn" element={<LaunchFill />} />
               <Route path="/manageToken" element={<ManageTokenList />} />
-              <Route path="/result/:id/:status" element={<Result />} />
               <Route
                 path="/managePair/:id/:address/:name"
                 element={<ManagePairListAndContract />}
@@ -66,7 +64,7 @@ function Mint() {
               <Route path="/lockLpList/:address" element={<LockLpList />} />
               <Route path="/edit/:address" element={<ModifyForm />} />
               {/* 签名后跳转的result页面，需要带tx */}
-              <Route path="/results/:from" element={<NewResult />} />
+              <Route path="/results/:from/:tx" element={<NewResult />} />
             </Routes>
           </div>
         </MintContext.Provider>

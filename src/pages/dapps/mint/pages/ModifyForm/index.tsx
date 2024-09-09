@@ -2,15 +2,13 @@ import { useTokenInfo } from '@/hook/useTokenInfo';
 import { CountContext } from '@/Layout';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import EditForm from '../LaunchFill/components/form';
 import { useForm } from 'antd/es/form/Form';
 import PageHeader from '../../component/PageHeader';
-
 import './index.less';
 // import { Button } from 'antd';
 import BottomButton from '../../component/BottomButton';
-import NotificationChange from '@/components/message';
 import Loading from '@/components/allLoad/loading';
 import Pass from '../LaunchFill/components/pass';
 import { MintContext } from '../..';
@@ -18,12 +16,12 @@ import { ethers } from 'ethers';
 import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
 
 function ModifyForm() {
-  const {t}=useTranslation();
+  const { t } = useTranslation();
   const history = useNavigate();
   const { address } = useParams();
   const { contractConfig, signer } = useContext(CountContext);
   const [status, setStatus] = useState<'modify' | 'pass'>('modify');
-  const [tokenInfo, tokenContract, reset] = useTokenInfo(address);
+  const [tokenInfo, tokenContract] = useTokenInfo(address);
   const { launchTokenPass, formData } = useContext(MintContext);
   const [form] = useForm();
   const [editLoading, setEditLoading] = useState(false);
@@ -42,11 +40,6 @@ function ModifyForm() {
       StandardTokenFactoryAddress01Abi,
       signer
     );
-    /*     launchTokenPass === 'more' ? level : 0,
-    metadata,
-    {
-      value: launchTokenPass === 'more' ? fees : 0,
-    } */
     try {
       console.log(updateData, fees, launchTokenPass);
       const tx = await tokenFactory.updateTokenMetaData(
@@ -58,18 +51,7 @@ function ModifyForm() {
         }
       );
       console.log(tx);
-      history(
-        `/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`
-      );
-      // const recipent = await tx.wait();
-      // console.log(recipent);
-      // if (recipent.status === 1) {
-      //   console.log(recipent);
-      //   setStatus('modify');
-      //   reset();
-      //   setEditLoading(false);
-      //   NotificationChange('success,', '修改成功');
-      // }
+      history(`/dapps/tokencreation/results/launch/${tx?.hash}`);
     } catch (e) {
       console.error(e);
       setEditLoading(false);
@@ -78,7 +60,10 @@ function ModifyForm() {
 
   return (
     <div className="mint-scroll scroll modify-form">
-      <PageHeader className="launch-manage-token-header" title={t("mint.Smart")} />
+      <PageHeader
+        className="launch-manage-token-header"
+        title={t('mint.Smart')}
+      />
       <div className="modify-form-content">
         <RenderContent
           tokenInfo={tokenInfo}
@@ -103,7 +88,7 @@ const RenderContent = ({
   handleSubmitForm,
   editLoading,
 }) => {
-  const {t}=useTranslation();
+  const { t } = useTranslation();
   if (status === 'modify') {
     return tokenInfo ? (
       <>
@@ -114,7 +99,7 @@ const RenderContent = ({
           update
         />
         <BottomButton
-          text={t("mint.Amend")}
+          text={t('mint.Amend')}
           onClick={async () => {
             const { name, symbol, totalSupply, ...metaData } =
               await form.getFieldsValue();
@@ -132,7 +117,7 @@ const RenderContent = ({
       <div className="modify-form-content-pass">
         <Pass />
         <BottomButton
-          text={t("mint.Amend ")}
+          text={t('mint.Amend ')}
           onClick={handleSubmitForm}
           loading={editLoading}
         />

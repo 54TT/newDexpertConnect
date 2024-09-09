@@ -6,20 +6,29 @@ import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
 import { useNavigate, useParams } from 'react-router-dom';
 import Loading from '@/components/allLoad/loading';
+import { tokenFactoryERC20Abi } from '@abis/tokenFactoryERC20Abi';
 import { CountContext } from '@/Layout';
-import { ethers } from 'ethers';
 import NotificationChange from '@/components/message';
 import CommonModal from '@/components/CommonModal';
 import { useTranslation } from 'react-i18next';
 import ActionButton from './component/button';
-import { useTokenInfo } from '@/hook/useTokenInfo';
 import PairInfo, { PairInfoPropsType } from '@/components/PairInfo';
+import { client } from '@/client';
 import { toEthWithDecimal } from '@utils/convertEthUnit';
-import formatDecimalString from '@utils/formatDecimalString';
+import { useSendTransaction } from 'thirdweb/react';
+import {
+  sendAndConfirmTransaction,
+  prepareContractCall,
+  toWei,
+} from 'thirdweb';
+import Decimal from 'decimal.js';
+import { useReadContract } from 'thirdweb/react';
+import { useActiveAccount, useActiveWalletChain } from 'thirdweb/react';
+import { getContract } from 'thirdweb';
 function ManageTokenDetail() {
   const { t } = useTranslation();
   const router = useParams();
-  const { browser, contractConfig, signer } = useContext(CountContext);
+  const { browser, contractConfig, balanceData } = useContext(CountContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isVerify, setIsVerify] = useState(false);
   const [isOpenTrade, setIsOpenTrade] = useState(false);
@@ -28,48 +37,120 @@ function ManageTokenDetail() {
   const [openTradeModal, setOpenTradeModal] = useState(false);
   const [ethBalance, setEthBalance] = useState('0');
   const [ethAmount, setEthAmount] = useState('0');
-  const [tokenInfo, tokenContract] = useTokenInfo(router.address);
   const [pairAddress, setPairAddress] = useState('');
   const [tokenBalance, setTokenBalance] = useState('0');
   // 按钮正在执行状态
   const [openTradeLoading, setOpenTradeLoading] = useState(false);
   const [removeOwnShipLoading, setRemoveOwnShipLoading] = useState(false);
+  const activeAccount = useActiveAccount();
+  const activeChain = useActiveWalletChain();
   const [removeOwnShipModal, setRemoveOwnShipModal] = useState(false);
   const history = useNavigate();
+  //  发送交易的  状态
+  const [isSendStatus, setSendStatus] = useState('');
+  // 发送交易
+  const {
+    mutate: sendTx,
+    data: transactionResult,
+    error: UUUUU,
+  } = useSendTransaction({
+    payModal: false,
+  });
   useEffect(() => {
-    if (tokenInfo) {
-      initData();
+    if (transactionResult?.transactionHash) {
+      if (isSendStatus === 'opentrad') {
+        history(
+          `/dapps/tokencreation/results/opentrade/${transactionResult?.transactionHash}`
+        );
+      }
+      if (isSendStatus === 'renounceOwnership') {
+        history(
+          `/dapps/tokencreation/results/renounce/${transactionResult?.transactionHash}`
+        );
+      }
     }
-  }, [tokenInfo, signer]);
-
-  const initData = async () => {
-    // @ts-ignore
-    const { isOpenTrade, owner, pair } = tokenInfo;
-
-    const address: string = await signer.getAddress();
-    const ethBalance = await signer.getBalance();
-    console.log(address);
-    console.log(tokenInfo);
-    if (address.toLowerCase() === owner.toLowerCase()) {
-      setIsOwn(true);
-    } else {
-      setIsOwn(false);
+    if (UUUUU) {
+      setOpenTradeLoading(false);
+      NotificationChange('warning', t('Dapps.Insufficient Fund'));
     }
-    const balance = await tokenContract.balanceOf(address);
-    setEthBalance(toEthWithDecimal(ethBalance, contractConfig.decimals));
-    setTokenBalance(toEthWithDecimal(balance, tokenInfo.decimals));
-    setIsOpenTrade(isOpenTrade);
-    setPairAddress(pair);
-    setIsLoading(false);
-  };
+  }, [transactionResult, UUUUU]);
+  // 生成合约
+  const contract = getContract({
+    client,
+    chain: activeChain,
+    address: router?.address,
+    abi: tokenFactoryERC20Abi as any,
+  });
+  // 获取balance
+  const { data: balanceOf, isLoading: isBalanceOf }: any = useReadContract({
+    contract,
+    method: 'balanceOf',
+    params: [activeAccount?.address],
+    
+  });
+  // 获取decimals
+  const { data: decimalsOf, isLoading: isDecimals }: any = useReadContract({
+    contract,
+    method: 'decimals',
+    params: [],
+  });
+  // 获取  istradingOpen
+  const { data: OpenTrading, isLoading: isOpenTrading }: any = useReadContract({
+    contract,
+    method: 'tradingOpen',
+    params: [],
+  });
+  // 获取  isowner
+  const { data: ownerP, isLoading: isOwnerP }: any = useReadContract({
+    contract,
+    method: 'owner',
+    params: [],
+  });
+  // 获取  pair
+  const { data: pairPar, isLoading: isPairPar }: any = useReadContract({
+    contract,
+    method: 'pair',
+    params: [],
+  });
+  // 获取  tokenMetaData
+  const { data: tokenAllData, isLoading: isTokenAllData }: any =
+    useReadContract({
+      contract,
+      method: 'tokenMetaData',
+      params: [],
+    });
 
-  const approve = async (spender, amount) => {
-    const tx = await tokenContract.approve(spender, amount);
-    const recipent = await tx.wait();
-    // 1成功 2失败
-    return recipent.status === 1;
-  };
 
+  useEffect(() => {
+    if (
+      !isPairPar &&
+      !isOwnerP &&
+      !isOpenTrading &&
+      !isBalanceOf &&
+      !isDecimals &&
+      balanceData?.displayValue &&
+      !isTokenAllData
+    ) {
+      if (activeAccount?.address.toLowerCase() === ownerP?.toLowerCase()) {
+        setIsOwn(true);
+      } else {
+        setIsOwn(false);
+      }
+      setIsOpenTrade(OpenTrading);
+      setPairAddress(pairPar);
+      setIsLoading(false);
+      setTokenBalance(toEthWithDecimal(balanceOf, decimalsOf));
+      setEthBalance(balanceData?.displayValue?.slice(0, 6));
+    }
+  }, [
+    isPairPar,
+    isOwnerP,
+    isOpenTrading,
+    isBalanceOf,
+    balanceData,
+    isDecimals,
+    isTokenAllData,
+  ]);
   const openTrade = async () => {
     if (!isOwn) return;
     if (isOpenTrade) return;
@@ -77,56 +158,54 @@ function ManageTokenDetail() {
       return;
     }
     setOpenTradeLoading(true);
-    const walletAddress = await signer.getAddress();
-    // const decimals = await erc20Contract.decimals();
-    const tokenBalance = await tokenContract.balanceOf(walletAddress);
-    const tt = await approve(tokenContract.address, tokenBalance);
+    const ttt = new Decimal(balanceOf?.toString()).div(
+      new Decimal(10).pow(decimalsOf?.toString())
+    );
     try {
-      if (tt) {
-        const tx = await tokenContract.openTrading(
-          contractConfig.uniswapV2RouterAddress,
-          tokenBalance,
-          {
-            value: ethers.utils.parseEther(ethAmount.toString()),
-          }
-        );
-        history(
-          `/dapps/tokencreation/results/opentrade?tx=${tx?.hash}&status=pending`
-        );
-        // const recipent = await tx.wait();
-        // if (recipent.status === 1) {
-        //   await reset();
-        //   setOpenTradeLoading(false);
-        //   setIsOpenTrade(true);
-        //   setOpenTradeModal(false);
-        // }
-        setOpenTradeLoading(false);
+      if (!isBalanceOf && !isDecimals) {
+        // 合约 授权   approve
+        const tx: any = prepareContractCall({
+          contract,
+          method: 'approve',
+          params: [router?.address, toWei(ttt?.toString())],
+        });
+
+        const transactionReceipt = await sendAndConfirmTransaction({
+          account: activeAccount,
+          transaction: tx,
+        });
+        if (transactionReceipt?.status === 'success') {
+          // 合约   opentrad
+          const openTradingTx: any = prepareContractCall({
+            contract,
+            method: 'openTrading',
+            params: [Number(ttt?.toString())],
+            value: toWei(ethAmount.toString()),
+          });
+          setSendStatus('opentrad');
+          await sendTx(openTradingTx);
+        }
       }
     } catch (e) {
       setOpenTradeLoading(false);
-      console.error(e);
       NotificationChange('warning', t('Dapps.Insufficient Fund'));
       return null;
     }
   };
-
   const renounceOwnerShip = async () => {
     if (!isOwn) return;
     setRemoveOwnShipLoading(true);
     setRemoveOwnShipModal(false);
     try {
-      const tx = await tokenContract.renounceOwnership();
-      history(
-        `/dapps/tokencreation/results/renounce?tx=${tx?.hash}&status=pending`
-      );
-      // const recipent = await tx.wait();
-      // if (recipent.status === 1) {
-      //   setIsOwn(false);
-      //   setRemoveOwnShipLoading(false);
-      //   NotificationChange('success', t('token.renounceOwnership'));
-      // } else {
-      //   NotificationChange('error', t('token.renounceOwnershipfailed'));
-      // }
+      // 合约   renounceOwnership
+      const renounceOwnershipTx: any = prepareContractCall({
+        contract,
+        method: 'renounceOwnership',
+        params: [],
+      });
+      setSendStatus('renounceOwnership');
+
+      await sendTx(renounceOwnershipTx);
     } catch (e) {
       setRemoveOwnShipLoading(false);
       NotificationChange('error', t('token.renounceOwnershipfailed'));
@@ -136,8 +215,8 @@ function ManageTokenDetail() {
 
   const pairInfoData: PairInfoPropsType = {
     token0: {
-      logo: tokenInfo?.logoLink,
-      symbol: tokenInfo?.symbol,
+      logo: tokenAllData?.logoLink,
+      symbol: tokenAllData?.symbol,
     },
     token1: {
       logo: contractConfig?.wethLogo,
@@ -150,7 +229,6 @@ function ManageTokenDetail() {
     setIsVerify,
     router,
     isOwn,
-    tokenContract,
     isRemoveLimit,
     setIsRemoveLimit,
     setOpenTradeModal,
@@ -170,7 +248,7 @@ function ManageTokenDetail() {
         title={t('mint.Management')}
       />
       {!isLoading ? (
-        <InfoList className="manage-token-detail-info" data={tokenInfo} />
+        <InfoList className="manage-token-detail-info" data={tokenAllData} />
       ) : (
         <Loading status={'20'} browser={browser} />
       )}
@@ -180,7 +258,7 @@ function ManageTokenDetail() {
           {...buttonParams}
           clickToPair={() =>
             history(
-              `/dapps/tokencreation/pairDetail/${pairAddress}/${tokenInfo.symbol}/${contractConfig.tokenSymbol}`
+              `/dapps/tokencreation/pairDetail/${pairAddress}/${tokenAllData.symbol}/${contractConfig.tokenSymbol}`
             )
           }
         />
@@ -197,14 +275,14 @@ function ManageTokenDetail() {
         <PairInfo data={pairInfoData} />
         <div className="pair-info-token" style={{ marginBottom: '0' }}>
           <span>{pairInfoData.token0.symbol}</span>
-          <span>{formatDecimalString(tokenBalance) || '-'}</span>
+          <span>{tokenBalance || '-'}</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center',margin:'8px auto'}}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <img style={{ width: '28px' }} src="/pair-arrow.svg" alt="" />
         </div>
         <div className="pair-info-token">
           <span>{pairInfoData.token1.symbol}</span>
-          <span>{formatDecimalString(ethAmount) || '-'}</span>
+          <span>{ethAmount || '-'}</span>
         </div>
         <div className="open-trade-input">
           <div
@@ -215,7 +293,7 @@ function ManageTokenDetail() {
               color: 'rgba(139, 139, 139, 1)',
             }}
           >
-            {t("mint.Balance")}: {ethBalance}
+            Balance: {ethBalance}
           </div>
           <InputNumber
             value={ethAmount}
@@ -227,7 +305,7 @@ function ManageTokenDetail() {
                   ghost
                   onClick={() => setEthAmount(ethBalance)}
                 >
-                  {t('mint.MAX')}
+                  Max
                 </Button>
               </div>
             }
@@ -244,14 +322,14 @@ function ManageTokenDetail() {
             ghost
             onClick={() => setOpenTradeModal(false)}
           >
-            {t("mint.Cancel")}
+            Cancel
           </Button>
           <Button
             className="action-button confirm-button"
             loading={openTradeLoading}
             onClick={() => openTrade()}
           >
-            {t("mint.Confirm")}
+            Confirm
           </Button>
         </div>
       </CommonModal>
@@ -263,22 +341,29 @@ function ManageTokenDetail() {
         open={removeOwnShipModal}
         closeIcon={null}
         title={
-          <div style={{ textAlign: 'center', color: 'rgba(234, 110, 110, 1)',fontWeight:'700',fontSize:'20px' }}>
-            {t("mint.Renounce")}
+          <div style={{ textAlign: 'center', color: 'rgba(234, 110, 110, 1)' }}>
+            Remove Ownership
           </div>
         }
       >
-        <p>{t("mint.action")}</p>
-        <div style={{display:'flex',justifyContent:'space-evenly'}}>
+        <p>
+          This action will remove your ownership for the token. This means you
+          will not:
+        </p>
+        <p>●Change the token logo</p>
+        <p>●Change the token's the link of social media</p>
+        <p>●Change the token's description</p>
+        <p>Please remove ownership only after the token data is finalized</p>
+        <div>
           <Button
-            className="action-button cancel-button"
+            className="action-button"
             ghost
             onClick={() => setRemoveOwnShipModal(false)}
           >
-            {t("mint.Cancel")}
+            Cancel
           </Button>
-          <Button className="action-button confirm-button" onClick={() => renounceOwnerShip()}>
-          {t("mint.Confirm")}
+          <Button className="action-button" onClick={() => renounceOwnerShip()}>
+            Confirm
           </Button>
         </div>
       </CommonModal>

@@ -145,11 +145,7 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
               value: fee,
             }
           );
-          history(`/dapps/tokencreation/result/lockliquidity?tx=${tx?.hash}&status=pending`);
-          // const recipent = await tx.wait();
-          // if (recipent.status === 1) {
-          //   history('/dapps/tokencreation/result/' + tx?.hash + '/lock');
-          // }
+          history(`/dapps/tokencreation/results/lockliquidity/${tx?.hash}`);
         } catch (e) {
           console.log(e);
           NotificationChange('warning', t('Dapps.Insufficient Fund'));
@@ -169,12 +165,7 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
     try {
       const data = await uncxContract.withdraw(router?.pair, 0, lockId, amount);
       // 和opentrade走同一个result页面
-      history(`/dapps/tokencreation/result/opentrade?tx=${data?.hash}&status=pending`);
-      // const recipent = await data.wait();
-      // if (recipent.status === 1) {
-      //   setOpenUnLockModal(false);
-      //   history('/dapps/tokencreation/result/' + data?.hash + '/unlock');
-      // }
+      history(`/dapps/tokencreation/results/opentrade/${data?.hash}`);
     } catch (e) {
       NotificationChange('error', 'pair.unlockfail');
     }
@@ -212,9 +203,7 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
         title={t('mint.Lock')}
       >
         <PairInfo data={pairInfo} />
-        <p className="lock-lp-modal-content">
-          {t("mint.Select")}
-        </p>
+        <p className="lock-lp-modal-content">{t('mint.Select')}</p>
         <div className="lock-lp-modal-date">
           {Object.keys(LockDateMap).map((key: any) => {
             return (
@@ -228,9 +217,9 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
           })}
         </div>
         <BottomActionButton
-          okText={t("mint.Confirm")}
+          okText={t('mint.Confirm')}
           loading={lockLoading}
-          cancelText={t("mint.Cancel")}
+          cancelText={t('mint.Cancel')}
           onOk={() => {
             lockLp();
           }}
@@ -238,9 +227,7 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
             setOpenModal(false);
           }}
         />
-        <p className="lock-lp-modal-tips">
-          {t("mint.can")}
-        </p>
+        <p className="lock-lp-modal-tips">{t('mint.can')}</p>
       </CommonModal>
       <CommonModal
         closeIcon={null}
@@ -253,8 +240,8 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
       >
         <PairInfo data={pairInfo} />
         <BottomActionButton
-          okText={t("mint.UnLock Button")}
-          cancelText={t("mint.Cancel")}
+          okText={t('mint.UnLock Button')}
+          cancelText={t('mint.Cancel')}
           onOk={() => {
             withdraw(lockLpData.lockId, lockLpData.lockAmount);
           }}
@@ -273,7 +260,7 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
       >
         <PairInfo data={pairInfo} />
         <div className="lock-lp-modal-content">
-          <p>{t("mint.Maturity")}</p>
+          <p>{t('mint.Maturity')}</p>
           <p style={{ color: 'rgba(139, 139, 139, 1)' }}>
             {' '}
             {lockLpData?.unlockDate
@@ -282,11 +269,11 @@ function LockLpButton({ pairInfo, lockLpData, setLockLpData }) {
                   .format('YYYY-MM-DD HH:mm')
               : '-'}
           </p>
-          <p>{t("mint.UnLock content")}</p>
+          <p>{t('mint.UnLock content')}</p>
         </div>
         <BottomActionButton
           okText=""
-          cancelText={t("mint.Cancel")}
+          cancelText={t('mint.Cancel')}
           onOk={() => {
             setOpenInfoModal(false);
           }}

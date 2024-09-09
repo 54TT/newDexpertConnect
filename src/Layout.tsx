@@ -58,6 +58,7 @@ const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
   () => import('./pages/activity/components/specialDetail.tsx')
 );
+import { useWalletBalance } from "thirdweb/react";
 import { injectedProvider } from 'thirdweb/wallets';
 export const CountContext = createContext(null);
 Decimal.set({ toExpPos: 24, precision: 24 });
@@ -72,8 +73,11 @@ function Layout() {
   const [loginProvider, setloginProvider] = useState<any>(null);
   const [sniperChainId, setSniperChainId] = useState('1');
   const [chainId, setChainId] = useState('1'); // swap 链切换
+  // 监听的  链
   const [allChain, setAllChain] = useState(null);
   const [user, setUserPar] = useState<any>(null);
+    //  连接的账号和监听账号
+    const activeAccount = useActiveAccount();
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
     setContractConfig(newConfig);
@@ -81,13 +85,16 @@ function Layout() {
     //@ts-ignore
     setProvider(rpcProvider);
   };
+  // 获取钱包   eth余额
+  const { data:balanceData } = useWalletBalance({
+    chain:allChain,
+    address:activeAccount?.address,
+    client:newClient,
+  });
   // 连接状态
   const useActiveWalletConnectionStatu = useActiveWalletConnectionStatus();
   // 连接的账号和监听账号
   const walletConnect = useActiveWallet();
-  //  连接的账号和监听账号
-  const activeAccount = useActiveAccount();
-  console.log(activeAccount);
   // 连接的chain
   const activeChain = useActiveWalletChain();
   // 切换链
@@ -439,7 +446,7 @@ function Layout() {
     sniperChainId,
     setSniperChainId,
     login,
-    allChain,
+    allChain,balanceData
   };
   return (
     <ApolloProvider client={clients}>

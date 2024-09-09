@@ -63,7 +63,7 @@ function LaunchForm() {
       setLoading(true);
       setStep('result');
       history(
-        `/dapps/tokencreation/results/launch?tx=${transactionResult?.transactionHash}&status=pending`
+        `/dapps/tokencreation/results/launch/${transactionResult?.transactionHash}`
       );
       sendReportPayType(
         transactionResult?.transactionHash,
