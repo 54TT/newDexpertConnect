@@ -133,31 +133,31 @@ export const chainParams = [
 ];
 export const chainList = [
   { value: 'Ethereum', icon: '/EthereumCoin.svg', chainId: '1', key: '0x1' },
-  {
-    value: 'Arbitrum',
-    icon: '/Arbitrum.svg',
-    disabled: true,
-    key: '0xa4b1',
-    chainId: '42161',
-    hideOnPro: true,
-  },
-  {
-    value: 'BSC',
-    icon: '/BNBChain.svg',
-    disabled: true,
-    key: '0x38',
-    chainId: '56',
-    hideOnPro: true,
-  },
-  {
-    value: 'Optimism',
-    icon: '/Optimism.svg',
-    disabled: true,
-    chainId: '10',
-    key: '0xa',
-    hideOnPro: true,
-  },
-  { value: 'Blast', icon: '/Blast.svg', hide: true, hideOnPro: true },
+  // {
+  //   value: 'Arbitrum',
+  //   icon: '/Arbitrum.svg',
+  //   disabled: true,
+  //   key: '0xa4b1',
+  //   chainId: '42161',
+  //   hideOnPro: true,
+  // },
+  // {
+  //   value: 'BSC',
+  //   icon: '/BNBChain.svg',
+  //   disabled: true,
+  //   key: '0x38',
+  //   chainId: '56',
+  //   hideOnPro: true,
+  // },
+  // {
+  //   value: 'Optimism',
+  //   icon: '/Optimism.svg',
+  //   disabled: true,
+  //   chainId: '10',
+  //   key: '0xa',
+  //   hideOnPro: true,
+  // },
+  // { value: 'Blast', icon: '/Blast.svg', hide: true, hideOnPro: true },
   {
     value: 'Base',
     icon: '/BASE.png',
@@ -187,12 +187,12 @@ export const chainList = [
     chainId: '200810',
     hideOnPro: true,
   },
-  {
-    value: 'Ton',
-    icon: '/ton_symbol.svg',
-    chainId: '-2',
-    disabled: true,
-  },
+  // {
+  //   value: 'Ton',
+  //   icon: '/ton_symbol.svg',
+  //   chainId: '-2',
+  //   disabled: true,
+  // },
   {
     value: 'Sepolia',
     icon: '/unkonwLogo.png',
@@ -222,6 +222,11 @@ export const chainList = [
     value: 'Conflux',
     icon: '/conflux-logo.png',
     chainId: '1030',
+  },
+  {
+    value: 'Neo',
+    icon: '/neo.svg',
+    chainId: '47763',
   },
 ];
 

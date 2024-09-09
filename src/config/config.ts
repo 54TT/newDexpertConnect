@@ -10,7 +10,8 @@ type ChainIdList =
   | '3441006'
   | '169'
   | '71'
-  | '1030';
+  | '1030'
+  | '47763';
 export const config: Record<ChainIdList, any> = {
   '1': {
     rpcUrl:
@@ -597,6 +598,53 @@ export const config: Record<ChainIdList, any> = {
       name: 'ETH',
       symbol: 'ETH',
       logoUrl: '/eth-logo.svg',
+      contractAddress: '0x0000000000000000000000000000000000000000',
+      balance: '0',
+      decimals: '18',
+    },
+    defaultTokenOut: {
+      name: 'USDT',
+      symbol: 'USDT',
+      logoUrl: '/usdt.svg',
+      contractAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      balance: '0',
+      decimals: '6',
+    },
+  },
+  '47763': {
+    rpcUrl: 'https://mainnet-1.rpc.banelabs.org',
+    chainId: 47763,
+    name: 'Neo X',
+    tokenSymbol: 'NEO',
+    verificationURL: 'https://api-testnet.bitlayer.org/scan/api',
+    verificationApiKey: 'QEAE2M96IB94MVPUN7ESQEBNI416F1EWRR',
+    uniswapV2RouterAddress: '0x82b56Dd9c7FD5A977255BA51B96c3D97fa1Af9A9',
+    uniswapV2FactoryAddress: '0x753df473702cB31BB81a93966e658e1AA4f10DD8',
+    uniswapV3FactoryAddress: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
+    standardTokenAddress01: ' 0xa8295c0022edcd69a62e2188215D306103C5E25C',
+    tokenFactoryManagerAddress: '0xAea63C36CC64ab6E068F79C6D88A7bD1eC9e2Fb2',
+    standardTokenFactoryAddress01: '0x5c165587E94d99952C5dD9AeAdc5F87Ecc5Bfb84',
+    permit2Address: '0x000000000022d473030f116ddee9f6b43ac78ba3',
+    uncxAddress: '0xf28E3A654cf976Ce0A0e8D15954f97d784d9367f',
+    universalRouterAddress: '0x45ed48611aaa13b10aa2af1a954ed164e8662d36',
+    wethAddress: '0xdE41591ED1f8ED1484aC2CD8ca0876428de60EfF',
+    wethUsdtPairAddress: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
+    wethDecimal: 18,
+    decimals: 18,
+    usdtAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    usdtDecimal: 6,
+    ethAddress: '0x0000000000000000000000000000000000000000',
+    zeroAddress: '0x0000000000000000000000000000000000000000',
+    uniswapV3FeeAmounts: [500, 3000, 10000],
+    quoterAddress: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
+    scan: 'https://pacific-explorer.manta.network/tx/',
+    tokenScan: 'https://testnet.bscscan.com/token/',
+    scanName: 'Manta scan',
+    launchFee: '0.08',
+    defaultTokenIn: {
+      name: 'NEO',
+      symbol: 'NEO',
+      logoUrl: '/neo.svg',
       contractAddress: '0x0000000000000000000000000000000000000000',
       balance: '0',
       decimals: '18',
