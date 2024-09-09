@@ -20,7 +20,8 @@ function PairInfo({
         <img style={{zIndex:'10'}} src={token1.logo} alt="" />
       </div>
       <div className="dis" style={{ marginLeft: '16px' }}>
-        <span>{token0.symbol}</span> <span>/</span>{' '}
+        <span>{token0.symbol}</span>
+        <span style={{margin:'0 4px'}}>/</span>
         <span>{`W${token1.symbol}`}</span>
       </div>
 

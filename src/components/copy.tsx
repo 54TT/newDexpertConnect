@@ -53,7 +53,8 @@ function Copy({
             marginLeft: '8px',
           }}
           onClick={throttle(
-            function () {
+            function (e) {
+              e.stopPropagation();
               copy(name);
               setIsCopy(true);
             },

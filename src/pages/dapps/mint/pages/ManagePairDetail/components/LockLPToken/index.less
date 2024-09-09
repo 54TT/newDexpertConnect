@@ -1,15 +1,41 @@
 .lock-lp-modal {
+  .action-button{
+    border-radius: 12px;
+  }
+  .cancel-button{
+    color: #fff !important;
+    font-weight: 500;
+  }
+  .confirm-button{
+    color: #2e2e2e !important;
+    font-weight: 700;
+  }
+  .ant-modal-title{
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+  }
+  .ant-modal-body{
+    margin-top: 16px;
+  }
+  .ant-modal-content{
+    border: 2px solid #86f097;
+    box-sizing: border-box;
+    border-radius: 24px;
+  }
   .pair-info-comp {
     height: 60px;
     .dis {
       color: rgba(255, 255, 255, 0.85);
       font-size: 18px;
+      font-weight: 700;
     }
   }
   &-content {
     color: rgba(255, 255, 255, 0.85);
-    font-size: 14px;
-    margin: 12px 0;
+    font-size: 16px;
+    margin: 16px 0;
     text-align: center;
     p {
       color: rgba(255, 255, 255, 0.85);
@@ -19,8 +45,10 @@
   &-tips {
     margin-top: 12px;
     color: rgba(126, 126, 126, 1);
-
+    text-align: center;
     font-size: 14px;
+    width: 80%;
+    margin: 12px auto 0;
   }
   &-date {
     display: flex;
@@ -40,5 +68,10 @@
       background: rgba(134, 240, 151, 1);
       color: #000;
     }
+  }
+}
+.lock-lp-button{
+  .action-button{
+    color: #000 !important;
   }
 }

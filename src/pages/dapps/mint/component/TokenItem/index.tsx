@@ -1,3 +1,4 @@
+import Copy from '@/components/copy';
 import './index.less';
 export type ItemDataType = {
   title?: string | React.ReactNode; // 左上
@@ -24,11 +25,18 @@ function TokenItem({ onClick, data, classname }: TokenItemPropsType) {
       style={{ cursor: 'pointer', justifyContent: 'space-between' }}
     >
       <div className="launch-token-item-info">
-        <img src={logo ? logo : '/default-edit-icon.png'} alt="" />
+        <img
+          className="launch-token-item-info-logo"
+          src={logo ? logo : '/default-edit-icon.png'}
+          alt=""
+        />
         <div className="launch-token-item-detail">
           <div className="launch-token-item-detail-symbol">{symbol}</div>
           <div className="launch-token-item-detail-name">{name}</div>
-          <div className="launch-token-item-detail-address">CA:{address}</div>
+          <div className="launch-token-item-detail-address">
+            <span>CA:{`${address.slice(0, 6)}...${address.slice(-4)}`}</span>
+            <Copy img={'/copy-icon.svg'} name={address} change={true} />
+          </div>
         </div>
       </div>
       <div className="launch-token-item-arrow">

@@ -8,15 +8,17 @@ export default function BottomActionButton({
   loading = false,
 }) {
   return (
-    <div className="bottom-action-button">
+    <div className="bottom-action-button ">
       {cancelText && (
-        <Button className="action-button" ghost onClick={onCancel}>
+        <Button className="action-button cancel-button" ghost onClick={onCancel}>
           {cancelText}
         </Button>
       )}
-      <Button className="action-button" loading={loading} onClick={onOk}>
+      {okText&&(
+        <Button className="action-button confirm-button" loading={loading} onClick={onOk}>
         {okText}
       </Button>
+      )}
     </div>
   );
 }

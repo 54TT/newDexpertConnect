@@ -77,9 +77,11 @@
     border-radius: 12px;
     margin-bottom: 12px;
   }
-  .action-button:hover{
+  .action-button{
+    font-size: 20px;
+    font-weight: 700;
     span{
-      color: rgba(0, 0, 0, 0.88);
+      color: rgba(0, 0, 0, 0.88) !important;
     }
   }
   .pair-info-comp {
@@ -90,11 +92,42 @@
   .flex-start-button {
     justify-content: start;
   }
+  .ant-btn-dangerous{
+    font-size: 20px;
+    font-weight:700;
+  }
 }
 .remove-own-ship-modal {
   p {
     color: rgba(255, 255, 255, 0.75);
     margin: 24px;
+  }
+  .cancel-button{
+    box-sizing: border-box;
+    font-weight: 500;
+    color: #fff !important;
+    &:hover{
+      span{
+        color: #fff !important;
+      }
+    }
+  }
+  .confirm-button{
+    span{
+      font-weight: 700;
+      color: #2e2e2e;
+    }
+    &:hover{
+      span{
+        color: #2e2e2e;
+      }
+    }
+  }
+
+  .ant-modal-content{
+    border:2px solid #86f097;
+    border-radius: 24px;
+    box-sizing: border-box;
   }
   .ant-modal-body {
     >div {
@@ -113,7 +146,7 @@
 .mint-common-modal  {
   .ant-modal-content{
     border-radius: 24px;
-    border: 1px solid #86f097;
+    border: 2px solid #86f097;
     box-sizing: border-box;
     overflow: hidden;
   }
