@@ -21,6 +21,8 @@ export default function index() {
     removeLP: t('token.removeLP'),
     burnLP: t('token.burnLP'),
   };
+
+  
   return (
     <>
       {contractConfig?.scan && router?.id ? (

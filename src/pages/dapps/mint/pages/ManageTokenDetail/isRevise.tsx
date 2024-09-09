@@ -25,11 +25,10 @@ import Decimal from 'decimal.js';
 import { useReadContract } from 'thirdweb/react';
 import { useActiveAccount, useActiveWalletChain } from 'thirdweb/react';
 import { getContract } from 'thirdweb';
-
 function ManageTokenDetail() {
   const { t } = useTranslation();
   const router = useParams();
-  const { browser, contractConfig, signer } = useContext(CountContext);
+  const { browser, contractConfig, signer ,} = useContext(CountContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isVerify, setIsVerify] = useState(false);
   const [isOpenTrade, setIsOpenTrade] = useState(false);
@@ -61,12 +60,16 @@ function ManageTokenDetail() {
     method: 'balanceOf',
     params: [activeAccount?.address],
   });
+
   // 获取decimals
   const { data: decimalsOf, isLoading: isDecimals } = useReadContract({
     contract,
     method: 'decimals',
     params: [],
   });
+
+
+
   useEffect(() => {
     if (tokenInfo) {
       initData();
@@ -76,7 +79,6 @@ function ManageTokenDetail() {
   const initData = async () => {
     // @ts-ignore
     const { isOpenTrade, owner, pair } = tokenInfo;
-
     const address: string = await signer.getAddress();
     const ethBalance = await signer.getBalance();
     console.log(address);

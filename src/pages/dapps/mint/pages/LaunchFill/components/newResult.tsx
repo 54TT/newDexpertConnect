@@ -2,47 +2,59 @@ import { useEffect, useContext, useState } from 'react';
 import Back from '../../../component/Background';
 import './index.less';
 import { CountContext } from '@/Layout';
+import { useWaitForReceipt } from 'thirdweb/react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { client } from '@/client';
+
 export default function resultBox() {
   const history = useNavigate();
   const { t } = useTranslation();
   const { from } = useParams();
   const searchParams = new URLSearchParams(window.location.search);
   const location = useLocation();
-  const { chainId, contractConfig, provider } = useContext(CountContext);
-
+  const { chainId, contractConfig, provider, allChain } =
+    useContext(CountContext);
   const [tx, setTx] = useState('');
-
   const [loading] = useState(false);
   const [result, setResult] = useState('loading');
   const [fromCom, setFromCom] = useState(from);
-  // const [receipt,setReceipt]=useState(null);
+  const { data: receipt, isLoading,error:isError } = useWaitForReceipt({
+    client,
+    chain: allChain,
+    transactionHash: searchParams.get('tx') as any,
+  });
+  console.log(isLoading);
+  console.log(receipt);
+useEffect(()=>{
+// 判断是否成功
+  if(!isLoading&&receipt){
+  }
+  //   判断是否失败
+  if(isError){
+
+  }
+},[isLoading,receipt,isError])
+
+
+
   // 从URL拿信息
   const getResultInfo = async () => {
-    console.log('getResultInfo');
     setFromCom(from);
     const tx = searchParams.get('tx');
     const status = searchParams.get('status');
-    console.log('from', from, ' ', status);
-    // console.log('tx',tx);
     if (tx && status === 'pending') {
-      console.log('get recipent');
       setTx(tx);
       setResult('loading');
     }
   };
+
   // 获取交易状态
   useEffect(() => {
-    console.log('getResultInfo');
     setFromCom(from);
-    console.log('from', from, ' ');
-    console.log('tx', tx);
     const status = searchParams.get('status');
     if (tx && status === 'pending') {
-      console.log('get receipt');
       setTx(tx);
-      console.log(tx);
       const checkReceipt = async () => {
         try {
           const receipt = await provider.getTransactionReceipt(tx);
@@ -67,7 +79,6 @@ export default function resultBox() {
           console.error('Failed to get transaction receipt:', error);
         }
       };
-
       const intervalId = setInterval(checkReceipt, 5000); // 每5秒检查一次
       return () => clearInterval(intervalId); // 清除定时器
     }
@@ -75,7 +86,6 @@ export default function resultBox() {
   // 当URL发生变化时，更新状态
   useEffect(() => {
     const status = searchParams.get('status');
-    console.log('status ', status);
     if (status === 'success') {
       setResult('success');
     } else if (status === 'fail') {
@@ -84,17 +94,11 @@ export default function resultBox() {
       setResult('loading');
     }
   }, [location]);
-
-  useEffect(() => {
-    console.log('result', result);
-  }, [result]);
-
   useEffect(() => {
     if (loading && contractConfig?.chainId === Number(chainId)) {
       // launchTokenByFactory();
     }
   }, [loading, contractConfig, chainId]);
-
   // 标题
   const ResultsMessage = ({ result, fromCom }) => {
     const messages = {
@@ -120,11 +124,9 @@ export default function resultBox() {
         renounce: 'Renounce Ownership',
       },
     };
-
     const message = messages[result]?.[fromCom] || 'Unknown Status';
     return <p className="back-title">{message}</p>;
   };
-
   useEffect(() => {
     getResultInfo();
   }, [tx]);

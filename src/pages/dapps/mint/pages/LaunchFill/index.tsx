@@ -1,5 +1,5 @@
 import './index.less';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import PageHeader from '../../component/PageHeader';
 import BottomButton from '../../component/BottomButton';
 import FormD from './components/form';
@@ -7,11 +7,13 @@ import Pass from './components/pass';
 // import Result from './components/result';
 import Confirm from './components/confirm';
 import { useNavigate } from 'react-router-dom';
+import { prepareContractCall } from 'thirdweb';
 import { useTranslation } from 'react-i18next';
 import { CountContext } from '@/Layout';
-import { ethers } from 'ethers';
 import Cookies from 'js-cookie';
 import Request from '@/components/axios';
+import { client } from '@/client';
+import { getContract } from 'thirdweb';
 import { reportPayType } from '@/api';
 import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
 export interface FormDataType {
@@ -30,22 +32,58 @@ export interface FormDataType {
   fees: BigNumber;
   level: string;
 }
+import { useSendTransaction } from 'thirdweb/react';
 import { MintContext } from '../../index';
 import { useForm } from 'antd/es/form/Form';
 import { BigNumber } from 'ethers';
 function LaunchForm() {
   const { t } = useTranslation();
   const history = useNavigate();
-  const { chainId, contractConfig, signer } = useContext(CountContext);
+  const { chainId, contractConfig, allChain } = useContext(CountContext);
   const { getAll } = Request();
   const token = Cookies.get('token');
-  // const { launchTokenPass }: any = useContext(MintContext);
   const { launchTokenPass, formData, setFormData }: any =
     useContext(MintContext);
+    console.log(launchTokenPass)
   const [, setLoading] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [, setResult] = useState('loading');
-  const [, setTx] = useState('');
+  const {
+    mutate: sendTx,
+    data: transactionResult,
+    error: UUUUU,
+  } = useSendTransaction({
+    payModal: false,
+  });
+
+
+
+  useEffect(() => {
+    if (transactionResult?.transactionHash) {
+      setLoading(true);
+      setStep('result');
+      history(
+        `/dapps/tokencreation/results/launch?tx=${transactionResult?.transactionHash}&status=pending`
+      );
+      sendReportPayType(
+        transactionResult?.transactionHash,
+        payTypeMap[launchTokenPass === 'more' ? 0 :launchTokenPass === 'gloden' ?1: 2]  
+      );
+    }
+    if (UUUUU) {
+      setResult('error');
+      setLoading(false);
+      setCreateLoading(false);
+    }
+  }, [transactionResult, UUUUU]);
+
+  // later
+  const contract = getContract({
+    client,
+    chain: allChain,
+    address: contractConfig?.standardTokenFactoryAddress01,
+    abi: StandardTokenFactoryAddress01Abi as any,
+  });
   const [form] = useForm();
   // form-----填写表单    pass-----选择pass卡  confirm---创建token确认页面  result---loading和结果页面
   const [step, setStep] = useState('form');
@@ -83,55 +121,20 @@ function LaunchForm() {
   // 使用工厂函数部署token
   const launchTokenByFactory = async () => {
     try {
-      const { standardTokenFactoryAddress01 } = contractConfig;
-      const tokenFactory01 = new ethers.Contract(
-        standardTokenFactoryAddress01,
-        StandardTokenFactoryAddress01Abi,
-        signer
-      );
-      console.log(1);
-
       const { totalSupply, fees, level, ...props } = formData;
       const metadata = {
         totalSupply: BigNumber.from(totalSupply),
         ...props,
       };
-      console.log(2);
-      const tx = await tokenFactory01.create(
-        launchTokenPass === 'more' ? level : 0,
-        metadata,
-        {
-          value: launchTokenPass === 'more' ? fees : 0,
-        }
-      );
-      console.log(tx);
-
-      setLoading(true);
-      console.log('tx hash', tx?.hash);
-      setStep('result');
-      history(
-        `/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`
-      );
-      setTx(tx?.hash);
-      sendReportPayType(
-        tx.hash,
-        payTypeMap[launchTokenPass === 'more' ? 0 : 2]
-      );
-      // const recipent = await tx.wait();
-      // console.log('recipent', recipent);
-      // if (recipent.status == 1) {
-      //   setLoading(false);
-      //   setResult('success');
-      //   history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=success`)
-      //   setCreateLoading(false)
-      // } else {
-      //   setLoading(false);
-      //   setResult('error');
-      //   history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=error`)
-      //   setCreateLoading(false)
-      // }
+      // 合约 授权   approve
+      const txsss: any = prepareContractCall({
+        contract,
+        method: 'create',
+        params: [launchTokenPass === 'more' ? level : 0, metadata],
+        value: launchTokenPass === 'more' ? fees : 0,
+      });
+      await sendTx(txsss);
     } catch (e) {
-      console.error(e);
       setResult('error');
       setLoading(false);
       setCreateLoading(false);
@@ -145,7 +148,6 @@ function LaunchForm() {
       setStep('pass');
     }
   };
-  console.log(step)
   return (
     <div className="launchAll">
       {step !== 'result' && (
@@ -163,14 +165,6 @@ function LaunchForm() {
       ) : step === 'confirm' ? (
         <Confirm />
       ) : (
-        // step === 'result' ? (
-        //   <Result
-        //     loading={loading}
-        //     result={result}
-        //     setResult={setResult}
-        //     setLoading={setLoading}
-        //   />
-        // ) :
         <FormD form={form} formData={formData} onFinishForm={onFinishForm} />
       )}
       {step !== 'result' && (
@@ -186,9 +180,6 @@ function LaunchForm() {
                 setStep('confirm');
               }
             } else {
-              // step===confirm
-              // setLoading(true);
-              // setStep('result');
               launchTokenByFactory();
               setCreateLoading(true);
               setResult('loading');

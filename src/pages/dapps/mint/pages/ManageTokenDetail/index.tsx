@@ -33,10 +33,8 @@ function ManageTokenDetail() {
   // 按钮正在执行状态
   const [openTradeLoading, setOpenTradeLoading] = useState(false);
   const [removeOwnShipLoading, setRemoveOwnShipLoading] = useState(false);
-
   const [removeOwnShipModal, setRemoveOwnShipModal] = useState(false);
   const history = useNavigate();
-
   useEffect(() => {
     if (tokenInfo) {
       initData();

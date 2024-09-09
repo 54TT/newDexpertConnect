@@ -30,7 +30,7 @@ export const initFormData: Partial<FormDataType> = {
   discordLink: '',
 };
 function Mint() {
-  const [launchTokenPass, setLaunchTokenPass] = useState('more');
+  const [launchTokenPass, setLaunchTokenPass] = useState<string>('more');
   const [formData, setFormData] = useState<Partial<FormDataType>>(initFormData);
   const minContextValue: {
     formData: Partial<FormDataType>;
@@ -41,7 +41,6 @@ function Mint() {
     setLaunchTokenPass,
     setFormData,
   };
-
   return (
     <div className="dis mint" style={{ justifyContent: 'center' }}>
       <div className="mint-box">

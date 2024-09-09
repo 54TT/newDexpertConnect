@@ -2,7 +2,6 @@ import './index.less';
 // import { useTranslation } from 'react-i18next';
 // import BottomButton from '../../component/BottomButton';
 // import ToLaunchHeader from '../../component/ToLaunchHeader';
-
 import { useParams } from 'react-router-dom';
 import { useContext } from 'react';
 import Loading from '@/components/allLoad/loading';
@@ -14,7 +13,6 @@ export default function index() {
   // const history = useNavigate();
   const router = useParams();
   const { contractConfig, browser } = useContext(CountContext);
-
   return (
     <>
       {contractConfig?.scan && router?.id ? (

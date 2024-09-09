@@ -45,6 +45,7 @@ import {
   useAutoConnect,
   useDisconnect,
   useActiveWalletChain,
+  useActiveAccount,
   useSwitchActiveWalletChain,
 } from 'thirdweb/react';
 import Index from './pages/index/index.tsx';
@@ -71,6 +72,7 @@ function Layout() {
   const [loginProvider, setloginProvider] = useState<any>(null);
   const [sniperChainId, setSniperChainId] = useState('1');
   const [chainId, setChainId] = useState('1'); // swap 链切换
+  const [allChain, setAllChain] = useState(null);
   const [user, setUserPar] = useState<any>(null);
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
@@ -83,7 +85,9 @@ function Layout() {
   const useActiveWalletConnectionStatu = useActiveWalletConnectionStatus();
   // 连接的账号和监听账号
   const walletConnect = useActiveWallet();
-  console.log(walletConnect);
+  //  连接的账号和监听账号
+  const activeAccount = useActiveAccount();
+  console.log(activeAccount);
   // 连接的chain
   const activeChain = useActiveWalletChain();
   // 切换链
@@ -97,13 +101,17 @@ function Layout() {
     setloginProvider(metamaskProvider);
     changeConfig(activeChain?.id?.toString());
     setChainId(activeChain?.id?.toString());
+    setAllChain({
+      id: activeChain?.id?.toString(),
+      rpc: 'https://' + activeChain?.id + '.rpc.thirdweb.com',
+    });
   };
   useEffect(() => {
     // 判断  user是否存在，   在连接账号
     if (user?.uid && useActiveWalletConnectionStatu === 'connected') {
       changeAll();
     }
-  }, [user, useActiveWalletConnectionStatu]);
+  }, [user, useActiveWalletConnectionStatu,activeChain]);
   useEffect(() => {
     //  监听账户变更事件
     walletConnect?.subscribe('accountChanged', async (account) => {
@@ -113,7 +121,6 @@ function Layout() {
     });
     // 监听 chain变更事件
     walletConnect?.subscribe('chainChanged', (chain) => {
-      // console.log(chain);
       try {
         useSwitchChain(chain);
       } catch (e) {
@@ -131,7 +138,6 @@ function Layout() {
       tonConnect('login');
     }
   }, [userFriendlyAddress]);
-
   const getSigner = async () => {
     if (loginProvider) {
       const provider = new ethers.providers.Web3Provider(loginProvider);
@@ -141,13 +147,12 @@ function Layout() {
       setSigner(null);
     }
   };
-
   useEffect(() => {
     getSigner();
   }, [loginProvider, chainId]);
   //ton钱包连接
   const tonConnect = async (log?: any) => {
-    if (log) {
+    if (log==='login') {
       const proof = tonWallet?.connectItems?.tonProof?.proof;
       const par = {
         payload: proof?.payload,
@@ -158,6 +163,7 @@ function Layout() {
         address: userFriendlyAddress,
         timestamp: proof?.timestamp,
       };
+      console.log(par)
       login(par, 'ton');
     } else {
       //  获取 授权的message
@@ -433,6 +439,7 @@ function Layout() {
     sniperChainId,
     setSniperChainId,
     login,
+    allChain,
   };
   return (
     <ApolloProvider client={clients}>
