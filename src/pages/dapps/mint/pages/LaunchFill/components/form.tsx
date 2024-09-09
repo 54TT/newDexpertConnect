@@ -1,28 +1,71 @@
-import { Form, Input, InputNumber } from 'antd';
+import { Button, Form, Input, InputNumber } from 'antd';
 const { TextArea } = Input;
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-export default function form({ form, formData, onFinishForm }) {
+import './index.less';
+import { useState } from 'react';
+import CommonModal from '@/components/CommonModal';
+export default function form({ form, formData, onFinishForm, update = false }) {
   const { t } = useTranslation();
-  const [showAdv, setShowAdv] = useState(false);
+  const logoLinkValue = Form.useWatch('logoLink', form);
+  const [logoLinkModal, setLogoLinkModal] = useState(false);
+  const [logoLink, setLogoLink] = useState(logoLinkValue);
+  // const [showAdv, setShowAdv] = useState(false);
+  // const item = (name: string, staus?: string) => {
+  //   return (
+  //     <p
+  //       className="itemHint"
+  //       style={{
+  //         marginBottom: staus === 'last' ? '' : '15px',
+  //       }}
+  //     >
+  //       {name}
+  //     </p>
+  //   );
+  // };
 
-  const item = (name: string, staus?: string) => {
-    return (
-      <p
-        className="itemHint"
-        style={{
-          marginBottom: staus === 'last' ? '' : '15px',
-        }}
-      >
-        {name}
-      </p>
-    );
+  const openIconModal = () => {
+    setLogoLinkModal(true);
   };
+
+  const onConfirmIcon = () => {
+    setLogoLinkModal(false);
+    form.setFieldValue('logoLink', logoLink);
+  };
+
+  const WebSiteInput = (props) => (
+    <div className="launc-social-media">
+      <img src="/website-launch.svg" alt="" />
+      <Input placeholder={t('mint.Web')} autoComplete={'off'} {...props} />
+    </div>
+  );
+
+  const TWitterInput = (props) => (
+    <div className="launc-social-media">
+      <img src="/twitter.svg" alt="" />
+      <Input placeholder={t('mint.x')} autoComplete={'off'} {...props} />
+    </div>
+  );
+
+  const TgInput = (props) => (
+    <div className="launc-social-media">
+      <img src="/telegram.svg" alt="" />
+      <Input placeholder={t('mint.Telegram')} autoComplete={'off'} {...props} />
+    </div>
+  );
+
+  const DiscordInput = (props) => (
+    <div className="launc-social-media">
+      <img src="/discord-launch.svg" alt="" />
+      <Input placeholder={t('mint.Discord')} autoComplete={'off'} {...props} />
+    </div>
+  );
+
   return (
     <>
       <div
         className="launch-form mint-scroll scroll"
-        style={{ height: showAdv ? '380px' : '305px', overflowX: 'hidden' }}
+        style={{ height: '80%', overflowX: 'hidden' }}
       >
         <Form
           form={form}
@@ -33,164 +76,125 @@ export default function form({ form, formData, onFinishForm }) {
           wrapperCol={{ span: 24 }}
           labelAlign="right"
         >
+          <span className="launch-form-item-label">1.{t('mint.Logo')}</span>
+          <Form.Item name="logoLink" className="launch-head-icon-item">
+            <div className="launch-form-icon" onClick={openIconModal}>
+              <img
+                src={logoLinkValue ? logoLinkValue : '/default-edit-icon.png'}
+                alt=""
+              />
+              <div className="launch-form-edit">
+                <img
+                  className="launch-form-edit-icon"
+                  src="/editable.png"
+                  alt=""
+                />
+              </div>
+            </div>
+          </Form.Item>
+          <span className="launch-form-item-label">2.{t('mint.Name')}</span>
+
           <Form.Item
             name="name"
-            rules={[
-              { required: true, message: t('token.input') },
-              {
-                pattern: new RegExp('^[A-Za-z][A-Za-z0-9]*$'),
-                message: t('token.nameValidMessage'),
-              },
-            ]}
+            rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input placeholder={t('token.token')} autoComplete={'off'} />
+            {!update ? (
+              <Input placeholder={t('mint.Pepecoin')} autoComplete={'off'} />
+            ) : (
+              <div>{formData.name}</div>
+            )}
           </Form.Item>
+          <span className="launch-form-item-label">3.{t('mint.Symbol')}</span>
           <Form.Item
             name="symbol"
-            rules={[
-              { required: true, message: t('token.input') },
-              {
-                pattern: new RegExp('^[A-Za-z][A-Za-z0-9]*$'),
-                message: t('token.nameValidMessage'),
-              },
-            ]}
+            rules={[{ required: true, message: t('token.input') }]}
           >
-            <Input
-              placeholder={t('token.symbol') + '  ( ' + t('token.first') + ' )'}
-              autoComplete={'off'}
-            />
+            {!update ? (
+              <Input placeholder={t('mint.Example')} autoComplete={'off'} />
+            ) : (
+              <div>{formData.symbol}</div>
+            )}
           </Form.Item>
+          <span className="launch-form-item-label">4.{t('mint.Supply')}</span>
           <Form.Item
             name="totalSupply"
             rules={[{ required: true, message: t('token.input') }]}
           >
-            <InputNumber
-              placeholder={t('token.max')}
-              controls={false}
-              stringMode={true}
-            />
+            {!update ? (
+              <InputNumber
+                placeholder={t('mint.total')}
+                controls={false}
+                stringMode={true}
+              />
+            ) : (
+              <div>{formData.totalSupply}</div>
+            )}
           </Form.Item>
-          <Form.Item
-            name="decimals"
-            rules={[{ required: true, message: t('token.input') }]}
-          >
-            <InputNumber placeholder={t('token.decimals')} controls={false} />
+          <span className="launch-form-item-label">5.{t('mint.Media')}</span>
+          <Form.Item name="websiteLink">
+            <WebSiteInput />
           </Form.Item>
+          <Form.Item name="twitterLink">
+            <TWitterInput />
+          </Form.Item>
+          <Form.Item name="telegramLink">
+            <TgInput />
+          </Form.Item>
+          <Form.Item name="discordLink">
+            <DiscordInput />
+          </Form.Item>
+          <span className="launch-form-item-label">
+            6.{t('mint.Description')}
+          </span>
           <Form.Item name="description">
             <TextArea
-              placeholder={t('token.describe')}
+              placeholder={t('mint.about')}
               autoSize
               style={{ minHeight: '66px' }}
             />
           </Form.Item>
-          {showAdv && (
-            <>
-              <Form.Item name="initialBuyTax">
-                <InputNumber
-                  placeholder={t('token.tax')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.tax'))}
-              <Form.Item name="initialSellTax">
-                <InputNumber
-                  placeholder={t('token.sel')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.sel'))}
-              <Form.Item name="finalBuyTax">
-                <InputNumber
-                  placeholder={t('token.final')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.final'))}
-              <Form.Item name="finalSellTax">
-                <InputNumber
-                  placeholder={t('token.sela')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.sela'))}
-              <Form.Item name="reduceBuyTaxAt">
-                <InputNumber
-                  placeholder={t('token.redu')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.redu'))}
-              <Form.Item name="reduceSellTaxAt">
-                <InputNumber
-                  placeholder={t('token.reduce')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.reduce'))}
-              <Form.Item name="preventSwapBefore">
-                <InputNumber
-                  placeholder={t('token.Before')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.Before'))}
-              <Form.Item name="maxTxAmount">
-                <InputNumber
-                  placeholder={t('token.of')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.of'))}
-              <Form.Item name="maxWalletSize">
-                <InputNumber
-                  placeholder={t('token.size')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.size'))}
-              <Form.Item name="maxTaxSwap">
-                <InputNumber
-                  placeholder={t('token.taxs')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.taxs'))}
-              <Form.Item name="taxSwapThreshold">
-                <InputNumber
-                  placeholder={t('token.swap')}
-                  controls={false}
-                  stringMode={true}
-                />
-              </Form.Item>
-              {item(t('token.swap'), 'last')}
-            </>
-          )}
         </Form>
       </div>
-      <div className="launch-form-fix-bottom">
-        {showAdv ? (
-          <p
-            className="launch-form-show-more"
-            onClick={() => setShowAdv(false)}
+      <CommonModal
+        width={350}
+        className="icon-link-modal"
+        title={
+          <div
+            style={{ color: '#fff', textAlign: 'center', marginBottom: '24px' }}
           >
-            {t('token.hide')}
-          </p>
-        ) : (
-          <p className="launch-form-show-more" onClick={() => setShowAdv(true)}>
-            {t('token.show')}
-          </p>
-        )}
-      </div>
+            {t('mint.Logo')}
+          </div>
+        }
+        open={logoLinkModal}
+        footer={null}
+        closeIcon={null}
+      >
+        <div>
+          <Input
+            placeholder={t('mint.The')}
+            value={logoLink}
+            onChange={(e) => setLogoLink(e.target.value)}
+          ></Input>
+        </div>
+        <div
+          style={{
+            justifyContent: 'space-evenly',
+            display: 'flex',
+            marginTop: '24px',
+          }}
+        >
+          <Button
+            className="action-button"
+            ghost
+            onClick={() => setLogoLinkModal(false)}
+          >
+            {t('mint.Cancel')}
+          </Button>
+          <Button className="action-button" onClick={() => onConfirmIcon()}>
+            {t('mint.Confirm')}
+          </Button>
+        </div>
+      </CommonModal>
     </>
   );
 }

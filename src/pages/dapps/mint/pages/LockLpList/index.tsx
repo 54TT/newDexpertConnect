@@ -3,177 +3,53 @@ import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import { CountContext } from '@/Layout';
 import { useParams } from 'react-router-dom';
-import { ethers } from 'ethers';
-import { UncxAbi } from '@abis/UncxAbi';
-import NotificationChange from '@/components/message';
+// import { ethers } from 'ethers';
+// import { UncxAbi } from '@abis/UncxAbi';
+// import NotificationChange from '@/components/message';
 import dayjs, { Dayjs } from 'dayjs';
-import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
+// import { toEthWithDecimal, toWeiWithDecimal } from '@utils/convertEthUnit';
 import BottomButton from '../../component/BottomButton';
 import CommonModal from '@/components/CommonModal';
-import { DatePicker, Slider } from 'antd';
-import type { SliderSingleProps } from 'antd';
+import { DatePicker } from 'antd';
 import './index.less';
-import getBalanceRpcEther from '@utils/getBalanceRpc';
-import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
-import { zeroAddress } from '@utils/constants';
-import approve from '@utils/approve';
+// import getBalanceRpcEther from '@utils/getBalanceRpc';
+// import { UniswapV2PairAbi } from '@abis/UniswapV2PairAbi';
+// import { zeroAddress } from '@utils/constants';
+// import approve from '@utils/approve';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import Decimal from 'decimal.js';
+// import { useNavigate } from 'react-router-dom';
 import Loading from '@/components/allLoad/loading';
 import Nodata from '@/components/Nodata';
+import BottomActionButton from '@/components/BottomActionButton';
+import InputNumberWithString from '@/components/InputNumberWithString';
 function LockLpList() {
   const { t } = useTranslation();
   const { contractConfig, loginProvider, chainId, browser } =
     useContext(CountContext);
-  const history = useNavigate();
+  // const history = useNavigate();
   const router = useParams();
   // pair展示
-  const [infoData, setInfoData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [infoData] = useState([]);
+  const [isLoading] = useState(false);
   // 锁定流动性弹窗相关参数
   const [openModal, setOpenModal] = useState(false);
-  const [lpTokenBalance, setLpTokenBalance] = useState('0');
+  const [lpTokenBalance] = useState('0');
   const [lockDate, setLockDate] = useState<Dayjs>(null);
   // lock   loading
-  const [lockLoing, setLockLoing] = useState('');
-  const [uncxContract, setUncxContract] = useState<ethers.Contract>();
-  const [slider, setSlider] = useState(0);
-  const getLockList = async () => {
-    const { uncxAddress, wethAddress } = contractConfig;
-    const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-    const signer = await web3Provider.getSigner();
-    const address = await signer.getAddress();
-    const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
-    setUncxContract(uncxContract);
-    const lockNum = await uncxContract.getUserNumLocksForToken(
-      address,
-      router?.address
-    );
-    const lpTokenBalance = await getBalanceRpcEther(
-      web3Provider,
-      router?.address,
-      wethAddress
-    );
-    setLpTokenBalance(lpTokenBalance.toString());
-    const getUncxLockList = async () => {
-      const promiseList = [];
-      for (let i = 0; i <= lockNum - 1; i++) {
-        promiseList.push(
-          uncxContract.getUserLockForTokenAtIndex(address, router?.address, i)
-        );
-      }
-      return Promise.all(promiseList);
-    };
-    const lockList = await getUncxLockList();
-    const data = lockList.map((item) => {
-      const [lockDate, lockAmount, initialAmount, unlockDate, lockId, owner] =
-        item;
-      return {
-        remark: toEthWithDecimal(lockAmount, 18),
-        unlockDate,
-        lockAmount,
-        lockDate,
-        initialAmount,
-        lockId,
-        owner,
-      };
-    });
-    setInfoData(data);
-    setIsLoading(true);
-  };
-  const lockLp = async () => {
-    try {
-      const { uncxAddress } = contractConfig;
-      const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-      const signer = await web3Provider.getSigner();
-      const walletAddress = await signer.getAddress();
-      const pairContract = new ethers.Contract(
-        router?.address,
-        UniswapV2PairAbi,
-        signer
-      );
-      const uncxContract = new ethers.Contract(uncxAddress, UncxAbi, signer);
-      const fee = (await uncxContract.gFees()).ethFee;
-      const decimals = await pairContract.decimals();
-      const lockAmount = toWeiWithDecimal(
-        new Decimal(lpTokenBalance).mul(slider).div(100).toString(),
-        decimals
-      );
-      const unlockDate = lockDate.unix();
-      const isShow = await approve(pairContract, uncxAddress, lockAmount);
-      if (isShow) {
-        try {
-          const tx = await uncxContract.lockLPToken(
-            router?.address,
-            lockAmount,
-            unlockDate,
-            zeroAddress,
-            true,
-            walletAddress,
-            {
-              value: fee,
-            }
-          );
-          const recipent = await tx.wait();
-          if (recipent.status === 1) {
-            history('/dapps/tokencreation/result/' + tx?.hash + '/lock');
-          }
-        } catch (e) {
-          NotificationChange('warning', t('Dapps.Insufficient Fund'));
-          return null;
-        }
-      }
-      getLockList();
-      setLockDate(null);
-      setSlider(0);
-      setLockLoing('');
-    } catch (e) {
-      setLockLoing('');
-    }
-  };
+  const [lockLoading, setLockLoading] = useState('');
+  // const [uncxContract, setUncxContract] = useState<ethers.Contract>();
+  const [lockAmount, setLockAmount] = useState('0');
+  const [locking] = useState(false);
   useEffect(() => {
     if (
       loginProvider &&
       contractConfig?.chainId === Number(chainId) &&
       router?.address
     ) {
-      getLockList();
+      // getLockList();
     }
   }, [chainId, loginProvider, contractConfig, router?.address]);
-  const withdraw = async (index, lockId, amount) => {
-    try {
-      const data = await uncxContract.withdraw(
-        router?.address,
-        index,
-        lockId,
-        amount
-      );
-      const recipent = await data.wait();
-      if (recipent.status === 1) {
-        history('/dapps/tokencreation/result/' + data?.hash + '/unlock');
-        setLockLoing('');
-      }
-    } catch (e) {
-      NotificationChange('error', 'pair.unlockfail');
-      setLockLoing('');
-    }
-  };
 
-  const marks: SliderSingleProps['marks'] = {
-    0: '0%',
-    20: '20%',
-    40: '40%',
-    60: '60%',
-    80: '80%',
-    100: '100%',
-  };
-
-  const changeSlider = (e: number) => {
-    if (!lockLoing) {
-      setSlider(e);
-    }
-  };
   return (
     <div className="locklpBox">
       <ToLaunchHeader />
@@ -182,12 +58,12 @@ function LockLpList() {
         title={t('token.Unon')}
       />
       <div
-        style={{ maxHeight: '330px', overflow: 'overlay', overflowX: 'hidden' }}
+        style={{ height: '80%', overflow: 'overlay', overflowX: 'scroll' }}
         className="mint-scroll"
       >
         {isLoading ? (
           infoData.length > 0 ? (
-            infoData?.map?.((item, index) => (
+            infoData?.map?.((item) => (
               <div className="itemLP" key={item?.lockId?.toString()}>
                 <div className="it item">
                   <p>{t('token.unti')}</p>
@@ -203,7 +79,7 @@ function LockLpList() {
                 </div>
                 <BottomButton
                   text={t('token.Unlock')}
-                  loading={item?.lockId?.toString() === lockLoing}
+                  loading={item?.lockId?.toString() === lockLoading}
                   isBack={dayjs(
                     dayjs.unix(Number(item?.unlockDate?.toString()))
                   ).isAfter(dayjs())}
@@ -213,8 +89,8 @@ function LockLpList() {
                         dayjs.unix(Number(item?.unlockDate?.toString()))
                       ).isAfter(dayjs())
                     ) {
-                      setLockLoing(item?.lockId?.toString());
-                      withdraw(index, item.lockId, item.lockAmount);
+                      setLockLoading(item?.lockId?.toString());
+                      // withdraw(index, item.lockId, item.lockAmount);
                     }
                   }}
                 />
@@ -231,7 +107,7 @@ function LockLpList() {
         text={t('token.LockLP')}
         bottom
         onClick={() => {
-          if (!lockLoing) {
+          if (!lockLoading) {
             setOpenModal(true);
           }
         }}
@@ -240,57 +116,41 @@ function LockLpList() {
         className="mint-common-modal"
         open={openModal}
         footer={null}
-        title=""
+        closeIcon={null}
+        title={
+          <div style={{ textAlign: 'center', color: '#fff' }}>锁定流动性</div>
+        }
         onCancel={() => {
-          if (!lockLoing) {
+          if (!lockLoading) {
             setOpenModal(false);
           }
         }}
       >
         <>
-          <div className="locklp-list-title">{t('token.Lock')}</div>
-          <div className="SliderBox">
-            <Slider
-              className="ampuntSlider"
-              marks={marks}
-              value={slider}
-              styles={{
-                track: { backgroundColor: 'rgb(134,240,151)' },
-                rail: { backgroundColor: 'rgb(67,67,67)' },
-                handle: { backgroundColor: 'transparent' },
+          <div className="locklp-list-title">
+            <span>{'锁定数量'}: </span>
+            <span> {lockAmount || '-'} LP</span>
+          </div>
+          <div>
+            <InputNumberWithString
+              onChange={(v) => {
+                setLockAmount(v);
               }}
-              onChange={changeSlider}
-            />
-            <p>{slider}%</p>
+              value={lockAmount}
+              addonUnit="LP"
+              balance={lpTokenBalance}
+              clickMax={() => {
+                setLockAmount(lpTokenBalance);
+              }}
+            ></InputNumberWithString>
           </div>
-          <div className="butt">
-            {[20, 40, 60, 80, 100].map((item: number) => {
-              return (
-                <p
-                  style={{
-                    border:
-                      slider === item
-                        ? '1px solid rgb(134,240,151)'
-                        : '1px solid white',
-                    color: slider === item ? 'rgb(134,240,151)' : 'white',
-                  }}
-                  onClick={() => {
-                    if (!lockLoing) {
-                      setSlider(item);
-                    }
-                  }}
-                  key={item}
-                >
-                  {item}%
-                </p>
-              );
-            })}
-          </div>
-          <div className="locklp-list-balance">
-            {t('token.Balance')}: {lpTokenBalance}
-          </div>
+          <div className="SliderBox"></div>
+          <div className="locklp-list-balance"></div>
         </>
-        <div className="date">{t('token.unti')}</div>
+        <div className="locklp-list-date">
+          <span>解锁日期 : </span>
+          <span>{lockDate ? lockDate.format('YYYY-MM-DD HH:mm') : ''}</span>
+        </div>
         <DatePicker
           value={lockDate}
           showHour
@@ -299,19 +159,30 @@ function LockLpList() {
           showMinute
           showTime
           onChange={(date: Dayjs) => {
-            if (!lockLoing) {
+            if (!lockLoading) {
               setLockDate(date);
             }
           }}
         />
-        <BottomButton
+        {/* <BottomButton
           text={t('Slider.Confirm')}
-          loading={lockLoing === 'confirm'}
+          loading={lockLoading === 'confirm'}
           onClick={() => {
             if (slider && lockDate && router?.address) {
-              setLockLoing('confirm');
+              setLockLoading('confirm');
               lockLp();
             }
+          }}
+        /> */}
+        <BottomActionButton
+          okText={'确认'}
+          cancelText={'取消'}
+          loading={locking}
+          onOk={() => {
+            // lockLp();
+          }}
+          onCancel={() => {
+            setOpenModal(false);
           }}
         />
       </CommonModal>

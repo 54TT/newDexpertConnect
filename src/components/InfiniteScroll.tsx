@@ -12,11 +12,12 @@ export default function InfiniteScrollPage({
   style,
   show,
   setAddLink,
+  total,
 }: any) {
   return (
     <>
       <InfiniteScroll
-        hasMore={true}
+        hasMore={total > data.length}
         next={next}
         scrollableTarget={scrollableTarget}
         loader={null}

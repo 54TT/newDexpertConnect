@@ -331,6 +331,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   const getAmountDebounce = useCallback(debounce(getAmount, 500), [
     tokenIn,
     tokenOut,
+    advConfig,
     provider,
   ]);
   // 处理approve
@@ -545,6 +546,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
       NotificationChange('error', t('Slider.err'));
       setButtonLoading(false);
       setButtonDescId('1');
+      console.error(e);
       return;
     }
     setButtonLoading(false);

@@ -6,12 +6,7 @@ function ConfirmPage() {
   const { formData } = useContext(MintContext);
   return (
     <div className="mint-confirm">
-      <InfoList
-        data={Object.keys(formData).map((key) => ({
-          label: key,
-          value: formData[key],
-        }))}
-      />
+      <InfoList data={formData} />
     </div>
   );
 }

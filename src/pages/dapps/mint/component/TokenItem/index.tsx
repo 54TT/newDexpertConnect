@@ -14,43 +14,26 @@ interface TokenItemPropsType {
   data: ItemDataType;
   classname?: any;
 }
-import { chainList } from '@utils/judgeStablecoin';
+
 function TokenItem({ onClick, data, classname }: TokenItemPropsType) {
-  const { title, desc, status, contractConfig, tx } = data;
+  const { symbol, name, address, logo } = data;
   return (
     <div
       className={` launch-token-item  ${classname}`}
       onClick={() => onClick?.(data)}
       style={{ cursor: 'pointer', justifyContent: 'space-between' }}
     >
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          {title && (
-            <div className="launch-token-item-title">
-              {title.toString().replace('/', ' / ')}
-            </div>
-          )}
-          {desc && <div className="launch-token-item-desc">{desc}</div>}
+      <div className="launch-token-item-info">
+        <img src={logo ? logo : '/default-edit-icon.png'} alt="" />
+        <div className="launch-token-item-detail">
+          <div className="launch-token-item-detail-symbol">{symbol}</div>
+          <div className="launch-token-item-detail-name">{name}</div>
+          <div className="launch-token-item-detail-address">CA:{address}</div>
         </div>
-        {status && <div className="status">{status}</div>}
       </div>
-      <p>
-        {contractConfig?.chainId && (
-          <img
-            style={{ width: '20px' }}
-            onClick={(e) => {
-              e.stopPropagation();
-              window.open(contractConfig?.scan + tx);
-            }}
-            src={
-              chainList.filter(
-                (i: any) => i.chainId === contractConfig?.chainId?.toString()
-              )?.[0]?.icon
-            }
-            alt=""
-          />
-        )}
-      </p>
+      <div className="launch-token-item-arrow">
+        <img src="/arrow-right.png" alt="" />
+      </div>
     </div>
   );
 }

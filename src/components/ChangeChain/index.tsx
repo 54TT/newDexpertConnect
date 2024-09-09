@@ -19,7 +19,7 @@ function ChangeChain({
 }: ChangeChainPropsType) {
   const { setChainId, isLogin, loginProvider, chainId } =
     useContext(CountContext);
-
+  console.log(chainId);
   async function addChain(chainId, chainData) {
     try {
       await loginProvider.request({
@@ -28,7 +28,7 @@ function ChangeChain({
       });
       console.log('Chain added:', chainId);
     } catch (error) {
-      return null
+      return null;
     }
   }
   const changeWalletChain = async (v: ChooseChainValueType) => {
@@ -66,7 +66,7 @@ function ChangeChain({
           // 尝试添加链
           addChain(chainId, chainData);
         } else {
-          return null
+          return null;
         }
       }
     }

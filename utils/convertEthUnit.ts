@@ -11,7 +11,7 @@ export const weiToEth = (amount: Decimal): number => {
 export const toEthWithDecimal = (
   amount: ethers.BigNumberish,
   decimal: number
-): String => {
+): string => {
   return new Decimal(amount.toString())
     .div(new Decimal(10).pow(decimal))
     .toString();

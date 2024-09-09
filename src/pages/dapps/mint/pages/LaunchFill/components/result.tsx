@@ -1,75 +1,77 @@
 import { useEffect, useContext, useState } from 'react';
 import Back from '../../../component/Background';
 import './index.less';
-import { toWeiWithDecimal } from '@utils/convertEthUnit';
-import { ethers } from 'ethers';
-import Request from '@/components/axios';
-import { MintContext } from '../../../index';
-import Cookies from 'js-cookie';
+// import { ethToWei, toWeiWithDecimal } from '@utils/convertEthUnit';
+// import { BigNumber, ethers } from 'ethers';
+// import Request from '@/components/axios';
+// import { MintContext } from '../../../index';
+// import Cookies from 'js-cookie';
 import { CountContext } from '@/Layout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Load from '@/components/allLoad/load.tsx';
 import { useTranslation } from 'react-i18next';
-import { reportPayType } from '@/api';
-import { injectedProvider } from 'thirdweb/wallets';
-import { useActiveWallet } from 'thirdweb/react';
-
+// import { reportPayType } from '@/api';
+// import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
 export default function resultBox({
   loading,
   result,
   setResult,
   setLoading,
-}: any) {
+}: {
+  loading?: boolean;
+  result?: string;
+  setResult?: any;
+  setLoading?: any;
+}) {
   const history = useNavigate();
   const { t } = useTranslation();
-  const { launchTokenPass, formData }: any = useContext(MintContext);
-  const { loginProvider, chainId, contractConfig } = useContext(CountContext);
-  const { getAll } = Request();
-  const [tx, setTx] = useState('');
-  const token = Cookies.get('token');
-  const getByteCode = async () =>
-    await getAll({
-      method: 'post',
-      url: '/api/v1/launch-bot/contract',
-      data: formData,
-      token,
-      chainId,
-    });
-  const reportDeploy = async (data: {
-    contractId: string;
-    contractAddress: string;
-    deployTx: string;
-  }) => {
-    await getAll({
-      method: 'post',
-      url: '/api/v1/launch-bot/contract/deploy',
-      data,
-      token,
-      chainId,
-    });
-  };
+  // const { launchTokenPass, formData } = useContext(MintContext);
+  const { chainId, contractConfig } = useContext(CountContext);
+  // const { getAll } = Request();
+  const [tx] = useState('');
+  // const token = Cookies.get('token');
+  // const getByteCode = async () =>
+  //   await getAll({
+  //     method: 'post',
+  //     url: '/api/v1/launch-bot/contract',
+  //     data: formData,
+  //     token,
+  //     chainId,
+  //   });
+  // const reportDeploy = async (data: {
+  //   contractId: string;
+  //   contractAddress: string;
+  //   deployTx: string;
+  // }) => {
+  //   await getAll({
+  //     method: 'post',
+  //     url: '/api/v1/launch-bot/contract/deploy',
+  //     data,
+  //     token,
+  //     chainId,
+  //   });
+  // };
 
-  const sendReportPayType = async (tx, payType) => {
-    return reportPayType(getAll, {
-      data: {
-        tx,
-        payType,
-      },
-      options: {
-        token,
-        chainId,
-      },
-    });
-  };
-  // dpass类型
+  // const sendReportPayType = async (tx, payType) => {
+  //   return reportPayType(getAll, {
+  //     data: {
+  //       tx,
+  //       payType,
+  //     },
+  //     options: {
+  //       token,
+  //       chainId,
+  //     },
+  //   });
+  // };
+
+  /*   // dpass类型
   const payTypeMap = {
     0: '0', // pay fee
     1: '4', // glodenPass
     2: '1', // dpass
-  };
-
-  const walletConnect = useActiveWallet();
-
+  }; */
+  /* 
   const deployContract = async () => {
     try {
       // const { data } = await getByteCode();
@@ -122,74 +124,79 @@ export default function resultBox({
       setLoading(false);
       return null;
     }
-  };
-  
-  const newDeployContract = async () => {
-    try {
-      const metamaskProvider:any = injectedProvider(walletConnect?.id);
-      const { decimals, launchFee } = contractConfig;
-      // const ethersProvider = new ethers.providers.Web3Provider(loginProvider);
-      const ethersProvider = new ethers.providers.Web3Provider(
-        metamaskProvider
-      );
-      const data: any = await Promise.all([
-        getByteCode(),
-        ethersProvider.getSigner(),
-      ]);
-      const { bytecode, metadataJson, contractId } = data?.[0]?.data;
-      const abi = JSON.parse(metadataJson).output.abi;
-      const contractFactory = new ethers.ContractFactory(
-        abi,
-        bytecode,
-        data?.[1]
-      );
-
-      // 先默认使用手续费版本
-      // launchTokenPass, setLaunchTokenPass   pass或者收费   launchTokenPass
-      const { deployTransaction, address } = await contractFactory.deploy(
-        launchTokenPass === 'more' ? 0 : 2,
-        {
-          value:
-            launchTokenPass === 'more'
-              ? toWeiWithDecimal(launchFee, decimals)
-              : 0,
-        }
-      );
-
-      sendReportPayType(
-        deployTransaction.hash,
-        payTypeMap[launchTokenPass === 'more' ? 0 : 2]
-      );
-      reportDeploy({
-        contractAddress: address,
-        contractId,
-        deployTx: deployTransaction.hash,
-      });
-      if (deployTransaction?.hash) {
-        const tx = await deployTransaction.wait();
-        if (tx?.transactionHash === deployTransaction?.hash) {
-          setLoading(false);
-          setResult('success');
-        }
-        setTx(deployTransaction?.hash);
-      }
-    } catch (e) {
-      setResult('error');
+  }; */
+  // 从URL拿信息
+  const getResultInfo = async () => {
+    const { from } = useParams();
+    const searchParams = new URLSearchParams(window.location.search);
+    const tx = searchParams.get('tx');
+    const status = searchParams.get('status');
+    console.log(from);
+    console.log(tx);
+    console.log(status);
+    if (status === 'pending') setResult('loding');
+    if (status === 'success') {
       setLoading(false);
-      return null;
+      setResult('success');
+    } else if (status === 'fail') {
+      setLoading(false);
+      setResult('error');
+    } else {
+      setLoading(true);
     }
   };
+  // 使用工厂函数部署token
+  // const launchTokenByFactory = async () => {
+  //   try {
+  //     const { standardTokenFactoryAddress01 } = contractConfig;
+  //     const tokenFactory01 = new ethers.Contract(
+  //       standardTokenFactoryAddress01,
+  //       StandardTokenFactoryAddress01Abi,
+  //       signer
+  //     );
+
+  //     const { totalSupply, fees, level, ...props } = formData;
+  //     const metadata = {
+  //       totalSupply: BigNumber.from(totalSupply),
+  //       ...props,
+  //     };
+
+  //     const tx = await tokenFactory01.create(
+  //       launchTokenPass === 'more' ? level : 0,
+  //       metadata,
+  //       {
+  //         value: launchTokenPass === 'more' ? fees : 0,
+  //       }
+  //     );
+  //     setTx(tx?.hash);
+  //     sendReportPayType(
+  //       tx.hash,
+  //       payTypeMap[launchTokenPass === 'more' ? 0 : 2]
+  //     );
+  //     const recipent = await tx.wait();
+
+  //     if (recipent.status == 1) {
+  //       setLoading(false);
+  //       setResult('success');
+  //     } else {
+  //       setLoading(false);
+  //       setResult('error');
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //     setResult('error');
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
-    // if (loading && contractConfig?.chainId === Number(chainId)) {
-    if (0) {
-      deployContract();
+    if (loading && contractConfig?.chainId === Number(chainId)) {
+      // launchTokenByFactory();
     }
-    if (walletConnect?.id) {
-      newDeployContract();
-    }
-  }, [loading, contractConfig, chainId, walletConnect]);
-
+  }, [loading, contractConfig, chainId]);
+  useEffect(() => {
+    getResultInfo();
+  }, []);
   return (
     <div className="resultBox">
       <div className="back">
@@ -203,20 +210,27 @@ export default function resultBox({
                 : ''}
           {result === 'loading' && <Load />}
         </div>
-        <p
-          onClick={() => {
-            if (result !== 'loading') {
-              history('/dapps/tokencreation');
-            }
-          }}
-          className="backTo"
-          style={{
-            backgroundColor:
-              result === 'loading' ? '#434343' : 'rgb(134,240,151)',
-          }}
-        >
-          {t('token.Back')}
-        </p>
+        {loading ? (
+          <p style={{ textAlign: 'center', color: '#fff' }}>
+            This may take a few minutes
+          </p>
+        ) : (
+          <p
+            onClick={() => {
+              if (result !== 'loading') {
+                history('/dapps/tokencreation/manageToken');
+              }
+            }}
+            className="backTo"
+            style={{
+              backgroundColor:
+                result === 'loading' ? '#434343' : 'rgb(134,240,151)',
+            }}
+          >
+            {/* {t('token.Back')} */}
+            Token Management
+          </p>
+        )}
         <div
           className="goEth"
           onClick={() => {

@@ -3,7 +3,6 @@ import { FormDataType } from './pages/LaunchFill/index.tsx';
 import LaunchFill from './pages/LaunchFill/index.tsx';
 import { Route, Routes } from 'react-router-dom';
 import LaunchHome from './pages/LaunchHome/index.tsx';
-
 import { useState, createContext } from 'react';
 import ManageTokenList from './pages/ManageTokenList';
 import ManagePairListAndContract from './pages/ManagePairListAndContract';
@@ -11,27 +10,32 @@ import ManageTokenDetail from './pages/ManageTokenDetail';
 import ManagePairDetail from './pages/ManagePairDetail';
 import LockLpList from './pages/LockLpList';
 import Result from './pages/Result';
+import NewResult from './pages/NewResult';
+import ModifyForm from './pages/ModifyForm/index.tsx';
 
-export const MintContext = createContext(null);
+export const MintContext = createContext<{
+  formData: Partial<FormDataType>;
+  [x: string]: any;
+}>(null);
 export const initFormData: Partial<FormDataType> = {
-  decimals: '18',
-  preventSwapBefore: '0',
-  maxTxAmount: '20000',
-  maxTaxSwap: '10000',
-  taxSwapThreshold: '0',
-  maxWalletSize: '20000',
-  initialBuyTax: '0',
-  initialSellTax: '0',
-  finalBuyTax: '0',
-  finalSellTax: '0',
-  reduceBuyTaxAt: '0',
-  reduceSellTaxAt: '0',
-  payTokenType: '0',
+  decimals: 18,
+  totalSupply: '',
+  name: '',
+  symbol: '',
+  description: '',
+  logoLink: '',
+  twitterLink: '',
+  telegramLink: '',
+  websiteLink: '',
+  discordLink: '',
 };
 function Mint() {
   const [launchTokenPass, setLaunchTokenPass] = useState('more');
   const [formData, setFormData] = useState<Partial<FormDataType>>(initFormData);
-  const minContextValue = {
+  const minContextValue: {
+    formData: Partial<FormDataType>;
+    [x: string]: any;
+  } = {
     formData,
     launchTokenPass,
     setLaunchTokenPass,
@@ -45,12 +49,7 @@ function Mint() {
           <div className="mint-content">
             <Routes>
               <Route path="/" element={<LaunchHome />} />
-              <Route
-                path="/fillIn"
-                element={
-                  <LaunchFill formData={formData} setFormData={setFormData} />
-                }
-              />
+              <Route path="/fillIn" element={<LaunchFill />} />
               <Route path="/manageToken" element={<ManageTokenList />} />
               <Route path="/result/:id/:status" element={<Result />} />
               <Route
@@ -58,7 +57,7 @@ function Mint() {
                 element={<ManagePairListAndContract />}
               />
               <Route
-                path="/tokenDetail/:address/:id"
+                path="/tokenDetail/:address"
                 element={<ManageTokenDetail />}
               />
               <Route
@@ -66,6 +65,9 @@ function Mint() {
                 element={<ManagePairDetail />}
               />
               <Route path="/lockLpList/:address" element={<LockLpList />} />
+              <Route path="/edit/:address" element={<ModifyForm />} />
+              {/* 签名后跳转的result页面，需要带tx */}
+              <Route path="/results/:from" element={<NewResult />} />
             </Routes>
           </div>
         </MintContext.Provider>

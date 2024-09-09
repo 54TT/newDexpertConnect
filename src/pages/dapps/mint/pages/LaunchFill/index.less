@@ -4,73 +4,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
 
-  .launch-form {
-    position: relative;
-    margin: 0 12px 8px;
-    .itemHint {
-      margin-top: -6px;
-      color: rgba(255, 255, 255, 0.65);
-      margin-left: 18px;
-      font-size: 12px;
-    }
-    &-show-more {
-      color: #86f097;
-      cursor: pointer;
-      margin-bottom: 8px;
-    }
-    &-fix-bottom {
-      position: relative;
-      z-index: 2;
-      margin-left: 12px;
-    }
-    .launch-header-title {
-      white-space: nowrap;
-      font-size: 40px;
-      color: #86f097;
-    }
-
-    .ant-form-item {
-      margin-bottom: 10px;
-      .ant-row {
-        background-color: rgba(94, 94, 94, 0.3);
-        border-radius: 12px;
-        padding: 6px;
-
-        .ant-col {
-          label {
-            color: rgba(255, 255, 255, 0.85);
-          }
-          .ant-form-item-control-input {
-            input,
-            textarea {
-              background-color: transparent;
-              border: none;
-              color: white;
-              box-shadow: none;
-              &::placeholder {
-                color: rgba(255, 255, 255, 0.55);
-              }
-            }
-          }
-          .ant-input-number {
-            width: 100%;
-            background-color: transparent;
-            border: none;
-            box-shadow: none;
-            &.ant-input-number-focused {
-              border: none;
-              box-shadow: none;
-            }
-          }
-        }
-      }
-      &-margin-offset {
-        margin-bottom: 12px !important;
-      }
-    }
-  }
   .launch-form-header {
     .launch-header-title {
       font-size: 28px;
@@ -107,7 +42,7 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 8px;
-        transition:all 0.2s;
+        transition: all 0.2s;
         & > div {
           display: flex;
           align-items: center;
@@ -155,5 +90,165 @@
       font-size: 20px;
       text-align: center;
     }
+  }
+}
+
+.launch-form {
+  position: relative;
+  margin: 0 12px 8px;
+  .itemHint {
+    margin-top: -6px;
+    color: rgba(255, 255, 255, 0.65);
+    margin-left: 18px;
+    font-size: 12px;
+  }
+  &-show-more {
+    color: #86f097;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+  &-fix-bottom {
+    position: relative;
+    z-index: 2;
+    margin-left: 12px;
+  }
+  .launch-header-title {
+    white-space: nowrap;
+    font-size: 40px;
+    color: #86f097;
+  }
+
+  .ant-form-item {
+    margin-bottom: 10px;
+    &.launch-head-icon-item {
+      .ant-form-item-control-input-content {
+        display: flex;
+        justify-content: center;
+      }
+      .ant-form-item-row {
+        background: none;
+      }
+    }
+    .ant-row {
+      background-color: rgba(94, 94, 94, 0.3);
+      border-radius: 12px;
+      padding: 6px;
+
+      .ant-col {
+        label {
+          color: rgba(255, 255, 255, 0.85);
+        }
+        .ant-form-item-control-input {
+          input,
+          textarea {
+            background-color: transparent;
+            border: none;
+            color: white;
+            box-shadow: none;
+            &::placeholder {
+              color: rgba(255, 255, 255, 0.55);
+            }
+          }
+        }
+        .ant-input-number {
+          width: 100%;
+          background-color: transparent;
+          border: none;
+          box-shadow: none;
+          &.ant-input-number-focused {
+            border: none;
+            box-shadow: none;
+          }
+        }
+      }
+    }
+    &-margin-offset {
+      margin-bottom: 12px !important;
+    }
+  }
+  &-item-label {
+    color: rgba(255, 255, 255, 0.85);
+    display: inline-block;
+    margin-bottom: 12px;
+    margin-left: 12px;
+  }
+}
+
+.passBox {
+  width: 85%;
+  margin: 10px auto 0;
+  .showBot {
+    width: 100%;
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    .hint {
+      width: 85%;
+      margin: 0 auto;
+    }
+  }
+  .passItem {
+    & > div {
+      background-color: rgba(94, 94, 94, 0.3);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      justify-content: space-between;
+      padding: 16px 24px;
+    }
+
+    & > .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+      & > div {
+        display: flex;
+        align-items: center;
+        .left {
+          width: 40px;
+          height: 40px;
+          box-sizing: border-box;
+          background-color: red;
+          border-radius: 50%;
+          position: relative;
+          img {
+            position: absolute;
+            width: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-40%, -50%);
+          }
+        }
+        & > p {
+          margin-left: 10px;
+          font-size: 16px;
+          color: white;
+        }
+      }
+      & > p {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.55);
+      }
+    }
+    .more {
+      & > p:first-child {
+        color: white;
+        font-size: 16px;
+      }
+    }
+  }
+  .hint {
+    color: rgba(255, 255, 255, 0.55);
+    text-align: center;
+  }
+
+  .title {
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 20px;
+    text-align: center;
   }
 }

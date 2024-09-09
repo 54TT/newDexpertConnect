@@ -1,121 +1,191 @@
-import { Input, Select } from 'antd';
+// import { Input, Select } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
 import Loading from '@/components/allLoad/loading';
-import Request from '@/components/axios';
-import Cookies from 'js-cookie';
+// import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
 import TokenItem from '../../component/TokenItem';
 import { useNavigate } from 'react-router-dom';
 import InfiniteScrollPage from '@/components/InfiniteScroll';
-const { Search } = Input;
+// const { Search } = Input;
 import { useTranslation } from 'react-i18next';
+import { BigNumber, ethers } from 'ethers';
+import { TokenFactoryManagerAbi } from '@abis/TokenFactoryManagerAbi';
+import { tokenFactoryERC20Abi } from '@abis/tokenFactoryERC20Abi';
 function ManageTokenList() {
   const { t } = useTranslation();
-  const { chainId, browser, contractConfig } = useContext(CountContext);
-  const { getAll } = Request();
+  const { browser, contractConfig, signer } = useContext(CountContext);
+  // const { getAll } = Request();
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [isNext, setIsNext] = useState(false);
-  const [nextLoad, setNextLoad] = useState(false);
-  const [searchPar, setSearchPar] = useState('');
-  const [searName, setSearName] = useState('');
-  const [key, setKey] = useState('0');
+
+  const [loading, setLoading] = useState(true);
+  // const [isNext, setIsNext] = useState(false);
+  const [nextLoad] = useState(false);
   const [page, setPage] = useState(1);
   const history = useNavigate();
-  const getTokenList = async (nu: number, value?: string, key?: string) => {
-    const token = Cookies.get('token');
-    const res = await getAll({
-      method: 'get',
-      url: '/api/v1/launch-bot/contract/list',
-      data: {
-        page: nu,
-        pageSize: 10,
-        search: value || '',
-        key: key || '',
-      },
-      token,
-      chainId,
-    });
-    if (res?.status === 200) {
-      if (nu === 1) {
-        setData(res?.data?.data);
-      } else {
-        const t = data.concat(res?.data?.data);
-        setData([...t]);
-      }
-      if (res?.data?.data?.length != 10) {
-        setIsNext(true);
-      }
-      setLoading(true);
-      setNextLoad(false);
-    } else {
-      setLoading(true);
-      setNextLoad(false);
-    }
-  };
-  const changePage = () => {
-    if (!isNext) {
-      getTokenList(page + 1, searchPar, key);
-      setPage(page + 1);
-      setNextLoad(true);
-    }
-  };
-  useEffect(() => {
-    if (contractConfig?.chainId === Number(chainId)) {
-      getTokenList(1, '', '0');
-      setPage(1);
+  const { tokenFactoryManagerAddress } = contractConfig || {};
+  const [total, setTotal] = useState(0);
+  const [tokenFactoryManagerContract, setTokenManageMentContract] =
+    useState<ethers.Contract>();
+
+  // const getTokenList = async (nu: number, value?: string, key?: string) => {
+  //   const token = Cookies.get('token');
+  //   const res = await getAll({
+  //     method: 'get',
+  //     url: '/api/v1/launch-bot/contract/list',
+  //     data: {
+  //       page: nu,
+  //       pageSize: 10,
+  //       search: value || '',
+  //       key: key || '',
+  //     },
+  //     token,
+  //     chainId,
+  //   });
+  //   if (res?.status === 200) {
+  //     if (nu === 1) {
+  //       setData(res?.data?.data);
+  //     } else {
+  //       const t = data.concat(res?.data?.data);
+  //       setData([...t]);
+  //     }
+  //     if (res?.data?.data?.length != 10) {
+  //       setIsNext(true);
+  //     }
+  //     setLoading(true);
+  //     setNextLoad(false);
+  //   } else {
+  //     setLoading(true);
+  //     setNextLoad(false);
+  //   }
+  // };
+
+  const initData = async () => {
+    setLoading(true);
+    try {
+      const address = await signer.getAddress();
+      const tokenFactoryManagerContract = new ethers.Contract(
+        tokenFactoryManagerAddress,
+        TokenFactoryManagerAbi,
+        signer
+      );
+      const res: BigNumber =
+        await tokenFactoryManagerContract.getTokensCount(address);
+      const total = res.toNumber();
+      setTotal(total);
+      setTokenManageMentContract(tokenFactoryManagerContract);
+      await getTokenList(tokenFactoryManagerContract, total);
       setLoading(false);
-      setKey('0');
-      setSearchPar('');
-      setSearName('');
+    } catch (e) {
+      setLoading(false);
     }
-  }, [chainId, contractConfig]);
+  };
+
+  const getTokenList = async (tokenFactoryManagerContract, total) => {
+    try {
+      const address = await signer.getAddress();
+      let start = 5 * (page - 1);
+      let end = 5 * page;
+      if (end > total) {
+        end = total;
+      }
+      console.log(start, end, total);
+      const [tokenListsAddress] = await tokenFactoryManagerContract.getTokens(
+        address,
+        0,
+        total
+      );
+
+      // 不阻塞获取内容
+      const promiseList = tokenListsAddress.map(async (address) => {
+        const tokenContract = new ethers.Contract(
+          address,
+          tokenFactoryERC20Abi,
+          signer
+        );
+        const {
+          description,
+          logoLink,
+          twitterLink,
+          telegramLink,
+          discordLink,
+          websiteLink,
+        } = await tokenContract.tokenMetaData();
+        const name = await tokenContract.name();
+        const totalSupply = await tokenContract.totalSupply();
+        const symbol = await tokenContract.symbol();
+        const tokenItemDataFormat = {
+          description,
+          logoLink,
+          twitterLink,
+          telegramLink,
+          discordLink,
+          websiteLink,
+          address,
+          name,
+          symbol,
+          totalSupply: totalSupply.toString(),
+        };
+        return tokenItemDataFormat;
+      });
+      const tokenDataList = await Promise.all(promiseList);
+
+      setData([...data, ...tokenDataList]);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  // const changePage = () => {
+  //   if (!isNext) {
+  //     getTokenList(page + 1, searchPar, key);
+  //     setPage(page + 1);
+  //     setNextLoad(true);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (contractConfig?.chainId === Number(chainId)) {
+  //     getTokenList(1, '', '0');
+  //     setPage(1);
+  //     setLoading(false);
+  //     setKey('0');
+  //     setSearchPar('');
+  //     setSearName('');
+  //     getTokenListFromManagement();
+  //   }
+  // }, [chainId, contractConfig]);
+
+  useEffect(() => {
+    if (page === 1) {
+      initData();
+    }
+  }, [signer]);
+
+  useEffect(() => {
+    if (page !== 1) {
+      console.log(page);
+      getTokenList(tokenFactoryManagerContract, total);
+    }
+  }, [page]);
+
   const items = (item: any) => {
     return (
       <TokenItem
-        key={item.contractId}
+        key={item.address}
         classname={'display'}
         data={{
-          title: item.symbol,
-          desc: '(' + item.name + ')',
-          id: item.contractId,
+          logo: item.logoLink,
+          symbol: item.symbol,
+          name: item.name,
           address: item.address,
-          status:
-            item?.isDeploy === '0'
-              ? t('token.Deploying')
-              : item?.isDeploy === '1'
-                ? t('token.Deploy')
-                : t('token.failed'),
-          contractConfig,
-          tx: item?.deployTx,
+          id: item.address,
         }}
-        onClick={({ id, address, title }) =>
-          history(`/dapps/tokencreation/managePair/${id}/${address}/${title}`)
+        onClick={({ address }) =>
+          history(`/dapps/tokencreation/tokenDetail/${address}`)
         }
       />
     );
-  };
-  const handleChange = (value: string) => {
-    setKey(value);
-    getTokenList(1, searchPar, value);
-    setPage(1);
-    setLoading(false);
-  };
-
-  const search = (e: string) => {
-    if (searchPar !== e) {
-      setSearchPar(e);
-      getTokenList(1, e, key);
-      setPage(1);
-      setLoading(false);
-    }
-  };
-
-  const changeName = (e: any) => {
-    setSearName(e.target.value);
   };
   return (
     <div className="launch-manage-token">
@@ -124,17 +194,19 @@ function ManageTokenList() {
         disabled={false}
         name={'tokenList'}
         className="launch-manage-token-header"
-        title={t('token.me')}
+        title={t('mint.Management')}
       />
       <div className="launch-manage-token-search">
+        {/* <Search
+      {/* <div className="launch-manage-token-search">
         <Search
           className="searchBox"
           value={searName}
           onChange={changeName}
           allowClear
           onSearch={search}
-        />
-        <Select
+        /> */}
+        {/* <Select
           style={{ width: 120 }}
           onChange={handleChange}
           className="selectBox"
@@ -146,17 +218,14 @@ function ManageTokenList() {
             { value: '1', label: t('token.Trade') },
             { value: '3', label: t('token.Renounces') },
           ]}
-        />
+        /> */}
       </div>
-      <div
-        className="mint-scroll scroll"
-        id="launchTokenList"
-        style={{ height: '340px', overflowX: 'hidden' }}
-      >
-        {loading ? (
+      <div className="mint-scroll scroll" id="launchTokenList">
+        {!loading ? (
           <InfiniteScrollPage
             data={data}
-            next={changePage}
+            total={total}
+            next={() => setPage(page + 1)}
             items={items}
             nextLoad={nextLoad}
             no={t('token.no')}

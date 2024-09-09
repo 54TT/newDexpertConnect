@@ -8,12 +8,22 @@
   .launch-header-desc {
     font-size: 18px;
   }
+  .info-list {
+    height: 90%;
+  }
 }
 .resultBox {
   position: relative;
   width: 100%;
   height: 100%;
-  .mint-bottom-button{
+  .res-icon{
+    position: absolute;
+    top: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20%;
+  }
+  .mint-bottom-button {
     position: absolute;
   }
   .back {
@@ -24,6 +34,23 @@
     background-color: #2d2d2d;
     border-radius: 48px 48px 0 0;
     left: 0;
+    &-title{
+      text-align: center;
+      margin: 24px 0;
+      font-size: 22px;
+      font-weight: 700;
+      color:#fff;
+    }
+    &-to{
+      // width: 300px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      display: inline-block;
+      padding: 12px 24px;
+      border: 2px solid #86f097;
+      border-radius: 13px;
+      cursor:pointer;
+    }
     .with {
       margin: 24px 0;
       font-size: 24px;
@@ -77,5 +104,70 @@
         }
       }
     }
+  }
+}
+
+.launch-form-icon {
+  display: flex;
+  width: 20%;
+  position: relative;
+  aspect-ratio: 1/1;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 100%;
+  }
+  .launch-form-edit {
+    position: absolute;
+    right: -2px;
+    bottom: 0;
+    background: rgba(156, 156, 156, 1);
+    border-radius: 0;
+    padding: 4px;
+    border-radius: 100%;
+    img {
+      width: 16px;
+      object-fit: scale-down;
+      border-radius: 0;
+    }
+  }
+  &:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+  }
+  transition: filter 0.3s ease-in-out;
+}
+
+.icon-link-modal {
+  input {
+    background: rgba(94, 94, 94, 0.3);
+    border: none;
+    color: white;
+    box-shadow: none;
+    outline: none;
+    box-shadow: none;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+    }
+    &:focus {
+      background: rgba(94, 94, 94, 0.3);
+      border: none;
+    }
+    &:hover {
+      background: rgba(94, 94, 94, 0.2);
+    }
+  }
+  button {
+    width: 34%;
+  }
+}
+
+.launc-social-media {
+  display: flex;
+  img {
+    width: 24px;
+    margin-left: 6px;
   }
 }

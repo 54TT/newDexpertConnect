@@ -1,14 +1,14 @@
 .mint {
   &-box {
-    height: 80vh;
-    max-height: 600px;
-    // height: auto;
+    height: calc(100vh - 120px);
+    max-height: 768px;
     width: 100%;
     position: relative;
     max-width: 400px;
     box-sizing: border-box;
     margin-top: 26px;
     border-radius: 30px;
+    overflow: hidden;
     background: linear-gradient(0deg, #2e2e2e, #2e2e2e),
       radial-gradient(
         142.41% 79.06% at 0% -8.57%,
@@ -50,7 +50,7 @@
 
 .mint-scroll {
   -ms-overflow-style: none;
-scrollbar-width: none;
+  scrollbar-width: none;
   /* 滚动条 */
   &::-webkit-scrollbar-thumb:horizontal {
     /*水平滚动条的样式*/
@@ -83,37 +83,41 @@ scrollbar-width: none;
   }
 }
 
-
 .mint-scroll::-webkit-scrollbar {
-display: none;
+  display: none;
 }
 
 .mint-common-modal {
-  max-width: 400px !important;
-  min-width: 350px !important;
-  width: 96vw !important;
+  width: 380px !important;
+
   .ant-modal-title {
     color: #fff;
   }
   .ant-input-number {
     width: 100%;
     background-color: transparent;
-    border: 1px solid rgba(134, 240, 151, 1);
+
+    padding: 4px;
     box-shadow: none;
     border-right: none;
     input {
       color: #fff;
     }
     &.ant-input-number-focused {
-      border: 1px solid rgba(134, 240, 151, 1);
       box-shadow: none;
       border-right: none;
     }
   }
   .ant-input-number-group-addon {
-    border: 1px solid rgba(134, 240, 151, 1);
     color: #fff;
     border-left: none;
+
+    button {
+      width: 52px;
+      height: 28px;
+      margin-left: 12px !important;
+      border-radius: 14px;
+    }
   }
   .ant-btn {
     margin-top: 12px;

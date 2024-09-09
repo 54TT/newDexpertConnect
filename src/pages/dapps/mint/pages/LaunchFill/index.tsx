@@ -4,37 +4,48 @@ import PageHeader from '../../component/PageHeader';
 import BottomButton from '../../component/BottomButton';
 import FormD from './components/form';
 import Pass from './components/pass';
-import Result from './components/result';
+// import Result from './components/result';
 import Confirm from './components/confirm';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { CountContext } from '@/Layout';
+import { ethers } from 'ethers';
+import Cookies from 'js-cookie';
+import Request from '@/components/axios';
+import { reportPayType } from '@/api';
+import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
 export interface FormDataType {
-  filename: string;
   name: string;
   symbol: string;
   totalSupply: string;
-  decimals: string;
+  decimals: number;
   description: string;
-  initialBuyTax: string;
-  initialSellTax: string;
-  finalBuyTax: string;
-  finalSellTax: string;
-  reduceBuyTaxAt: string;
-  reduceSellTaxAt: string;
-  maxTxAmount: string;
   maxWalletSize: string;
-  maxTaxSwap: string;
-  taxSwapThreshold: string;
-  buyCount: string;
-  preventSwapBefore: string;
   payTokenType: string;
+  websiteLink: string;
+  twitterLink: string;
+  telegramLink: string;
+  logoLink: string;
+  discordLink: string;
+  fees: BigNumber;
+  level: string;
 }
 import { MintContext } from '../../index';
 import { useForm } from 'antd/es/form/Form';
-function LaunchForm({ formData, setFormData }) {
+import { BigNumber } from 'ethers';
+function LaunchForm() {
   const { t } = useTranslation();
-  const { launchTokenPass }: any = useContext(MintContext);
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState('loading');
+  const history = useNavigate();
+  const { chainId, contractConfig, signer } = useContext(CountContext);
+  const { getAll } = Request();
+  const token = Cookies.get('token');
+  // const { launchTokenPass }: any = useContext(MintContext);
+  const { launchTokenPass, formData, setFormData }: any =
+    useContext(MintContext);
+  const [, setLoading] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [, setResult] = useState('loading');
+  const [, setTx] = useState('');
   const [form] = useForm();
   // form-----填写表单    pass-----选择pass卡  confirm---创建token确认页面  result---loading和结果页面
   const [step, setStep] = useState('form');
@@ -49,12 +60,84 @@ function LaunchForm({ formData, setFormData }) {
       setFormData({
         ...formData,
         ...par,
-        buyCount: '0',
-        filename: par?.symbol?.replace(/\s*/g, ''),
-        symbol: par?.symbol?.replace(/\s*/g, ''),
       });
     }
   };
+  const payTypeMap = {
+    0: '0', // pay fee
+    1: '4', // glodenPass
+    2: '1', // dpass
+  };
+  const sendReportPayType = async (tx, payType) => {
+    return reportPayType(getAll, {
+      data: {
+        tx,
+        payType,
+      },
+      options: {
+        token,
+        chainId,
+      },
+    });
+  };
+  // 使用工厂函数部署token
+  const launchTokenByFactory = async () => {
+    try {
+      const { standardTokenFactoryAddress01 } = contractConfig;
+      const tokenFactory01 = new ethers.Contract(
+        standardTokenFactoryAddress01,
+        StandardTokenFactoryAddress01Abi,
+        signer
+      );
+      console.log(1);
+
+      const { totalSupply, fees, level, ...props } = formData;
+      const metadata = {
+        totalSupply: BigNumber.from(totalSupply),
+        ...props,
+      };
+      console.log(2);
+      const tx = await tokenFactory01.create(
+        launchTokenPass === 'more' ? level : 0,
+        metadata,
+        {
+          value: launchTokenPass === 'more' ? fees : 0,
+        }
+      );
+      console.log(tx);
+
+      setLoading(true);
+      console.log('tx hash', tx?.hash);
+      setStep('result');
+      history(
+        `/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`
+      );
+      setTx(tx?.hash);
+      sendReportPayType(
+        tx.hash,
+        payTypeMap[launchTokenPass === 'more' ? 0 : 2]
+      );
+      // const recipent = await tx.wait();
+      // console.log('recipent', recipent);
+      // if (recipent.status == 1) {
+      //   setLoading(false);
+      //   setResult('success');
+      //   history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=success`)
+      //   setCreateLoading(false)
+      // } else {
+      //   setLoading(false);
+      //   setResult('error');
+      //   history(`/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=error`)
+      //   setCreateLoading(false)
+      // }
+    } catch (e) {
+      console.error(e);
+      setResult('error');
+      setLoading(false);
+      setCreateLoading(false);
+    }
+  };
+
   const change = () => {
     if (step === 'pass') {
       setStep('form');
@@ -69,7 +152,7 @@ function LaunchForm({ formData, setFormData }) {
         <PageHeader
           className="launch-form-header"
           arrow={true}
-          title={t('token.Creation')}
+          title={step === 'confirm' ? t('mint.Information') : t('mint.launch')}
           // desc={step === 'confirm' ? t('Slider.Confirm') : t('token.fill')}
           disabled={step === 'confirm'}
           name={step === 'form' ? '' : change}
@@ -79,20 +162,22 @@ function LaunchForm({ formData, setFormData }) {
         <Pass />
       ) : step === 'confirm' ? (
         <Confirm />
-      ) : step === 'result' ? (
-        <Result
-          loading={loading}
-          result={result}
-          setResult={setResult}
-          setLoading={setLoading}
-        />
       ) : (
+        // step === 'result' ? (
+        //   <Result
+        //     loading={loading}
+        //     result={result}
+        //     setResult={setResult}
+        //     setLoading={setLoading}
+        //   />
+        // ) :
         <FormD form={form} formData={formData} onFinishForm={onFinishForm} />
       )}
       {step !== 'result' && (
         <BottomButton
           bottom={true}
-          text={t('token.create')}
+          loading={createLoading}
+          text={t('mint.Creation')}
           onClick={() => {
             if (step === 'form') {
               form.submit();
@@ -101,8 +186,12 @@ function LaunchForm({ formData, setFormData }) {
                 setStep('confirm');
               }
             } else {
-              setLoading(true);
-              setStep('result');
+              // step===confirm
+              // setLoading(true);
+              // setStep('result');
+              launchTokenByFactory();
+              setCreateLoading(true);
+              setResult('loading');
             }
           }}
         />
