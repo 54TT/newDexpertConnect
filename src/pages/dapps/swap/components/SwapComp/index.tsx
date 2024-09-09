@@ -405,6 +405,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         PERMIT2_PERMIT_TYPE,
         permit
       );
+      debugger;
       signatureData = { permit, signature };
     } catch (e) {
       setButtonLoading(false);
