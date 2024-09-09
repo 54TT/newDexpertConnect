@@ -443,7 +443,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     const getSwapBytesFn = async (tokenIn, tokenOut) => {
       if (
         (tokenIn.contractAddress.toLowerCase() === ethAddress.toLowerCase() ||
-          tokenIn.contractAddress.toLowerCase() === wethAddress.toLowerCase()) &&
+          tokenIn.contractAddress.toLowerCase() ===
+            wethAddress.toLowerCase()) &&
         (tokenOut.contractAddress.toLowerCase() === ethAddress.toLowerCase() ||
           tokenOut.contractAddress.toLowerCase() === wethAddress.toLowerCase())
       ) {
