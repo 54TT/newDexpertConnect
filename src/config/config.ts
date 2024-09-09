@@ -257,7 +257,7 @@ export const config: Record<ChainIdList, any> = {
     standardTokenFactoryAddress01: '0xf02469f4789153a17848bE31d108aCC2b9C9E4a6',
     permit2Address: '0x31972B0F061591A764cA4572d6532659Ac2D7d70',
     uncxAddress: '0xa207B7Aa60791D5118E3A185933F8Dc486F5081a',
-    universalRouterAddress: '0xA19bc94018e2eee9804Eb63866F6Becb44e25d39',
+    universalRouterAddress: '0xd0613571B6Ea6b0Da822A129BBa483c719B05C0D',
     wethAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     wethUsdtPairAddress: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
     wethDecimal: 18,
