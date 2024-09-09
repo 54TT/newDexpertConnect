@@ -1,6 +1,7 @@
 import './index.less';
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { FormDataType } from '../../pages/LaunchFill';
+import  formatDecimalString  from '@utils/formatDecimalString';
 function InfoList({
   data,
   className,
@@ -8,7 +9,7 @@ function InfoList({
   data: Partial<FormDataType>;
   className?: string;
 }) {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const {
     name,
     symbol,
@@ -27,7 +28,7 @@ function InfoList({
         <div className="info-list-token-detail">
           <div className="info-list-symbol">{symbol}</div>
           <div className="info-list-name">{name}</div>
-          <div className="info-list-totalSupply">{totalSupply}</div>
+          <div className="info-list-totalSupply">{formatDecimalString(totalSupply)}</div>
         </div>
       </div>
       <div className="info-list-item">
@@ -55,7 +56,7 @@ function InfoList({
         </div>
       </div>
       <div className="info-list-item descript">
-        <div className="info-list-item-descript">Description</div>
+        <div className="info-list-item-descript">{t("mint.Description")}</div>
         <div style={{ overflowWrap: 'break-word' }}>{description}</div>
       </div>
     </div>

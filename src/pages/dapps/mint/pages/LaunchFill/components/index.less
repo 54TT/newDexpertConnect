@@ -12,6 +12,15 @@
     height: 90%;
   }
 }
+.update-form-item{
+  .ant-form-item-row{
+    background-color: transparent !important;
+  }
+  .ant-form-item-control-input-content{
+    color: rgba(255, 255, 255, 0.55);
+    color: #8d8d8d;
+  }
+}
 .resultBox {
   position: relative;
   width: 100%;
@@ -80,7 +89,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgb(134, 240, 151);
+      border: 2px solid rgb(134, 240, 151);
       cursor: pointer;
       margin: 8px auto 16px;
       border-radius: 16px;
@@ -140,6 +149,12 @@
 }
 
 .icon-link-modal {
+  .ant-btn-background-ghost.ant-btn-default{
+    color: #fff !important;
+  }
+  .ant-btn-default{
+    color: rgba(0,0,0,0.88) !important;
+  }
   input {
     background: rgba(94, 94, 94, 0.3);
     border: none;

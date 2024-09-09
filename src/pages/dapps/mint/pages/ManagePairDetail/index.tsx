@@ -241,7 +241,7 @@ function ManagePairDetail() {
     } catch (e) {
       setIsButton(false);
       setBurnLoading(false);
-      NotificationChange('error', 'pair.burnfail');
+      NotificationChange('error', 'Burn Liquidity Failed');
     }
   };
 
@@ -333,63 +333,6 @@ function ManagePairDetail() {
       setIsButton(false);
     }
   };
-  /* const removeLp = async () => {
-    try {
-      const web3Provider = new ethers.providers.Web3Provider(loginProvider);
-      const signer = await web3Provider.getSigner();
-      const v2RouterContract = new ethers.Contract(
-        contractConfig?.uniswapV2RouterAddress,
-        UniswapV2RouterAbi,
-        signer
-      );
-      const walletAddress = await signer.getAddress();
-      let token: string = await pairContract.token0();
-      if (token.toLowerCase() === contractConfig.wethAddress.toLowerCase()) {
-        token = await pairContract.token1();
-      }
-      const balance = await pairContract.balanceOf(walletAddress);
-      const approveTx = await pairContract.approve(
-        contractConfig?.uniswapV2RouterAddress,
-        balance
-      );
-      const tx = await approveTx.wait();
-      if (tx?.status === 1) {
-        const deadline = dayjs().add(10, 'm').unix();
-        const removeLiquidityTx = await v2RouterContract.removeLiquidityETH(
-          token,
-          balance,
-          0,
-          0,
-          walletAddress,
-          deadline
-        );
-        const data = await removeLiquidityTx.wait();
-        if (data.status === 1) {
-          if (removeLiquidityTx?.hash && data) {
-            history(
-              '/dapps/tokencreation/result/' +
-                removeLiquidityTx?.hash +
-                '/removeLP'
-            );
-          }
-        } else {
-          NotificationChange('error', 'pair.removeLpfail');
-        }
-      }
-      setIsOpenStatus('');
-      setOpen(false);
-      setIsButton(false);
-    } catch (e) {
-      NotificationChange('error', 'pair.removeLpfail');
-      setIsButton(false);
-      return null;
-    }
-  }; */
-
-  /*   const data = useMemo(
-    () => Object?.keys?.(infoData || {})?.map?.((key) => infoData[key]) ?? [],
-    [infoData]
-  ); */
 
   const item = (name?: string) => {
     return (
@@ -436,10 +379,7 @@ function ManagePairDetail() {
           />
         )}
         {name === 'Burn' && (
-          <p>
-            Once a token is burned, it becomes permanently inaccessible, thereby
-            enhancing the token's credibility
-          </p>
+          <p>{t("mint.Once")}</p>
           // <InputNumberWithString
           // value={burnAmount}
           // onChange={(value)=>{
@@ -464,7 +404,7 @@ function ManagePairDetail() {
         // title={`${router?.t0} / ${router?.t1}`}
         title={
           !openTradeModal
-            ? 'Trading Pair Management'
+            ? t("mint.Management")
             : `${router?.t0} / ${router?.t1}`
         }
       />
@@ -477,7 +417,7 @@ function ManagePairDetail() {
             </div>
             <div className="pair-manage-content">
               <span className="pair-manage-trad-title">
-                Liquidity Pool Reserves
+                {t("mint.Liquidity")}
               </span>
               <div className="pair-manage-trad-content">
                 <span>{router?.t0}</span>
@@ -493,14 +433,14 @@ function ManagePairDetail() {
               style={{ margin: '32px auto' }}
             >
               <span className="pair-manage-trad-title">
-                Liquidity Lock / Burn
+              {t("mint.LiquidityLock")}
               </span>
               {/* <div className='pair-manage-trad-content'>
                 <span>WETH</span>
                 <span>-</span>
               </div> */}
               <div className="pair-manage-trad-content">
-                <span>Maturity Date</span>
+                <span>{t("mint.Maturity")}</span>
                 <span>
                   {lockLpData?.unlockDate
                     ? dayjs
@@ -535,7 +475,7 @@ function ManagePairDetail() {
             />
             <BottomButton
               className="burn-lp-button"
-              text={t('token.BurnLP')}
+              text={t('mint.Burn')}
               onClick={() => {
                 setIsOpenStatus('Burn');
                 setOpen(true);
@@ -568,7 +508,7 @@ function ManagePairDetail() {
         open={open}
         title={isOpenStatus === 'Add' ? 'Add Liquidity' : t('token.BurnLP')}
         footer={null}
-        className="mint-common-modal pari-LP-modal"
+        className="mint-common-modal pair-LP-modal"
         onCancel={() => {
           if (!isButton) {
             setOpen(false);

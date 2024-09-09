@@ -1,7 +1,8 @@
 import { useTokenInfo } from '@/hook/useTokenInfo';
 import { CountContext } from '@/Layout';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useParams,useNavigate } from 'react-router-dom';
 import EditForm from '../LaunchFill/components/form';
 import { useForm } from 'antd/es/form/Form';
 import PageHeader from '../../component/PageHeader';
@@ -17,6 +18,8 @@ import { ethers } from 'ethers';
 import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
 
 function ModifyForm() {
+  const {t}=useTranslation();
+  const history = useNavigate();
   const { address } = useParams();
   const { contractConfig, signer } = useContext(CountContext);
   const [status, setStatus] = useState<'modify' | 'pass'>('modify');
@@ -55,15 +58,18 @@ function ModifyForm() {
         }
       );
       console.log(tx);
-      const recipent = await tx.wait();
-      console.log(recipent);
-      if (recipent.status === 1) {
-        console.log(recipent);
-        setStatus('modify');
-        reset();
-        setEditLoading(false);
-        NotificationChange('success,', '修改成功');
-      }
+      history(
+        `/dapps/tokencreation/results/launch?tx=${tx?.hash}&status=pending`
+      );
+      // const recipent = await tx.wait();
+      // console.log(recipent);
+      // if (recipent.status === 1) {
+      //   console.log(recipent);
+      //   setStatus('modify');
+      //   reset();
+      //   setEditLoading(false);
+      //   NotificationChange('success,', '修改成功');
+      // }
     } catch (e) {
       console.error(e);
       setEditLoading(false);
@@ -72,7 +78,7 @@ function ModifyForm() {
 
   return (
     <div className="mint-scroll scroll modify-form">
-      <PageHeader className="launch-manage-token-header" title="代币信息" />
+      <PageHeader className="launch-manage-token-header" title={t("mint.Smart")} />
       <div className="modify-form-content">
         <RenderContent
           tokenInfo={tokenInfo}
@@ -97,6 +103,7 @@ const RenderContent = ({
   handleSubmitForm,
   editLoading,
 }) => {
+  const {t}=useTranslation();
   if (status === 'modify') {
     return tokenInfo ? (
       <>
@@ -107,7 +114,7 @@ const RenderContent = ({
           update
         />
         <BottomButton
-          text={'修改'}
+          text={t("mint.Amend")}
           onClick={async () => {
             const { name, symbol, totalSupply, ...metaData } =
               await form.getFieldsValue();
@@ -125,7 +132,7 @@ const RenderContent = ({
       <div className="modify-form-content-pass">
         <Pass />
         <BottomButton
-          text={'提交'}
+          text={t("mint.Amend ")}
           onClick={handleSubmitForm}
           loading={editLoading}
         />

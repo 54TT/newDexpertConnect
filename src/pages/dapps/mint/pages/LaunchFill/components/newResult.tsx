@@ -100,24 +100,24 @@ export default function resultBox() {
     const messages = {
       loading: {
         launch: t('mint.Deploying'),
-        lockliquidity: 'Locking Liquidity...',
-        burnliquidity: 'Burning Liquidity...',
-        opentrade: 'Initial Dex Offering (IDO)...',
-        renounce: 'Renounce Ownership',
+        lockliquidity: t("mint.Lock"),
+        burnliquidity: t("mint.Burn"),
+        opentrade: t('mint.Initial'),
+        renounce: t("mint.res renounce"),
       },
       success: {
         launch: t('mint.Successful'),
-        lockliquidity: 'Lock Liquidity Successful',
-        burnliquidity: 'Burn Liquidity Successful',
-        opentrade: 'IDO Launched',
+        lockliquidity: t("mint.Lock"),
+        burnliquidity: t("mint.Burn"),
+        opentrade: t('mint.Launched'),
         renounce: t('mint.Ownership'),
       },
       error: {
         launch: t('mint.Deployment'),
-        lockliquidity: 'Lock Liquidity Failed',
-        burnliquidity: 'Burn Liquidity Failed',
-        opentrade: 'IDO Launched Unsuccessful',
-        renounce: 'Renounce Ownership',
+        lockliquidity: t("mint.Lock"),
+        burnliquidity: t("mint.Burn"),
+        opentrade: t("mint.IDO"),
+        renounce: t("mint.res renounce"),
       },
     };
 

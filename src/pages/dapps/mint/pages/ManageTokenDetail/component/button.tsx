@@ -67,7 +67,7 @@ export default function button({
           {t('mint.Renounce')}
         </Button>
       ) : (
-        <></>
+        <p style={{ color: "#8b8b8b",fontSize:"16px",fontWeight:'500',textAlign:'center',marginBottom:'8px'}}>{t("mint.renounced")}</p>
       )}
     </div>
   );

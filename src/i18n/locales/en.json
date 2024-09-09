@@ -562,15 +562,21 @@
     "Burned":"Burned",
     "Liquidity":"Liquidity Pool Reserves",
     "Lock":"Lock Liquidity",
-    "Burn ":"Burn Liquidity",
-    "LiquidityLock ":"Liquidity Lock / Burn",
+    "UnLock":"Unlock Liquidity",
+    "UnLock Button":"Unlock",
+    "UnLock content":"Unlock period not reached.",
+    "Burn":"Burn Liquidity",
+    "LiquidityLock":"Liquidity Lock / Burn",
     "Maturity":"Maturity Date",
     "Smart":"Smart Contract Information",
     "LogoSetting":"Logo Setting",
     "Amend ":"Amend",
     "Once":"Once a token is burned, it becomes permanently inaccessible, thereby enhancing the token's credibility",
     "can":"Lock-up liquidity pool can enhance the credibility of token",
-    "Select ":"Select the lock-up period of liquidity pool",
-    "take ":"This may take a few minutes"
+    "Select":"Select the lock-up period of liquidity pool",
+    "take ":"This may take a few minutes",
+    "remove ownership":"Remove Ownership",
+    "remove ownership content":"This action will renounce your smart contract ownership. Once executed, the smart contract cannot be amended or altered.",
+    "res renounce":"Renounce ownership"
   }
 }

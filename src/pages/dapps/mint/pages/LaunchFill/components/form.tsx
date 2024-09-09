@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import './index.less';
 import { useState } from 'react';
 import CommonModal from '@/components/CommonModal';
+import formatDecimalString from '@utils/formatDecimalString';
 export default function form({ form, formData, onFinishForm, update = false }) {
   const { t } = useTranslation();
   const logoLinkValue = Form.useWatch('logoLink', form);
@@ -65,7 +66,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
     <>
       <div
         className="launch-form mint-scroll scroll"
-        style={{ height: '80%', overflowX: 'hidden' }}
+        style={{ height: '88%', overflowX: 'hidden' }}
       >
         <Form
           form={form}
@@ -96,6 +97,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
 
           <Form.Item
             name="name"
+            className={update? 'update-form-item' : ''}
             rules={[{ required: true, message: t('token.input') }]}
           >
             {!update ? (
@@ -107,6 +109,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
           <span className="launch-form-item-label">3.{t('mint.Symbol')}</span>
           <Form.Item
             name="symbol"
+            className={update? 'update-form-item' : ''}
             rules={[{ required: true, message: t('token.input') }]}
           >
             {!update ? (
@@ -118,6 +121,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
           <span className="launch-form-item-label">4.{t('mint.Supply')}</span>
           <Form.Item
             name="totalSupply"
+            className={update? 'update-form-item' : ''}
             rules={[{ required: true, message: t('token.input') }]}
           >
             {!update ? (
@@ -127,7 +131,7 @@ export default function form({ form, formData, onFinishForm, update = false }) {
                 stringMode={true}
               />
             ) : (
-              <div>{formData.totalSupply}</div>
+              <div>{formatDecimalString(formData.totalSupply)}</div>
             )}
           </Form.Item>
           <span className="launch-form-item-label">5.{t('mint.Media')}</span>

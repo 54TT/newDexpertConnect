@@ -16,6 +16,7 @@ import ActionButton from './component/button';
 import { useTokenInfo } from '@/hook/useTokenInfo';
 import PairInfo, { PairInfoPropsType } from '@/components/PairInfo';
 import { toEthWithDecimal } from '@utils/convertEthUnit';
+import formatDecimalString from '@utils/formatDecimalString';
 function ManageTokenDetail() {
   const { t } = useTranslation();
   const router = useParams();
@@ -199,14 +200,14 @@ function ManageTokenDetail() {
         <PairInfo data={pairInfoData} />
         <div className="pair-info-token" style={{ marginBottom: '0' }}>
           <span>{pairInfoData.token0.symbol}</span>
-          <span>{tokenBalance || '-'}</span>
+          <span>{formatDecimalString(tokenBalance) || '-'}</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center',margin:'8px auto'}}>
           <img style={{ width: '28px' }} src="/pair-arrow.svg" alt="" />
         </div>
         <div className="pair-info-token">
           <span>{pairInfoData.token1.symbol}</span>
-          <span>{ethAmount || '-'}</span>
+          <span>{formatDecimalString(ethAmount) || '-'}</span>
         </div>
         <div className="open-trade-input">
           <div
@@ -217,7 +218,7 @@ function ManageTokenDetail() {
               color: 'rgba(139, 139, 139, 1)',
             }}
           >
-            Balance: {ethBalance}
+            {t("mint.Balance")}: {ethBalance}
           </div>
           <InputNumber
             value={ethAmount}
@@ -229,7 +230,7 @@ function ManageTokenDetail() {
                   ghost
                   onClick={() => setEthAmount(ethBalance)}
                 >
-                  Max
+                  {t('mint.MAX')}
                 </Button>
               </div>
             }
@@ -246,14 +247,14 @@ function ManageTokenDetail() {
             ghost
             onClick={() => setOpenTradeModal(false)}
           >
-            Cancel
+            {t("mint.Cancel")}
           </Button>
           <Button
             className="action-button confirm-button"
             loading={openTradeLoading}
             onClick={() => openTrade()}
           >
-            Confirm
+            {t("mint.Confirm")}
           </Button>
         </div>
       </CommonModal>
@@ -265,29 +266,22 @@ function ManageTokenDetail() {
         open={removeOwnShipModal}
         closeIcon={null}
         title={
-          <div style={{ textAlign: 'center', color: 'rgba(234, 110, 110, 1)' }}>
-            Remove Ownership
+          <div style={{ textAlign: 'center', color: 'rgba(234, 110, 110, 1)',fontWeight:'700',fontSize:'20px' }}>
+            {t("mint.Renounce")}
           </div>
         }
       >
-        <p>
-          This action will remove your ownership for the token. This means you
-          will not:
-        </p>
-        <p>●Change the token logo</p>
-        <p>●Change the token's the link of social media</p>
-        <p>●Change the token's description</p>
-        <p>Please remove ownership only after the token data is finalized</p>
-        <div>
+        <p>{t("mint.action")}</p>
+        <div style={{display:'flex',justifyContent:'space-evenly'}}>
           <Button
-            className="action-button"
+            className="action-button cancel-button"
             ghost
             onClick={() => setRemoveOwnShipModal(false)}
           >
-            Cancel
+            {t("mint.Cancel")}
           </Button>
-          <Button className="action-button" onClick={() => renounceOwnerShip()}>
-            Confirm
+          <Button className="action-button confirm-button" onClick={() => renounceOwnerShip()}>
+          {t("mint.Confirm")}
           </Button>
         </div>
       </CommonModal>
