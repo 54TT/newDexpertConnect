@@ -81,16 +81,20 @@ export async function getPermitSignature(
   permit2Contract: any,
   signerAddress: string
 ) {
-  if(!permit?.details?.nonce){
-    const nextNonce = (
-      await permit2Contract.allowance(
-        signerAddress,
-        permit.details.token,
-        permit.spender
-      )
-    ).nonce;
-    permit.details.nonce = nextNonce;
-  }
+  try {
+    if (!permit?.details?.nonce) {
+      const nextNonce = (
+        await permit2Contract.allowance(
+          signerAddress,
+          permit.details.token,
+          permit.spender
+        )
+      ).nonce;
+      permit.details.nonce = nextNonce;
+    }
 
-  return await signPermit(chainId, permit, permit2Contract.address);
+    return await signPermit(chainId, permit, permit2Contract.address);
+  } catch (e) {
+    console.log(e);
+  }
 }
