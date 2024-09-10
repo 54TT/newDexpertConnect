@@ -238,7 +238,6 @@ function ManageTokenDetail() {
       return null;
     }
   };
-
   const pairInfoData: PairInfoPropsType = {
     token0: {
       logo: tokenAllData?.[1],

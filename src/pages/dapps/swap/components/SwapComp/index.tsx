@@ -18,6 +18,11 @@ import { getSwapExactOutBytes } from '@utils/swap/v2/getSwapExactOutBytes';
 import { getSwapExactInBytes } from '@utils/swap/v2/getSwapExactInBytes';
 import { getSwapExactInBytes as getSwapExactInBytesV3 } from '@utils/swap/v3/getSwapExactInBytes';
 import { getSwapExactOutBytes as getSwapExactOutBytesV3 } from '@utils/swap/v3/getSwapExactOutBytes';
+// import {
+//   sendAndConfirmTransaction,
+//   prepareContractCall,
+//   toWei,
+// } from 'thirdweb';
 import {
   getUniswapV2RouterContract,
   getUniversalRouterContract,
@@ -51,6 +56,11 @@ import { expandToDecimalsBN } from '@utils/utils';
 import ChangeChain from '@/components/ChangeChain';
 import { reportPayType } from '@/api';
 import { valueType } from 'antd/es/statistic/utils';
+import { getContract } from 'thirdweb';
+import { client } from '@/client';
+import { useActiveAccount,  } from 'thirdweb/react';
+import { useReadContract } from 'thirdweb/react';
+
 interface SwapCompType {
   changeAble?: boolean; // 是否可修改Token || 网络
   initChainId?: string; // 初始化的chainId;
@@ -66,6 +76,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     transactionFee,
     setTransactionFee,
     loginProvider,
+    allChain,
   } = useContext(CountContext);
   const { t } = useTranslation();
   const [amountIn, setAmountIn] = useState<valueType>('0');
@@ -91,6 +102,30 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
   const [quotePath, setQuotePath] = useState('0'); // 0 uniswapV2 1 V3
   const [refreshPass, setRefreshPass] = useState(false);
   const { getAll } = Request();
+  const activeAccount = useActiveAccount();
+  // 生成合约
+  const permit2Contract = getContract({
+    client,
+    chain: allChain,
+    address: contractConfig?.permit2Address,
+    abi: Permit2Abi as any,
+  });
+  console.log(permit2Contract)
+  const tokenInAddressContract = getContract({
+    client,
+    chain: allChain,
+    address: tokenIn?.contractAddress,
+    abi: ERC20Abi as any,
+  });
+
+  // 获取
+  const { data: allowancePar, }: any = useReadContract({
+    contract: tokenInAddressContract,
+    method: 'allowance',
+    params: [activeAccount?.address, contractConfig?.permit2Address],
+  });
+  console.log(allowancePar)
+
   /*   const [tokenPrice, setTokenPrice] = useState<{
     inPrice: string;
     outPrice: string;
@@ -400,18 +435,22 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           permit2Contract,
           signerAddress
         );
+      console.log('eip712Domain-----------', eip712Domain);
+      console.log('PERMIT2_PERMIT_TYPE-----------', PERMIT2_PERMIT_TYPE);
+      console.log('permit-----------', permit);
+
       const signature = await signer._signTypedData(
         eip712Domain,
         PERMIT2_PERMIT_TYPE,
         permit
       );
-      debugger;
+      console.log('signature-----------', signature);
       signatureData = { permit, signature };
+      console.log('signatureData-----------', signatureData);
     } catch (e) {
       setButtonLoading(false);
       setButtonDescId('1');
     }
-
     return signatureData;
   };
 
@@ -575,31 +614,36 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
     const { zeroAddress, universalRouterAddress, permit2Address } =
       contractConfig;
     const { tokenIn, amountIn } = data;
+    console.log(1111111111111111111);
     setButtonLoading(true);
     setButtonDescId('9');
     //@ts-ignore
     const web3Provider = new ethers.providers.Web3Provider(loginProvider);
     const signer = await web3Provider.getSigner();
     const signerAddress = await signer.getAddress();
+    // permit2Contract
     const permit2Contract = new ethers.Contract(
       permit2Address,
       Permit2Abi,
       signer
     );
-
+    // tokenInAddressContract
     const tokenInContract = new ethers.Contract(
       tokenIn.contractAddress,
       ERC20Abi,
       signer
     );
-
+    console.log(2222222222222222);
     if (tokenIn.contractAddress !== zeroAddress) {
+      console.log(444444444444);
+      // allowancePar
       const balance: BigNumber = await queryAllowance(
         tokenInContract,
         signerAddress,
         permit2Address
       );
       const decimals = await tokenIn.decimals;
+      // 余额为0 或者余额 小于amount 需要approve
       if (
         balance.isZero() ||
         balance.lte(
@@ -608,7 +652,24 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           )
         )
       ) {
-        // 余额为0 或者余额 小于amount 需要approve
+        // 等待approve;
+        // setButtonDescId('5');
+        // setButtonLoading(true);
+        // // 合约   approve
+        // const approveTx: any = prepareContractCall({
+        //   contract: tokenInAddressContract,
+        //   method: 'approve',
+        //   params: [
+        //     contractConfig?.permit2Address,
+        //     BigNumber.from(2).pow(BigNumber.from(256)).sub(BigNumber.from(1)),
+        //   ],
+        // });
+        // const transactionReceipt = await sendAndConfirmTransaction({
+        //   account: activeAccount,
+        //   transaction: approveTx,
+        // });
+        // if (transactionReceipt?.status === 'success') {
+        // }
         const successApprove = await handleApprove(tokenInContract);
         if (successApprove) {
           const { permit, signature } = await signPermit({
@@ -618,7 +679,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
             permit2Contract,
             signer,
           });
-
+          console.log('permit-----------', permit);
+          console.log('signature-----------', signature);
           const { commands, inputs, etherValue } = await getSwapBytes({
             ...data,
             permit,
@@ -641,6 +703,8 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
           permit2Contract,
           signer,
         });
+        console.log('permit-----------', permit);
+        console.log('signature-----------', signature);
         const { commands, inputs, etherValue } = await getSwapBytes({
           ...data,
           permit,
@@ -656,6 +720,7 @@ function SwapComp({ initChainId, initToken, changeAble = true }: SwapCompType) {
         });
       }
     } else {
+      console.log(33333333333333333);
       const { commands, inputs, etherValue } = await getSwapBytes({
         ...data,
         recipientAddress: signerAddress,

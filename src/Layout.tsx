@@ -126,7 +126,6 @@ function Layout() {
     walletConnect?.subscribe('accountChanged', async (account) => {
       console.log(account);
       // const ttt = account.signMessage({message:"你好"})
-      // console.log(ttt)
     });
     // 监听 chain变更事件
     walletConnect?.subscribe('chainChanged', (chain) => {
@@ -204,7 +203,6 @@ function Layout() {
         setTonWallet(null);
       }
     });
-    tonConnectUI?.disconnect();
     getUserNow();
   }, []);
   const router: any = useLocation();
@@ -348,8 +346,6 @@ function Layout() {
   const getUserNow = () => {
     const jwt = cookie.get('jwt');
     const token = cookie.get('token');
-    console.log(jwt)
-    console.log(token)
     if (jwt && token) {
       const jwtPar = JSON.parse(jwt);
       if (jwtPar?.uid) {

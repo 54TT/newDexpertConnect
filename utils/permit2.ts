@@ -68,6 +68,9 @@ export async function signPermit(
   verifyingContract: string
 ) {
   const eip712Domain = getEip712Domain(chainId, verifyingContract);
+  console.log('nextNonce-----------',eip712Domain)
+  console.log('verifyingContract-----------',verifyingContract)
+
   return {
     eip712Domain: eip712Domain,
     PERMIT2_PERMIT_TYPE: PERMIT2_PERMIT_TYPE,
@@ -90,6 +93,7 @@ export async function getPermitSignature(
           permit.spender
         )
       ).nonce;
+      console.log('nextNonce-----------',nextNonce)
       permit.details.nonce = nextNonce;
     }
 
