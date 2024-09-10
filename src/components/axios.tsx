@@ -41,7 +41,7 @@ const Request = () => {
   const { t } = useTranslation();
   const history = useNavigate();
   const clear = () => {
-    history('/re-register');
+    history('/logout');
     cookie.remove('token');
     cookie.remove('jwt');
   };

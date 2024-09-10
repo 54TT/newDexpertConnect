@@ -56,6 +56,7 @@ function ManageTokenDetail() {
   } = useSendTransaction({
     payModal: false,
   });
+
   useEffect(() => {
     if (transactionResult?.transactionHash) {
       if (isSendStatus === 'opentrad') {
@@ -86,7 +87,6 @@ function ManageTokenDetail() {
     contract,
     method: 'balanceOf',
     params: [activeAccount?.address],
-    
   });
   // 获取decimals
   const { data: decimalsOf, isLoading: isDecimals }: any = useReadContract({
@@ -113,13 +113,31 @@ function ManageTokenDetail() {
     params: [],
   });
   // 获取  tokenMetaData
+  // 这样子的顺序----- description, logoLink,twitterLink,telegramLink, discordLink, websiteLink,
   const { data: tokenAllData, isLoading: isTokenAllData }: any =
     useReadContract({
       contract,
       method: 'tokenMetaData',
       params: [],
     });
-
+  //  获取 totalSupply
+  const { data: totalSupply, isLoading: isTotalSupply }: any = useReadContract({
+    contract,
+    method: 'totalSupply',
+    params: [],
+  });
+  // 获取 token  name
+  const { data: tokenName, isLoading: isTokenName }: any = useReadContract({
+    contract,
+    method: 'name',
+    params: [],
+  });
+  // 获取  symbol
+  const { data: symbol, isLoading: isSymbol }: any = useReadContract({
+    contract,
+    method: 'symbol',
+    params: [],
+  });
 
   useEffect(() => {
     if (
@@ -129,7 +147,10 @@ function ManageTokenDetail() {
       !isBalanceOf &&
       !isDecimals &&
       balanceData?.displayValue &&
-      !isTokenAllData
+      !isTokenAllData &&
+      !isSymbol &&
+      !isTotalSupply &&
+      !isTokenName
     ) {
       if (activeAccount?.address.toLowerCase() === ownerP?.toLowerCase()) {
         setIsOwn(true);
@@ -150,6 +171,9 @@ function ManageTokenDetail() {
     balanceData,
     isDecimals,
     isTokenAllData,
+    isSymbol,
+    isTotalSupply,
+    isTokenName,
   ]);
   const openTrade = async () => {
     if (!isOwn) return;
@@ -169,7 +193,6 @@ function ManageTokenDetail() {
           method: 'approve',
           params: [router?.address, toWei(ttt?.toString())],
         });
-
         const transactionReceipt = await sendAndConfirmTransaction({
           account: activeAccount,
           transaction: tx,
@@ -179,7 +202,10 @@ function ManageTokenDetail() {
           const openTradingTx: any = prepareContractCall({
             contract,
             method: 'openTrading',
-            params: [Number(ttt?.toString())],
+            params: [
+              contractConfig?.uniswapV2RouterAddress,
+              toWei(ttt?.toString()),
+            ],
             value: toWei(ethAmount.toString()),
           });
           setSendStatus('opentrad');
@@ -215,8 +241,8 @@ function ManageTokenDetail() {
 
   const pairInfoData: PairInfoPropsType = {
     token0: {
-      logo: tokenAllData?.logoLink,
-      symbol: tokenAllData?.symbol,
+      logo: tokenAllData?.[1],
+      symbol: symbol,
     },
     token1: {
       logo: contractConfig?.wethLogo,
@@ -248,7 +274,21 @@ function ManageTokenDetail() {
         title={t('mint.Management')}
       />
       {!isLoading ? (
-        <InfoList className="manage-token-detail-info" data={tokenAllData} />
+        // ,
+        <InfoList
+          className="manage-token-detail-info"
+          data={{
+            name: tokenName,
+            totalSupply: toEthWithDecimal(totalSupply, decimalsOf),
+            symbol,
+            websiteLink: tokenAllData?.[5],
+            discordLink: tokenAllData?.[4],
+            telegramLink: tokenAllData?.[3],
+            description: tokenAllData?.[0],
+            logoLink: tokenAllData?.[1],
+            twitterLink: tokenAllData?.[2],
+          }}
+        />
       ) : (
         <Loading status={'20'} browser={browser} />
       )}
@@ -258,7 +298,7 @@ function ManageTokenDetail() {
           {...buttonParams}
           clickToPair={() =>
             history(
-              `/dapps/tokencreation/pairDetail/${pairAddress}/${tokenAllData.symbol}/${contractConfig.tokenSymbol}`
+              `/dapps/tokencreation/pairDetail/${pairAddress}/${symbol}/${contractConfig?.tokenSymbol}`
             )
           }
         />

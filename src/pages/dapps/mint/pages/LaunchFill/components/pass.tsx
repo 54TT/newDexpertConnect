@@ -5,20 +5,42 @@ import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
 import Loading from '@/components/allLoad/loading.tsx';
 import { MintContext } from '../../../index';
+import { getContract } from 'thirdweb';
 import { useTranslation } from 'react-i18next';
-import { ethers } from 'ethers';
+import { client } from '@/client';
+import { useReadContract } from 'thirdweb/react';
 import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
 import { toEthWithDecimal } from '@utils/convertEthUnit';
 export default function CommonPass() {
   const { t } = useTranslation();
   const { getAll } = Request();
-  const { browser, chainId, contractConfig, signer }: any =
+  const { browser,  contractConfig,  allChain, }: any =
     useContext(CountContext);
   const { launchTokenPass, setLaunchTokenPass, setFormData, formData }: any =
     useContext(MintContext);
   const [params, setParams] = useState(null);
   const [loading, setLoading] = useState(true);
   const { standardTokenFactoryAddress01, tokenSymbol } = contractConfig;
+  // 生成合约
+  const contract = getContract({
+    client,
+    chain: allChain,
+    address: standardTokenFactoryAddress01,
+    abi: StandardTokenFactoryAddress01Abi as any,
+  });
+  // 获取  fee
+  const { data: fees, isLoading: isFees }: any = useReadContract({
+    contract,
+    method: 'fees',
+    params: [params?.level],
+  });
+  useEffect(() => {
+    if (!isFees) {
+      setFormData({ ...formData, fees: fees?.toString(), level: params.level });
+      setLoading(false);
+    }
+  }, [isFees]);
+
   const getPass = async () => {
     setLoading(true);
     const token = cookie.get('token');
@@ -27,20 +49,11 @@ export default function CommonPass() {
       url: '/api/v1/d_pass/info',
       data: {},
       token,
-      chainId,
+      chainId:allChain?.id,
     });
     if (res?.status === 200) {
       const { data } = res;
       setParams(data);
-      const tokenFactoryContract = new ethers.Contract(
-        standardTokenFactoryAddress01,
-        StandardTokenFactoryAddress01Abi,
-        signer
-      );
-      const fees = await tokenFactoryContract.fees(Number(data.level));
-      console.log(fees);
-      setFormData({ ...formData, fees, level: data.level });
-      setLoading(false);
     } else {
       setLoading(false);
     }
@@ -63,7 +76,6 @@ export default function CommonPass() {
         }}
         onClick={() => {
           if (Number(show)) {
-            console.log(key);
             setLaunchTokenPass(key);
           }
         }}
@@ -86,16 +98,13 @@ export default function CommonPass() {
     );
   };
   useEffect(() => {
-    if (Number(chainId) === contractConfig?.chainId) {
+    if (Number(allChain?.id) === contractConfig?.chainId) {
       getPass();
     }
-  }, [chainId, contractConfig, signer]);
+  }, [allChain, contractConfig]);
+  
   return (
     <div className="passBox">
-      {/* <p className="title">{t('token.Fee')}</p> */}
-      {/* <p className="hint" style={{ fontSize: '15px', margin: '8px 0' }}>
-        {`${contractConfig.launchFee} ${contractConfig.tokenSymbol} ${t('token.need')}`}
-      </p> */}
       {!loading ? (
         <div className="passItem">
           {params?.launchBotCreationCnt &&
@@ -132,13 +141,6 @@ export default function CommonPass() {
         <Loading status={'20'} browser={browser} />
       )}
       <div className="showBot">
-        {/* <p className="hint">{t('token.Notice')}</p> */}
-        {/* <p className="hint">
-          {t('token.be', {
-            value: launchTokenPass==='launch'||launchTokenPass==='gloden'?'0':contractConfig.launchFee,
-            symbol: contractConfig.tokenSymbol,
-          })}
-        </p> */}
       </div>
     </div>
   );

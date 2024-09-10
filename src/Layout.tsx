@@ -58,7 +58,7 @@ const Oauth = React.lazy(() => import('./pages/activity/components/oauth.tsx'));
 const SpecialActive = React.lazy(
   () => import('./pages/activity/components/specialDetail.tsx')
 );
-import { useWalletBalance } from "thirdweb/react";
+import { useWalletBalance } from 'thirdweb/react';
 import { injectedProvider } from 'thirdweb/wallets';
 export const CountContext = createContext(null);
 Decimal.set({ toExpPos: 24, precision: 24 });
@@ -76,20 +76,19 @@ function Layout() {
   // 监听的  链
   const [allChain, setAllChain] = useState(null);
   const [user, setUserPar] = useState<any>(null);
-    //  连接的账号和监听账号
-    const activeAccount = useActiveAccount();
+  //  连接的账号和监听账号
+  const activeAccount = useActiveAccount();
   const changeConfig = (chainId) => {
     const newConfig = config[chainId ?? '1'];
-    setContractConfig(newConfig);
     const rpcProvider = new ethers.providers.JsonRpcProvider(newConfig.rpcUrl);
     //@ts-ignore
     setProvider(rpcProvider);
   };
   // 获取钱包   eth余额
-  const { data:balanceData } = useWalletBalance({
-    chain:allChain,
-    address:activeAccount?.address,
-    client:newClient,
+  const { data: balanceData } = useWalletBalance({
+    chain: allChain,
+    address: activeAccount?.address,
+    client: newClient,
   });
   // 连接状态
   const useActiveWalletConnectionStatu = useActiveWalletConnectionStatus();
@@ -107,6 +106,9 @@ function Layout() {
     const metamaskProvider = injectedProvider(walletConnect?.id);
     setloginProvider(metamaskProvider);
     changeConfig(activeChain?.id?.toString());
+    const newConfig =
+      config[activeChain?.id?.toString() ? activeChain?.id?.toString() : '1'];
+    setContractConfig(newConfig);
     setChainId(activeChain?.id?.toString());
     setAllChain({
       id: activeChain?.id?.toString(),
@@ -118,7 +120,7 @@ function Layout() {
     if (user?.uid && useActiveWalletConnectionStatu === 'connected') {
       changeAll();
     }
-  }, [user, useActiveWalletConnectionStatu,activeChain]);
+  }, [user, useActiveWalletConnectionStatu, activeChain]);
   useEffect(() => {
     //  监听账户变更事件
     walletConnect?.subscribe('accountChanged', async (account) => {
@@ -135,11 +137,11 @@ function Layout() {
       }
     });
   }, [walletConnect]);
-
   const { open: openTonConnect } = useTonConnectModal();
   const [signer, setSigner] = useState<ethers.providers.JsonRpcSigner>(null);
   const [tonWallet, setTonWallet] = useState<any>(null);
-  const userFriendlyAddress = useTonAddress();
+  const userFriendlyAddress = useTonAddress(false);
+
   useEffect(() => {
     if (userFriendlyAddress && tonWallet?.account) {
       tonConnect('login');
@@ -159,7 +161,7 @@ function Layout() {
   }, [loginProvider, chainId]);
   //ton钱包连接
   const tonConnect = async (log?: any) => {
-    if (log==='login') {
+    if (log === 'login') {
       const proof = tonWallet?.connectItems?.tonProof?.proof;
       const par = {
         payload: proof?.payload,
@@ -170,7 +172,6 @@ function Layout() {
         address: userFriendlyAddress,
         timestamp: proof?.timestamp,
       };
-      console.log(par)
       login(par, 'ton');
     } else {
       //  获取 授权的message
@@ -203,6 +204,7 @@ function Layout() {
         setTonWallet(null);
       }
     });
+    tonConnectUI?.disconnect();
     getUserNow();
   }, []);
   const router: any = useLocation();
@@ -230,7 +232,6 @@ function Layout() {
   const clear = async () => {
     history('/logout');
     setloginProvider(null);
-    walletConnectDisconnect(walletConnect);
     setChainId('1');
     cookie.remove('token');
     cookie.remove('currentAddress');
@@ -238,9 +239,6 @@ function Layout() {
     cookie.remove('jwt');
     localStorage.clear();
     setContractConfig(null);
-    if (tonConnectUI?.connected) {
-      tonConnectUI.disconnect();
-    }
     // @ts-ignore
     if (window?.ethereum?.isConnected?.()) {
       // @ts-ignore
@@ -250,6 +248,8 @@ function Layout() {
     setUserPar(null);
     setIsLogin(false);
     setBindingAddress(null);
+    walletConnectDisconnect(walletConnect);
+    tonConnectUI?.disconnect();
   };
   const getUser = async (id: string, token: string, jwt: any) => {
     const data: any = await getAll({
@@ -336,6 +336,7 @@ function Layout() {
             setIsModalOpen(false);
           }
         } else {
+          tonConnectUI?.disconnect();
           setTonWallet(null);
         }
       }
@@ -344,10 +345,11 @@ function Layout() {
       return null;
     }
   };
-
   const getUserNow = () => {
     const jwt = cookie.get('jwt');
     const token = cookie.get('token');
+    console.log(jwt)
+    console.log(token)
     if (jwt && token) {
       const jwtPar = JSON.parse(jwt);
       if (jwtPar?.uid) {
@@ -446,7 +448,8 @@ function Layout() {
     sniperChainId,
     setSniperChainId,
     login,
-    allChain,balanceData
+    allChain,
+    balanceData,
   };
   return (
     <ApolloProvider client={clients}>

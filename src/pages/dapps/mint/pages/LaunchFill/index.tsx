@@ -4,7 +4,6 @@ import PageHeader from '../../component/PageHeader';
 import BottomButton from '../../component/BottomButton';
 import FormD from './components/form';
 import Pass from './components/pass';
-// import Result from './components/result';
 import Confirm from './components/confirm';
 import { useNavigate } from 'react-router-dom';
 import { prepareContractCall } from 'thirdweb';
@@ -13,6 +12,7 @@ import { CountContext } from '@/Layout';
 import Cookies from 'js-cookie';
 import Request from '@/components/axios';
 import { client } from '@/client';
+
 import { getContract } from 'thirdweb';
 import { reportPayType } from '@/api';
 import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
@@ -44,10 +44,7 @@ function LaunchForm() {
   const token = Cookies.get('token');
   const { launchTokenPass, formData, setFormData }: any =
     useContext(MintContext);
-    console.log(launchTokenPass)
-  const [, setLoading] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
-  const [, setResult] = useState('loading');
   const {
     mutate: sendTx,
     data: transactionResult,
@@ -56,11 +53,8 @@ function LaunchForm() {
     payModal: false,
   });
 
-
-
   useEffect(() => {
     if (transactionResult?.transactionHash) {
-      setLoading(true);
       setStep('result');
       history(
         `/dapps/tokencreation/results/launch/${transactionResult?.transactionHash}`
@@ -71,12 +65,9 @@ function LaunchForm() {
       );
     }
     if (UUUUU) {
-      setResult('error');
-      setLoading(false);
       setCreateLoading(false);
     }
   }, [transactionResult, UUUUU]);
-
   // later
   const contract = getContract({
     client,
@@ -135,8 +126,6 @@ function LaunchForm() {
       });
       await sendTx(txsss);
     } catch (e) {
-      setResult('error');
-      setLoading(false);
       setCreateLoading(false);
     }
   };
@@ -182,7 +171,6 @@ function LaunchForm() {
             } else {
               launchTokenByFactory();
               setCreateLoading(true);
-              setResult('loading');
             }
           }}
         />

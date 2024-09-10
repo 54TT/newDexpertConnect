@@ -1,174 +1,160 @@
-// import { Input, Select } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import PageHeader from '../../component/PageHeader';
 import ToLaunchHeader from '../../component/ToLaunchHeader';
 import './index.less';
 import Loading from '@/components/allLoad/loading';
-// import Request from '@/components/axios';
 import { CountContext } from '@/Layout';
 import TokenItem from '../../component/TokenItem';
 import { useNavigate } from 'react-router-dom';
 import InfiniteScrollPage from '@/components/InfiniteScroll';
-// const { Search } = Input;
 import { useTranslation } from 'react-i18next';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { TokenFactoryManagerAbi } from '@abis/TokenFactoryManagerAbi';
 import { tokenFactoryERC20Abi } from '@abis/tokenFactoryERC20Abi';
+import { useActiveAccount } from 'thirdweb/react';
+import { getContract } from 'thirdweb';
+import { client } from '@/client';
+import { useReadContract } from 'thirdweb/react';
+import { toEthWithDecimal } from '@utils/convertEthUnit';
+
 function ManageTokenList() {
   const { t } = useTranslation();
-  const { browser, contractConfig, signer } = useContext(CountContext);
-  // const { getAll } = Request();
+  const { browser, contractConfig, allChain } = useContext(CountContext);
   const [data, setData] = useState([]);
-
   const [loading, setLoading] = useState(true);
-  // const [isNext, setIsNext] = useState(false);
   const [nextLoad] = useState(false);
   const [page, setPage] = useState(1);
   const history = useNavigate();
-  const { tokenFactoryManagerAddress } = contractConfig || {};
+  const activeAccount = useActiveAccount();
   const [total, setTotal] = useState(0);
+  const [address, setAddress] = useState('');
+  const [addressIndex, setAddressIndex] = useState(0);
   const [tokenFactoryManagerContract, setTokenManageMentContract] =
     useState<ethers.Contract>();
+  // 生成合约
+  const TokenFactoryContract = getContract({
+    client,
+    chain: allChain,
+    address: contractConfig?.tokenFactoryManagerAddress,
+    abi: TokenFactoryManagerAbi as any,
+  });
 
-  // const getTokenList = async (nu: number, value?: string, key?: string) => {
-  //   const token = Cookies.get('token');
-  //   const res = await getAll({
-  //     method: 'get',
-  //     url: '/api/v1/launch-bot/contract/list',
-  //     data: {
-  //       page: nu,
-  //       pageSize: 10,
-  //       search: value || '',
-  //       key: key || '',
-  //     },
-  //     token,
-  //     chainId,
-  //   });
-  //   if (res?.status === 200) {
-  //     if (nu === 1) {
-  //       setData(res?.data?.data);
-  //     } else {
-  //       const t = data.concat(res?.data?.data);
-  //       setData([...t]);
-  //     }
-  //     if (res?.data?.data?.length != 10) {
-  //       setIsNext(true);
-  //     }
-  //     setLoading(true);
-  //     setNextLoad(false);
-  //   } else {
-  //     setLoading(true);
-  //     setNextLoad(false);
-  //   }
-  // };
+  // 生成合约
+  const TokenAddressContract = getContract({
+    client,
+    chain: allChain,
+    address: address,
+    abi: tokenFactoryERC20Abi as any,
+  });
+  // 获取   tokenMetaData  值的顺序 description, logoLink,twitterLink,telegramLink, discordLink, websiteLink,
+  const { data: tokenMetaData, isLoading: isTokenMetaData }: any =
+    useReadContract({
+      contract: TokenAddressContract,
+      method: 'tokenMetaData',
+      params: [],
+    });
+  // 获取   token name
+  const { data: tokenName, isLoading: isTokenName }: any = useReadContract({
+    contract: TokenAddressContract,
+    method: 'name',
+    params: [],
+  });
+  // 获取   token totalSupply
+  const { data: totalSupply, isLoading: isTotalSupply }: any = useReadContract({
+    contract: TokenAddressContract,
+    method: 'totalSupply',
+    params: [],
+  });
+  // 获取   token symbol
+  const { data: totalSymbol, isLoading: isTotalSymbol }: any = useReadContract({
+    contract: TokenAddressContract,
+    method: 'symbol',
+    params: [],
+  });
+  // 获取   token symbol
+  const { data: totalDecimals, isLoading: isTotalDecimals }: any =
+    useReadContract({
+      contract: TokenAddressContract,
+      method: 'decimals',
+      params: [],
+    });
+
+  useEffect(() => {
+    if (
+      !isTokenMetaData &&
+      !isTokenName &&
+      !isTotalSupply &&
+      !isTotalSymbol &&
+      address &&
+      !isTotalDecimals
+    ) {
+      const tokenItemDataFormat = {
+        description: tokenMetaData?.[0],
+        logoLink: tokenMetaData?.[1],
+        twitterLink: tokenMetaData?.[2],
+        telegramLink: tokenMetaData?.[3],
+        discordLink: tokenMetaData?.[4],
+        websiteLink: tokenMetaData?.[5],
+        address,
+        name: tokenName,
+        symbol: totalSymbol,
+        totalSupply: toEthWithDecimal(totalSupply.toString(), totalDecimals),
+      };
+      const params = data.concat([tokenItemDataFormat]);
+      setData([...params]);
+      const addressParams = getTokens?.[0]?.[addressIndex + 1];
+      if (addressParams) {
+        setAddressIndex(addressIndex + 1);
+        setAddress(addressParams);
+      } else {
+        setLoading(false);
+      }
+    }
+  }, [
+    isTokenMetaData,
+    isTokenName,
+    isTotalSupply,
+    isTotalSymbol,
+    isTotalDecimals,addressIndex
+  ]);
+  // 获取   getTokensCount
+  const { data: getTokensCount }: any = useReadContract({
+    contract: TokenFactoryContract,
+    method: 'getTokensCount',
+    params: [activeAccount?.address],
+  });
+  // 获取   getTokens
+  const { data: getTokens }: any = useReadContract({
+    contract: TokenFactoryContract,
+    method: 'getTokens',
+    params: [activeAccount?.address, 0, getTokensCount?.toString()],
+  });
 
   const initData = async () => {
     setLoading(true);
     try {
-      const address = await signer.getAddress();
-      const tokenFactoryManagerContract = new ethers.Contract(
-        tokenFactoryManagerAddress,
-        TokenFactoryManagerAbi,
-        signer
-      );
-      const res: BigNumber =
-        await tokenFactoryManagerContract.getTokensCount(address);
-      const total = res.toNumber();
-      setTotal(total);
+      setTotal(getTokensCount?.toString());
       setTokenManageMentContract(tokenFactoryManagerContract);
-      await getTokenList(tokenFactoryManagerContract, total);
-      setLoading(false);
+      await getTokenList();
     } catch (e) {
       setLoading(false);
     }
   };
 
-  const getTokenList = async (tokenFactoryManagerContract, total) => {
+  const getTokenList = async () => {
     try {
-      const address = await signer.getAddress();
-      let start = 5 * (page - 1);
-      let end = 5 * page;
-      if (end > total) {
-        end = total;
+      if (getTokens?.[0]?.length > 0) {
+        setAddress(getTokens?.[0]?.[addressIndex]);
+      } else {
+        setLoading(false);
       }
-      console.log(start, end, total);
-      const [tokenListsAddress] = await tokenFactoryManagerContract.getTokens(
-        address,
-        0,
-        total
-      );
-
-      // 不阻塞获取内容
-      const promiseList = tokenListsAddress.map(async (address) => {
-        const tokenContract = new ethers.Contract(
-          address,
-          tokenFactoryERC20Abi,
-          signer
-        );
-        const {
-          description,
-          logoLink,
-          twitterLink,
-          telegramLink,
-          discordLink,
-          websiteLink,
-        } = await tokenContract.tokenMetaData();
-        const name = await tokenContract.name();
-        const totalSupply = await tokenContract.totalSupply();
-        const symbol = await tokenContract.symbol();
-        const tokenItemDataFormat = {
-          description,
-          logoLink,
-          twitterLink,
-          telegramLink,
-          discordLink,
-          websiteLink,
-          address,
-          name,
-          symbol,
-          totalSupply: totalSupply.toString(),
-        };
-        return tokenItemDataFormat;
-      });
-      const tokenDataList = await Promise.all(promiseList);
-
-      setData([...data, ...tokenDataList]);
     } catch (e) {
-      console.error(e);
+      return null;
     }
   };
-  // const changePage = () => {
-  //   if (!isNext) {
-  //     getTokenList(page + 1, searchPar, key);
-  //     setPage(page + 1);
-  //     setNextLoad(true);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (contractConfig?.chainId === Number(chainId)) {
-  //     getTokenList(1, '', '0');
-  //     setPage(1);
-  //     setLoading(false);
-  //     setKey('0');
-  //     setSearchPar('');
-  //     setSearName('');
-  //     getTokenListFromManagement();
-  //   }
-  // }, [chainId, contractConfig]);
-
   useEffect(() => {
-    if (page === 1) {
-      initData();
-    }
-  }, [signer]);
-
-  useEffect(() => {
-    if (page !== 1) {
-      console.log(page);
-      getTokenList(tokenFactoryManagerContract, total);
-    }
-  }, [page]);
-
+    initData();
+  }, []);
   const items = (item: any) => {
     return (
       <TokenItem
@@ -196,30 +182,7 @@ function ManageTokenList() {
         className="launch-manage-token-header"
         title={t('mint.Management')}
       />
-      <div className="launch-manage-token-search">
-        {/* <Search
-      {/* <div className="launch-manage-token-search">
-        <Search
-          className="searchBox"
-          value={searName}
-          onChange={changeName}
-          allowClear
-          onSearch={search}
-        /> */}
-        {/* <Select
-          style={{ width: 120 }}
-          onChange={handleChange}
-          className="selectBox"
-          value={key}
-          popupClassName={'manageTokenSelect'}
-          options={[
-            { value: '0', label: t('token.all') },
-            { value: '2', label: t('token.Limits') },
-            { value: '1', label: t('token.Trade') },
-            { value: '3', label: t('token.Renounces') },
-          ]}
-        /> */}
-      </div>
+      <div className="launch-manage-token-search"></div>
       <div className="mint-scroll scroll" id="launchTokenList">
         {!loading ? (
           <InfiniteScrollPage

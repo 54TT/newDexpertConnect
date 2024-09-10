@@ -21,38 +21,16 @@ function ManagePairListAndContract() {
   const [isNext, _] = useState(false);
   const [nextLoad, setNextLoad] = useState(false);
   const [page, setPage] = useState(1);
-  // const token = Cookies.get('token');
   const [data, setData] = useState([]);
-  console.log(data);
   const getTokenPairList = async () => {
-    // const { uniswapV2FactoryAddress, wethAddress } = contractConfig;
-    // const provider = new ethers.providers.Web3Provider(loginProvider);
-    // const signer = await provider.getSigner();
-    // const pairAddress = await getPairByV2Factory({
-    //   factoryAddress: uniswapV2FactoryAddress,
-    //   token0: router?.address,
-    //   token1: wethAddress,
-    //   signer,
-    // });
     const pairAddress = 0;
-    console.log(111111111111111111111111)
     if (pairAddress) {
       setData([]);
-      // setData([
-      //   {
-      //     pairAddress,
-      //     token0: router.name,
-      //     token1: 'W' + contractConfig.tokenSymbol,
-      //   },
-      // ]);
-    console.log(2222222222222222222)
       setLoading(true);
     } else {
       setLoading(true);
-    console.log(33333333333333)
     }
   };
-  console.log(loading)
   const changePage = () => {
     if (!isNext) {
       getTokenPairList();

@@ -6,54 +6,73 @@ import { useParams, useNavigate } from 'react-router-dom';
 import EditForm from '../LaunchFill/components/form';
 import { useForm } from 'antd/es/form/Form';
 import PageHeader from '../../component/PageHeader';
+import { client } from '@/client';
 import './index.less';
-// import { Button } from 'antd';
+import { getContract } from 'thirdweb';
+import { prepareContractCall } from 'thirdweb';
 import BottomButton from '../../component/BottomButton';
 import Loading from '@/components/allLoad/loading';
 import Pass from '../LaunchFill/components/pass';
 import { MintContext } from '../..';
-import { ethers } from 'ethers';
 import { StandardTokenFactoryAddress01Abi } from '@abis/StandardTokenFactoryAddress01Abi';
+import { useSendTransaction } from 'thirdweb/react';
 
 function ModifyForm() {
   const { t } = useTranslation();
   const history = useNavigate();
   const { address } = useParams();
-  const { contractConfig, signer } = useContext(CountContext);
+  const { contractConfig, allChain } = useContext(CountContext);
   const [status, setStatus] = useState<'modify' | 'pass'>('modify');
   const [tokenInfo, tokenContract] = useTokenInfo(address);
   const { launchTokenPass, formData } = useContext(MintContext);
   const [form] = useForm();
   const [editLoading, setEditLoading] = useState(false);
-  const { fees, level } = formData || {};
+  const { fees, level }: any = formData || {};
   const { standardTokenFactoryAddress01 } = contractConfig || {};
   const [updateData, setUpdateData] = useState();
+  const contract = getContract({
+    client,
+    chain: allChain,
+    address: standardTokenFactoryAddress01,
+    abi: StandardTokenFactoryAddress01Abi as any,
+  });
+
+  const {
+    mutate: sendTx,
+    data: transactionResult,
+    error: isError,
+  } = useSendTransaction({
+    payModal: false,
+  });
 
   useEffect(() => {
-    console.log(formData, launchTokenPass);
-  }, []);
+    if (transactionResult?.transactionHash) {
+      history(
+        `/dapps/tokencreation/results/launch/${transactionResult?.transactionHash}`
+      );
+      setEditLoading(false);
+    }
+    if (isError) {
+      setEditLoading(false);
+    }
+  }, [transactionResult, isError]);
 
   const handleSubmitForm = useCallback(async () => {
     setEditLoading(true);
-    const tokenFactory = new ethers.Contract(
-      standardTokenFactoryAddress01,
-      StandardTokenFactoryAddress01Abi,
-      signer
-    );
     try {
-      console.log(updateData, fees, launchTokenPass);
-      const tx = await tokenFactory.updateTokenMetaData(
-        launchTokenPass === 'more' ? level : 0,
-        tokenContract.address,
-        updateData,
-        {
-          value: launchTokenPass === 'more' ? fees : 0,
-        }
-      );
-      console.log(tx);
-      history(`/dapps/tokencreation/results/launch/${tx?.hash}`);
+      // 合约  tx
+      const txsss: any = prepareContractCall({
+        contract,
+        method: 'updateTokenMetaData',
+        params: [
+          launchTokenPass === 'more' ? level : 0,
+          tokenContract.address,
+          updateData,
+        ],
+        value: launchTokenPass === 'more' ? fees : 0,
+      });
+      await sendTx(txsss);
     } catch (e) {
-      console.error(e);
       setEditLoading(false);
     }
   }, [formData.fees, launchTokenPass]);
