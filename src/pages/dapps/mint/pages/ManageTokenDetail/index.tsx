@@ -9,6 +9,7 @@ import Loading from '@/components/allLoad/loading';
 import { tokenFactoryERC20Abi } from '@abis/tokenFactoryERC20Abi';
 import { CountContext } from '@/Layout';
 import NotificationChange from '@/components/message';
+import Decimal from 'decimal.js';
 import CommonModal from '@/components/CommonModal';
 import { useTranslation } from 'react-i18next';
 import ActionButton from './component/button';
@@ -212,6 +213,36 @@ function ManageTokenDetail() {
           await sendTx(openTradingTx);
         }
       }
+      // const tt = await approve(erc20Contract.address, tokenBalance);
+      // try {
+      //   if (tt) {
+      //     const tx = await erc20Contract.openTrading(tokenBalance, {
+      //       value: ethers.utils.parseEther(ethAmount.toString()),
+      //     });
+      //     setOpenTradeModal(false);
+      //     await getAll({
+      //       method: 'post',
+      //       url: '/api/v1/launch-bot/tx/status/check',
+      //       data: {
+      //         tx: tx.hash,
+      //         txType: '7',
+      //         txTableId: router?.id,
+      //       },
+      //       token,
+      //       chainId,
+      //     });
+      //     const recipent = await tx.wait();
+      //     if (recipent.status === 1) {
+      //       setOpenTradeLoading(false);
+      //       setIsOpenTrade(true);
+      //     }
+      //     setOpenTradeLoading(false);
+      //   }
+      // } catch (e) {
+      //   setOpenTradeLoading(false);
+      //   NotificationChange('warning', t('Dapps.Insufficient Fund'));
+      //   return null;
+      // }
     } catch (e) {
       setOpenTradeLoading(false);
       NotificationChange('warning', t('Dapps.Insufficient Fund'));

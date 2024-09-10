@@ -230,6 +230,7 @@ function Layout() {
   const clear = async () => {
     history('/logout');
     setloginProvider(null);
+    walletConnectDisconnect(walletConnect);
     setChainId('1');
     cookie.remove('token');
     cookie.remove('currentAddress');

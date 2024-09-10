@@ -14,6 +14,7 @@ export function getQueryParams() {
   return queryParams;
 }
 export const formatAddress = (address: string) => {
+  
   if (address === zeroAddress) return '';
   if (typeof address !== 'string') return '';
   if (address.length <= 10) return address;

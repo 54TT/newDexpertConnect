@@ -22,6 +22,7 @@ function ManagePairListAndContract() {
   const [nextLoad, setNextLoad] = useState(false);
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
+  console.log(data);
   const getTokenPairList = async () => {
     const pairAddress = 0;
     if (pairAddress) {
@@ -29,8 +30,10 @@ function ManagePairListAndContract() {
       setLoading(true);
     } else {
       setLoading(true);
+    console.log(33333333333333)
     }
   };
+  console.log(loading)
   const changePage = () => {
     if (!isNext) {
       getTokenPairList();
