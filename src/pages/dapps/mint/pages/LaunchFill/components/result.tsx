@@ -23,7 +23,7 @@ export default function resultBox({
   const history = useNavigate();
   const { t } = useTranslation();
   const { launchTokenPass, formData }: any = useContext(MintContext);
-  const { loginProvider, chainId, contractConfig } = useContext(CountContext);
+  const { chainId, contractConfig } = useContext(CountContext);
   const { getAll } = Request();
   const [tx, setTx] = useState('');
   const token = Cookies.get('token');
@@ -67,68 +67,11 @@ export default function resultBox({
     1: '4', // glodenPass
     2: '1', // dpass
   };
-
   const walletConnect = useActiveWallet();
-
-  const deployContract = async () => {
-    try {
-      // const { data } = await getByteCode();
-      // const signer = await ethersProvider.getSigner();
-      const { decimals, launchFee } = contractConfig;
-      const ethersProvider = new ethers.providers.Web3Provider(loginProvider);
-      const data: any = await Promise.all([
-        getByteCode(),
-        ethersProvider.getSigner(),
-      ]);
-      const { bytecode, metadataJson, contractId } = data?.[0]?.data;
-      const abi = JSON.parse(metadataJson).output.abi;
-      const contractFactory = new ethers.ContractFactory(
-        abi,
-        bytecode,
-        data?.[1]
-      );
-
-      // 先默认使用手续费版本
-      // launchTokenPass, setLaunchTokenPass   pass或者收费   launchTokenPass
-      const { deployTransaction, address } = await contractFactory.deploy(
-        launchTokenPass === 'more' ? 0 : 2,
-        {
-          value:
-            launchTokenPass === 'more'
-              ? toWeiWithDecimal(launchFee, decimals)
-              : 0,
-        }
-      );
-
-      sendReportPayType(
-        deployTransaction.hash,
-        payTypeMap[launchTokenPass === 'more' ? 0 : 2]
-      );
-      reportDeploy({
-        contractAddress: address,
-        contractId,
-        deployTx: deployTransaction.hash,
-      });
-      if (deployTransaction?.hash) {
-        const tx = await deployTransaction.wait();
-        if (tx?.transactionHash === deployTransaction?.hash) {
-          setLoading(false);
-          setResult('success');
-        }
-        setTx(deployTransaction?.hash);
-      }
-    } catch (e) {
-      setResult('error');
-      setLoading(false);
-      return null;
-    }
-  };
-  
   const newDeployContract = async () => {
     try {
       const metamaskProvider:any = injectedProvider(walletConnect?.id);
       const { decimals, launchFee } = contractConfig;
-      // const ethersProvider = new ethers.providers.Web3Provider(loginProvider);
       const ethersProvider = new ethers.providers.Web3Provider(
         metamaskProvider
       );
@@ -181,10 +124,6 @@ export default function resultBox({
   };
 
   useEffect(() => {
-    // if (loading && contractConfig?.chainId === Number(chainId)) {
-    if (0) {
-      deployContract();
-    }
     if (walletConnect?.id) {
       newDeployContract();
     }
